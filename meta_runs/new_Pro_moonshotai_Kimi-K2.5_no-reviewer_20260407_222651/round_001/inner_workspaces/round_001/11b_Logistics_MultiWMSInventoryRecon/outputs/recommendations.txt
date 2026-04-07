@@ -1,0 +1,5 @@
+CRITICAL: 1 SKU-warehouse combination(s) show inventory variance. Immediate investigation required.
+  - A-1 at WH1: Alpha=20, Beta=10.0, Variance=10.0
+NOTE: WMS Alpha has more transaction records than WMS Beta. Verify if all transactions are being captured in Beta.
+RECOMMENDATION: Implement automated daily reconciliation checks between WMS systems.
+RECOMMENDATION: Standardize timestamp formats and warehouse naming conventions across systems.

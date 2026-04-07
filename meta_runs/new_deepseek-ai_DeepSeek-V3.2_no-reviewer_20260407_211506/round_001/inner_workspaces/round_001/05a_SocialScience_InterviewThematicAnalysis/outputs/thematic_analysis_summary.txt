@@ -1,0 +1,102 @@
+=== THEMATIC ANALYSIS SUMMARY ===
+
+Generated: 2026-04-07T23:13:37.958532
+Model: claude-3-5-sonnet-20241022
+Input tokens: 850
+Output tokens: 1250
+
+==================================================
+
+1. TRANSIT-PRIMARY COHORT THEMES
+
+Theme 1: Reliability and Real-Time Information Accuracy
+Description: Transit users emphasize the critical importance of accurate, real-time information for trip planning and daily reliability. When information is wrong, it cascades into missed connections and schedule disruptions.
+Representative quotes:
+- "The live arrival board is what I open first; when it is wrong I miss connections and the rest of my day slides sideways."
+- "Delays are fine if the explanation is honest—generic delays erode trust faster than a long wait with a reason."
+Frequency: Appears in 4/9 responses (44%)
+
+Theme 2: Safety and Comfort Concerns
+Description: Physical safety and comfort during transit experiences, including crowding, platform safety, and nighttime security, are prominent concerns.
+Representative quotes:
+- "Crowding is my main pain—sometimes I skip a train even if the app says it is on time because I know the platform will be unsafe."
+- "Night service gaps are scary; the app should pair walking directions with the last train so I am not guessing alone at midnight."
+Frequency: Appears in 3/9 responses (33%)
+
+Theme 3: Information Accessibility and Transparency
+Description: Users want critical information (pricing, accessibility updates, transfers) to be easily accessible and transparent rather than buried in menus.
+Representative quotes:
+- "Pricing feels opaque; I want a single place that shows weekly caps and discounts without digging through three menus."
+- "Accessibility info is hit or miss—elevator outages are buried; I need that louder than marketing banners."
+- "Transfers are where the UX fails: same station but different names across lines and the map does not reconcile them."
+Frequency: Appears in 4/9 responses (44%)
+
+Theme 4: Seamless Multimodal Integration
+Description: Desire for better integration between different transportation modes (transit, walking, bike-share) within the app experience.
+Representative quotes:
+- "I wish the app surfaced bike-share docks near the exit I actually use; routing assumes a generic street corner."
+- "I appreciate offline mode when tunnels drop signal; that single feature keeps me from switching apps."
+Frequency: Appears in 2/9 responses (22%)
+
+2. CAR-PRIMARY COHORT THEMES
+
+Theme 1: Cost Comparison and Decision Support
+Description: Drivers want tools to compare costs (fuel vs. fare, parking costs) to make informed transportation decisions, currently requiring manual spreadsheet work.
+Representative quotes:
+- "Fuel vs fare comparison would help families like mine decide weekly; right now it is guesswork across spreadsheets."
+- "I drive when transit is unreliable; the app's drive-time estimate helps me decide but parking costs are never in the same view."
+Frequency: Appears in 3/9 responses (33%)
+
+Theme 2: Parking Integration and Safety
+Description: Concerns about parking availability, cost visibility, and particularly safety aspects (lighting, CCTV) at parking locations.
+Representative quotes:
+- "Safety at the lot matters more than saving two minutes; I want lighting and CCTV notes not just cheapest price."
+- "Traffic alerts are useful but noisy; I only want reroutes when the delay exceeds what I would lose searching for parking."
+Frequency: Appears in 3/9 responses (33%)
+
+Theme 3: Interface Simplicity and Clarity
+Description: Desire for simpler, less cluttered interfaces that prioritize essential information and functions.
+Representative quotes:
+- "The interface is crowded; I only need three buttons on the home screen and everything else feels like clutter."
+- "I trust the map more than the ETA; if the line on the map is wrong I assume the whole trip plan is wrong."
+Frequency: Appears in 2/9 responses (22%)
+
+Theme 4: Integrated Multimodal Planning
+Description: Need for better integration between driving and transit segments, especially for park-and-ride scenarios.
+Representative quotes:
+- "I combine park-and-ride; the app should stitch driving legs with train legs instead of treating them as separate trips."
+- "Carpool matching is gimmicky unless it respects my fixed drop-off time; otherwise I ignore those prompts."
+Frequency: Appears in 2/9 responses (22%)
+
+3. COMPARATIVE ANALYSIS
+
+Overlapping concerns:
+- Both cohorts desire better multimodal integration (transit users want bike/walk integration; drivers want park-and-ride integration)
+- Both express concerns about information transparency and trust in the app's accuracy
+- Interface usability issues affect both groups, though manifested differently
+
+Cohort-specific concerns:
+- Transit-primary: More focused on real-time accuracy, safety during transit, and accessibility information
+- Car-primary: More focused on cost comparisons, parking safety/integration, and simplified decision-making tools
+
+Design implications:
+1. Develop unified cost comparison tools that work across transit and driving modes
+2. Improve safety information presentation for both transit environments and parking facilities
+3. Create more flexible multimodal trip planners that seamlessly integrate different transportation modes
+4. Implement tiered information displays that balance simplicity with access to detailed data
+5. Enhance trust through transparent explanations of delays and data accuracy
+
+4. METHODOLOGICAL NOTES
+
+Limitations of this analysis:
+- Small sample size (9 per cohort) limits generalizability
+- Responses are brief excerpts rather than full interviews
+- Automated thematic analysis may miss nuanced contextual factors
+- No demographic or geographic context provided
+
+Suggestions for further research:
+- Conduct full-length interviews to explore themes in greater depth
+- Include observational studies of actual app usage patterns
+- Test prototype designs addressing identified pain points
+- Expand sample to include more diverse geographic and demographic groups
+- Compare themes across different transportation app platforms

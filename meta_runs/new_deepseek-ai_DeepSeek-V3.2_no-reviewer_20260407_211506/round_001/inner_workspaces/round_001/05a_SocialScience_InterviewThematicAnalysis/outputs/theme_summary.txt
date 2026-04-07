@@ -1,0 +1,58 @@
+=== THEMATIC ANALYSIS SUMMARY ===
+
+TRANSIT-PRIMARY COHORT THEMES:
+==================================================
+
+Theme 1: Reliability and Real-Time Information Accuracy
+Description: Transit users emphasize accurate, real-time information for trip planning
+Prevalence: 4/9 respondents (44%)
+
+Theme 2: Safety and Comfort Concerns
+Description: Physical safety and comfort during transit experiences
+Prevalence: 3/9 respondents (33%)
+
+Theme 3: Information Accessibility and Transparency
+Description: Users want critical information easily accessible and transparent
+Prevalence: 4/9 respondents (44%)
+
+Theme 4: Seamless Multimodal Integration
+Description: Desire for better integration between different transportation modes
+Prevalence: 2/9 respondents (22%)
+
+
+CAR-PRIMARY COHORT THEMES:
+==================================================
+
+Theme 1: Cost Comparison and Decision Support
+Description: Drivers want tools to compare costs to make informed decisions
+Prevalence: 3/9 respondents (33%)
+
+Theme 2: Parking Integration and Safety
+Description: Concerns about parking availability, cost visibility, and safety
+Prevalence: 3/9 respondents (33%)
+
+Theme 3: Interface Simplicity and Clarity
+Description: Desire for simpler, less cluttered interfaces
+Prevalence: 2/9 respondents (22%)
+
+Theme 4: Integrated Multimodal Planning
+Description: Need for better integration between driving and transit segments
+Prevalence: 2/9 respondents (22%)
+
+
+SUMMARY STATISTICS:
+==================================================
+Total themes identified: 8
+Transit-primary themes: 4
+Car-primary themes: 4
+Average theme prevalence (transit): 35.8%
+Average theme prevalence (car): 27.5%
+
+
+DESIGN IMPLICATIONS:
+==================================================
+1. Develop unified cost comparison tools that work across transit and driving modes
+2. Improve safety information presentation for both transit environments and parking facilities
+3. Create more flexible multimodal trip planners that seamlessly integrate different transportation modes
+4. Implement tiered information displays that balance simplicity with access to detailed data
+5. Enhance trust through transparent explanations of delays and data accuracy

@@ -40,7 +40,25 @@ def list_scenario_ids(run_dir: Path) -> list[str]:
     if not inner.is_dir():
         return []
     ids = [p.name for p in inner.iterdir() if p.is_dir()]
-    return sorted(ids)
+    return sort_scenario_ids_abc_rotation(ids)
+
+
+# Leading pattern e.g. 01a_FooBar, 11c_FooBar — sort by (题号, a/b/c) so order is
+# 01a,01b,01c, 02a,02b,02c, ... (ABC 轮换 / round-robin by topic).
+_SCENARIO_HEAD = re.compile(r"^(\d+)([a-z])?_")
+
+
+def sort_scenario_ids_abc_rotation(ids: list[str]) -> list[str]:
+    def key(sid: str) -> tuple:
+        m = _SCENARIO_HEAD.match(sid)
+        if not m:
+            return (10**9, 99, sid)
+        n = int(m.group(1))
+        letter = m.group(2)
+        vi = ord(letter) - ord("a") if letter else 0
+        return (n, vi, sid)
+
+    return sorted(ids, key=key)
 
 
 def build_sheet(wb: Workbook, run_id: str, scenario_ids: list[str]) -> None:
@@ -58,14 +76,18 @@ def build_sheet(wb: Workbook, run_id: str, scenario_ids: list[str]) -> None:
 
     header_font = Font(bold=True)
     center = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    last_col = 7
+    last_data_row = 2 + len(scenario_ids)
 
     ws["A1"] = "批次 run_id（完整）"
     ws["A1"].font = header_font
     ws["B1"] = run_id
-    ws.merge_cells(start_row=1, start_column=2, end_row=1, end_column=max(2, len(scenario_ids) + 1))
+    ws.merge_cells(start_row=1, start_column=2, end_row=1, end_column=last_col)
     ws["B1"].alignment = Alignment(vertical="center", wrap_text=True)
 
-    row_labels = [
+    headers = [
+        "序号",
+        "scenario_id（场景）",
         "审题人",
         "领题时间",
         "提交审查时间",
@@ -74,24 +96,25 @@ def build_sheet(wb: Workbook, run_id: str, scenario_ids: list[str]) -> None:
     ]
     status_hint = "已领 / 已审 / 负责人已确认"
 
-    ws["A2"] = "字段 \\ 场景"
-    ws["A2"].font = header_font
-    for col, sid in enumerate(scenario_ids, start=2):
-        cell = ws.cell(row=2, column=col, value=sid)
+    for col, h in enumerate(headers, start=1):
+        cell = ws.cell(row=2, column=col, value=h)
         cell.font = header_font
         cell.alignment = center
 
-    for i, label in enumerate(row_labels, start=3):
-        ws.cell(row=i, column=1, value=label).font = header_font
+    for i, sid in enumerate(scenario_ids, start=1):
+        r = 2 + i
+        ws.cell(row=r, column=1, value=i).alignment = center
+        ws.cell(row=r, column=2, value=sid)
 
-    ws.cell(row=7, column=1, value=f"状态说明：{status_hint}")
-    ws.merge_cells(start_row=7, start_column=1, end_row=7, end_column=max(2, len(scenario_ids) + 1))
+    note_row = last_data_row + 1
+    ws.cell(row=note_row, column=1, value=f"状态说明：{status_hint}")
+    ws.merge_cells(start_row=note_row, start_column=1, end_row=note_row, end_column=last_col)
 
-    ws.column_dimensions["A"].width = 18
-    for col in range(2, len(scenario_ids) + 2):
-        ws.column_dimensions[get_column_letter(col)].width = 28
+    widths = [6, 52, 14, 18, 18, 18, 12]
+    for col, w in enumerate(widths, start=1):
+        ws.column_dimensions[get_column_letter(col)].width = w
 
-    ws.freeze_panes = "B3"
+    ws.freeze_panes = "C3"
 
 
 def main() -> None:

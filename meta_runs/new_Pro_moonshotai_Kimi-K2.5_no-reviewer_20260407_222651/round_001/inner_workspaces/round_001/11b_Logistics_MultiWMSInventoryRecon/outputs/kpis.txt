@@ -1,0 +1,11 @@
+total_sku_warehouse_combinations: 1
+reconciled_count: 0
+variance_count: 1
+reconciliation_rate_pct: 0.0
+total_alpha_qty: 20
+total_beta_qty: 10.0
+total_variance: 10.0
+avg_absolute_variance: 10.0
+max_absolute_variance: 10.0
+alpha_data_completeness_pct: 100.0
+beta_data_completeness_pct: 100.0

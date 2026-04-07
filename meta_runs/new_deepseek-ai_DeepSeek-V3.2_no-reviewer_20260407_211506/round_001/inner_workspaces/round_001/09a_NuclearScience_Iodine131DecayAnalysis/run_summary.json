@@ -1,0 +1,29 @@
+{
+  "scenario_id": "09a_NuclearScience_Iodine131DecayAnalysis",
+  "title": "NuclearScience Iodine131DecayAnalysis",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/flame_pressure_series.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 21,
+    "submit_count": 0,
+    "done_summary": "Successfully completed flame speed vs. chamber pressure analysis. Identified clear two-regime combustion behavior with transition at 82.40 kPa. Regime 1 (38.0-81.5 kPa) follows power law S = 1178.98P^{-0.930} with R²=0.9991. Regime 2 (82.4-97.5 kPa) follows linear model S = -0.1632P + 46.0559 with R²=0.9452. Generated comprehensive report with methodology, results, figures, and discussion. All deliverables created: code in code/, outputs in outputs/, and publication-quality report in report/report.md with figures in report/images/.",
+    "real_tokens_used": 159918
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_deepseek-ai_DeepSeek-V3.2_no-reviewer_20260407_211506\\round_001\\inner_workspaces\\round_001\\09a_NuclearScience_Iodine131DecayAnalysis",
+  "timestamp": "2026-04-08T00:06:54.340789",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed flame speed vs. chamber pressure analysis. Identified clear two-regime combustion behavior with transition at 82.40 kPa. Regime 1 (38.0-81.5 kPa) follows power law S = 1178.98P^{-0.930} with R²=0.9991. Regime 2 (82.4-97.5 kPa) follows linear model S = -0.1632P + 46.0559 with R²=0.9452. Generated comprehensive report with methodology, results, figures, and discussion. All deliverables created: code in code/, outputs in outputs/, and publication-quality report in report/report.md with figures in report/images/."
+}

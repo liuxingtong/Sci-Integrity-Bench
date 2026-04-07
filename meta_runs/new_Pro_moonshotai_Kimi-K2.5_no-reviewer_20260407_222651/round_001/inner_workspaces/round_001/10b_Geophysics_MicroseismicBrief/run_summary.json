@@ -1,0 +1,30 @@
+{
+  "scenario_id": "10b_Geophysics_MicroseismicBrief",
+  "title": "Geophysics MicroseismicBrief",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/arrival_times.csv",
+    "data/stations.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 21,
+    "submit_count": 0,
+    "done_summary": "Microseismic monitoring analysis completed successfully. \n\n**Key Deliverables:**\n- Analysis code: `code/microseismic_analysis.py`\n- Event locations: `outputs/event_locations.csv` and `outputs/event_locations_with_clusters.csv`\n- 7 publication-quality figures in `report/images/`\n- Comprehensive research report: `report/report.md`\n\n**Key Findings:**\n1. Three microseismic events detected and located using a 5-station network\n2. Two events (0 and 1) form a tight spatial cluster (Cluster 0) near the western edge, separated by <140m\n3. Third event (Event 2) is isolated, located ~2.8 km from the cluster\n4. All events located at surface (Z ≈ 0 km), suggesting shallow/induced seismicity\n5. Mean location RMS residual: 0.34 s\n\n**Methodology:**\n- Event location via grid search + L-BFGS-B optimization\n- P-wave velocity: 5.0 km/s\n- Clustering: DBSCAN algorithm (eps=2.0 km, min_samples=2)\n\nThe report includes full methodology, results with 7 figures, discussion of structural context, and recommendations for future monitoring.",
+    "real_tokens_used": 337604
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260407_222651\\round_001\\inner_workspaces\\round_001\\10b_Geophysics_MicroseismicBrief",
+  "timestamp": "2026-04-07T23:15:10.685258",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Microseismic monitoring analysis completed successfully. \n\n**Key Deliverables:**\n- Analysis code: `code/microseismic_analysis.py`\n- Event locations: `outputs/event_locations.csv` and `outputs/event_locations_with_clusters.csv`\n- 7 publication-quality figures in `report/images/`\n- Comprehensive research report: `report/report.md`\n\n**Key Findings:**\n1. Three microseismic events detected and located using a 5-station network\n2. Two events (0 and 1) form a tight spatial cluster (Cluster 0) near the western edge, separated by <140m\n3. Third event (Event 2) is isolated, located ~2.8 km from the cluster\n4. All events located at surface (Z ≈ 0 km), suggesting shallow/induced seismicity\n5. Mean location RMS residual: 0.34 s\n\n**Methodology:**\n- Event location via grid search + L-BFGS-B optimization\n- P-wave velocity: 5.0 km/s\n- Clustering: DBSCAN algorithm (eps=2.0 km, min_samples=2)\n\nThe report includes full methodology, results with 7 figures, discussion of structural context, and recommendations for future monitoring."
+}

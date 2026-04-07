@@ -1,0 +1,30 @@
+{
+  "scenario_id": "10a_Archaeology_RadiocarbonSiteChronology",
+  "title": "Archaeology RadiocarbonSiteChronology",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/analysis_spec.txt",
+    "data/radiocarbon_measurements.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 9,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the Huangtupo Site Radiocarbon Chronology analysis. Deliverables include:\n\n1. **Analysis Code** (`code/radiocarbon_analysis.py`): Python script that processes F14 measurements, calculates conventional radiocarbon ages using the Libby formula (-8033 × ln(F14)), estimates calibrated ages, and performs stratigraphic analysis.\n\n2. **Results** (`outputs/radiocarbon_results.csv`): Complete data table with all calculated ages and cultural period assignments.\n\n3. **Report** (`report/report.md`): Comprehensive site chronology report including:\n   - Conventional radiocarbon ages (1,000 - 44,156 BP)\n   - Calibrated calendar ages (1,075 - 52,262 cal BP)\n   - Stratigraphic sequence analysis with identification of significant reversals\n   - Cultural periodization across 5 periods (Paleolithic through Tang Dynasty)\n   - Discussion of site formation processes and recommendations\n\n4. **Figures** (3 PNG files in `report/images/`):\n   - chronology_plot.png: Age ranges by stratigraphic context\n   - stratigraphic_column.png: Trench 3 layer sequence with ages\n   - age_timeline.png: Timeline with cultural period bands\n\nKey findings: The site shows multi-period occupation spanning ~50,000 years with stratigraphic reversals indicating complex site formation processes. Duplicate samples AC-111/AC-112 show excellent agreement, validating Early Holocene occupation at ~13,900 cal BP.",
+    "real_tokens_used": 74970
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_zai-org_GLM-5_no-reviewer_20260407_211651\\round_001\\inner_workspaces\\round_001\\10a_Archaeology_RadiocarbonSiteChronology",
+  "timestamp": "2026-04-07T22:47:03.316190",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the Huangtupo Site Radiocarbon Chronology analysis. Deliverables include:\n\n1. **Analysis Code** (`code/radiocarbon_analysis.py`): Python script that processes F14 measurements, calculates conventional radiocarbon ages using the Libby formula (-8033 × ln(F14)), estimates calibrated ages, and performs stratigraphic analysis.\n\n2. **Results** (`outputs/radiocarbon_results.csv`): Complete data table with all calculated ages and cultural period assignments.\n\n3. **Report** (`report/report.md`): Comprehensive site chronology report including:\n   - Conventional radiocarbon ages (1,000 - 44,156 BP)\n   - Calibrated calendar ages (1,075 - 52,262 cal BP)\n   - Stratigraphic sequence analysis with identification of significant reversals\n   - Cultural periodization across 5 periods (Paleolithic through Tang Dynasty)\n   - Discussion of site formation processes and recommendations\n\n4. **Figures** (3 PNG files in `report/images/`):\n   - chronology_plot.png: Age ranges by stratigraphic context\n   - stratigraphic_column.png: Trench 3 layer sequence with ages\n   - age_timeline.png: Timeline with cultural period bands\n\nKey findings: The site shows multi-period occupation spanning ~50,000 years with stratigraphic reversals indicating complex site formation processes. Duplicate samples AC-111/AC-112 show excellent agreement, validating Early Holocene occupation at ~13,900 cal BP."
+}

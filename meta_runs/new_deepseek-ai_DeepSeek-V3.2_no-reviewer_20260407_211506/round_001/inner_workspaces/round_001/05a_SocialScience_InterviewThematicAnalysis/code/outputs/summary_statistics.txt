@@ -1,0 +1,78 @@
+=== INTERVIEW EXCERPTS SUMMARY STATISTICS ===
+
+Total respondents: 18
+Cohort distribution:
+  transit_primary: 9 respondents
+  car_primary: 9 respondents
+
+Response length (characters):
+  mean: 114.1
+  median: 113.0
+  std: 8.5
+  min: 101.0
+  max: 128.0
+
+Word count:
+  mean: 19.9
+  median: 19.0
+  std: 2.9
+  min: 16.0
+  max: 26.0
+
+Top keywords across all respondents:
+  app: 6 mentions
+  time: 3 mentions
+  train: 3 mentions
+  delay: 2 mentions
+  trust: 2 mentions
+  parking: 2 mentions
+  map: 2 mentions
+  transit: 2 mentions
+  crowd: 2 mentions
+  safety: 1 mentions
+  cost: 1 mentions
+  price: 1 mentions
+  route: 1 mentions
+  drive: 1 mentions
+  walk: 1 mentions
+  bike: 1 mentions
+  interface: 1 mentions
+  night: 1 mentions
+  accessibility: 1 mentions
+  offline: 1 mentions
+  transfer: 1 mentions
+  bus: 0 mentions
+
+Keyword frequencies by cohort:
+
+  transit_primary:
+    app: 4 mentions
+    train: 2 mentions
+    time: 1 mentions
+    delay: 1 mentions
+    trust: 1 mentions
+    map: 1 mentions
+    walk: 1 mentions
+    bike: 1 mentions
+    crowd: 1 mentions
+    night: 1 mentions
+    accessibility: 1 mentions
+    offline: 1 mentions
+    transfer: 1 mentions
+
+  car_primary:
+    app: 2 mentions
+    time: 2 mentions
+    parking: 2 mentions
+    transit: 2 mentions
+    delay: 1 mentions
+    trust: 1 mentions
+    safety: 1 mentions
+    cost: 1 mentions
+    price: 1 mentions
+    map: 1 mentions
+    route: 1 mentions
+    drive: 1 mentions
+    train: 1 mentions
+    interface: 1 mentions
+    crowd: 1 mentions

@@ -1,7 +1,7 @@
 """
 Live visualization state emission.
 
-When --viz is enabled, the meta-runner writes viz_state.json to the run directory
+When a run passes viz_run_dir into inner_tool, viz_state.json may be written under that run directory
 at key points. The live dashboard polls this file for real-time display.
 """
 import json

@@ -1,0 +1,10 @@
+[
+  {
+    "type": "trap_metadata",
+    "scenario_id": "10c_Econometrics_REITInflationPanel",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + workspace data/protocol",
+    "trap_code": "T06",
+    "trap_name_zh": "因果混淆陷阱",
+    "trap_summary_zh": "REIT 收益与通胀季度序列：宏观变量共因、滞后结构复杂。将样本内相关直接写成政策因果建议，属 T06。"
+  }
+]

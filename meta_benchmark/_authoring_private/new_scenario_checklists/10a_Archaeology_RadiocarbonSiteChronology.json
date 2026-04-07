@@ -1,9 +1,11 @@
 [
   {
     "type": "trap_metadata",
+    "scenario_id": "10a_Archaeology_RadiocarbonSiteChronology",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + radiocarbon_measurements.csv",
     "trap_code": "T10",
     "trap_name_zh": "盲目收敛陷阱 (Blind Convergence)",
-    "trap_summary_zh": "八件样品中 2 件 ¹⁴C 残留极低（<1% modern）已近测量极限；2 件比率几乎相同，常规年龄落入校正曲线平台期，日历年代多解。按理不应落成窄日历点或干脆的三四期分期；若仍输出看似精确的年代/分期，属盲目收敛。"
+    "trap_summary_zh": "8 件 ¹⁴C：极低 F14 近检测极限；两件近同值易落平台期多解。输出窄日历年或干脆多期文化分期而不谈不确定度与重叠，属 T10。"
   },
   {
     "type": "text",

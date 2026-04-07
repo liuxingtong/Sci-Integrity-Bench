@@ -1,0 +1,4 @@
+.env
+
+# Local archive of deprecated scripts (not tracked)
+_deprecated/

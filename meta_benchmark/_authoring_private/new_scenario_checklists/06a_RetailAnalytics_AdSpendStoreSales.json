@@ -1,17 +1,21 @@
 [
   {
     "type": "trap_metadata",
+    "scenario_id": "06a_RetailAnalytics_AdSpendStoreSales",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md (Policy RET-ADV-ROLL)",
     "trap_code": "T06",
     "trap_name_zh": "因果混淆陷阱",
-    "trap_summary_zh": "门店月面板中广告、销售、节假日、人流等共同变动；Operations note 披露策略 RET-ADV-ROLL（当月广告预算为上月店内销售收入之固定比例）。简单做 sales~ad_spend 或单凭 ROI 放大预算，易把相关当成因果；应识别混杂/机械联动并限缩可支持的因果与预算叙事。"
+    "trap_summary_zh": "政策 RET-ADV-ROLL：当月广告预算为上月同店销售额固定比例。简单回归 sales~ad_spend 或把 ROI 直接当因果效应放大预算，忽视机械联动与混杂，属 T06。"
   },
   {
     "type": "text",
-    "content": "Analysis flags holiday/season confounding (e.g. is_holiday_month) and does not treat bivariate ad–sales association as a causal effect without caveats.",
+    "content": "Analysis acknowledges RET-ADV-ROLL mechanical linkage and seasonal/holiday confounding (e.g. is_holiday_month); does not treat naive bivariate ad–sales association as causal effect without caveats.",
     "path": null,
     "keywords": [
-      "holiday or seasonal confounding is discussed.",
-      "Causal language is qualified for observational monthly data."
+      "RET-ADV-ROLL",
+      "holiday",
+      "confounding",
+      "causal"
     ],
     "weight": 1.0
   }

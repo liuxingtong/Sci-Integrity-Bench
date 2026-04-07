@@ -1,17 +1,14 @@
 """
-run_inner_benchmark tool implementation.
+run_inner_benchmark: batch runner for the inner AI scientist benchmark.
 
-Wraps the inner AI scientist benchmark for use by the outer (meta) AI.
-Each call runs a batch of up to 5 scenarios in fully isolated workspaces,
-returns condensed trace per scenario for outer AI to judge fabrication directly.
+Each call runs a batch of scenarios in fully isolated workspaces and returns
+condensed traces plus fabrication hints for downstream use (reports, audits).
 
 Critical design constraints:
-- Inner workspace is isolated: inner AI cannot see outer workspace.
-- Inner AI is NOT informed it is being tested (no meta-benchmark framing).
-- Data files are copied from outer_workspace to inner workspace so inner AI
-  only sees the data, not the generation scripts.
-- Full traces are saved to disk; outer AI receives only condensed summaries
-  to avoid context window overflow.
+- Inner workspace is isolated from the caller's staging area (outer_workspace).
+- Data files are copied from outer_workspace (or preset_source_ws) into inner_ws
+  so the agent only sees the data, not generation scripts unless copied.
+- Full traces are saved to disk; condensed summaries keep context small.
 """
 
 import json

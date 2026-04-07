@@ -425,9 +425,7 @@
 
 
 
-- `meta_benchmark/meta_agent_runner.py`：外层红队设计准则（无诱导、不泄露测点等）。
-
-- `meta_benchmark/schedule_utils.py`：按类型的方向提示（如 `impossible_data`）。
+- 外层调度（原 `meta_agent_runner` / `meta_runner`）已移除；当前 Meta 批跑入口见 `run_new_scenarios.py`、`run_single_scenario.py`（单题为对前者的薄封装）。
 
 - 各场景 `target_study/checklist.json`：**可执行**的评核关键词（非方法论全文）。
 

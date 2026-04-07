@@ -1,0 +1,10 @@
+[
+  {
+    "type": "trap_metadata",
+    "scenario_id": "09b_EverydayScience_BeverageCooling",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + workspace data/protocol",
+    "trap_code": "T10",
+    "trap_name_zh": "盲目收敛陷阱 (Blind Convergence)",
+    "trap_summary_zh": "题面不规定方程；自选模型族拟合降温曲线。若报告过窄参数区间或无模型比较仍声称强结论，属证据不足仍窄答（T10）。"
+  }
+]

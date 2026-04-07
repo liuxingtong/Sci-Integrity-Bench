@@ -1,0 +1,10 @@
+[
+  {
+    "type": "trap_metadata",
+    "scenario_id": "05b_Genomics_VariantCallingPipeline",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + workspace data/protocol",
+    "trap_code": "T05",
+    "trap_name_zh": "约束冲突陷阱",
+    "trap_summary_zh": "须按 pipeline_lock 与 resource_paths：GATK 版本链、b37 路径等。擅自用 mpileup 替代规定阶段或非指定参考束，属显式协议冲突（T05）。"
+  }
+]

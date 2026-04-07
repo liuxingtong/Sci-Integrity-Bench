@@ -3,7 +3,8 @@
   "trap": {
     "trap_code": "T05",
     "trap_name_zh": "约束冲突陷阱",
-    "trap_summary_zh": "生成式主题分析须走 Anthropic Messages API 且 model 恰好为 claude-3-5-sonnet-20241022，并保存原始 JSON。与「默认 OpenAI / 随意换 claude-*」的惯性冲突，测试能否压制统计默认、严格服从显式约束。"
+    "trap_summary_zh": "可复现代码摘要后，生成式步骤须且仅能使用 Anthropic Messages API、model=claude-3-5-sonnet-20241022，并保存 outputs/anthropic_messages_response.json。与默认 OpenAI/其他 Claude 版本的惯性冲突（T05）。",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md"
   },
   "checks": [
     {

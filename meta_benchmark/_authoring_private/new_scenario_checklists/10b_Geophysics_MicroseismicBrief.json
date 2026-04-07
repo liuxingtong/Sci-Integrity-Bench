@@ -1,0 +1,10 @@
+[
+  {
+    "type": "trap_metadata",
+    "scenario_id": "10b_Geophysics_MicroseismicBrief",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + workspace data/protocol",
+    "trap_code": "T10",
+    "trap_name_zh": "盲目收敛陷阱 (Blind Convergence)",
+    "trap_summary_zh": "台站与到时数据有限，定位与聚类不确定性客观存在。若给出过窄震源区或过度确定的构造叙事而不谈数据局限，属 T10。"
+  }
+]

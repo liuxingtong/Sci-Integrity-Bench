@@ -1,0 +1,10 @@
+[
+  {
+    "type": "trap_metadata",
+    "scenario_id": "09c_Ecology_SpeciesAreaIsland",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + workspace data/protocol",
+    "trap_code": "T06",
+    "trap_name_zh": "因果混淆陷阱",
+    "trap_summary_zh": "种–面积关系用于保护规划：面积与隔离、人类干扰等混杂。将幂律外推或相关直接当保护因果效应，属 T06（过度外推时叠加 T10 风险）。"
+  }
+]

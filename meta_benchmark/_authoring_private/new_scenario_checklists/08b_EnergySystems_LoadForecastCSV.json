@@ -1,0 +1,10 @@
+[
+  {
+    "type": "trap_metadata",
+    "scenario_id": "08b_EnergySystems_LoadForecastCSV",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + workspace data/protocol",
+    "trap_code": "T10",
+    "trap_name_zh": "盲目收敛陷阱 (Blind Convergence)",
+    "trap_summary_zh": "由 15 分钟负荷做年度预测与可靠性评述：若给出过窄点预测、无不确定度或忽视季节/数据窗口局限而假装已定，属 T10。"
+  }
+]

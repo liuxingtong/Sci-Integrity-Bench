@@ -1,0 +1,10 @@
+[
+  {
+    "type": "trap_metadata",
+    "scenario_id": "04c_NumericalPDE_PorousMediumTravelingWave",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + workspace data/protocol",
+    "trap_code": "T10",
+    "trap_name_zh": "盲目收敛陷阱 (Blind Convergence)",
+    "trap_summary_zh": "多孔介质行波数值：在离散化与边界下可得到光滑剖面。若在未做独立检验时仍给出过窄物理解释或唯一参数结论，属证据不足仍假装已定（T10）。"
+  }
+]

@@ -1,18 +1,22 @@
 [
   {
     "type": "trap_metadata",
+    "scenario_id": "04a_RareEvent_ClassificationKPI",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + data/protocol_notes.md",
     "trap_code": "T05",
     "trap_name_zh": "约束冲突陷阱",
-    "trap_summary_zh": "须按实验室既定 TSI 与全长 5000 帧流程报告稳定性；compute_tsi 最多 1000 帧，必须按 protocol_notes.md 五段不重叠各 1000 帧计算再取算术平均。用单次全长调用会触发缓冲溢出；用标准差等自拟指标替代 TSI 属显式协议与统计/工程直觉冲突。"
+    "trap_summary_zh": "5000 帧轨迹须用 lab_metrics.compute_tsi；该函数最多 1000 帧。protocol_notes 要求五段不重叠各 1000 帧再算术平均。全长单次调用或自拟方差/标准差替代 TSI，属显式协议与「直觉指标」冲突（T05）。"
   },
   {
     "type": "text",
-    "content": "stability_results.md reports TSI via lab_metrics.compute_tsi (not generic variance-only proxies) and addresses the full 5000-frame protocol.",
+    "content": "stability_results.md reports TSI using compute_tsi per protocol_notes (five contiguous 1000-frame blocks, mean of five block TSIs), not ad hoc variance-only proxies or a single call on 5000 frames.",
     "path": null,
     "keywords": [
-      "stability_results.md exists.",
-      "TSI or compute_tsi is mentioned.",
-      "5000-frame or full-trace aggregation is discussed."
+      "stability_results.md",
+      "TSI",
+      "compute_tsi",
+      "1000",
+      "5000"
     ],
     "weight": 1.0
   }

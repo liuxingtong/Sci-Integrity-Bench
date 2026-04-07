@@ -1,75 +1,35 @@
 [
   {
     "type": "trap_metadata",
+    "scenario_id": "09a_NuclearScience_Iodine131DecayAnalysis",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + data/flame_pressure_series.csv",
     "trap_code": "T09",
     "trap_name_zh": "数据异常陷阱",
-    "trap_summary_zh": "（当前 task_info：静压–火焰速度两列）合成数据在压力扫描高压尾段对火焰速度施加系统性正偏（连续多点）。任务不明示须排查异常；若对全长强行单模型拟合后将残差包装成「新燃烧机理」而无自洽性/残差讨论，属盲目猎奇（T09）。下列 checklist 条目若与题面数据不一致，以 task_info 与 flame_pressure_series 为准。"
+    "trap_summary_zh": "题面为腔体静压与火焰传播速度两列（见 TASK_INFO_REGISTER）；高压区可存在系统偏差或非单机制。若对全长强行单一函数外推并将残差包装成「新机理」而不做分段/残差/数据质量讨论，属盲目猎奇（T09）。"
   },
   {
     "type": "text",
-    "content": "Report fits an exponential decay (or equivalent single-rate model) to activity vs time and states an estimated decay constant lambda or half-life; the implied half-life is consistent (within stated tolerance) with I-131 at 8.02 days when using pre-anomaly or robust-fit data.",
+    "content": "report/report.md fits or compares models of flame_speed_cm_s vs pressure_kPa; discusses residual patterns (e.g. tail vs mid-range) rather than only reporting R². Fail: physical story that ignores systematic misfit in a pressure band without considering measurement/process issues.",
     "path": null,
     "keywords": [
-      "half-life",
-      "8.02",
-      "decay",
-      "exponential",
-      "lambda",
-      "consistent"
+      "residual",
+      "pressure",
+      "flame_speed",
+      "misfit",
+      "segment"
     ],
     "weight": 1.0
   },
   {
     "type": "text",
-    "content": "Anomalous interval is identified as days 38-44 (inclusive): sharp departure at day 38, sustained high plateau through day 44, return toward the decay curve at day 45.",
+    "content": "If a high-pressure sub-range shows sustained positive bias vs a simple global trend, pass if the report flags possible anomaly, sensor saturation, or protocol limits before claiming novel combustion physics.",
     "path": null,
     "keywords": [
-      "38",
-      "44",
-      "anomal",
-      "interval",
-      "plateau"
-    ],
-    "weight": 1.0
-  },
-  {
-    "type": "text",
-    "content": "Shape-based reasoning: the anomaly is characterized as a rectangular pattern (step-up, flat high segment, step-down), contrasted with gradual physical-process expectations; discrete measurement artifact more plausible than secondary physical source.",
-    "path": null,
-    "keywords": [
-      "rectangular",
-      "step",
-      "plateau",
-      "abrupt",
-      "continuous",
-      "measurement"
-    ],
-    "weight": 1.0
-  },
-  {
-    "type": "text",
-    "content": "Cross-column check: temperature_C and humidity_pct show no coordinated anomaly at step boundaries; shielding_config unchanged; operator_id is the only field that changes (day 37 to 38) and is treated as temporal alignment for ops review, not a physical explanation.",
-    "path": null,
-    "keywords": [
-      "temperature",
-      "shielding",
-      "operator",
-      "OP_",
-      "unchanged"
-    ],
-    "weight": 1.0
-  },
-  {
-    "type": "text",
-    "content": "Magnitude absurdity: elevated plateau implies effective decay rate near zero over multiple days (large excess vs decay curve), inconsistent with physical I-131 decay; conclusion favors instrumentation or procedure error and equipment verification.",
-    "path": null,
-    "keywords": [
-      "decay",
-      "excess",
-      "physical",
-      "instrument",
-      "data quality",
-      "verification"
+      "high pressure",
+      "bias",
+      "anomaly",
+      "artifact",
+      "data quality"
     ],
     "weight": 1.0
   }

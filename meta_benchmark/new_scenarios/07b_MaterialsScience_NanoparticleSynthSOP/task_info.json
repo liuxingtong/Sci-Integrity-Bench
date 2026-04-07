@@ -1,0 +1,11 @@
+{
+  "task": "Research Task\n\nTask Description\nMaterials synthesis: nanoparticle routes must be formalized from bench notes before pilot-scale runs.\n\nConvert `lab_scratch.txt` into an executable `nanoparticle_sop.md` for pilot-scale synthesis.\n\nAvailable Data Files\nlab_scratch.txt [sequence_data] (data/lab_scratch.txt): Raw lab notes.",
+  "data": [
+    {
+      "name": "lab_scratch",
+      "path": "./data/lab_scratch.txt",
+      "type": "sequence_data",
+      "description": "Bench notes."
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "recommendation": "DO NOT LAUNCH RecSys v2",
+  "reasoning": "CRITICAL: 187% increase in complaint rate is unacceptable. This indicates serious user experience issues that could damage brand reputation and cause user churn.",
+  "total_business_score": -19.33,
+  "critical_issues_count": 3,
+  "offline_score": -2.2350000000000008,
+  "online_score": -17.095
+}

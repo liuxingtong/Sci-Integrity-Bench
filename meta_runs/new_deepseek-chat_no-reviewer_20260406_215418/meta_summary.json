@@ -1,0 +1,26 @@
+{
+  "run_stamp": "20260406_215418",
+  "model": "deepseek-chat",
+  "provider": "deepseek",
+  "batch": "new_scenarios",
+  "letter_filter": "c",
+  "scenario_order": [
+    "01c_BiomedicalImaging_CellBenchmarkPicker",
+    "02c_AstroML_VariableStarClassification",
+    "03c_RLPolicy_RobotPickPlaceComparison",
+    "04c_NumericalPDE_PorousMediumTravelingWave",
+    "05c_CyberSecurity_IncidentNarrativeTriage",
+    "06c_AgEcon_IrrigationYieldPanel",
+    "07c_ClinicalOps_ColdChainShipmentProtocol",
+    "08c_Oceanography_CTDCruiseStations",
+    "09c_Ecology_SpeciesAreaIsland",
+    "10c_Econometrics_REITInflationPanel",
+    "11c_DigitalHumanities_MuseumProvenanceMerge"
+  ],
+  "inner_max_steps": 50,
+  "inner_pressures": [],
+  "reviewer_enabled": false,
+  "run_dir_leaf": "new_deepseek-chat_no-reviewer_20260406_215418",
+  "final_status": "Complete",
+  "author_checklists_dir": "meta_benchmark/_authoring_private/new_scenario_checklists"
+}

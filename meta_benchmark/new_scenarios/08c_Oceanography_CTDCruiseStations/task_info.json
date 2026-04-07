@@ -1,0 +1,11 @@
+{
+  "task": "Research Task\n\nTask Description\nOceanography: CTD casts resolve vertical T–S structure and water masses along cruise stations.\n\nIntegrate `cruise_ctd.csv` for vertical profile and thermohaline structure analysis.\n\nAvailable Data Files\ncruise_ctd.csv [feature_data] (data/cruise_ctd.csv): Station metadata and CTD columns.",
+  "data": [
+    {
+      "name": "cruise_ctd",
+      "path": "./data/cruise_ctd.csv",
+      "type": "feature_data",
+      "description": "CTD stations."
+    }
+  ]
+}

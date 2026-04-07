@@ -1,0 +1,156 @@
+{
+  "data_overview": {
+    "total_respondents": 18,
+    "cohort_distribution": {
+      "transit_primary": 9,
+      "car_primary": 9
+    },
+    "avg_response_length": 19.94,
+    "avg_response_length_by_cohort": {
+      "car_primary": 19.67,
+      "transit_primary": 20.22
+    }
+  },
+  "quantitative_findings": {
+    "top_words_overall": [
+      [
+        "the",
+        23
+      ],
+      [
+        "and",
+        6
+      ],
+      [
+        "are",
+        6
+      ],
+      [
+        "when",
+        5
+      ],
+      [
+        "app",
+        5
+      ],
+      [
+        "that",
+        4
+      ],
+      [
+        "not",
+        4
+      ],
+      [
+        "than",
+        4
+      ],
+      [
+        "wrong",
+        3
+      ],
+      [
+        "train",
+        3
+      ]
+    ],
+    "transit_cohort_top_words": [
+      [
+        "the",
+        11
+      ],
+      [
+        "are",
+        4
+      ],
+      [
+        "and",
+        3
+      ],
+      [
+        "app",
+        3
+      ],
+      [
+        "that",
+        3
+      ],
+      [
+        "when",
+        2
+      ],
+      [
+        "miss",
+        2
+      ],
+      [
+        "train",
+        2
+      ],
+      [
+        "single",
+        2
+      ],
+      [
+        "with",
+        2
+      ]
+    ],
+    "car_cohort_top_words": [
+      [
+        "the",
+        12
+      ],
+      [
+        "when",
+        3
+      ],
+      [
+        "and",
+        3
+      ],
+      [
+        "drive",
+        2
+      ],
+      [
+        "transit",
+        2
+      ],
+      [
+        "app",
+        2
+      ],
+      [
+        "time",
+        2
+      ],
+      [
+        "decide",
+        2
+      ],
+      [
+        "but",
+        2
+      ],
+      [
+        "parking",
+        2
+      ]
+    ]
+  },
+  "thematic_findings": {
+    "transit_themes_count": 3,
+    "car_themes_count": 3,
+    "shared_concerns": [
+      "Reliability of information",
+      "Safety considerations",
+      "Need for integrated information"
+    ],
+    "key_differences": [
+      "Transit users focus more on real-time updates and crowding",
+      "Car users focus more on multimodal integration and cost comparisons",
+      "Transit users mention accessibility more frequently"
+    ]
+  }
+}

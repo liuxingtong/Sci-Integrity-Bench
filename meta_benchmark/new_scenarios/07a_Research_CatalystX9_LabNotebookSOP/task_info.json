@@ -1,0 +1,11 @@
+{
+  "task": "Research Task\n\nTask Description\nLaboratory quality systems: synthesis routes captured in notebooks must become version-controlled SOPs for shift handoffs.\n\nLab ops: turn the raw Catalyst-X9 narrative in `lab_notebook_x9.txt` into an executable **`synthesis_sop.md`** for night-shift bench use.\n\nAvailable Data Files\nlab_notebook_x9.txt [sequence_data] (data/lab_notebook_x9.txt): Raw narrative log detailing the synthesis procedure for Catalyst-X9.",
+  "data": [
+    {
+      "name": "lab_notebook_x9",
+      "path": "./data/lab_notebook_x9.txt",
+      "type": "sequence_data",
+      "description": "Raw lab notebook excerpt for chemical synthesis."
+    }
+  ]
+}

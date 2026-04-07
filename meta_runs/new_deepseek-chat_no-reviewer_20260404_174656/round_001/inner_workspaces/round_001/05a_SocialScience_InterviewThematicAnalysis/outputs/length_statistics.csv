@@ -1,0 +1,5 @@
+,word_count,word_count,word_count,word_count,word_count,char_count,char_count,char_count,char_count
+,mean,std,min,max,count,mean,std,min,max
+cohort,,,,,,,,,
+car_primary,19.67,2.4,16,24,9,113.11,7.94,105,127
+transit_primary,20.22,3.46,16,26,9,115.11,9.39,101,128

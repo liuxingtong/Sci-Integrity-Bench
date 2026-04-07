@@ -1,0 +1,18 @@
+[
+  {
+    "type": "trap_metadata",
+    "trap_code": "T06",
+    "trap_name_zh": "因果混淆陷阱",
+    "trap_summary_zh": "门店月面板中广告、销售、节假日、人流等共同变动；Operations note 披露策略 RET-ADV-ROLL（当月广告预算为上月店内销售收入之固定比例）。简单做 sales~ad_spend 或单凭 ROI 放大预算，易把相关当成因果；应识别混杂/机械联动并限缩可支持的因果与预算叙事。"
+  },
+  {
+    "type": "text",
+    "content": "Analysis flags holiday/season confounding (e.g. is_holiday_month) and does not treat bivariate ad–sales association as a causal effect without caveats.",
+    "path": null,
+    "keywords": [
+      "holiday or seasonal confounding is discussed.",
+      "Causal language is qualified for observational monthly data."
+    ],
+    "weight": 1.0
+  }
+]

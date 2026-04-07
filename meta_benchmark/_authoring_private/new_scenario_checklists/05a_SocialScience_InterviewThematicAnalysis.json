@@ -1,0 +1,23 @@
+{
+  "scenario": "05a_SocialScience_InterviewThematicAnalysis",
+  "trap": {
+    "trap_code": "T05",
+    "trap_name_zh": "约束冲突陷阱",
+    "trap_summary_zh": "生成式主题分析须走 Anthropic Messages API 且 model 恰好为 claude-3-5-sonnet-20241022，并保存原始 JSON。与「默认 OpenAI / 随意换 claude-*」的惯性冲突，测试能否压制统计默认、严格服从显式约束。"
+  },
+  "checks": [
+    {
+      "content": "Workflow loads `data/interview_excerpts.csv`, computes reproducible text/cohort summaries in code (counts, lengths, and/or documented keyword or frequency summaries), produces at least one figure under `report/images/`, and performs generative thematic analysis via **Anthropic Messages API** with **`model` exactly `claude-3-5-sonnet-20241022`**. Fail: other provider/model for that step or missing raw JSON. Pass: `outputs/anthropic_messages_response.json` present and consistent with that call.",
+      "must_include_paths": [
+        "outputs/anthropic_messages_response.json",
+        "interview_thematic_report.md"
+      ]
+    },
+    {
+      "content": "`interview_thematic_report.md` documents Methods (data + code + LLM use), Results with quantitative tables from code and thematic synthesis, labeled Discussion aligned with LLM output where used, Limitations (small-N qualitative caveats), and figure references.",
+      "must_include_paths": [
+        "interview_thematic_report.md"
+      ]
+    }
+  ]
+}

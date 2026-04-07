@@ -1,0 +1,12 @@
+Metric,Value
+Total Records Compared,3
+Matches,0 (0.0%)
+Mismatches,0 (0.0%)
+Missing in Alpha,1 (33.3%)
+Missing in Beta,2 (66.7%)
+Alpha Data Completeness,66.7%
+Beta Data Completeness,33.3%
+Total Inventory Alpha,20 units
+Total Inventory Beta,10 units
+Inventory Difference,10 units (100.0%)
+Time Difference (hours),16.0 hours

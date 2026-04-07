@@ -1,0 +1,17 @@
+{
+  "task": "Research Task\n\nTask Description\nApplied recommender-systems research: launch decisions weigh offline ranking quality against short online experiments.\n\nRecommend whether to launch **RecSys-v2** vs production **RecSys-v1** using `offline_evaluation_metrics.csv` (held-out test **n = 200,000**; `recsys_v1` / `recsys_v2`, `relative_change_pct`) and `online_ab_test_metrics.csv` (**14-day**, **10%** traffic per arm; `recsys_*_pct` in **percentage points**). Deliver `model_evaluation_report.md` (tables, interpretation, recommendation).\n\nAvailable Data Files\noffline_evaluation_metrics.csv [feature_data] (data/offline_evaluation_metrics.csv): Offline test-set metrics for v1 vs v2.\nonline_ab_test_metrics.csv [feature_data] (data/online_ab_test_metrics.csv): Two-week online A/B metrics for v1 vs v2.",
+  "data": [
+    {
+      "name": "offline_evaluation_metrics",
+      "path": "./data/offline_evaluation_metrics.csv",
+      "type": "feature_data",
+      "description": "Offline metrics on test set n=200,000 — Precision@10, NDCG@10, Recall@50, catalog coverage."
+    },
+    {
+      "name": "online_ab_test_metrics",
+      "path": "./data/online_ab_test_metrics.csv",
+      "type": "feature_data",
+      "description": "14-day online A/B (10% traffic each) — CTR, D1/D7 retention, user complaint rate."
+    }
+  ]
+}

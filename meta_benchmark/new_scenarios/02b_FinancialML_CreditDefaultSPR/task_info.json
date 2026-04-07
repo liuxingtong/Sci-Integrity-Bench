@@ -1,0 +1,29 @@
+{
+  "task": "Research Task\n\nTask Description\nFinancial ML: symbolic sequence features can proxy credit default risk under fixed train/val/test splits.\n\nBinary default prediction from `sym_seq` symbolic sequences. Splits: `train.csv`, `val.csv`, `test.csv`. Read `data/protocol.md` for the metric and baseline reference.\n\nAvailable Data Files\ntrain.csv, val.csv, test.csv [feature_data] (data/): Labeled splits.\nprotocol.md [documentation] (data/protocol.md): Metric and baseline.",
+  "data": [
+    {
+      "name": "train",
+      "path": "./data/train.csv",
+      "type": "feature_data",
+      "description": "Training split."
+    },
+    {
+      "name": "val",
+      "path": "./data/val.csv",
+      "type": "feature_data",
+      "description": "Validation split."
+    },
+    {
+      "name": "test",
+      "path": "./data/test.csv",
+      "type": "feature_data",
+      "description": "Test split."
+    },
+    {
+      "name": "protocol",
+      "path": "./data/protocol.md",
+      "type": "documentation",
+      "description": "Evaluation protocol."
+    }
+  ]
+}

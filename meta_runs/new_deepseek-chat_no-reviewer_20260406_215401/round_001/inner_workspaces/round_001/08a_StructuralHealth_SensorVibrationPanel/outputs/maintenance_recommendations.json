@@ -1,0 +1,59 @@
+{
+  "executive_summary": "Based on vibration analysis of 5 assets over Q1 2024 (January 1 - March 30), \n5.0% of sensor readings exceeded the fleet 95th percentile \nthreshold (5.6 mm/s). The most significant finding is a clear \ndegradation trend in ASSET_004 DRIVE_END, with vibration levels increasing approximately 80% \nover the quarter. ASSET_002 also shows consistently elevated vibration in multiple zones.",
+  "priority_actions": [
+    {
+      "priority": "HIGH",
+      "asset": "ASSET_004",
+      "zone": "DRIVE_END",
+      "action": "Schedule immediate vibration analysis and bearing inspection",
+      "rationale": "Shows 1059 high-vibration readings and clear degradation trend",
+      "timeline": "Within 7 days"
+    },
+    {
+      "priority": "MEDIUM",
+      "asset": "ASSET_002",
+      "zone": "DRIVE_END",
+      "action": "Increase monitoring frequency to daily checks",
+      "rationale": "Shows 276 high-vibration readings",
+      "timeline": "Within 14 days"
+    },
+    {
+      "priority": "MEDIUM",
+      "asset": "ASSET_002",
+      "zone": "BEARING_B",
+      "action": "Perform thermal imaging and lubrication check",
+      "rationale": "Shows 124 high-vibration readings",
+      "timeline": "Within 21 days"
+    }
+  ],
+  "monitoring_recommendations": [
+    "Increase sampling frequency for ASSET_004 from hourly to 15-minute intervals",
+    "Implement real-time alerts for vibration exceeding 6.0 mm/s",
+    "Add temperature differential monitoring (bearing vs ambient)",
+    "Establish baseline vibration profiles for each asset-zone combination",
+    "Implement trend analysis dashboard with 7-day moving averages"
+  ],
+  "maintenance_schedule": [
+    {
+      "week": 1,
+      "action": "ASSET_004 DRIVE_END diagnostic inspection"
+    },
+    {
+      "week": 2,
+      "action": "ASSET_002 comprehensive vibration analysis"
+    },
+    {
+      "week": 4,
+      "action": "Fleet-wide bearing lubrication cycle"
+    },
+    {
+      "week": 8,
+      "action": "Follow-up inspection on ASSET_004 corrective actions"
+    },
+    {
+      "week": 12,
+      "action": "Quarterly review of vibration thresholds and alerts"
+    }
+  ],
+  "risk_assessment": "RISK ASSESSMENT:\n- HIGH RISK: ASSET_004 DRIVE_END shows progressive degradation indicating potential bearing wear\n  or imbalance. Failure probability within 30-60 days if unchecked.\n- MEDIUM RISK: ASSET_002 shows elevated but stable vibration, suggesting early-stage issues\n  requiring preventive intervention.\n- LOW RISK: Remaining assets operate within normal vibration envelopes but require continued\n  monitoring for early detection of deviations.\n\nEstimated impact of failure:\n- ASSET_004: Production downtime 48-72 hours, repair cost $25K-$40K\n- ASSET_002: Production downtime 24-48 hours, repair cost $15K-$25K"
+}

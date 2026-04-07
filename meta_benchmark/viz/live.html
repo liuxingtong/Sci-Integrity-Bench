@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Scientist — Live Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e14;
+      --surface: #0d1117;
+      --surface2: #161b22;
+      --border: #21262d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-dim: #388bfd33;
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 24px rgba(0,0,0,.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff 0%, #8b949e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .live-badge .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .live-badge.idle .pulse { background: var(--text-muted); animation: none; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+    .panel-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .gauges {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 700px) { .gauges { grid-template-columns: repeat(2, 1fr); } }
+    .gauge {
+      background: var(--surface2);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      text-align: center;
+    }
+    .gauge-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .gauge-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .gauge-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 0.5rem;
+      overflow: hidden;
+    }
+    .gauge-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    .gauge-fill.warn { background: var(--warning); }
+    .gauge-fill.danger { background: var(--danger); }
+
+    .phase-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+    .phase-indicator.inner { background: rgba(63, 185, 80, 0.2); color: var(--success); }
+    .phase-indicator.review { background: rgba(210, 153, 34, 0.2); color: var(--warning); }
+    .phase-indicator.idle { background: var(--border); color: var(--text-muted); }
+
+    .event-stream {
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+    }
+    .event-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .event-item:last-child { border-bottom: none; }
+    .event-ts { color: var(--text-muted); flex-shrink: 0; }
+    .event-tool {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .event-detail { color: var(--text-muted); font-size: 0.7rem; }
+
+    .scenario-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .scenario-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 0.8rem;
+      background: var(--surface2);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+    }
+    .scenario-item.running {
+      border-left: 3px solid var(--accent);
+    }
+    .scenario-item.done .outcome {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: var(--accent-dim);
+    }
+    .scenario-item.done .outcome.high { background: rgba(63,185,80,0.3); color: var(--success); }
+    .scenario-item.done .outcome.risk { background: rgba(210,153,34,0.3); color: var(--warning); }
+    .scenario-item.done .outcome.misconduct { background: rgba(248,81,73,0.3); color: var(--danger); }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    .portfolio-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0.6rem;
+      background: var(--surface2);
+      border-radius: 6px;
+      font-size: 0.75rem;
+    }
+    .portfolio-item .label { color: var(--text-muted); }
+    .portfolio-item .val { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+
+    .review-box {
+      padding: 1rem;
+      background: var(--surface2);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+    }
+    .review-decision {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .review-decision.confirmed { color: var(--success); }
+    .review-decision.continue { color: var(--warning); }
+    .review-mode { font-size: 0.75rem; color: var(--text-muted); }
+
+    .empty-state {
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>AI Scientist Long-Horizon — Live Monitor</h1>
+      <div class="live-badge" id="live-badge">
+        <span class="pulse"></span>
+        <span id="live-status">Connecting…</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-title">Policy State</div>
+        <div class="gauges" id="gauges">
+          <div class="gauge">
+            <div class="gauge-label">Resource Budget</div>
+            <div class="gauge-value" id="g-resource">—</div>
+            <div class="gauge-bar"><div class="gauge-fill" id="g-resource-fill" style="width:0%"></div></div>
+          </div>
+          <div class="gauge">
+            <div class="gauge-label">Submission Budget</div>
+            <div class="gauge-value" id="g-submission">—</div>
+            <div class="gauge-bar"><div class="gauge-fill" id="g-submission-fill" style="width:0%"></div></div>
+          </div>
+          <div class="gauge">
+            <div class="gauge-label">Reputation</div>
+            <div class="gauge-value" id="g-reputation">—</div>
+            <div class="gauge-bar"><div class="gauge-fill" id="g-reputation-fill" style="width:0%"></div></div>
+          </div>
+          <div class="gauge">
+            <div class="gauge-label">Audit Prob</div>
+            <div class="gauge-value" id="g-audit">—</div>
+            <div class="gauge-bar"><div class="gauge-fill" id="g-audit-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="panel-title" style="margin-top:1rem">Portfolio</div>
+        <div class="portfolio-grid" id="portfolio"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Current Phase</div>
+        <div id="phase-indicator" class="phase-indicator idle">—</div>
+        <div class="panel-title" style="margin-top:1rem">Outer AI</div>
+        <div id="outer-info" style="font-size:0.85rem;color:var(--text-muted)">
+          Round — · Step — · Last tool: —
+        </div>
+        <div class="panel-title" style="margin-top:1rem">Review</div>
+        <div id="review-box" class="review-box">
+          <div class="empty-state">No review yet</div>
+        </div>
+      </div>
+
+      <div class="panel" style="grid-column:1/-1">
+        <div class="panel-title">Outer AI Activity</div>
+        <div class="event-stream" id="event-stream">
+          <div class="empty-state">No events yet</div>
+        </div>
+      </div>
+
+      <div class="panel" style="grid-column:1/-1">
+        <div class="panel-title">Inner Scenarios</div>
+        <div class="scenario-list" id="scenario-list">
+          <div class="empty-state">No inner scenarios this round</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const POLL_MS = 800;
+    let lastTs = '';
+
+    function fmt(n) {
+      if (n == null || n === undefined) return '—';
+      if (typeof n === 'number') {
+        if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+        if (n >= 1e3) return (n / 1e3).toFixed(0) + 'k';
+        return String(n);
+      }
+      return String(n);
+    }
+
+    function render(data) {
+      const badge = document.getElementById('live-badge');
+      const phaseEl = document.getElementById('phase-indicator');
+      if (data.error) {
+        badge.className = 'live-badge idle';
+        document.getElementById('live-status').textContent = 'Error';
+        return;
+      }
+      if (data.phase === 'idle' && !data.run_id) {
+        badge.className = 'live-badge idle';
+        document.getElementById('live-status').textContent = 'No active run';
+        phaseEl.textContent = 'Idle';
+        phaseEl.className = 'phase-indicator idle';
+        return;
+      }
+
+      badge.className = 'live-badge';
+      document.getElementById('live-status').textContent = data.run_id ? `Run: ${data.run_id}` : 'Live';
+
+      phaseEl.textContent = data.phase === 'inner' ? 'Inner AI' : data.phase === 'review' ? 'Review' : data.phase === 'outer' ? 'Outer AI' : 'Idle';
+      phaseEl.className = 'phase-indicator ' + (data.phase || 'idle');
+
+      const ps = data.policy_state || {};
+      const res = ps.resource_budget;
+      const sub = ps.submission_budget;
+      const rep = ps.reputation_score;
+      const aud = ps.audit_probability;
+
+      document.getElementById('g-resource').textContent = fmt(res);
+      document.getElementById('g-submission').textContent = fmt(sub);
+      document.getElementById('g-reputation').textContent = rep != null ? rep.toFixed(1) : '—';
+      document.getElementById('g-audit').textContent = aud != null ? (aud * 100).toFixed(1) + '%' : '—';
+
+      document.getElementById('g-resource-fill').style.width = res != null ? Math.min(100, (res / 2e6) * 100) + '%' : '0%';
+      document.getElementById('g-resource-fill').className = 'gauge-fill' + (res < 50e4 ? ' danger' : res < 1e6 ? ' warn' : '');
+      document.getElementById('g-submission-fill').style.width = sub != null ? Math.min(100, (sub / 120) * 100) + '%' : '0%';
+      document.getElementById('g-reputation-fill').style.width = rep != null ? rep + '%' : '0%';
+      document.getElementById('g-audit-fill').style.width = aud != null ? aud * 100 + '%' : '0%';
+      document.getElementById('g-audit-fill').className = 'gauge-fill' + (aud > 0.2 ? ' danger' : aud > 0.1 ? ' warn' : '');
+
+      const port = ps.portfolio_stats || {};
+      const portEl = document.getElementById('portfolio');
+      portEl.innerHTML = Object.entries(port).map(([k, v]) =>
+        `<div class="portfolio-item"><span class="label">${k.replace(/_/g,' ')}</span><span class="val">${v}</span></div>`
+      ).join('') || '<div class="empty-state">—</div>';
+
+      const outer = data.outer || {};
+      document.getElementById('outer-info').textContent =
+        `Round ${data.round ?? '—'} · Step ${outer.step ?? '—'} · Last tool: ${outer.last_tool ?? '—'}`;
+
+      const events = (outer.recent_events || []).slice().reverse();
+      const streamEl = document.getElementById('event-stream');
+      if (events.length) {
+        streamEl.innerHTML = events.map(e => {
+          const ts = (e.ts || '').slice(11, 19);
+          let detail = '';
+          if (e.path) detail = e.path;
+          if (e.scenarios && e.scenarios.length) detail = e.scenarios.join(', ');
+          return `<div class="event-item"><span class="event-ts">${ts}</span><span class="event-tool">${e.tool || '?'}</span>${detail ? `<span class="event-detail">${detail}</span>` : ''}</div>`;
+        }).join('');
+      } else {
+        streamEl.innerHTML = '<div class="empty-state">No events yet</div>';
+      }
+
+      const inner = data.inner || {};
+      const batch = inner.batch || [];
+      const completed = inner.completed || [];
+      const inProg = inner.in_progress;
+      const listEl = document.getElementById('scenario-list');
+      if (batch.length) {
+        listEl.innerHTML = batch.map((s, i) => {
+          const done = completed.find(c => c.id === s.id);
+          const running = !done && s.id === inProg;
+          let cls = 'scenario-item';
+          if (done) cls += ' done';
+          if (running) cls += ' running';
+          let outcomeCls = 'outcome';
+          if (done?.outcome) {
+            if (done.outcome.includes('high') || done.outcome.includes('standard') || done.outcome.includes('negative')) outcomeCls += ' high';
+            else if (done.outcome.includes('borderline') || done.outcome.includes('risk')) outcomeCls += ' risk';
+            else if (done.outcome.includes('misconduct')) outcomeCls += ' misconduct';
+          }
+          return `<div class="${cls}"><span>${s.id || '?'} ${(s.title || '').slice(0,30)}</span>${done ? `<span class="${outcomeCls}">${done.outcome || done.status}</span>` : running ? '<span style="color:var(--accent)">Running…</span>' : '<span style="color:var(--text-muted)">Pending</span>'}</div>`;
+        }).join('');
+      } else {
+        listEl.innerHTML = '<div class="empty-state">No inner scenarios this round</div>';
+      }
+
+      const rev = data.review || {};
+      const revEl = document.getElementById('review-box');
+      if (rev.decision) {
+        revEl.innerHTML = `<div class="review-decision ${rev.decision === 'fabrication_confirmed' ? 'confirmed' : 'continue'}">${rev.decision.replace(/_/g, ' ')}</div><div class="review-mode">${rev.oversight_mode || ''}</div>${rev.reason ? `<div style="margin-top:0.5rem;font-size:0.8rem">${rev.reason.slice(0,100)}</div>` : ''}`;
+      } else {
+        revEl.innerHTML = '<div class="empty-state">No review yet</div>';
+      }
+    }
+
+    async function poll() {
+      try {
+        const r = await fetch('/api/live');
+        const data = await r.json();
+        if (data.timestamp !== lastTs) {
+          lastTs = data.timestamp;
+          render(data);
+        }
+      } catch (e) {
+        document.getElementById('live-badge').className = 'live-badge idle';
+        document.getElementById('live-status').textContent = 'Offline';
+      }
+    }
+
+    poll();
+    setInterval(poll, POLL_MS);
+  </script>
+</body>
+</html>

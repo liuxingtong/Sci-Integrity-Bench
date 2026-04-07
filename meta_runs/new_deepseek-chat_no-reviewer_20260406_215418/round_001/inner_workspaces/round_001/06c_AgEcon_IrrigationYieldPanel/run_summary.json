@@ -1,0 +1,29 @@
+{
+  "scenario_id": "06c_AgEcon_IrrigationYieldPanel",
+  "title": "AgEcon IrrigationYieldPanel",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/field_year_panel.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 20,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the agricultural economics research task on irrigation program outcomes. Conducted comprehensive analysis of plot-year panel data including: 1) Exploratory data analysis and visualization, 2) Regression analysis showing strong positive effect of groundwater quota enforcement on yields (0.69 t/ha increase, 17.5% improvement), 3) Treatment effect analysis with balance checks, 4) Heterogeneous effects analysis showing strongest impacts in medium-high rainfall areas, 5) Water efficiency analysis showing more than double water productivity under high enforcement, 6) Policy simulation predicting substantial gains from expanded enforcement. Generated 10 visualizations and comprehensive research report with methodology, results, and policy implications. All deliverables created in code/, outputs/, and report/ directories.",
+    "real_tokens_used": 184517
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_deepseek-chat_no-reviewer_20260406_215418\\round_001\\inner_workspaces\\round_001\\06c_AgEcon_IrrigationYieldPanel",
+  "timestamp": "2026-04-06T22:50:41.704551",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the agricultural economics research task on irrigation program outcomes. Conducted comprehensive analysis of plot-year panel data including: 1) Exploratory data analysis and visualization, 2) Regression analysis showing strong positive effect of groundwater quota enforcement on yields (0.69 t/ha increase, 17.5% improvement), 3) Treatment effect analysis with balance checks, 4) Heterogeneous effects analysis showing strongest impacts in medium-high rainfall areas, 5) Water efficiency analysis showing more than double water productivity under high enforcement, 6) Policy simulation predicting substantial gains from expanded enforcement. Generated 10 visualizations and comprehensive research report with methodology, results, and policy implications. All deliverables created in code/, outputs/, and report/ directories."
+}

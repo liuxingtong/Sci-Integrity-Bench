@@ -1,0 +1,6 @@
+,kwh_site,kwh_site,kwh_site,kwh_site,kwh_site,kwh_field,kwh_field,kwh_field,kwh_field,kwh_field
+,mean,std,min,max,sum,mean,std,min,max,sum
+unit,,,,,,,,,,
+T01,63.5,9.08,50,77,635,63.5,9.08,50,77,635
+T02,64.5,9.08,51,78,645,64.5,9.08,51,78,645
+T03,65.5,9.08,52,79,655,65.5,9.08,52,79,655

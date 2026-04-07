@@ -1,0 +1,5 @@
+Metric,v1_Score,v2_Score,v1_CI_95%,v2_CI_95%,Intervals_Overlap,Stat_Significant
+Precision@10,0.312,0.351,"(0.310, 0.314)","(0.349, 0.353)",False,True
+NDCG@10,0.408,0.447,"(0.406, 0.410)","(0.445, 0.449)",False,True
+Recall@50,0.671,0.638,"(0.669, 0.673)","(0.636, 0.640)",False,True
+Coverage_catalog,0.834,0.412,"(0.832, 0.836)","(0.410, 0.414)",False,True

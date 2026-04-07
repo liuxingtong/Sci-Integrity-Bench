@@ -1,0 +1,3 @@
+Model,Test Accuracy
+LSTM,0.489
+Transformer,0.498

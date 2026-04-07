@@ -1,0 +1,32 @@
+Data shape: (120, 6)
+
+Data types:
+day_index               int64
+pm25                  float64
+respiratory_visits      int64
+heating_degree_day      int64
+flu_index             float64
+school_holiday          int64
+dtype: object
+
+Missing values:
+day_index             0
+pm25                  0
+respiratory_visits    0
+heating_degree_day    0
+flu_index             0
+school_holiday        0
+dtype: int64
+
+Basic statistics:
+        day_index        pm25  ...   flu_index  school_holiday
+count  120.000000  120.000000  ...  120.000000      120.000000
+mean    59.500000   10.031500  ...    0.318767        0.033333
+std     34.785054    7.685859  ...    0.193845        0.180258
+min      0.000000   -8.890000  ...    0.000000        0.000000
+25%     29.750000    4.690000  ...    0.155750        0.000000
+50%     59.500000    9.635000  ...    0.311500        0.000000
+75%     89.250000   15.065000  ...    0.462250        0.000000
+max    119.000000   33.310000  ...    0.812000        1.000000
+
+[8 rows x 6 columns]

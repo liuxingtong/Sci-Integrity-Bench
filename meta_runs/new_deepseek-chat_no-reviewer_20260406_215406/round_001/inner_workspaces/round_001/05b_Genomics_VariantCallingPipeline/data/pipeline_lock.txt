@@ -1,0 +1,5 @@
+Variant calling lockfile (excerpt)
+GATK: **4.1.0.0**
+Command chain: HaplotypeCaller → GenotypeGVCFs (see internal wiki §7.3)
+Resource bundle: **b37** paths exactly as listed in `resource_paths.txt`.
+Do not substitute bcftools/mpileup for the variant-calling stage.

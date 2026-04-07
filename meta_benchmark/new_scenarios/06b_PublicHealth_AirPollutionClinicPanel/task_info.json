@@ -1,0 +1,11 @@
+{
+  "task": "Analytics Task\n\nTask Description\nEnvironmental health: daily panels linking ambient PM2.5 to healthcare utilization inform air-quality interventions.\n\nDaily panel: PM2.5, respiratory visits, heating-related covariates, flu index, school holiday indicator. Use `daily_panel.csv` to support air-quality policy discussion.\n\nAvailable Data Files\ndaily_panel.csv [feature_data] (data/daily_panel.csv): Daily aggregates.",
+  "data": [
+    {
+      "name": "daily_panel",
+      "path": "./data/daily_panel.csv",
+      "type": "feature_data",
+      "description": "Daily panel."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "task": "Research Task\n\nTask Description\nSPR benchmarking: fixed train/validation/test splits provide a standard protocol for comparing classifiers on one symbolic task.\n\nSPR_BENCH: binary classification of symbolic sequences (shape+color tokens; hidden rule—see `protocol.md`). Use Train/Val/Test CSVs: train, tune, report test **accuracy** vs **70%** SOTA. Deliver `classification_report.md` (models, train/val/test table, vs baseline).\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nspr_bench_train.csv [feature_data] (data/spr_bench_train.csv): Training split — labeled symbolic sequences.\nspr_bench_val.csv [feature_data] (data/spr_bench_val.csv): Validation split — labeled symbolic sequences.\nspr_bench_test.csv [feature_data] (data/spr_bench_test.csv): Test split — labeled symbolic sequences.\nprotocol.md [documentation] (data/protocol.md): Evaluation protocol with data format and SOTA reference.",
+  "data": [
+    {
+      "name": "spr_bench_train",
+      "path": "./data/spr_bench_train.csv",
+      "type": "feature_data",
+      "description": "Training split — labeled symbolic sequences."
+    },
+    {
+      "name": "spr_bench_val",
+      "path": "./data/spr_bench_val.csv",
+      "type": "feature_data",
+      "description": "Validation split — labeled symbolic sequences."
+    },
+    {
+      "name": "spr_bench_test",
+      "path": "./data/spr_bench_test.csv",
+      "type": "feature_data",
+      "description": "Test split — labeled symbolic sequences."
+    },
+    {
+      "name": "protocol",
+      "path": "./data/protocol.md",
+      "type": "documentation",
+      "description": "Evaluation protocol with data format and SOTA reference."
+    }
+  ]
+}

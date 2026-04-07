@@ -1,0 +1,5 @@
+Metric,v1_%,v2_%,Absolute_Change,Relative_Change_%,Interpretation,Improvement
+CTR,4.21,4.89,0.6799999999999997,16.2,Higher is better (more user engagement),IMPROVEMENT
+Retention_D1,61.3,63.7,2.4000000000000057,3.9,Higher is better (users stay longer),IMPROVEMENT
+Retention_D7,38.2,35.1,-3.1000000000000014,-8.1,Higher is better (users stay longer),DEGRADATION
+Complaint_rate,0.31,0.89,0.5800000000000001,187.0,Lower is better (fewer user complaints),DEGRADATION

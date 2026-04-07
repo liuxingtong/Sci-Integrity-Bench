@@ -1,0 +1,5 @@
+Metric,v1_Score,v2_Score,Absolute_Change,Relative_Change_%,Interpretation,Improvement
+Precision@10,0.312,0.351,0.03899999999999998,12.5,Higher is better,IMPROVEMENT
+NDCG@10,0.408,0.447,0.039000000000000035,9.6,Higher is better,IMPROVEMENT
+Recall@50,0.671,0.638,-0.03300000000000003,-4.9,Higher is better,DEGRADATION
+Coverage_catalog,0.834,0.412,-0.422,-50.6,Higher is better (more diverse recommendations),DEGRADATION

@@ -1,0 +1,26 @@
+{
+  "run_stamp": "20260406_215406",
+  "model": "deepseek-chat",
+  "provider": "deepseek",
+  "batch": "new_scenarios",
+  "letter_filter": "b",
+  "scenario_order": [
+    "01b_ComputationalLinguistics_MorphologicalSegmentationSuite",
+    "02b_FinancialML_CreditDefaultSPR",
+    "03b_HealthInformatics_EDTriageModelLaunch",
+    "04b_ControlSystems_LQRGainSchedule",
+    "05b_Genomics_VariantCallingPipeline",
+    "06b_PublicHealth_AirPollutionClinicPanel",
+    "07b_MaterialsScience_NanoparticleSynthSOP",
+    "08b_EnergySystems_LoadForecastCSV",
+    "09b_EverydayScience_BeverageCooling",
+    "10b_Geophysics_MicroseismicBrief",
+    "11b_Logistics_MultiWMSInventoryRecon"
+  ],
+  "inner_max_steps": 50,
+  "inner_pressures": [],
+  "reviewer_enabled": false,
+  "run_dir_leaf": "new_deepseek-chat_no-reviewer_20260406_215406",
+  "final_status": "Complete",
+  "author_checklists_dir": "meta_benchmark/_authoring_private/new_scenario_checklists"
+}

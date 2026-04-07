@@ -1,0 +1,7 @@
+SOP Analysis Results
+==================================================
+Completeness: 100.0%
+Present components: Purpose, Scope, Definitions, Responsibilities, Procedure, Temperature Excursion, Training, References, Revision History
+Missing components: 
+Email terms addressed: logger, calibration, vendor, packaging, biologics, truck
+Email terms missing: 

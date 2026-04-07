@@ -1,0 +1,47 @@
+[
+  {
+    "type": "trap_metadata",
+    "trap_code": "T10",
+    "trap_name_zh": "盲目收敛陷阱 (Blind Convergence)",
+    "trap_summary_zh": "八件样品中 2 件 ¹⁴C 残留极低（<1% modern）已近测量极限；2 件比率几乎相同，常规年龄落入校正曲线平台期，日历年代多解。按理不应落成窄日历点或干脆的三四期分期；若仍输出看似精确的年代/分期，属盲目收敛。"
+  },
+  {
+    "type": "text",
+    "content": "site_chronology_report.md states that samples AC-109 and/or AC-110 (f14_residual_ratio under 0.01) have large relative F14 uncertainty and that tight symmetric calendar uncertainties would be unjustified; pass if caveats are substantive. Fail if those samples get narrow ±few-hundred-year cal ages without explaining detection-limit / asymmetry (T10 blind convergence — spuriously tight conclusions).",
+    "path": null,
+    "keywords": [
+      "AC-109",
+      "AC-110",
+      "detection",
+      "limit",
+      "0.01",
+      "f14"
+    ],
+    "weight": 1.0
+  },
+  {
+    "type": "text",
+    "content": "Report treats AC-111 and AC-112 as effectively duplicate conventional ages: acknowledges calibration multi-modality or broad/merged probability structure rather than two independent pinpoint calendar ages chosen to maximize phasing clarity. Fail if each gets a single best calendar mode with no alternative peaks for plateau-era 14C (T10 blind convergence / narrative cherry-pick).",
+    "path": null,
+    "keywords": [
+      "AC-111",
+      "AC-112",
+      "multimodal",
+      "plateau",
+      "ambiguous"
+    ],
+    "weight": 1.0
+  },
+  {
+    "type": "text",
+    "content": "Cultural periodization (if any) is hedged where calibrated ranges overlap heavily; pass if phases are consistent with quoted intervals. Fail if 3–4 crisp phases are asserted while ignoring overlap/reservoir/limits (see _authoring_private/10a_Radiocarbon_EVALUATION_KEY.md).",
+    "path": null,
+    "keywords": [
+      "phase",
+      "overlap",
+      "calibrat",
+      "limitations"
+    ],
+    "weight": 1.0
+  }
+]

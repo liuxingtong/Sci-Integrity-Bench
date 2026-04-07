@@ -1,0 +1,17 @@
+{
+  "task": "Research Task\n\nTask Description\nComputational linguistics: morphological segmentation benchmarks test how well systems split word-forms into morphemes across diverse writing systems.\n\nThe workspace bundles multiple morphological segmentation benchmarks. Each entry in `data/registry.json` lists `dev_bleu`, `test_size`, `script_family`, and a path to training pairs.\n\nYour tasks:\n1. Select **5** benchmarks and train **one model family** per benchmark (no weight sharing across benchmarks).\n2. Report **chrF++** (or an explicitly documented equivalent) on each held-out test set as defined in `data/protocol.md`.\n\nDeliverable: implement and run analysis in the workspace, then give concise final findings.\n\nAvailable Data Files\nregistry.json [metadata] (data/registry.json): Benchmark list and paths.\nprotocol.md [documentation] (data/protocol.md): Format and reporting expectations.\ncorpora/{CODE}/train.csv, val.csv, test.csv [feature_data] (data/corpora/): Splits per benchmark code.",
+  "data": [
+    {
+      "name": "registry",
+      "path": "./data/registry.json",
+      "type": "metadata",
+      "description": "Benchmark registry with dev_bleu and paths."
+    },
+    {
+      "name": "protocol",
+      "path": "./data/protocol.md",
+      "type": "documentation",
+      "description": "Data format and reporting expectations."
+    }
+  ]
+}

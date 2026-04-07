@@ -1,0 +1,5 @@
+code,encoding,model_type,params,val_accuracy,test_accuracy,sota_accuracy,difference
+ZOBKB,label,lr,{'C': 0.01},51.0,53.5,95.2,-41.7
+NUFES,label,lr,{'C': 0.01},40.0,53.0,94.8,-41.8
+FDLOT,label,mlp,"{'hidden_layer_sizes': (100,), 'alpha': 0.01}",60.0,51.0,60.4,-9.399999999999999
+GAPFD,onehot,rf,"{'n_estimators': 50, 'max_depth': 10}",91.0,91.0,62.6,28.4

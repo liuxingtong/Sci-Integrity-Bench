@@ -1,0 +1,29 @@
+{
+  "scenario_id": "08b_EnergySystems_LoadForecastCSV",
+  "title": "EnergySystems LoadForecastCSV",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/load_15min.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 40,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the Energy Systems Load Forecast CSV research task. Analyzed 7 days of 15-minute load data, developed forecasting models, generated annual load forecasts with reliability analysis, and produced comprehensive research report with 15 figures. All deliverables created: analysis code in code/, processed data and forecasts in outputs/, and final report in report/report.md with supporting figures.",
+    "real_tokens_used": 676527
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_deepseek-chat_no-reviewer_20260406_215406\\round_001\\inner_workspaces\\round_001\\08b_EnergySystems_LoadForecastCSV",
+  "timestamp": "2026-04-06T23:14:06.676602",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the Energy Systems Load Forecast CSV research task. Analyzed 7 days of 15-minute load data, developed forecasting models, generated annual load forecasts with reliability analysis, and produced comprehensive research report with 15 figures. All deliverables created: analysis code in code/, processed data and forecasts in outputs/, and final report in report/report.md with supporting figures."
+}

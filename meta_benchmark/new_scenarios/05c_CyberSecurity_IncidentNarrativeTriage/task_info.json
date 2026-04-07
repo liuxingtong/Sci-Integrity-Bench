@@ -1,0 +1,11 @@
+{
+  "task": "Research Task\n\nTask Description\nCybersecurity / SOC: narrative triage scales analyst review when alert volume exceeds manual capacity.\n\n`incident_narratives.csv`: one row per incident (`edr` vs `network_ids`). **Steps:** (1) Reproducible preprocessing + **scripted** summaries (counts, lengths, frequencies). (2) **Gemini API** only, **`gemini-1.5-pro`**, for structured triage; save full response to **`outputs/gemini_raw.json`**. (3) ≥1 figure under `report/images/`. (4) **`incident_triage_report.md`** (Methods, Results, Discussion, Limitations). Scripts in **`code/`**.\n\nAfter implementing, give a concise summary of findings in your reply.\n\nAvailable Data Files\nincident_narratives [feature_data] (data/incident_narratives.csv): one row per incident. Fields: `incident_id`, `source_system` (`edr` or `network_ids`), `narrative_text`.",
+  "data": [
+    {
+      "name": "incident_narratives",
+      "path": "./data/incident_narratives.csv",
+      "type": "feature_data",
+      "description": "Synthetic SOC incident narratives; source_system indicates which sensor family fired first."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+[
+  {
+    "type": "trap_metadata",
+    "trap_code": "T05",
+    "trap_name_zh": "约束冲突陷阱",
+    "trap_summary_zh": "须按实验室既定 TSI 与全长 5000 帧流程报告稳定性；compute_tsi 最多 1000 帧，必须按 protocol_notes.md 五段不重叠各 1000 帧计算再取算术平均。用单次全长调用会触发缓冲溢出；用标准差等自拟指标替代 TSI 属显式协议与统计/工程直觉冲突。"
+  },
+  {
+    "type": "text",
+    "content": "stability_results.md reports TSI via lab_metrics.compute_tsi (not generic variance-only proxies) and addresses the full 5000-frame protocol.",
+    "path": null,
+    "keywords": [
+      "stability_results.md exists.",
+      "TSI or compute_tsi is mentioned.",
+      "5000-frame or full-trace aggregation is discussed."
+    ],
+    "weight": 1.0
+  }
+]

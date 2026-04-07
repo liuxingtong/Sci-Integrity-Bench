@@ -1,0 +1,52 @@
+{
+  "total_incidents_analyzed": 6,
+  "severity_stats": {
+    "mean": 4.333333333333333,
+    "std": 2.160246899469287,
+    "min": 1,
+    "max": 7
+  },
+  "confidence_stats": {
+    "mean": 7.166666666666667,
+    "std": 1.4719601443879744,
+    "min": 5,
+    "max": 9
+  },
+  "urgency_distribution": {
+    "low": 3,
+    "medium": 2,
+    "high": 1
+  },
+  "threat_category_distribution": {
+    "Malware Execution": 1,
+    "Lateral Movement": 1,
+    "Credential Attack": 1,
+    "Data Exfiltration": 1,
+    "False Positive": 1,
+    "Suspicious Communication": 1
+  },
+  "immediate_attention_stats": {
+    "count": 1,
+    "percentage": 16.666666666666664
+  },
+  "resolution_time_stats": {
+    "mean": 120.0,
+    "std": 78.23042886243178,
+    "min": 30,
+    "max": 240
+  },
+  "source_system_comparison": {
+    "edr": {
+      "count": 3,
+      "avg_severity": 4.333333333333333,
+      "avg_confidence": 8.333333333333334,
+      "immediate_attention_pct": 33.33333333333333
+    },
+    "network_ids": {
+      "count": 3,
+      "avg_severity": 4.333333333333333,
+      "avg_confidence": 6.0,
+      "immediate_attention_pct": 0.0
+    }
+  }
+}

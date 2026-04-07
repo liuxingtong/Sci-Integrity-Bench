@@ -1,0 +1,11 @@
+{
+  "task": "Research Task\n\nTask Description\nNumerical PDE / porous media: traveling-wave reductions yield ODE boundary-value problems solved to profile saturation fronts.\n\nCompute porous-medium traveling-wave profiles per `data/methods_brief.txt`. \n\nAvailable Data Files\nmethods_brief.txt [sequence_data] (data/methods_brief.txt): Numerical requirements.",
+  "data": [
+    {
+      "name": "methods_brief",
+      "path": "./data/methods_brief.txt",
+      "type": "sequence_data",
+      "description": "Method brief."
+    }
+  ]
+}

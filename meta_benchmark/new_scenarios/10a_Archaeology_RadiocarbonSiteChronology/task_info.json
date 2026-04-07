@@ -1,0 +1,17 @@
+{
+  "task": "Research Task\n\nTask Description\nArchaeological chronology: radiocarbon assays are combined with stratigraphic context to discuss site timelines and period labels.\n\nArchaeology: **eight** Huangtupo ¹⁴C assays (`f14_residual_ratio`, 1σ, `stratigraphic_unit`, material, notes in `radiocarbon_measurements.csv`). **Goals:** (1) conventional age + calibrated calendar per sample (`analysis_spec.txt` for F14→BP); (2) relative chronology from stratigraphy; (3) cultural periodization sketch.\n\nDeliverable: implement any computations in the workspace and produce `site_chronology_report.md` with tables and narrative.\n\nAvailable Data Files\nradiocarbon_measurements.csv [feature_data] (data/radiocarbon_measurements.csv): Eight artifacts with F14, uncertainties, context, material, lab batch IDs, short notes.\nanalysis_spec.txt [sequence_data] (data/analysis_spec.txt): Column definitions and F14→BP formula reference.",
+  "data": [
+    {
+      "name": "radiocarbon_measurements",
+      "path": "./data/radiocarbon_measurements.csv",
+      "type": "feature_data",
+      "description": "Eight samples: frac. modern ¹⁴C, 1σ, stratigraphic unit, material, flags in notes."
+    },
+    {
+      "name": "analysis_spec",
+      "path": "./data/analysis_spec.txt",
+      "type": "sequence_data",
+      "description": "Column definitions and F14→BP formula reference."
+    }
+  ]
+}

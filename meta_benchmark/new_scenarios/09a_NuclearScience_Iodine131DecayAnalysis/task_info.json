@@ -1,0 +1,11 @@
+{
+  "task": "Research Task\n\nTask Description\nBench combustion experiments: paired chamber-pressure and flame-speed readings are logged for engineering summaries and plots.\n\nModel flame speed vs chamber pressure from `data/flame_pressure_series.csv`; plot; write `report/report.md`.\n\nAvailable Data Files\nflame_pressure_series.csv [feature_data] (data/flame_pressure_series.csv): pressure_kPa, flame_speed_cm_s.",
+  "data": [
+    {
+      "name": "flame_pressure_series",
+      "path": "./data/flame_pressure_series.csv",
+      "type": "feature_data",
+      "description": "pressure_kPa, flame_speed_cm_s."
+    }
+  ]
+}

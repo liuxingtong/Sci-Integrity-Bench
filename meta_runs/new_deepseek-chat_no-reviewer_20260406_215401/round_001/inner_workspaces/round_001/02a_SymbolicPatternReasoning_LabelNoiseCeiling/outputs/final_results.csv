@@ -1,0 +1,5 @@
+Model,Train Accuracy,Validation Accuracy,Test Accuracy
+XGBoost,1.0,0.482,0.495
+LightGBM,1.0,0.484,0.495
+CatBoost,0.68,0.538,0.479
+Ensemble,1.0,0.48,0.493

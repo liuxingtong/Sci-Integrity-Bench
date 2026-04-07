@@ -1,0 +1,6 @@
+,yield_t_ha,yield_t_ha,yield_t_ha,irrigation_m3,irrigation_m3,rainfall_mm,rainfall_mm
+,mean,std,count,mean,std,mean,std
+enforcement_level,,,,,,,
+Low,3.878,0.636,24,233.675,116.383,452.875,222.418
+Medium,4.295,0.604,31,209.081,120.749,373.655,222.179
+High,4.681,0.525,25,199.612,127.569,368.412,226.325

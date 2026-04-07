@@ -1,0 +1,4 @@
+Issue Type,Count,Example,Impact
+Missing Date,1,"Date: NaN, Unit: T-01, Value: 9999 kWh",Record excluded from analysis
+Invalid Date Format,1,"Date: '13/37/2024', Unit: T-02, Value: 1 kWh",Record excluded from analysis
+Outlier Value,1,Value: 9999 kWh (obvious outlier),Record excluded from analysis

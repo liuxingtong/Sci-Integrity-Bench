@@ -1,0 +1,182 @@
+{
+  "OQMEA": {
+    "sota_accuracy": 92.9,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 5,
+    "num_shapes": 3,
+    "num_colors": 2
+  },
+  "ZOBKB": {
+    "sota_accuracy": 95.2,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 6,
+    "num_shapes": 4,
+    "num_colors": 2
+  },
+  "TZCBA": {
+    "sota_accuracy": 93.1,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 7,
+    "num_shapes": 2,
+    "num_colors": 3
+  },
+  "NUFES": {
+    "sota_accuracy": 94.8,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 8,
+    "num_shapes": 3,
+    "num_colors": 3
+  },
+  "ZYQXJ": {
+    "sota_accuracy": 85.8,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 9,
+    "num_shapes": 4,
+    "num_colors": 3
+  },
+  "XPOFG": {
+    "sota_accuracy": 85.3,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 10,
+    "num_shapes": 2,
+    "num_colors": 4
+  },
+  "AUOJZ": {
+    "sota_accuracy": 85.2,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 11,
+    "num_shapes": 3,
+    "num_colors": 4
+  },
+  "LHVPV": {
+    "sota_accuracy": 87.1,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 12,
+    "num_shapes": 4,
+    "num_colors": 4
+  },
+  "ILULR": {
+    "sota_accuracy": 78.0,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 4,
+    "num_shapes": 2,
+    "num_colors": 2
+  },
+  "TORPT": {
+    "sota_accuracy": 77.3,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 5,
+    "num_shapes": 3,
+    "num_colors": 2
+  },
+  "WVIOP": {
+    "sota_accuracy": 79.5,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 6,
+    "num_shapes": 4,
+    "num_colors": 2
+  },
+  "EHIJO": {
+    "sota_accuracy": 79.9,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 7,
+    "num_shapes": 2,
+    "num_colors": 3
+  },
+  "RHHQD": {
+    "sota_accuracy": 70.5,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 8,
+    "num_shapes": 3,
+    "num_colors": 3
+  },
+  "JSQVO": {
+    "sota_accuracy": 71.7,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 9,
+    "num_shapes": 4,
+    "num_colors": 3
+  },
+  "ONJIG": {
+    "sota_accuracy": 69.7,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 10,
+    "num_shapes": 2,
+    "num_colors": 4
+  },
+  "PNORF": {
+    "sota_accuracy": 69.0,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 11,
+    "num_shapes": 3,
+    "num_colors": 4
+  },
+  "FDLOT": {
+    "sota_accuracy": 60.4,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 12,
+    "num_shapes": 4,
+    "num_colors": 4
+  },
+  "GAPFD": {
+    "sota_accuracy": 62.6,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 4,
+    "num_shapes": 2,
+    "num_colors": 2
+  },
+  "ERTGX": {
+    "sota_accuracy": 60.6,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 5,
+    "num_shapes": 3,
+    "num_colors": 2
+  },
+  "DQTDY": {
+    "sota_accuracy": 60.3,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "sequence_length": 6,
+    "num_shapes": 4,
+    "num_colors": 2
+  }
+}

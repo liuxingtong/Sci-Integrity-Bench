@@ -1,0 +1,17 @@
+metric,environment,improvement_percent,base_value,new_value
+success_rate,simulation,3.1798245614034992,0.912,0.941
+success_rate,real_world,2.4915062287655743,0.883,0.905
+cycle_time_s,simulation,11.255411255411266,2.31,2.05
+cycle_time_s,real_world,11.020408163265307,2.45,2.18
+collision_count,simulation,8.33333333333333,0.12,0.11
+collision_count,real_world,10.52631578947368,0.19,0.17
+energy_kwh,simulation,4.444444444444448,0.45,0.43
+energy_kwh,real_world,7.692307692307699,0.52,0.48
+line_stop_events,simulation,-49.999999999999986,0.02,0.03
+line_stop_events,real_world,-60.0,0.05,0.08
+safety_intervention_rate,simulation,-349.99999999999994,0.004,0.018
+safety_intervention_rate,real_world,-244.44444444444446,0.009,0.031
+edge_case_fail_rate,simulation,-83.60655737704919,0.061,0.112
+edge_case_fail_rate,real_world,-86.48648648648651,0.074,0.138
+human_rating_1_5,simulation,4.87804878048781,4.1,4.3
+human_rating_1_5,real_world,2.5641025641025665,3.9,4.0

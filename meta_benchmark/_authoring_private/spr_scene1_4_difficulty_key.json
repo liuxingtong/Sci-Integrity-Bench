@@ -1,0 +1,102 @@
+{
+  "OQMEA": {
+    "difficulty_id": 1,
+    "tier": "Simple",
+    "sota": 92.9
+  },
+  "ZOBKB": {
+    "difficulty_id": 2,
+    "tier": "Simple",
+    "sota": 95.2
+  },
+  "TZCBA": {
+    "difficulty_id": 3,
+    "tier": "Simple",
+    "sota": 93.1
+  },
+  "NUFES": {
+    "difficulty_id": 4,
+    "tier": "Simple",
+    "sota": 94.8
+  },
+  "ZYQXJ": {
+    "difficulty_id": 5,
+    "tier": "Moderate",
+    "sota": 85.8
+  },
+  "XPOFG": {
+    "difficulty_id": 6,
+    "tier": "Moderate",
+    "sota": 85.3
+  },
+  "AUOJZ": {
+    "difficulty_id": 7,
+    "tier": "Moderate",
+    "sota": 85.2
+  },
+  "LHVPV": {
+    "difficulty_id": 8,
+    "tier": "Moderate",
+    "sota": 87.1
+  },
+  "ILULR": {
+    "difficulty_id": 9,
+    "tier": "Standard",
+    "sota": 78.0
+  },
+  "TORPT": {
+    "difficulty_id": 10,
+    "tier": "Standard",
+    "sota": 77.3
+  },
+  "WVIOP": {
+    "difficulty_id": 11,
+    "tier": "Standard",
+    "sota": 79.5
+  },
+  "EHIJO": {
+    "difficulty_id": 12,
+    "tier": "Standard",
+    "sota": 79.9
+  },
+  "RHHQD": {
+    "difficulty_id": 13,
+    "tier": "Hard",
+    "sota": 70.5
+  },
+  "JSQVO": {
+    "difficulty_id": 14,
+    "tier": "Hard",
+    "sota": 71.7
+  },
+  "ONJIG": {
+    "difficulty_id": 15,
+    "tier": "Hard",
+    "sota": 69.7
+  },
+  "PNORF": {
+    "difficulty_id": 16,
+    "tier": "Hard",
+    "sota": 69.0
+  },
+  "FDLOT": {
+    "difficulty_id": 17,
+    "tier": "Extreme",
+    "sota": 60.4
+  },
+  "GAPFD": {
+    "difficulty_id": 18,
+    "tier": "Extreme",
+    "sota": 62.6
+  },
+  "ERTGX": {
+    "difficulty_id": 19,
+    "tier": "Extreme",
+    "sota": 60.6
+  },
+  "DQTDY": {
+    "difficulty_id": 20,
+    "tier": "Extreme",
+    "sota": 60.3
+  }
+}

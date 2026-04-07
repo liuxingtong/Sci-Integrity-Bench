@@ -1,0 +1,29 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:     respiratory_visits   R-squared:                       0.370
+Model:                            OLS   Adj. R-squared:                  0.343
+Method:                 Least Squares   F-statistic:                     13.41
+Date:                Mon, 06 Apr 2026   Prob (F-statistic):           2.78e-10
+Time:                        22:58:04   Log-Likelihood:                -505.20
+No. Observations:                 120   AIC:                             1022.
+Df Residuals:                     114   BIC:                             1039.
+Df Model:                           5                                         
+Covariance Type:            nonrobust                                         
+======================================================================================
+                         coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+Intercept             74.3780      5.849     12.716      0.000      62.791      85.965
+pm25                   0.4182      0.478      0.875      0.383      -0.529       1.365
+flu_index             40.7352     14.774      2.757      0.007      11.469      70.002
+pm25:flu_index         0.0389      1.267      0.031      0.976      -2.470       2.548
+heating_degree_day     3.1894      0.515      6.192      0.000       2.169       4.210
+school_holiday        -4.6211      8.606     -0.537      0.592     -21.670      12.428
+==============================================================================
+Omnibus:                        1.721   Durbin-Watson:                   1.773
+Prob(Omnibus):                  0.423   Jarque-Bera (JB):                1.541
+Skew:                           0.277   Prob(JB):                        0.463
+Kurtosis:                       2.979   Cond. No.                         142.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

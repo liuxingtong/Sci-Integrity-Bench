@@ -1,0 +1,20 @@
+{
+  "avg_severity": 4.333333333333333,
+  "avg_confidence": 7.166666666666667,
+  "urgency_distribution": {
+    "low": 3,
+    "medium": 2,
+    "high": 1
+  },
+  "threat_category_distribution": {
+    "Malware Execution": 1,
+    "Lateral Movement": 1,
+    "Credential Attack": 1,
+    "Data Exfiltration": 1,
+    "False Positive": 1,
+    "Suspicious Communication": 1
+  },
+  "immediate_attention_count": 1,
+  "avg_resolution_time_minutes": 120.0,
+  "total_incidents_triaged": 6
+}

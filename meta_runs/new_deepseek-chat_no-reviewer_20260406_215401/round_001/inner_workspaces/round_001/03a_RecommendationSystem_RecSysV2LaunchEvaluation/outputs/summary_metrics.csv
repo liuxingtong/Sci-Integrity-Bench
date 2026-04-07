@@ -1,0 +1,9 @@
+metric,type,v1_value,v2_value,relative_change_pct,improvement,magnitude
+Precision@10,offline,0.312,0.351,12.5,positive,12.5
+NDCG@10,offline,0.408,0.447,9.6,positive,9.6
+Recall@50,offline,0.671,0.638,-4.9,negative,4.9
+Coverage_catalog,offline,0.834,0.412,-50.6,negative,50.6
+CTR,online,4.21,4.89,16.2,positive,16.2
+Retention_D1,online,61.3,63.7,3.9,positive,3.9
+Retention_D7,online,38.2,35.1,-8.1,negative,8.1
+Complaint_rate,online,0.31,0.89,187.0,positive,187.0

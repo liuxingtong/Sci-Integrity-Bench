@@ -1,0 +1,26 @@
+{
+  "scenarios": [
+    "Constant z=2.5",
+    "Ramping z 1\u21924",
+    "Sinusoidal z"
+  ],
+  "dt": 0.02,
+  "U_MIN": -0.9,
+  "U_MAX": 0.9,
+  "Q_tuned": [
+    [
+      2.0,
+      0.0
+    ],
+    [
+      0.0,
+      2.0
+    ]
+  ],
+  "R_tuned": [
+    [
+      1.0
+    ]
+  ],
+  "hinf_all_pass": true
+}

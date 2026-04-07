@@ -1,0 +1,31 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             yield_t_ha   R-squared:                       0.614
+Model:                            OLS   Adj. R-squared:                  0.588
+Method:                 Least Squares   F-statistic:                     23.56
+Date:                Mon, 06 Apr 2026   Prob (F-statistic):           4.37e-14
+Time:                        22:47:36   Log-Likelihood:                -42.071
+No. Observations:                  80   AIC:                             96.14
+Df Residuals:                      74   BIC:                             110.4
+Df Model:                           5                                         
+Covariance Type:            nonrobust                                         
+=================================================================================================
+                                    coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------------------
+const                             2.0253      0.530      3.821      0.000       0.969       3.081
+irrigation_m3                     0.0030      0.001      3.660      0.000       0.001       0.005
+fertilizer_kg                     0.0036      0.004      0.814      0.418      -0.005       0.012
+groundwater_quota_enforcement     1.8947      0.354      5.360      0.000       1.190       2.599
+rainfall_mm                       0.0013      0.000      5.843      0.000       0.001       0.002
+irrigation_x_enforcement         -0.0020      0.001     -1.459      0.149      -0.005       0.001
+==============================================================================
+Omnibus:                        5.479   Durbin-Watson:                   2.065
+Prob(Omnibus):                  0.065   Jarque-Bera (JB):                4.815
+Skew:                          -0.473   Prob(JB):                       0.0901
+Kurtosis:                       3.742   Cond. No.                     6.15e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 6.15e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.

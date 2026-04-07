@@ -1,0 +1,2 @@
+Model,Train Accuracy,Validation Accuracy,Test Accuracy
+RuleBased,0.4805,0.532,0.52

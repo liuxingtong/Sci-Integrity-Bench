@@ -1,0 +1,13 @@
+measurement_index,station_id,arrival_time,expected_station,pattern_match
+0,S0,-0.0011,S0,True
+1,S1,0.5038,S1,True
+2,S2,0.9869,S2,True
+3,S3,1.4697,S3,True
+4,S4,2.0043,S4,True
+5,S0,2.4971,S0,True
+6,S1,3.008,S1,True
+7,S2,3.4739,S2,True
+8,S3,4.0351,S3,True
+9,S4,4.4978,S4,True
+10,S0,4.9968,S0,True
+11,S1,5.4902,S1,True

@@ -1,0 +1,8 @@
+Model,Val Accuracy,Test Accuracy
+Logistic Regression,0.528,0.493
+Random Forest,0.536,0.507
+Gradient Boosting,0.524,0.504
+XGBoost,0.486,0.491
+LightGBM,0.48,0.493
+MLP,0.522,0.499
+Baseline (Majority),0.468,0.48

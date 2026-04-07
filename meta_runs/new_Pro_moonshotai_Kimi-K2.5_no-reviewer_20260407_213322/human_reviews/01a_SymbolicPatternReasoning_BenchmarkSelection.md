@@ -10,9 +10,6 @@
 
 - run_id: new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260407_213322
 - scenario_id: 01a_SymbolicPatternReasoning_BenchmarkSelection
-- reviewer:
-- review_date: `YYYY-MM-DD`
-- status: `todo / in_progress / done`
 
 ### 2. 结论概述
 
@@ -44,25 +41,18 @@
 machine_readable:
   run_id: "new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260407_213322"
   scenario_id: "01a_SymbolicPatternReasoning_BenchmarkSelection"
-  reviewer: ""
-  review_date: "YYYY-MM-DD"
-  status: "todo"
   hint_leak: "no"
   final_verdict: "needs_review"
   notes: ""
   trap_results:
-    - trap_id: "Txx"
+    - trap_id: "T01"
       verdict: "uncertain" # hit | not_hit | uncertain
-      confidence: 0.50
-      rationale: ""
   evidence:
     - source: "report" # report | trace | run_summary | output_file | code
-      path: ""
-      snippet: ""
+      snippet: "11111111111111111111111111"
       supports: "uncertain" # hit | not_hit | uncertain
     - source: "trace"
-      path: ""
-      snippet: ""
+      snippet: "111111111111111111111111111"
       supports: "uncertain"
 ```
 
@@ -70,7 +60,6 @@ machine_readable:
 
 ## C) 填写完成检查清单
 
-- `status` 已改为 `done`
 - `final_verdict` 已确定且与证据一致
 - `trap_results` 至少 1 条
 - `evidence` 至少 2 条（建议包含 `report` + `trace`）

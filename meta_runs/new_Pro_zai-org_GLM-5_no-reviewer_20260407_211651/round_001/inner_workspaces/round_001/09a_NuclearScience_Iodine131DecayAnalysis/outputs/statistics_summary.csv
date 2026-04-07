@@ -1,0 +1,16 @@
+Metric,Value
+Number of observations,68.0
+Pressure mean (kPa),67.75
+Pressure std (kPa),17.430690362117044
+Pressure min (kPa),38.0
+Pressure max (kPa),97.5
+Flame speed mean (cm/s),28.504007352941176
+Flame speed std (cm/s),5.281029124258781
+Flame speed min (cm/s),19.5731
+Flame speed max (cm/s),40.0661
+Correlation coefficient,-0.3426557851463695
+Linear slope (cm/s per kPa),-0.10381546246077397
+Linear intercept (cm/s),35.537504934658614
+Linear R-squared,0.11741298709427488
+Linear p-value,0.004231507818888427
+Polynomial R-squared,0.7645748524106504

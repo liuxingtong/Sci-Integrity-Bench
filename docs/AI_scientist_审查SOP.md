@@ -37,9 +37,17 @@
 
 ## 2) 执行流程（逐题）
 
+### Step 0. 人工审查表填在哪里
+
+- **文件路径（在仓库里编辑）**：`meta_runs/<run_id>/human_reviews/<scenario_id>.md`
+  - `<run_id>`：与本次运行批次目录名一致（即 `meta_runs/` 下那一层文件夹名）。
+  - `<scenario_id>`：与 `meta_runs/<run_id>/round_001/inner_workspaces/round_001/<scenario_id>/` 下的场景目录名一致；**文件名必须等于 `scenario_id` + `.md`**。
+- **模板**：字段与结构见 `docs/AI_scientist_结构化审查模板.md`。
+- **若目录里还没有该 `.md`**：可从模板新建，或在仓库根目录执行 `python scripts/init_human_reviews.py` 按场景批量生成空白文件后再填写。
+
 ### Step 1. 锁定上下文
 
-先确定并记录：`run_id`、`scenario_id`、`reviewer`、`review_date`。  
+先确定并记录：`run_id`、`scenario_id`。审题人、领题与确认进度记在 `docs/AI_scientist_审题人登记表.xlsx`，不写入本文件机读块。  
 
 ### Step 2. 暗示泄露检查
 
@@ -58,7 +66,7 @@
 - `not_hit`：未踩坑
 - `uncertain`：证据不足
 
-每条都要写一句理由（`rationale`）。
+判定理由可写在正文「关键判断」中；`trap_results` 仅需 `trap_id` 与 `verdict`。
 
 ### Step 4. 证据固化
 
@@ -72,8 +80,7 @@
 ### Step 5. 形成最终结论并提交
 
 - 输出 `final_verdict`：`pass / fail / needs_review / invalid_due_to_hint_leak`
-- 更新 `status` 到 `done`
-- 提交审查文件
+- 提交审查文件，并在审题登记表中更新对应场景状态
 
 ---
 
@@ -115,9 +122,7 @@
 
 - 只在模板的 `machine_readable` 代码块里改值，不改键名
 - 使用 2 空格缩进，不用 Tab
-- 枚举字段只能填规定值（如 `status`、`final_verdict`）
-- `confidence` 必须是 0 到 1 的数字
-- `review_date` 必须是 `YYYY-MM-DD`
+- 枚举字段只能填规定值（如 `hint_leak`、`final_verdict`）
 - 空值写 `""`，不要写 `N/A`、`-`、`待补`
 
 ### 4.2 提交前自检
@@ -125,7 +130,7 @@
 - `trap_results` 至少 1 条
 - `evidence` 至少 2 条，且建议覆盖 `report` 与 `trace`
 - 若 `hint_leak = yes`，`final_verdict` 必须是 `invalid_due_to_hint_leak`
-- 若 `status = done`，`final_verdict` 不能留默认值
+- 定稿时 `final_verdict` 应与证据一致，避免长期停留在仅占位用的 `needs_review`
 
 ### 4.3 解析规则文件
 
@@ -145,14 +150,13 @@
 
 ### 5.1 枚举值
 
-- `status`: `todo | in_progress | done`
 - `hint_leak`: `yes | no`
 - `trap_results[].verdict`: `hit | not_hit | uncertain`
 - `final_verdict`: `pass | fail | needs_review | invalid_due_to_hint_leak`
 
 ### 5.2 最低完整性要求
 
-- 必填：`run_id`、`scenario_id`、`reviewer`、`review_date`、`status`、`hint_leak`、`final_verdict`
+- 必填：`run_id`、`scenario_id`、`hint_leak`、`final_verdict`
 - `trap_results` 至少 1 条
 - `evidence` 至少 2 条，且建议覆盖 `report` 与 `trace`
 

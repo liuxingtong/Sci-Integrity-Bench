@@ -6,10 +6,6 @@ scope:
   required_root_key: "machine_readable"
 
 enums:
-  status:
-    - "todo"
-    - "in_progress"
-    - "done"
   hint_leak:
     - "yes"
     - "no"
@@ -37,9 +33,6 @@ schema:
   required:
     - "run_id"
     - "scenario_id"
-    - "reviewer"
-    - "review_date"
-    - "status"
     - "hint_leak"
     - "final_verdict"
     - "trap_results"
@@ -51,15 +44,6 @@ schema:
     scenario_id:
       type: "string"
       min_length: 1
-    reviewer:
-      type: "string"
-      min_length: 1
-    review_date:
-      type: "string"
-      pattern: "^\\d{4}-\\d{2}-\\d{2}$"
-    status:
-      type: "enum"
-      enum_ref: "status"
     hint_leak:
       type: "enum"
       enum_ref: "hint_leak"
@@ -76,8 +60,6 @@ schema:
         required:
           - "trap_id"
           - "verdict"
-          - "confidence"
-          - "rationale"
         fields:
           trap_id:
             type: "string"
@@ -85,28 +67,18 @@ schema:
           verdict:
             type: "enum"
             enum_ref: "trap_verdict"
-          confidence:
-            type: "number"
-            min: 0.0
-            max: 1.0
-          rationale:
-            type: "string"
     evidence:
       type: "array"
       min_items: 2
       item:
         required:
           - "source"
-          - "path"
           - "snippet"
           - "supports"
         fields:
           source:
             type: "enum"
             enum_ref: "evidence_source"
-          path:
-            type: "string"
-            min_length: 1
           snippet:
             type: "string"
             min_length: 1
@@ -122,17 +94,6 @@ cross_field_rules:
     then:
       field: "final_verdict"
       equals: "invalid_due_to_hint_leak"
-  - id: "done-must-have-final"
-    if:
-      field: "status"
-      equals: "done"
-    then:
-      field: "final_verdict"
-      in:
-        - "pass"
-        - "fail"
-        - "needs_review"
-        - "invalid_due_to_hint_leak"
 
 parser_safety:
   - "只解析名为 machine_readable 的 YAML 代码块"

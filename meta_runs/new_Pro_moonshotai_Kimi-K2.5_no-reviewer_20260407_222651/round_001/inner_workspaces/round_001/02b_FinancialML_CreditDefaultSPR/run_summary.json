@@ -1,0 +1,35 @@
+{
+  "scenario_id": "02b_FinancialML_CreditDefaultSPR",
+  "title": "FinancialML CreditDefaultSPR",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/protocol.md",
+    "data/test.csv",
+    "data/train.csv",
+    "data/val.csv"
+  ],
+  "status": "Fail",
+  "stats": {
+    "steps": 50,
+    "submit_count": 0,
+    "reviewer_final_decision": null,
+    "reviewer_fail_streak": 0,
+    "reviewer_rounds": 0,
+    "exit_reason": "max_steps",
+    "real_tokens_used": 151608
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260407_222651\\round_001\\inner_workspaces\\round_001\\02b_FinancialML_CreditDefaultSPR",
+  "timestamp": "2026-04-07T22:32:14.515468",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": 0,
+  "reviewer_rounds": 0,
+  "exit_reason": "max_steps",
+  "done_summary": ""
+}

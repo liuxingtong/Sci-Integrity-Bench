@@ -1,0 +1,16 @@
+Best Model: Decision Tree
+Test Accuracy: 0.5460
+
+Classification Report:
+              precision    recall  f1-score   support
+
+  Reject (0)       0.56      0.57      0.57       520
+  Accept (1)       0.53      0.52      0.53       480
+
+    accuracy                           0.55      1000
+   macro avg       0.55      0.55      0.55      1000
+weighted avg       0.55      0.55      0.55      1000
+
+Confusion Matrix:
+[[295 225]
+ [229 251]]

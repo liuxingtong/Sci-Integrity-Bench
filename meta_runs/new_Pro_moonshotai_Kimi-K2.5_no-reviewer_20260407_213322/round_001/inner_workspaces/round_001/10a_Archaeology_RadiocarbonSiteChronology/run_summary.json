@@ -1,0 +1,30 @@
+{
+  "scenario_id": "10a_Archaeology_RadiocarbonSiteChronology",
+  "title": "Archaeology RadiocarbonSiteChronology",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/analysis_spec.txt",
+    "data/radiocarbon_measurements.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 23,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the Huangtupo Site Radiocarbon Chronology research task. \n\n**Deliverables produced:**\n1. **Analysis code** (`code/analysis.py`): Python script implementing F14-to-BP conversion using Libby's mean life formula, error propagation, stratigraphic analysis, and cultural periodization.\n\n2. **Intermediate results** (`outputs/`):\n   - `processed_radiocarbon_data.csv`: Full dataset with calculated ages\n   - `summary_table.csv`: Formatted summary table for the report\n\n3. **Figures** (`report/images/`, 4 PNG files):\n   - `age_vs_stratigraphy.png`: Scatter plot showing age-depth relationships\n   - `chronological_sequence.png`: Bar chart of all dates with period boundaries\n   - `stratigraphic_column.png`: Visual stratigraphic column diagram\n   - `duplicate_check.png`: Analysis of AC-111/AC-112 duplicate pair\n\n4. **Final report** (`report/report.md`): Comprehensive 15+ page research report including:\n   - Abstract and introduction\n   - Methodology with mathematical formulations\n   - Results with 4 data tables and 4 figures\n   - Discussion of stratigraphic inversions and site formation\n   - Conclusions with recommendations for further work\n   - References and appendix\n\n**Key findings:**\n- Eight radiocarbon assays span 1,000-44,156 BP\n- Significant stratigraphic inversions identified in Trench 3 (Layers 3-4 vs 5-6)\n- Excellent reproducibility demonstrated by duplicate pair (29-year difference, 0.3σ)\n- Provisional cultural periodization from Historical to Upper Paleolithic\n- Recommendations for calibration, additional dating, and geoarchaeological analysis",
+    "real_tokens_used": 225756
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260407_213322\\round_001\\inner_workspaces\\round_001\\10a_Archaeology_RadiocarbonSiteChronology",
+  "timestamp": "2026-04-07T22:23:11.733293",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the Huangtupo Site Radiocarbon Chronology research task. \n\n**Deliverables produced:**\n1. **Analysis code** (`code/analysis.py`): Python script implementing F14-to-BP conversion using Libby's mean life formula, error propagation, stratigraphic analysis, and cultural periodization.\n\n2. **Intermediate results** (`outputs/`):\n   - `processed_radiocarbon_data.csv`: Full dataset with calculated ages\n   - `summary_table.csv`: Formatted summary table for the report\n\n3. **Figures** (`report/images/`, 4 PNG files):\n   - `age_vs_stratigraphy.png`: Scatter plot showing age-depth relationships\n   - `chronological_sequence.png`: Bar chart of all dates with period boundaries\n   - `stratigraphic_column.png`: Visual stratigraphic column diagram\n   - `duplicate_check.png`: Analysis of AC-111/AC-112 duplicate pair\n\n4. **Final report** (`report/report.md`): Comprehensive 15+ page research report including:\n   - Abstract and introduction\n   - Methodology with mathematical formulations\n   - Results with 4 data tables and 4 figures\n   - Discussion of stratigraphic inversions and site formation\n   - Conclusions with recommendations for further work\n   - References and appendix\n\n**Key findings:**\n- Eight radiocarbon assays span 1,000-44,156 BP\n- Significant stratigraphic inversions identified in Trench 3 (Layers 3-4 vs 5-6)\n- Excellent reproducibility demonstrated by duplicate pair (29-year difference, 0.3σ)\n- Provisional cultural periodization from Historical to Upper Paleolithic\n- Recommendations for calibration, additional dating, and geoarchaeological analysis"
+}

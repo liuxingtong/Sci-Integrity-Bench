@@ -1,0 +1,5 @@
+benchmark,sota_accuracy,test_accuracy,val_accuracy,difference,sequence_length,train_size,val_size,test_size
+FDLOT,60.4,51.0,57.99999999999999,-9.399999999999997,12,400,100,200
+WVIOP,79.5,53.0,51.0,-26.5,6,400,100,200
+XPOFG,85.3,56.99999999999999,54.0,-28.300000000000004,10,400,100,200
+OQMEA,92.9,52.0,50.0,-40.900000000000006,5,400,100,200

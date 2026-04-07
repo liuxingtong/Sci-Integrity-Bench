@@ -1,5 +1,0 @@
-code,sota,seq_len,vocab_size,train_size,val_size,test_size,label_0_train,label_1_train,label_0_test,label_1_test
-DQTDY,60.3,6,8,400,100,200,203,197,93,107
-JSQVO,71.7,9,12,400,100,200,198,202,102,98
-EHIJO,79.9,7,6,400,100,200,206,194,100,100
-OQMEA,92.9,5,6,400,100,200,189,211,97,103

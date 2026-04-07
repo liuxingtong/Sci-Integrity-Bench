@@ -1,8 +1,0 @@
-Analysis goals for the site reliability review:
-
-- Ingest and validate the sensor panel extract; document the observation window, assets represented, and the effective sampling cadence implied by timestamps.
-- Quantify how vibration severity (RMS and peak acceleration) evolves over time and differs across assets or zones; call out units or intervals that sit above typical peer behavior for this fleet.
-- Examine co-movement among vibration, bearing temperature, speed (rpm), and load; distinguish descriptive association from any stronger mechanical interpretation only when the data pattern warrants it.
-- Produce a compact, prioritized set of monitoring or maintenance actions appropriate for operations leadership, keeping conclusions aligned with what the current extract can support.
-
-Data: sensor_panel_timeseries.csv is the authoritative panel for this review cycle.

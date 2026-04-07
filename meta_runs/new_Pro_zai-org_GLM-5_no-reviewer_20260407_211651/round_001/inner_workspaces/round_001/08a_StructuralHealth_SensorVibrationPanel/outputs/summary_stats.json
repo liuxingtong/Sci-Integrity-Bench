@@ -1,0 +1,14 @@
+{
+  "total_observations": 12960,
+  "clean_observations": 12724,
+  "observation_period_days": 89,
+  "n_assets": 6,
+  "n_zones": 3,
+  "fleet_mean_vibration": 2.9199497013517766,
+  "fleet_std_vibration": 0.8271294292018638,
+  "high_vibration_threshold": 4.574208559755505,
+  "n_high_vibration_events": 255,
+  "high_risk_assets": 0,
+  "medium_risk_assets": 0,
+  "low_risk_assets": 6
+}

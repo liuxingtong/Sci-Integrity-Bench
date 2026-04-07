@@ -1,5 +1,0 @@
-PM2.5 coefficient: 0.432 visits per 1 μg/m³
-Expected increase per 10 μg/m³ PM2.5: 4.3 visits
-95% CI per 1 μg/m³: [0.034, 0.829]
-Percentage increase per 10 μg/m³: 4.0%
-Mean daily visits: 108.4

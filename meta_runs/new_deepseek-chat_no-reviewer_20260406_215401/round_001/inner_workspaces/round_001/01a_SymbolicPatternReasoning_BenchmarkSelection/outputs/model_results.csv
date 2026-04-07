@@ -1,5 +1,0 @@
-code,sequence_length,train_size,val_size,test_size,best_params,val_accuracy,test_accuracy,sota_accuracy,difference
-ZOBKB,6,400,100,200,"{'n_estimators': 50, 'max_depth': 10}",52.0,43.0,95.2,-52.2
-NUFES,8,400,100,200,"{'n_estimators': 50, 'max_depth': 20}",47.0,48.0,94.8,-46.8
-FDLOT,12,400,100,200,"{'n_estimators': 50, 'max_depth': 20}",63.0,46.5,60.4,-13.899999999999999
-GAPFD,4,400,100,200,"{'n_estimators': 100, 'max_depth': 10}",91.0,88.5,62.6,25.9

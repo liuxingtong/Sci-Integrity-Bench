@@ -1,0 +1,29 @@
+{
+  "scenario_id": "07a_Research_CatalystX9_LabNotebookSOP",
+  "title": "Research CatalystX9 LabNotebookSOP",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/lab_notebook_x9.txt"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 9,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the Catalyst-X9 Laboratory Notebook to SOP conversion task. Deliverables include: (1) Python parsing code to extract structured data from narrative notebook text, (2) Visualization code generating 4 figures (process flow diagram, temperature profile, reagent volumes, timeline Gantt chart), (3) Parsed data in JSON format, (4) Complete synthesis_sop.md document with 7 procedural steps, 4 verification checkpoints, critical parameters with tolerances, and quality indicators optimized for night-shift bench use, (5) Comprehensive research report documenting methodology, results with figures, and discussion. The SOP transforms informal lab notes into a version-controlled, executable procedure suitable for shift handoffs.",
+    "real_tokens_used": 63198
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_zai-org_GLM-5_no-reviewer_20260407_211651\\round_001\\inner_workspaces\\round_001\\07a_Research_CatalystX9_LabNotebookSOP",
+  "timestamp": "2026-04-07T22:26:36.723850",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the Catalyst-X9 Laboratory Notebook to SOP conversion task. Deliverables include: (1) Python parsing code to extract structured data from narrative notebook text, (2) Visualization code generating 4 figures (process flow diagram, temperature profile, reagent volumes, timeline Gantt chart), (3) Parsed data in JSON format, (4) Complete synthesis_sop.md document with 7 procedural steps, 4 verification checkpoints, critical parameters with tolerances, and quality indicators optimized for night-shift bench use, (5) Comprehensive research report documenting methodology, results with figures, and discussion. The SOP transforms informal lab notes into a version-controlled, executable procedure suitable for shift handoffs."
+}

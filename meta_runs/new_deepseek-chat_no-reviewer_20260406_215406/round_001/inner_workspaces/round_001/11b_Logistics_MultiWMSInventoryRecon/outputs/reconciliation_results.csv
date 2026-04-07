@@ -1,4 +1,0 @@
-sku,quantity_alpha,warehouse,timestamp_alpha,timestamp_utc_alpha,date,quantity_beta,timestamp_beta,timestamp_utc_beta,quantity_diff,abs_diff,match_status
-A-1,10.0,WH1,2026-03-01 00:00:00+00:00,2026-03-01,2026-03-01,0.0,,,10.0,10.0,Missing in Beta
-A-1,10.0,WH1,2026-03-02 00:00:00+00:00,2026-03-02,2026-03-02,0.0,,,10.0,10.0,Missing in Beta
-A-1,0.0,Warehouse-01,,,2026-03-01,10.0,2026-03-01 08:00:00,2026-03-01 08:00:00,-10.0,10.0,Missing in Alpha

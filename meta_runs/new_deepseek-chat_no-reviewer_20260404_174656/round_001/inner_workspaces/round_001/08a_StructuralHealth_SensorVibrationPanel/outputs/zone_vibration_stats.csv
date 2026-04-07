@@ -1,7 +1,0 @@
-,vibration_rms_mm_s,vibration_rms_mm_s,vibration_rms_mm_s,peak_accel_g,peak_accel_g,asset_id
-,mean,std,max,mean,max,nunique
-zone,,,,,,
-A,3.46,3.582,38.955,7.803,106.754,2
-B,3.347,3.236,37.89,7.514,105.644,2
-C,3.371,3.198,32.435,7.637,83.952,2
-D,7.013,7.075,71.892,15.734,188.53,2

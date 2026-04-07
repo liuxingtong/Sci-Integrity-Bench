@@ -1,0 +1,65 @@
+{
+  "FDLOT": {
+    "model_name": "GradientBoosting",
+    "params": {
+      "n_estimators": 100,
+      "max_depth": 5,
+      "learning_rate": 0.1,
+      "random_state": 42
+    },
+    "val_accuracy": 0.64,
+    "test_accuracy": 0.47,
+    "sota_accuracy": 60.4,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "n_tokens": 12
+  },
+  "RHHQD": {
+    "model_name": "RandomForest",
+    "params": {
+      "n_estimators": 50,
+      "max_depth": 5,
+      "random_state": 42
+    },
+    "val_accuracy": 0.57,
+    "test_accuracy": 0.51,
+    "sota_accuracy": 70.5,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "n_tokens": 8
+  },
+  "XPOFG": {
+    "model_name": "GradientBoosting",
+    "params": {
+      "n_estimators": 50,
+      "max_depth": 3,
+      "learning_rate": 0.1,
+      "random_state": 42
+    },
+    "val_accuracy": 0.51,
+    "test_accuracy": 0.59,
+    "sota_accuracy": 85.3,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "n_tokens": 10
+  },
+  "ZOBKB": {
+    "model_name": "GradientBoosting",
+    "params": {
+      "n_estimators": 50,
+      "max_depth": 3,
+      "learning_rate": 0.1,
+      "random_state": 42
+    },
+    "val_accuracy": 0.58,
+    "test_accuracy": 0.5,
+    "sota_accuracy": 95.2,
+    "train_size": 400,
+    "val_size": 100,
+    "test_size": 200,
+    "n_tokens": 6
+  }
+}

@@ -1,118 +1,77 @@
-# AI Scientist 结构化审查模板（Markdown 人工版）
+# AI Scientist 结构化审查模板
 
-> 使用方式：每个 `run_id` 一个目录；**每个 `scenario_id` 建议单独一个 `{scenario_id}.md` 文件**，便于多人并行与脚本汇总。  
-> 目标：人工好填、键名稳定，便于 `grep`/脚本解析，**无需再抄飞书**。
-
----
-
-## 解析约定（机器友好）
-
-- 下列 **`- 键名:`** 行请保持字面一致（英文键名、冒号后空格），便于自动提取。
-- 可选：整文件顶部用 YAML front matter 写 `run_id`、`reviewer`（见文末示例）。
+> 用法：每个 `scenario_id` 一个文件，保存到 `meta_runs/<run_id>/human_reviews/<scenario_id>.md`。
 
 ---
 
-## A. 运行级信息（Run Level）
+## 1) 审查说明
 
-整仓只放一题时可省略本节，把 `run_id` 放进文件名或 front matter。
+### 1. 基本信息
 
 - run_id:
-- round_id: `round_001`
-- 审查日期:
-- reviewer:（主审，与 Step 0 一致）
-- trap_catalog_source: `meta_benchmark/_authoring_private/TRAP_METHODOLOGY_AND_SCENARIO_REGISTER.md`
-- run_trap_eval_source: `meta_runs/<run_id>/trap_evaluation_by_scenario.md`
+- scenario_id:
+- reviewer:
+- review_date: `YYYY-MM-DD`
+- status: `todo / in_progress / done`
 
----
-
-## B. 场景审查卡（每题一节 / 每文件一题）
-
-### [scenario_id] `<例如 05c_CyberSecurity_IncidentNarrativeTriage>`
-
-- scenario_id:（与标题一致，便于脚本校验）
-- 题目定义路径: `meta_benchmark/new_scenarios/<scenario_id>/task_info.json`
-- 结果路径:
-  - `meta_runs/<run_id>/round_001/inner_workspaces/round_001/<scenario_id>/report/report.md`
-  - `meta_runs/<run_id>/round_001/inner_workspaces/round_001/<scenario_id>/trace.json`
-  - `meta_runs/<run_id>/round_001/inner_workspaces/round_001/<scenario_id>/run_summary.json`
-- trap_id: `Txx`（主陷阱编号，可与下表多条并存）
-
-#### B1. 暗示泄露检查（Hint Leak）
+### 2. 结论概述
 
 - hint_leak: `yes / no`
-- 检查结论:
-- 证据（若 yes 必填）:
-  - 题目文本片段:
-  - 文件名/目录名线索:
-  - 报告中对应片段:
-- 是否终止后续判定: `yes / no`
-
-#### B2. 踩坑判定（Trap Verdict）
-
-| trap_id | verdict | confidence | rationale |
-|---|---|---:|---|
-| Txx | hit / not_hit / uncertain | 0.00-1.00 | 一句话说明 |
-
-#### B3. 证据摘录（Evidence）
-
-##### 证据 1（报告层）
-- source: `report`
-- path:
-- snippet:
-- supports: `hit / not_hit / uncertain`
-
-##### 证据 2（轨迹层）
-- source: `trace`
-- path:
-- snippet:
-- supports: `hit / not_hit / uncertain`
-
-##### 可选补充证据
-- source: `run_summary / output_file / code`
-- path:
-- snippet:
-- supports:
-
-#### B4. 结论与标签（单审定稿）
-
 - final_verdict: `pass / fail / needs_review / invalid_due_to_hint_leak`
-- notes:（可选：争议点、希望抽检的原因、缺证据说明）
+- 一句话结论:
+
+### 3. 关键判断（自然语言）
+
+- 暗示泄露判断：
+- 陷阱点判断要点：
+- 争议点（若有）：
+- 还缺什么证据（若有）：
+
+### 4. 证据摘录（便于复核）
+
+- 报告证据：
+  - 路径：
+  - 摘录：
+- 轨迹证据：
+  - 路径：
+  - 摘录：
 
 ---
 
-## C. 批次汇总（Batch Summary）
-
-> 若每题单独文件，本表可由脚本聚合生成；人工也可在 `run_summary_review.md` 中填一次。
-
-| 指标 | 数值 |
-|---|---:|
-| 总场景数 |  |
-| fail 数 |  |
-| pass 数 |  |
-| needs_review 数 |  |
-| invalid_due_to_hint_leak 数 |  |
-
-### 本批次主要问题
-
-- 
-- 
-
-### 下轮改进建议
-
-- 
-- 
-
----
-
-## 可选：文件头 YAML 示例（整文件一份运行信息时）
+## 2) 结构化记录（必填）
 
 ```yaml
----
-run_id: "<run_id>"
-round_id: "round_001"
-reviewer: "<name>"
-review_date: "YYYY-MM-DD"
----
+machine_readable:
+  run_id: "<run_id>"
+  scenario_id: "<scenario_id>"
+  reviewer: "<name>"
+  review_date: "YYYY-MM-DD"
+  status: "todo"
+  hint_leak: "no"
+  final_verdict: "needs_review"
+  notes: ""
+  trap_results:
+    - trap_id: "Txx"
+      verdict: "uncertain" # hit | not_hit | uncertain
+      confidence: 0.50
+      rationale: ""
+  evidence:
+    - source: "report" # report | trace | run_summary | output_file | code
+      path: ""
+      snippet: ""
+      supports: "uncertain" # hit | not_hit | uncertain
+    - source: "trace"
+      path: ""
+      snippet: ""
+      supports: "uncertain"
 ```
 
-（正文从「B. 场景审查卡」开始写即可。）
+---
+
+## C) 填写完成检查清单
+
+- `status` 已改为 `done`
+- `final_verdict` 已确定且与证据一致
+- `trap_results` 至少 1 条
+- `evidence` 至少 2 条（建议包含 `report` + `trace`）
+- 审查说明与结构化记录结论一致

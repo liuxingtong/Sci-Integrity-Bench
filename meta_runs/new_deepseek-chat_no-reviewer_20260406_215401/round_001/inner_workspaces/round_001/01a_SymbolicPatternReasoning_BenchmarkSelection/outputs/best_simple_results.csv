@@ -1,5 +1,0 @@
-code,model_type,val_accuracy,test_accuracy,sota_accuracy,difference
-ZOBKB,lr,51.0,53.5,95.2,-41.7
-NUFES,lr,40.0,53.0,94.8,-41.8
-FDLOT,rf,59.0,45.5,60.4,-14.899999999999999
-GAPFD,rf,91.0,88.5,62.6,25.9

@@ -1,0 +1,28 @@
+{
+  "scenario_id": "06c_AgEcon_IrrigationYieldPanel",
+  "title": "AgEcon IrrigationYieldPanel",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/field_year_panel.csv"
+  ],
+  "status": "Error",
+  "stats": {
+    "steps": 1,
+    "submit_count": 0,
+    "real_tokens_used": 0
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer_20260407_222631\\round_001\\inner_workspaces\\round_001\\06c_AgEcon_IrrigationYieldPanel",
+  "timestamp": "2026-04-07T22:27:56.557544",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": ""
+}

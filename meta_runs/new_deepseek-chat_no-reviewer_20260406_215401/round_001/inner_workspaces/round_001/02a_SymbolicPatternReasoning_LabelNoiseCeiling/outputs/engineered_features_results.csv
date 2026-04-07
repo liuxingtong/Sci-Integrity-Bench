@@ -1,5 +1,0 @@
-Model,Train Accuracy,Validation Accuracy,Test Accuracy
-RandomForest,1.0,0.486,0.501
-GradientBoosting,0.7475,0.496,0.506
-SVM,0.882,0.5,0.516
-MLP,1.0,0.468,0.523

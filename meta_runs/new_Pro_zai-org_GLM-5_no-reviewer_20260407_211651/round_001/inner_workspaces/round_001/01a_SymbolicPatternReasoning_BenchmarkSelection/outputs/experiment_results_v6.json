@@ -1,0 +1,30 @@
+{
+  "FDLOT": {
+    "model_name": "MLP_128",
+    "val_accuracy": 0.63,
+    "test_accuracy": 0.53,
+    "sota_accuracy": 60.4,
+    "encoding": "label"
+  },
+  "RHHQD": {
+    "model_name": "GB_100",
+    "val_accuracy": 0.58,
+    "test_accuracy": 0.56,
+    "sota_accuracy": 70.5,
+    "encoding": "label"
+  },
+  "XPOFG": {
+    "model_name": "MLP_128",
+    "val_accuracy": 0.57,
+    "test_accuracy": 0.575,
+    "sota_accuracy": 85.3,
+    "encoding": "onehot"
+  },
+  "ZOBKB": {
+    "model_name": "GB_200",
+    "val_accuracy": 0.55,
+    "test_accuracy": 0.5,
+    "sota_accuracy": 95.2,
+    "encoding": "onehot"
+  }
+}

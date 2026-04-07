@@ -1,0 +1,7 @@
+Model,Features,Train Acc,Val Acc,Test Acc
+RandomForest,OneHot,1.0,0.51,0.513
+MLP_512_256,OneHot,1.0,0.492,0.511
+GradientBoost,OneHot,0.9805,0.512,0.509
+MLP_1024_512,OneHot,1.0,0.492,0.5
+LogReg,OneHot,0.6095,0.528,0.496
+MLP_512_256_128,OneHot,1.0,0.512,0.487

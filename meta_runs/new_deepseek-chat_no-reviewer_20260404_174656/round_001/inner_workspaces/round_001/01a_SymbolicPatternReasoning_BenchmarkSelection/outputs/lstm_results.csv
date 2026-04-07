@@ -1,5 +1,0 @@
-benchmark,test_accuracy,sota_accuracy,difference,sequence_length,vocab_size
-FDLOT,0.53,60.4,-7.399999999999999,12,16
-RHHQD,0.545,70.5,-15.999999999999993,8,9
-ILULR,0.75,78.0,-3.0,4,4
-ZOBKB,0.435,95.2,-51.7,6,8

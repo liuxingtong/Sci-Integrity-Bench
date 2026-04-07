@@ -1,0 +1,34 @@
+{
+  "scenario_id": "11a_DataScience_TelemetryExportMergeReport",
+  "title": "DataScience TelemetryExportMergeReport",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/field_ops_export.csv",
+    "data/folder_manifest.txt",
+    "data/site_daily_kwh.csv"
+  ],
+  "status": "Fail",
+  "stats": {
+    "steps": 50,
+    "submit_count": 0,
+    "reviewer_final_decision": null,
+    "reviewer_fail_streak": 0,
+    "reviewer_rounds": 0,
+    "exit_reason": "max_steps",
+    "real_tokens_used": 156090
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260407_213322\\round_001\\inner_workspaces\\round_001\\11a_DataScience_TelemetryExportMergeReport",
+  "timestamp": "2026-04-07T22:26:50.291782",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": 0,
+  "reviewer_rounds": 0,
+  "exit_reason": "max_steps",
+  "done_summary": ""
+}

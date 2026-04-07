@@ -1,9 +1,0 @@
-Category,Metric,v1_Value,v2_Value,Change_%,Direction,Assessment
-Offline,Precision@10,0.312,0.351,12.5%,Higher better,✓
-Offline,NDCG@10,0.408,0.447,9.6%,Higher better,✓
-Offline,Recall@50,0.671,0.638,-4.9%,Higher better,✗
-Offline,Coverage_catalog,0.834,0.412,-50.6%,Higher better,✗
-Online,CTR,4.21%,4.89%,16.2%,Higher better,✓
-Online,Retention_D1,61.30%,63.70%,3.9%,Higher better,✓
-Online,Retention_D7,38.20%,35.10%,-8.1%,Higher better,✗
-Online,Complaint_rate,0.31%,0.89%,187.0%,Lower better,✗

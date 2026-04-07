@@ -1,0 +1,28 @@
+{
+  "scenario_id": "06b_PublicHealth_AirPollutionClinicPanel",
+  "title": "PublicHealth AirPollutionClinicPanel",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/daily_panel.csv"
+  ],
+  "status": "Error",
+  "stats": {
+    "steps": 5,
+    "submit_count": 0,
+    "real_tokens_used": 22497
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer_20260407_215657\\round_001\\inner_workspaces\\round_001\\06b_PublicHealth_AirPollutionClinicPanel",
+  "timestamp": "2026-04-07T22:21:47.147715",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": ""
+}

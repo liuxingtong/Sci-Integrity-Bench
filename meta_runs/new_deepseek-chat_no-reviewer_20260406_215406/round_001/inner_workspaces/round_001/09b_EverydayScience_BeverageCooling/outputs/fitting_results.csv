@@ -1,4 +1,0 @@
-segment,error,T_env,T_env_err,T0,T0_err,k,k_err,r_squared,half_life
-Segment 1 (0-79 min),Initial guess is outside of provided bounds,,,,,,,,
-Segment 2 (80-120 min),Initial guess is outside of provided bounds,,,,,,,,
-Segment 3 (121-199 min),,25.000331113246553,0.0011177215293963264,39.82777280035103,0.0001090559670206119,0.01155290356496877,1.32872108989531e-06,0.9999999865879631,59.99766003948454

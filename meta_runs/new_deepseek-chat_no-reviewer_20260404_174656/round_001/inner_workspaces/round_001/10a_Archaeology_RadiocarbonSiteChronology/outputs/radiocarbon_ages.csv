@@ -1,9 +1,0 @@
-artifact_id,stratigraphic_unit,material,f14_residual_ratio,sigma_f14_absolute,laboratory_batch,notes,f14_clipped,age_BP,age_BP_sigma
-AC-107,Huangtupo-Trench3-L1,charcoal,0.883,0.004,BP-24091,single broad tree-ring block,0.883,999.5468196118961,36.389580973952434
-AC-108,Huangtupo-Trench3-L2,charred bone,0.647,0.003,BP-24092,well-collagen preserved,0.647,3497.6403723377725,37.24729520865533
-AC-109,Huangtupo-Trench3-L3,charcoal,0.0041,0.0008,BP-24093,very small carbon yield post-pretreatment,0.0041,44155.53979624897,1567.4146341463415
-AC-110,Huangtupo-Trench3-L4,shell organics,0.0065,0.001,BP-24094,marked reservoir correction discussion pending,0.0065,40453.81126901302,1235.8461538461538
-AC-111,Huangtupo-Trench3-L5,charcoal,0.2187,0.002,BP-24095,same ridge source as AC-112 pair for duplicate chronology check,0.2187,12210.5966039882,73.46136259716508
-AC-112,Huangtupo-Trench3-L6,charcoal,0.2195,0.002,BP-24096,same ridge source as AC-111 pair for duplicate chronology check,0.2195,12181.265672268695,73.19362186788155
-AC-113,Huangtupo-Trench4-pit7,charcoal,0.451,0.002,BP-24097,short-lived twigs,0.451,6396.581017838491,35.62305986696231
-AC-114,Huangtupo-Trench2-surface scatter,charcoal,0.771,0.003,BP-24098,root intrusion risk flagged in field log,0.771,2089.117451229281,31.2568093385214

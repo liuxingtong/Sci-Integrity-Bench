@@ -1,0 +1,18 @@
+Beverage Cooling Analysis Summary
+==================================================
+
+Data: 200 observations, 0-199 minutes
+Temperature range: 31.02 to 85.00 °C
+
+Anomalies detected at: [80, 121]
+
+Segment fits:
+  Initial cooling: T_amb=25.00, k=0.0116, R²=1.0000
+  Post-disturbance 1: T_amb=34.01, k=0.0116, R²=1.0000
+  Post-disturbance 2: T_amb=25.00, k=0.0115, R²=1.0000
+
+Overall fit (clean data):
+  T_initial = 82.40 °C
+  T_ambient = 18.16 °C
+  k = 0.0082 min⁻¹
+  R² = 0.9796

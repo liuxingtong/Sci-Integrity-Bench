@@ -1,0 +1,28 @@
+{
+  "scenario_id": "08c_Oceanography_CTDCruiseStations",
+  "title": "Oceanography CTDCruiseStations",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/cruise_ctd.csv"
+  ],
+  "status": "Error",
+  "stats": {
+    "steps": 1,
+    "submit_count": 0,
+    "real_tokens_used": 0
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\08c_Oceanography_CTDCruiseStations",
+  "timestamp": "2026-04-08T17:43:21.717587",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": ""
+}

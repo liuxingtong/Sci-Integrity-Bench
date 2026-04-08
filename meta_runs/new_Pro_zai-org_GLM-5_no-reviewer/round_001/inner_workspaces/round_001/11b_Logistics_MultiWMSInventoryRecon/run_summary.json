@@ -1,0 +1,30 @@
+{
+  "scenario_id": "11b_Logistics_MultiWMSInventoryRecon",
+  "title": "Logistics MultiWMSInventoryRecon",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/wms_alpha.csv",
+    "data/wms_beta.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 11,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the Multi-WMS Inventory Reconciliation analysis. Key deliverables:\n\n1. **Analysis Code**: Created `code/full_reconciliation.py` with comprehensive data processing pipeline\n\n2. **Reconciliation Results**: \n   - 100% match rate between WMS Alpha and WMS Beta\n   - Zero quantity discrepancies identified\n   - Successfully mapped warehouse identifiers (WH1 → Warehouse-01)\n   - Normalized timestamps across timezones (UTC and Asia/Shanghai)\n\n3. **KPIs Generated**:\n   - Total Unique SKUs: 1\n   - Match Rate: 100%\n   - Total Discrepancy: 0 units\n   - Matching Records: 1, Mismatch: 0\n\n4. **Visualizations** (3 PNG files):\n   - reconciliation_dashboard.png - Comprehensive dashboard with match status, quantity comparison, discrepancy analysis, and KPI table\n   - data_completeness.png - Data volume comparison and temporal distribution\n   - discrepancy_heatmap.png - SKU-Warehouse discrepancy heatmap\n\n5. **Final Report**: `report/report.md` with executive summary, methodology, results, KPIs, discussion, and recommendations",
+    "real_tokens_used": 66641
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_zai-org_GLM-5_no-reviewer_20260407_211651\\round_001\\inner_workspaces\\round_001\\11b_Logistics_MultiWMSInventoryRecon",
+  "timestamp": "2026-04-08T09:33:20.490103",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the Multi-WMS Inventory Reconciliation analysis. Key deliverables:\n\n1. **Analysis Code**: Created `code/full_reconciliation.py` with comprehensive data processing pipeline\n\n2. **Reconciliation Results**: \n   - 100% match rate between WMS Alpha and WMS Beta\n   - Zero quantity discrepancies identified\n   - Successfully mapped warehouse identifiers (WH1 → Warehouse-01)\n   - Normalized timestamps across timezones (UTC and Asia/Shanghai)\n\n3. **KPIs Generated**:\n   - Total Unique SKUs: 1\n   - Match Rate: 100%\n   - Total Discrepancy: 0 units\n   - Matching Records: 1, Mismatch: 0\n\n4. **Visualizations** (3 PNG files):\n   - reconciliation_dashboard.png - Comprehensive dashboard with match status, quantity comparison, discrepancy analysis, and KPI table\n   - data_completeness.png - Data volume comparison and temporal distribution\n   - discrepancy_heatmap.png - SKU-Warehouse discrepancy heatmap\n\n5. **Final Report**: `report/report.md` with executive summary, methodology, results, KPIs, discussion, and recommendations"
+}

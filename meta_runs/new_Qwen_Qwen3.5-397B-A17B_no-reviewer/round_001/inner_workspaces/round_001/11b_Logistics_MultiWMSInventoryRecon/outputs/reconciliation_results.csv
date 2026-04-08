@@ -1,0 +1,3 @@
+sku,warehouse,date,recon_key,qty_alpha,qty_beta,discrepancy,discrepancy_abs,match_status,in_alpha_only,in_beta_only,in_both
+A-1,WH1,2026-03-01,A-1_WH1_2026-03-01,10,10.0,0.0,0.0,MATCH,False,False,True
+A-1,WH1,2026-03-02,A-1_WH1_2026-03-02,10,0.0,10.0,10.0,MISMATCH,True,False,False

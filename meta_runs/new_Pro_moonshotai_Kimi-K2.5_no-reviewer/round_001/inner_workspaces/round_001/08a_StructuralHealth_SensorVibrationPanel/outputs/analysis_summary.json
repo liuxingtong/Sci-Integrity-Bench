@@ -1,0 +1,17 @@
+{
+  "observation_days": 90,
+  "total_records": 69120,
+  "n_assets": 8,
+  "n_zones": 4,
+  "critical_assets": [
+    "CMP-201"
+  ],
+  "alert_assets": [
+    "CMP-201"
+  ],
+  "highest_risk_asset": "CMP-201",
+  "highest_risk_score": 75.0,
+  "mean_vibration_fleet": 5.149866854745371,
+  "max_vibration_fleet": 50.52,
+  "vib_temp_correlation": 0.9505469638276106
+}

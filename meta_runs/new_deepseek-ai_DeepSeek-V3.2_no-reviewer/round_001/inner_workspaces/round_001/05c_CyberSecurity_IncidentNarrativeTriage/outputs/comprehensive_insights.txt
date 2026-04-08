@@ -1,0 +1,53 @@
+============================================================
+COMPREHENSIVE INCIDENT TRIAGE ANALYSIS INSIGHTS
+============================================================
+
+1. DATA OVERVIEW
+----------------------------------------
+Total incidents analyzed: 6
+Source system distribution: {'edr': 3, 'network_ids': 3}
+Average narrative length: 121.2 characters
+Average word count: 17.2 words
+
+2. AUTOMATED TRIAGE RESULTS
+----------------------------------------
+Priority distribution: {'HIGH': 3, 'MEDIUM': 3}
+Average confidence score: 52.7
+Average entities extracted per incident: 1.0
+
+3. EFFECTIVENESS ANALYSIS
+----------------------------------------
+Time savings: 1.440 hours (96.0% reduction)
+Priority alignment accuracy: 100.0%
+High-risk incidents identified: 3 (50.0%)
+False positives detected: 1
+Incidents with encoded content: 1
+Incidents with data exfiltration indicators: 2
+
+4. KEY CORRELATIONS
+----------------------------------------
+narrative_length: 0.431
+word_count: -0.372
+term_count: 0.667
+confidence_score: -0.391
+
+5. SOURCE SYSTEM ANALYSIS
+----------------------------------------
+EDR:
+  • High priority rate: 66.67%
+  • Average confidence: 50.33
+  • Average entities: 0.67
+  • Average actions: 1.0
+NETWORK_IDS:
+  • High priority rate: 33.33%
+  • Average confidence: 55.0
+  • Average entities: 1.33
+  • Average actions: 1.0
+
+6. RECOMMENDATIONS
+----------------------------------------
+1. Implement automated triage for all incoming incidents
+2. Focus manual review on HIGH priority incidents
+3. Use extracted entities for threat hunting and correlation
+4. Continuously refine triage rules based on analyst feedback
+5. Expand entity extraction to include more asset types

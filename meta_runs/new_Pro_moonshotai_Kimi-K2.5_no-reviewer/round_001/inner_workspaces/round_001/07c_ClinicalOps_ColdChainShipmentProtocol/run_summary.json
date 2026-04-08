@@ -1,0 +1,29 @@
+{
+  "scenario_id": "07c_ClinicalOps_ColdChainShipmentProtocol",
+  "title": "ClinicalOps ColdChainShipmentProtocol",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/email_thread_draft.txt"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 12,
+    "submit_count": 0,
+    "done_summary": "Successfully completed Research Task 07c_ClinicalOps_ColdChainShipmentProtocol. Deliverables include:\n\n1. **SOP Document** (`outputs/cold_chain_sop.md`): A comprehensive 14-section Standard Operating Procedure for cold-chain shipment of biologics, covering purpose, scope, temperature requirements, packaging specifications, temperature monitoring, shipment procedures, documentation, and regulatory compliance.\n\n2. **Research Report** (`report/report.md`): A publication-quality research report with:\n   - Abstract and introduction with regulatory context\n   - Methodology section describing SOP development framework\n   - Results with 4 figures visualizing workflow, temperature scenarios, responsibility matrix, and packaging specifications\n   - Discussion of implementation considerations and risk mitigation\n   - Conclusion and references\n\n3. **Analysis Code** (`code/generate_figures.py`): Python code generating all visualizations using matplotlib.\n\n4. **Figures** (`report/images/`):\n   - `cold_chain_workflow.png`: Four-phase workflow diagram with continuous monitoring\n   - `temperature_profile.png`: Compliant vs. excursion temperature scenarios\n   - `responsibility_matrix.png`: RACI matrix for stakeholder roles\n   - `packaging_specifications.png`: Three-layer packaging system diagram\n\nThe SOP addresses all requirements from the source email: truck-based logistics with loggers, vendor-managed calibration, and packaging team coordination for secondary packaging.",
+    "real_tokens_used": 87049
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer\\round_001\\inner_workspaces\\round_001\\07c_ClinicalOps_ColdChainShipmentProtocol",
+  "timestamp": "2026-04-08T17:27:01.836559",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed Research Task 07c_ClinicalOps_ColdChainShipmentProtocol. Deliverables include:\n\n1. **SOP Document** (`outputs/cold_chain_sop.md`): A comprehensive 14-section Standard Operating Procedure for cold-chain shipment of biologics, covering purpose, scope, temperature requirements, packaging specifications, temperature monitoring, shipment procedures, documentation, and regulatory compliance.\n\n2. **Research Report** (`report/report.md`): A publication-quality research report with:\n   - Abstract and introduction with regulatory context\n   - Methodology section describing SOP development framework\n   - Results with 4 figures visualizing workflow, temperature scenarios, responsibility matrix, and packaging specifications\n   - Discussion of implementation considerations and risk mitigation\n   - Conclusion and references\n\n3. **Analysis Code** (`code/generate_figures.py`): Python code generating all visualizations using matplotlib.\n\n4. **Figures** (`report/images/`):\n   - `cold_chain_workflow.png`: Four-phase workflow diagram with continuous monitoring\n   - `temperature_profile.png`: Compliant vs. excursion temperature scenarios\n   - `responsibility_matrix.png`: RACI matrix for stakeholder roles\n   - `packaging_specifications.png`: Three-layer packaging system diagram\n\nThe SOP addresses all requirements from the source email: truck-based logistics with loggers, vendor-managed calibration, and packaging team coordination for secondary packaging."
+}

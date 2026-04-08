@@ -1,0 +1,22 @@
+Data shape: (80, 6)
+
+Summary statistics:
+       plot_id  yield_t_ha  irrigation_m3  fertilizer_kg  groundwater_quota_enforcement  rainfall_mm
+count  80.0000   80.000000       80.00000       80.00000                      80.000000    80.000000
+mean   39.5000    4.290825      213.50000      102.06000                       0.500737   395.782500
+std    23.2379    0.663260      120.89907       11.20203                       0.294704   223.895405
+min     0.0000    2.653000        9.70000       80.70000                       0.019000     4.900000
+25%    19.7500    3.801500       95.32500       94.47500                       0.243000   200.975000
+50%    39.5000    4.353000      236.10000      102.50000                       0.488500   409.350000
+75%    59.2500    4.779500      314.52500      111.92500                       0.745750   588.000000
+max    79.0000    5.540000      396.10000      119.60000                       0.994000   799.700000
+
+Missing values:
+plot_id                          0
+yield_t_ha                       0
+irrigation_m3                    0
+fertilizer_kg                    0
+groundwater_quota_enforcement    0
+rainfall_mm                      0
+
+Unique plot_id count: 80

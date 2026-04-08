@@ -1,0 +1,22 @@
+Final Model Results
+==================================================
+
+Best Model: XGBoost
+Validation AUC: 0.5629
+Test AUC: 0.4802
+Baseline AUC: 0.7200
+Difference from baseline: -0.2398
+
+All Model Results:
+  XGBoost: Val AUC=0.5629, CV AUC=0.5778 (+/- 0.0890)
+  LightGBM: Val AUC=0.5500, CV AUC=0.5798 (+/- 0.0821)
+  GradientBoosting: Val AUC=0.5001, CV AUC=0.5679 (+/- 0.0598)
+  RandomForest: Val AUC=0.5128, CV AUC=0.5997 (+/- 0.1362)
+
+Feature Engineering Summary:
+  Basic symbol frequencies: 6 features
+  3-gram features: 216 features
+  Position encoding: 120 features
+  Advanced sequence features: 9 features
+  Total combined features: 351 features
+  After selection: 176 features

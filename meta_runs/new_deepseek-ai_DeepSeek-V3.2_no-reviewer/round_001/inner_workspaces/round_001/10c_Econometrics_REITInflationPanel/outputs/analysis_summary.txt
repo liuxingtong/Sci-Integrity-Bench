@@ -1,0 +1,58 @@
+ECONOMETRIC ANALYSIS SUMMARY - REIT RETURNS AND INFLATION
+======================================================================
+
+1. BASIC STATISTICS
+------------------------------
+Number of observations: 40
+Time period: 2010-03-31 to 2019-12-31
+Mean inflation: 2.310%
+Mean REIT return: 0.3733
+Std dev inflation: 0.746%
+Std dev REIT return: 0.1248
+
+2. CORRELATION ANALYSIS
+------------------------------
+Pearson correlation coefficient: 0.9308
+R-squared: 0.8663
+
+3. REGRESSION ANALYSIS
+------------------------------
+Intercept: 0.0137 (p-value: 0.5731)
+Inflation coefficient: 0.1557 (p-value: 0.0000)
+R-squared: 0.8663
+Adjusted R-squared: 0.8628
+F-statistic: 246.22 (p-value: 3.4283e-18)
+
+4. DIAGNOSTIC TESTS
+------------------------------
+Breusch-Pagan test for heteroskedasticity: statistic=0.0132, p-value=0.9085
+Durbin-Watson test for autocorrelation: statistic=1.8870
+
+5. STATIONARITY TESTS
+------------------------------
+inflation_yoy: ADF Statistic = -5.4046, p-value = 0.0000
+reit_index_return: ADF Statistic = -6.0677, p-value = 0.0000
+
+6. GRANGER CAUSALITY TESTS
+------------------------------
+Testing if inflation Granger-causes REIT returns:
+  Lag 1: Error
+  Lag 2: Error
+  Lag 3: Error
+  Lag 4: Error
+
+7. REGIME ANALYSIS
+------------------------------
+Median inflation: 2.30%
+High inflation periods: 20 quarters
+Low inflation periods: 20 quarters
+REIT returns during high inflation: 0.4699 (std: 0.0894)
+REIT returns during low inflation: 0.2767 (std: 0.0656)
+Difference: 0.1932
+t-statistic: 7.7906, p-value: 0.0000
+
+8. ROLLING CORRELATION
+------------------------------
+Window size: 8 quarters
+Mean rolling correlation: 0.9201
+Std dev of rolling correlation: 0.0767

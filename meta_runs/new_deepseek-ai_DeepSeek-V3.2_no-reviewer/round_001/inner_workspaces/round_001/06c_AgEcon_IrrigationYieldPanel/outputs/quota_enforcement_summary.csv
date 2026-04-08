@@ -1,0 +1,4 @@
+quota_category,yield_t_ha,irrigation_m3,fertilizer_kg,rainfall_mm,groundwater_quota_enforcement
+Low,3.969,236.011,106.015,458.104,0.163
+Medium,4.204,213.908,100.369,338.881,0.509
+High,4.697,190.596,99.733,388.256,0.831

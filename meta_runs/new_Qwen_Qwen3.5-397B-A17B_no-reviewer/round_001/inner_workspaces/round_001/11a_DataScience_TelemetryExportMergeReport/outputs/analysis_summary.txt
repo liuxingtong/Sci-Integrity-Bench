@@ -1,0 +1,17 @@
+TELEMETRY EXPORT MERGE ANALYSIS SUMMARY
+==================================================
+
+analysis_date: 2026-04-08 18:18:41
+date_range: 2024-01-01 to 2024-01-10
+generator_units: ['T01', 'T02', 'T03']
+total_records_site: 30
+total_records_field_raw: 30
+total_records_field_clean: 30
+matched_records: 30
+total_energy_site_kwh: 1935.0
+total_energy_field_kwh: 1935.0
+mean_difference_kwh: 0.0
+std_difference_kwh: 0.0
+max_abs_difference_kwh: 0.0
+correlation: 1.0
+data_quality_issues: ['Field export contained BOM character', 'Field export had 2 invalid records (empty date, invalid date 13/37/2024)', 'Field export had 1 outlier value (9999 kWh)']

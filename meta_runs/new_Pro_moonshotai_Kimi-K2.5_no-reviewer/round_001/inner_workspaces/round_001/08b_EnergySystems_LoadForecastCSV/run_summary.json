@@ -1,0 +1,29 @@
+{
+  "scenario_id": "08b_EnergySystems_LoadForecastCSV",
+  "title": "EnergySystems LoadForecastCSV",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/load_15min.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 24,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the EnergySystems LoadForecastCSV analysis task. Generated a comprehensive annual load forecasting and reliability analysis report based on 15-minute interval load data spanning 7 days (672 records).\n\n**Deliverables Completed:**\n\n1. **Analysis Code** (`code/load_forecast_analysis.py`): Complete Python script with data processing, statistical analysis, forecasting, and visualization.\n\n2. **Figures** (`report/images/`, 8 PNG files):\n   - 01_full_load_timeseries.png - Complete 15-minute load profile\n   - 02_load_patterns.png - Hourly, daily, and distribution patterns\n   - 03_daily_load_curves.png - Individual day comparisons\n   - 04_daily_statistics.png - Daily peak, average, range, and variability trends\n   - 05_annual_forecast.png - Projected annual load with seasonal variation\n   - 06_intraday_patterns.png - 15-minute interval analysis\n   - 07_load_duration_curve.png - Reliability metrics and percentiles\n   - 08_forecast_validation.png - Forecast accuracy assessment\n\n3. **Intermediate Results** (`outputs/`, 4 CSV files):\n   - annual_summary.csv - Key metrics and statistics\n   - daily_summary.csv - Daily aggregated statistics\n   - hourly_summary.csv - Hourly pattern statistics\n   - annual_forecast.csv - Monthly load projections\n\n4. **Final Report** (`report/report.md`): Comprehensive 13KB report including:\n   - Executive summary with key findings\n   - Methodology for forecasting and reliability analysis\n   - Results with 8 referenced figures\n   - Discussion of load characteristics and reliability implications\n   - Operational recommendations\n   - Conclusions and appendices with detailed statistics\n\n**Key Findings:**\n- Average load: 119.92 MW\n- Peak load: 135.35 MW\n- Load factor: 88.60%\n- Projected annual energy: 1,047.59 GWh\n- Projected annual peak: 142.11 MW\n- Forecast accuracy (MAPE): 0.55%",
+    "real_tokens_used": 444497
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260407_222651\\round_001\\inner_workspaces\\round_001\\08b_EnergySystems_LoadForecastCSV",
+  "timestamp": "2026-04-08T10:04:43.728718",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the EnergySystems LoadForecastCSV analysis task. Generated a comprehensive annual load forecasting and reliability analysis report based on 15-minute interval load data spanning 7 days (672 records).\n\n**Deliverables Completed:**\n\n1. **Analysis Code** (`code/load_forecast_analysis.py`): Complete Python script with data processing, statistical analysis, forecasting, and visualization.\n\n2. **Figures** (`report/images/`, 8 PNG files):\n   - 01_full_load_timeseries.png - Complete 15-minute load profile\n   - 02_load_patterns.png - Hourly, daily, and distribution patterns\n   - 03_daily_load_curves.png - Individual day comparisons\n   - 04_daily_statistics.png - Daily peak, average, range, and variability trends\n   - 05_annual_forecast.png - Projected annual load with seasonal variation\n   - 06_intraday_patterns.png - 15-minute interval analysis\n   - 07_load_duration_curve.png - Reliability metrics and percentiles\n   - 08_forecast_validation.png - Forecast accuracy assessment\n\n3. **Intermediate Results** (`outputs/`, 4 CSV files):\n   - annual_summary.csv - Key metrics and statistics\n   - daily_summary.csv - Daily aggregated statistics\n   - hourly_summary.csv - Hourly pattern statistics\n   - annual_forecast.csv - Monthly load projections\n\n4. **Final Report** (`report/report.md`): Comprehensive 13KB report including:\n   - Executive summary with key findings\n   - Methodology for forecasting and reliability analysis\n   - Results with 8 referenced figures\n   - Discussion of load characteristics and reliability implications\n   - Operational recommendations\n   - Conclusions and appendices with detailed statistics\n\n**Key Findings:**\n- Average load: 119.92 MW\n- Peak load: 135.35 MW\n- Load factor: 88.60%\n- Projected annual energy: 1,047.59 GWh\n- Projected annual peak: 142.11 MW\n- Forecast accuracy (MAPE): 0.55%"
+}

@@ -1,0 +1,19 @@
+{
+  "total_incidents": 6,
+  "source_system_counts": {
+    "edr": 3,
+    "network_ids": 3
+  },
+  "narrative_length_stats": {
+    "mean": 121.16666666666667,
+    "std": 11.444066876188144,
+    "min": 108,
+    "max": 135
+  },
+  "word_count_stats": {
+    "mean": 17.166666666666668,
+    "std": 1.4719601443879746,
+    "min": 15,
+    "max": 19
+  }
+}

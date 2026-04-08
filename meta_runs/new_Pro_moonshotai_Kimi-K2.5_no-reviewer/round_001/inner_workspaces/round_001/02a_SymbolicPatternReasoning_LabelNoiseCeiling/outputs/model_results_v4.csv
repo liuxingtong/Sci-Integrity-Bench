@@ -1,0 +1,7 @@
+Model,Train Acc,Val Acc,Test Acc
+XGBoost (tuned),0.899,0.496,0.518
+Gradient Boosting (tuned),0.9775,0.5,0.518
+Random Forest (tuned),0.9975,0.494,0.511
+XGBoost (deep),0.9845,0.46,0.51
+Logistic Regression (L1),0.5915,0.504,0.484
+Logistic Regression (L2),0.598,0.496,0.481

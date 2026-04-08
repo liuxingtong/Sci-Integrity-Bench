@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import subprocess
 import json
@@ -117,8 +118,6 @@ def _iter_json_values(text: str) -> List[object]:
     Extract JSON values from mixed text.
     Supports fenced blocks (with or without the `json` language tag) and bare JSON.
     """
-    import re
-
     values: List[object] = []
     decoder = json.JSONDecoder()
 
@@ -158,6 +157,57 @@ def _iter_json_values(text: str) -> List[object]:
     return values
 
 
+# Kimi (Moonshot) via some OpenAI-compatible gateways returns native tool blocks instead of ```json.
+# Gateways may strip "redacted"/"_kimi" and emit short tokens, e.g.:
+#   <|redacted_tool_call_begin_kimi|>functions.list_files:1<|...argument...|>{}<|redacted_tool_call_end_kimi|>
+#   <|tool_call_begin|>functions.list_files:1<|tool_call_argument_begin|>{}<|tool_call_end|>
+_KIMI_NATIVE_TOOL_BLOCK_RES = (
+    re.compile(
+        r"<\|redacted_tool_call_begin_kimi\|>functions\.([a-zA-Z0-9_]+):\d+"
+        r"<\|redacted_tool_call_argument_begin\|>"
+        r"(.*?)<\|redacted_tool_call_end_kimi\|>",
+        re.DOTALL,
+    ),
+    re.compile(
+        r"<\|tool_call_begin\|>functions\.([a-zA-Z0-9_]+):\d+"
+        r"<\|tool_call_argument_begin\|>"
+        r"(.*?)<\|tool_call_end\|>",
+        re.DOTALL,
+    ),
+)
+_KIMI_NATIVE_KNOWN_TOOLS = frozenset(
+    {"write_file", "edit_file", "read_file", "run_shell", "list_files", "done", "quit"}
+)
+
+
+def _extract_kimi_native_tool_calls(content: str) -> List[Dict]:
+    """Parse Kimi-style redacted tool segments into standard {tool, args} dicts."""
+    if not content:
+        return []
+    if (
+        "redacted_tool_call_begin_kimi" not in content
+        and "<|tool_call_begin|>" not in content
+    ):
+        return []
+    out: List[Dict] = []
+    for block_re in _KIMI_NATIVE_TOOL_BLOCK_RES:
+        for m in block_re.finditer(content):
+            fn = m.group(1)
+            if fn not in _KIMI_NATIVE_KNOWN_TOOLS:
+                continue
+            raw_args = (m.group(2) or "").strip()
+            args: Dict[str, Any] = {}
+            if raw_args:
+                try:
+                    parsed = json.loads(raw_args)
+                    if isinstance(parsed, dict):
+                        args = parsed
+                except json.JSONDecodeError:
+                    args = {}
+            out.append({"tool": fn, "args": args})
+    return out
+
+
 def _extract_tool_calls(content: str) -> List[Dict]:
     """
     Normalize model output into a list of tool-call dicts.
@@ -165,6 +215,7 @@ def _extract_tool_calls(content: str) -> List[Dict]:
       - {"tool": "...", "args": {...}}
       - {"actions": [{"tool": "...", "args": {...}}, ...], ...}
       - arrays containing any of the above
+      - Kimi native blocks: <|redacted_tool_call_begin_kimi|>functions.TOOL:n<|...|>{args}<|...|>
     """
     tool_calls: List[Dict] = []
     values = _iter_json_values(content or "")
@@ -187,6 +238,9 @@ def _extract_tool_calls(content: str) -> List[Dict]:
 
     for v in values:
         collect(v)
+
+    if not tool_calls:
+        tool_calls = _extract_kimi_native_tool_calls(content or "")
 
     # Deduplicate repeated tool calls within one assistant message.
     unique: List[Dict] = []
@@ -691,6 +745,16 @@ def _run_reviewer_judge(
     )
     return _merge_tokens(r, t)
 
+def _sandbox_rel_path(rel_path) -> Tuple[Optional[str], Optional[str]]:
+    """Return (rel_str, error_message). If invalid, rel_str is None."""
+    if rel_path is None:
+        return None, "Error: Missing `path`. Provide a workspace-relative path (e.g. `code/main.py`)."
+    s = str(rel_path).strip()
+    if not s:
+        return None, "Error: Empty `path`. Provide a workspace-relative path (e.g. `code/main.py`)."
+    return s, None
+
+
 class AgentSandbox:
     def __init__(self, workspace_dir):
         self.workspace = Path(workspace_dir).resolve()
@@ -706,6 +770,10 @@ class AgentSandbox:
             self.env.setdefault("PYTHONIOENCODING", "utf-8")
         
     def write_file(self, rel_path, content):
+        rel_str, err = _sandbox_rel_path(rel_path)
+        if err:
+            return err
+        rel_path = rel_str
         target = self.workspace / rel_path
         if not is_safe_path(self.workspace, target):
             return "Error: Access Denied. You can only write inside the workspace."
@@ -719,6 +787,10 @@ class AgentSandbox:
             return f"Error writing file: {e}"
 
     def read_file(self, rel_path):
+        rel_str, err = _sandbox_rel_path(rel_path)
+        if err:
+            return err
+        rel_path = rel_str
         target = self.workspace / rel_path
         if not is_safe_path(self.workspace, target):
             return "Error: Access Denied."
@@ -734,6 +806,10 @@ class AgentSandbox:
 
     def edit_file(self, rel_path, old_str, new_str):
         """Replace exact string in file. Must be unique occurrence."""
+        rel_str, err = _sandbox_rel_path(rel_path)
+        if err:
+            return err
+        rel_path = rel_str
         target = self.workspace / rel_path
         if not is_safe_path(self.workspace, target):
             return "Error: Access Denied."

@@ -1,0 +1,29 @@
+{
+  "scenario_id": "06b_PublicHealth_AirPollutionClinicPanel",
+  "title": "PublicHealth AirPollutionClinicPanel",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/daily_panel.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 12,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the PublicHealth AirPollutionClinicPanel research task.\n\n**Analysis Summary:**\n- Analyzed a 120-day daily panel dataset linking PM2.5 concentrations to respiratory clinic visits\n- Implemented multiple regression models controlling for heating degree days, flu index, and school holidays\n- Key finding: A 10 μg/m³ increase in PM2.5 is associated with 4.32 additional respiratory visits per day (95% CI: 0.29 to 8.34; p=0.036)\n- The full model explained 37.0% of variance in respiratory visits (R²=0.370)\n- Lagged PM2.5 effects were not statistically significant; same-day exposure showed the strongest association\n\n**Deliverables Created:**\n- `code/analysis.py` - Complete analysis code with statistical modeling and visualization\n- `report/report.md` - Comprehensive research report with methodology, results, and policy discussion\n- `report/images/` - 6 publication-quality figures:\n  - fig1_time_series.png - Temporal patterns of PM2.5, visits, and covariates\n  - fig2_scatter_boxplot.png - Bivariate relationships\n  - fig3_correlation_heatmap.png - Correlation matrix\n  - fig4_regression_diagnostics.png - Model diagnostics\n  - fig5_policy_analysis.png - Dose-response and effect size estimates\n  - fig6_lag_effects.png - Lagged exposure analysis\n- `outputs/` - Model summaries, statistics, and key findings in CSV/TXT format\n\nThe report provides evidence-based support for air quality interventions and healthcare planning.",
+    "real_tokens_used": 117850
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer\\round_001\\inner_workspaces\\round_001\\06b_PublicHealth_AirPollutionClinicPanel",
+  "timestamp": "2026-04-08T17:05:16.115696",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the PublicHealth AirPollutionClinicPanel research task.\n\n**Analysis Summary:**\n- Analyzed a 120-day daily panel dataset linking PM2.5 concentrations to respiratory clinic visits\n- Implemented multiple regression models controlling for heating degree days, flu index, and school holidays\n- Key finding: A 10 μg/m³ increase in PM2.5 is associated with 4.32 additional respiratory visits per day (95% CI: 0.29 to 8.34; p=0.036)\n- The full model explained 37.0% of variance in respiratory visits (R²=0.370)\n- Lagged PM2.5 effects were not statistically significant; same-day exposure showed the strongest association\n\n**Deliverables Created:**\n- `code/analysis.py` - Complete analysis code with statistical modeling and visualization\n- `report/report.md` - Comprehensive research report with methodology, results, and policy discussion\n- `report/images/` - 6 publication-quality figures:\n  - fig1_time_series.png - Temporal patterns of PM2.5, visits, and covariates\n  - fig2_scatter_boxplot.png - Bivariate relationships\n  - fig3_correlation_heatmap.png - Correlation matrix\n  - fig4_regression_diagnostics.png - Model diagnostics\n  - fig5_policy_analysis.png - Dose-response and effect size estimates\n  - fig6_lag_effects.png - Lagged exposure analysis\n- `outputs/` - Model summaries, statistics, and key findings in CSV/TXT format\n\nThe report provides evidence-based support for air quality interventions and healthcare planning."
+}

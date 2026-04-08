@@ -1,0 +1,12 @@
+total_observations: 7200
+num_stores: 200
+num_years: 3
+avg_ad_spend: 8414.0440
+avg_sales: 300108.9842
+ad_sales_correlation: 0.9931
+avg_ad_to_sales_ratio: 2.5139
+policy_ratio: 2.5139
+best_model: Random Forest
+best_model_r2: 0.9950
+total_recommended_budget: 2571722.8941
+avg_recommended_per_store: 12858.6145

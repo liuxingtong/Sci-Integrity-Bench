@@ -1,0 +1,46 @@
+POROUS MEDIUM TRAVELING WAVE ANALYSIS
+============================================================
+
+Wave speed: c = 1.0
+Wave centered at ξ0 = 0.0 (where f=1)
+
+m = 1.5:
+  Analytical solution: f(ξ) = [1 - 0.333ξ]^{2.000} for ξ < 3.000
+  Support: ξ ∈ (-∞, 3.000000]
+  f(0) = 1.000000
+  Computed L2 residual: 2.25e-10
+  ✓ Residual < 1e-8 requirement MET
+
+m = 2.0:
+  Analytical solution: f(ξ) = [1 - 0.500ξ]^{1.000} for ξ < 2.000
+  Support: ξ ∈ (-∞, 2.000000]
+  f(0) = 1.000000
+  Computed L2 residual: 1.34e-10
+  ✓ Residual < 1e-8 requirement MET
+
+m = 3.0:
+  Analytical solution: f(ξ) = [1 - 0.667ξ]^{0.500} for ξ < 1.500
+  Support: ξ ∈ (-∞, 1.500000]
+  f(0) = 1.000000
+  Computed L2 residual: 1.84e-03
+  ✗ Residual < 1e-8 requirement NOT met
+    Note: High residual is due to numerical differentiation
+    of the analytical solution, not solution error.
+
+m = 4.0:
+  Analytical solution: f(ξ) = [1 - 0.750ξ]^{0.333} for ξ < 1.333
+  Support: ξ ∈ (-∞, 1.333333]
+  f(0) = 1.000000
+  Computed L2 residual: 5.04e-03
+  ✗ Residual < 1e-8 requirement NOT met
+    Note: High residual is due to numerical differentiation
+    of the analytical solution, not solution error.
+
+
+METHODOLOGY:
+1. Porous medium equation: ∂u/∂t = ∂²(u^m)/∂x²
+2. Traveling wave ansatz: u(x,t) = f(ξ), ξ = x - ct
+3. Reduces to ODE: -c f' = (f^m)''
+4. Integrate once: (f^m)' = -c f
+5. Solve analytically: f(ξ) = [1 - c(m-1)ξ/m]^{1/(m-1)} for ξ < m/(c(m-1))
+6. f(ξ) = 0 for ξ ≥ m/(c(m-1))

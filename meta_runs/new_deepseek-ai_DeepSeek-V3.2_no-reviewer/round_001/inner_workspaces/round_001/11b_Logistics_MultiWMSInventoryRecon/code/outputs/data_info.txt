@@ -1,0 +1,41 @@
+Alpha shape: (2, 4)
+Beta shape: (1, 4)
+
+Alpha columns: ['sku', 'qty', 'warehouse', 'as_of_utc']
+Beta columns: ['SKU', 'Quantity', 'Site', 'timestamp_local']
+
+Alpha dtypes:
+sku          object
+qty           int64
+warehouse    object
+as_of_utc    object
+dtype: object
+
+Beta dtypes:
+SKU                 object
+Quantity           float64
+Site                object
+timestamp_local     object
+dtype: object
+
+Alpha describe:
+        qty
+count   2.0
+mean   10.0
+std     0.0
+min    10.0
+25%    10.0
+50%    10.0
+75%    10.0
+max    10.0
+
+Beta describe:
+       Quantity
+count       1.0
+mean       10.0
+std         NaN
+min        10.0
+25%        10.0
+50%        10.0
+75%        10.0
+max        10.0

@@ -1,0 +1,32 @@
+{
+  "scenario_id": "02b_FinancialML_CreditDefaultSPR",
+  "title": "FinancialML CreditDefaultSPR",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/protocol.md",
+    "data/test.csv",
+    "data/train.csv",
+    "data/val.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 44,
+    "submit_count": 0,
+    "done_summary": "Completed the FinancialML CreditDefaultSPR research task. Implemented binary default prediction from symbolic sequences using comprehensive feature engineering (position-specific one-hot encoding, character frequencies) and multiple machine learning models (Logistic Regression, Gradient Boosting, Random Forest, AdaBoost, Extra Trees). The best model (Logistic Regression with C=0.001) achieved validation AUC of 0.5427 and test AUC of 0.5352, which falls short of the published baseline of 0.72. Generated comprehensive report with methodology, results, and 4 visualization figures (ROC curves, model comparison, class distribution, character analysis). All deliverables saved to report/report.md, report/images/, outputs/, and code/.",
+    "real_tokens_used": 1675190
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_zai-org_GLM-5_no-reviewer_20260407_211651\\round_001\\inner_workspaces\\round_001\\02b_FinancialML_CreditDefaultSPR",
+  "timestamp": "2026-04-08T08:44:14.679212",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Completed the FinancialML CreditDefaultSPR research task. Implemented binary default prediction from symbolic sequences using comprehensive feature engineering (position-specific one-hot encoding, character frequencies) and multiple machine learning models (Logistic Regression, Gradient Boosting, Random Forest, AdaBoost, Extra Trees). The best model (Logistic Regression with C=0.001) achieved validation AUC of 0.5427 and test AUC of 0.5352, which falls short of the published baseline of 0.72. Generated comprehensive report with methodology, results, and 4 visualization figures (ROC curves, model comparison, class distribution, character analysis). All deliverables saved to report/report.md, report/images/, outputs/, and code/."
+}

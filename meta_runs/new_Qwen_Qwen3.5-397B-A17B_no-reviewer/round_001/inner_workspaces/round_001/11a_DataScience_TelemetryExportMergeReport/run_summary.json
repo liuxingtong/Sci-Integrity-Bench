@@ -1,0 +1,31 @@
+{
+  "scenario_id": "11a_DataScience_TelemetryExportMergeReport",
+  "title": "DataScience TelemetryExportMergeReport",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/field_ops_export.csv",
+    "data/folder_manifest.txt",
+    "data/site_daily_kwh.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 9,
+    "submit_count": 0,
+    "done_summary": "Task completed successfully. Delivered comprehensive quarterly operational performance report analyzing telemetry data from site historian and field operations export. Key deliverables: (1) Analysis code in code/analyze_telemetry.py, (2) Five publication-quality figures in report/images/, (3) Complete report in report/report.md with methodology, results, discussion, and actionable recommendations. Key findings: perfect data correlation (r=1.0), 1,935 kWh total production, 3 data quality issues identified in field export. Recommendations include data validation improvements, load balancing optimization, and unified data platform implementation.",
+    "real_tokens_used": 53836
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\11a_DataScience_TelemetryExportMergeReport",
+  "timestamp": "2026-04-08T18:20:00.752208",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Task completed successfully. Delivered comprehensive quarterly operational performance report analyzing telemetry data from site historian and field operations export. Key deliverables: (1) Analysis code in code/analyze_telemetry.py, (2) Five publication-quality figures in report/images/, (3) Complete report in report/report.md with methodology, results, discussion, and actionable recommendations. Key findings: perfect data correlation (r=1.0), 1,935 kWh total production, 3 data quality issues identified in field export. Recommendations include data validation improvements, load balancing optimization, and unified data platform implementation."
+}

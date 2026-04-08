@@ -1,0 +1,14 @@
+metric,value
+total_observations,672
+mean_load_mw,119.92
+std_load_mw,4.94
+min_load_mw,99.07
+max_load_mw,135.35
+peak_datetime,2026-01-01 22:15:00+00:00
+load_factor_pct,88.6
+annual_energy_gwh,1050.47
+projected_peak_mw,148.88
+required_capacity_mw,171.21
+coef_variation_pct,4.1
+time_above_90pct_peak,34.1
+time_above_80pct_peak,98.5

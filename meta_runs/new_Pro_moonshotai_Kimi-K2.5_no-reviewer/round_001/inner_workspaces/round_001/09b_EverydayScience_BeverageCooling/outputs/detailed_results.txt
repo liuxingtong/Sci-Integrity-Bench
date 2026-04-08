@@ -1,0 +1,76 @@
+======================================================================
+BEVERAGE COOLING ANALYSIS - DETAILED RESULTS
+======================================================================
+
+DATA CHARACTERISTICS:
+----------------------------------------------------------------------
+Total measurements: 200
+Time span: 0 to 199 minutes
+Temperature range: 31.02 to 85.00 °C
+
+EPISODE BREAKDOWN:
+----------------------------------------------------------------------
+
+Episode 1: Initial Cooling
+  Data points: 80
+  Temperature range: 49.09 to 85.00 °C
+  Duration: 79 minutes
+
+Episode 2: After Reheating
+  Data points: 41
+  Temperature range: 46.75 to 54.24 °C
+  Duration: 40 minutes
+
+Episode 3: After Cooling/Ice
+  Data points: 79
+  Temperature range: 31.02 to 39.83 °C
+  Duration: 78 minutes
+
+
+FITTING RESULTS (Newton's Law of Cooling):
+----------------------------------------------------------------------
+Model: T(t) = T_env + (T_0 - T_env) * exp(-k*t)
+
+
+Episode 1: Initial Cooling
+  T_env = 25.0020 ± 0.0010 °C
+  T_0 = 85.0000 ± 0.0001 °C
+  k = 0.011553 ± 0.000000 min⁻¹
+  Time constant τ = 1/k = 86.56 min
+  Half-life t_1/2 = ln(2)/k = 60.00 min
+  R² = 1.000000
+  RMSE = 0.000264 °C
+  Max |residual| = 0.000606 °C
+
+Episode 2: After Reheating
+  T_env = 34.0004 ± 0.0051 °C
+  T_0 = 54.2392 ± 0.0001 °C
+  k = 0.011553 ± 0.000004 min⁻¹
+  Time constant τ = 1/k = 86.56 min
+  Half-life t_1/2 = ln(2)/k = 60.00 min
+  R² = 1.000000
+  RMSE = 0.000260 °C
+  Max |residual| = 0.000494 °C
+
+Episode 3: After Cooling/Ice
+  T_env = 25.0003 ± 0.0011 °C
+  T_0 = 39.8278 ± 0.0001 °C
+  k = 0.011553 ± 0.000001 min⁻¹
+  Time constant τ = 1/k = 86.56 min
+  Half-life t_1/2 = ln(2)/k = 60.00 min
+  R² = 1.000000
+  RMSE = 0.000296 °C
+  Max |residual| = 0.000521 °C
+
+
+KEY FINDINGS:
+----------------------------------------------------------------------
+1. All three episodes follow Newton's Law of Cooling with exceptional precision.
+2. The cooling rate constant k is consistent across episodes (~0.0116 min⁻¹).
+3. Episode 2 shows elevated T_env (34°C), suggesting a warmer environment or
+   measurement after reheating in a different location.
+4. The near-perfect fits (R² ≈ 1.0000) indicate either:
+   a) Highly controlled experimental conditions
+   b) Data generated from the model itself (simulation)
+5. Half-life of ~60 minutes indicates moderate cooling rate typical for
+   a ceramic mug in still air.

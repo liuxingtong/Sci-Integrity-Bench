@@ -259,13 +259,47 @@ def _is_429_rate_limit(exc: BaseException) -> bool:
     return False
 
 
+def _is_retryable_server_error(exc: BaseException) -> bool:
+    """
+    Transient provider / gateway failures (5xx, overloaded upstream).
+    SiliconFlow and similar sometimes return HTTP 500 with code 50507 in the message.
+    """
+    code = getattr(exc, "status_code", None)
+    if code in (500, 502, 503, 504):
+        return True
+    resp = getattr(exc, "response", None)
+    sc = getattr(resp, "status_code", None) if resp is not None else None
+    if sc in (500, 502, 503, 504):
+        return True
+    s = str(exc)
+    if "50507" in s:
+        return True
+    if "Error code: 500" in s or "status code 500" in s.lower():
+        return True
+    if "502" in s and ("bad gateway" in s.lower() or "Error code: 502" in s):
+        return True
+    if "503" in s and ("unavailable" in s.lower() or "Error code: 503" in s):
+        return True
+    if "504" in s and ("timeout" in s.lower() or "gateway" in s.lower() or "Error code: 504" in s):
+        return True
+    return False
+
+
+def _should_retry_chat_completion(exc: BaseException) -> bool:
+    return _is_429_rate_limit(exc) or _is_retryable_server_error(exc)
+
+
 def chat_completions_create_with_429_backoff(client: Any, **kwargs: Any) -> Any:
     """
-    Call client.chat.completions.create(**kwargs). On HTTP 429 / provider rate limits only,
-    sleep with exponential backoff (and honor Retry-After when present), then retry.
+    Call client.chat.completions.create(**kwargs). On retryable failures, sleep with
+    exponential backoff (and honor Retry-After when present for 429), then retry.
+
+    Retries:
+      - HTTP 429 / provider rate limits (as before)
+      - HTTP 500 / 502 / 503 / 504 and similar (e.g. SiliconFlow 50507)
 
     Env (optional):
-      LLM_429_MAX_RETRIES — default 8 (12 if model id is GLM-4 and this env is unset)
+      LLM_429_MAX_RETRIES — default 8 (12 if model id is GLM-4 and this env is unset); also caps 5xx retries
       LLM_429_BACKOFF_BASE_SEC — default 2.0 (first wait ~= base * 2**(attempt-1))
       LLM_429_BACKOFF_MAX_SEC — cap per wait, default 120.0 (180.0 for GLM-4 if unset)
 
@@ -294,7 +328,7 @@ def chat_completions_create_with_429_backoff(client: Any, **kwargs: Any) -> Any:
         try:
             return client.chat.completions.create(**kwargs)
         except BaseException as e:
-            if not _is_429_rate_limit(e):
+            if not _should_retry_chat_completion(e):
                 raise
             attempt += 1
             if attempt > max_retries:
@@ -303,8 +337,12 @@ def chat_completions_create_with_429_backoff(client: Any, **kwargs: Any) -> Any:
             ra = _retry_after_seconds(e)
             if ra is not None and ra > 0:
                 delay = min(max_delay, max(delay, ra))
+            if _is_429_rate_limit(e):
+                tag = "Rate limited (429)"
+            else:
+                tag = "Server error (retryable 5xx / gateway)"
             print(
-                f"  [LLM] Rate limited (429), sleeping {delay:.1f}s "
+                f"  [LLM] {tag}, sleeping {delay:.1f}s "
                 f"(retry {attempt}/{max_retries})...",
                 flush=True,
             )

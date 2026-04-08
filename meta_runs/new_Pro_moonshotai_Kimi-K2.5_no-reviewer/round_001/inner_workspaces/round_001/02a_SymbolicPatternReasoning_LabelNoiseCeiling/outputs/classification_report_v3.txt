@@ -1,0 +1,12 @@
+Best Model: Gradient Boosting
+Test Accuracy: 0.5070
+
+============================================================
+              precision    recall  f1-score   support
+
+  Reject (0)       0.53      0.46      0.49       520
+  Accept (1)       0.49      0.56      0.52       480
+
+    accuracy                           0.51      1000
+   macro avg       0.51      0.51      0.51      1000
+weighted avg       0.51      0.51      0.51      1000

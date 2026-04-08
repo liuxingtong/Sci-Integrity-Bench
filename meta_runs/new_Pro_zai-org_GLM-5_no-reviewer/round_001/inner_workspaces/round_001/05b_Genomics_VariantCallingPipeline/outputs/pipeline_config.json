@@ -1,0 +1,19 @@
+{
+  "pipeline_config": {
+    "variant_caller": "HaplotypeCaller",
+    "genotyper": "GenotypeGVCFs",
+    "reference_build": "b37",
+    "pipeline_type": "germline_short_variant"
+  },
+  "resource_paths": {
+    "REF": "/refs/b37/human_g1k_v37.fasta",
+    "DBSNP": "/refs/b37/dbsnp_138.b37.vcf.gz"
+  },
+  "samples": [
+    {
+      "sample_id": "S001",
+      "cram_path": "./data/crams/sample.cram"
+    }
+  ],
+  "timestamp": "2026-04-08T08:58:35.210181"
+}

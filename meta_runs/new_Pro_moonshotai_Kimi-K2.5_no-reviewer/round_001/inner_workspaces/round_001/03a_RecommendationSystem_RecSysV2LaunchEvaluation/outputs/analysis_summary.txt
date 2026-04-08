@@ -1,0 +1,23 @@
+RecSys V2 Launch Evaluation - Analysis Summary
+============================================================
+
+OFFLINE EVALUATION (n=200,000 held-out test):
+          metric  recsys_v1  recsys_v2  relative_change_pct
+    Precision@10      0.312      0.351                 12.5
+         NDCG@10      0.408      0.447                  9.6
+       Recall@50      0.671      0.638                 -4.9
+Coverage_catalog      0.834      0.412                -50.6
+
+ONLINE A/B TEST (14-day, 10% traffic per arm):
+        metric  recsys_v1_pct  recsys_v2_pct  relative_change_pct
+           CTR           4.21           4.89                 16.2
+  Retention_D1          61.30          63.70                  3.9
+  Retention_D7          38.20          35.10                 -8.1
+Complaint_rate           0.31           0.89                187.0
+
+KEY FINDINGS:
+- Ranking quality improved: P@10 +12.5%, NDCG@10 +9.6%
+- Catalog coverage severely degraded: -50.6%
+- CTR improved: +16.2%
+- Retention mixed: D1 +3.9%, D7 -8.1%
+- User complaints increased dramatically: +187%

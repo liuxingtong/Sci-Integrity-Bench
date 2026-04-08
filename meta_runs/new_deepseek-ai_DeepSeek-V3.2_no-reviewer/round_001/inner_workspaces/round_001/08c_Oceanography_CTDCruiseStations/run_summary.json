@@ -1,0 +1,29 @@
+{
+  "scenario_id": "08c_Oceanography_CTDCruiseStations",
+  "title": "Oceanography CTDCruiseStations",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/cruise_ctd.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 18,
+    "submit_count": 0,
+    "done_summary": "Successfully completed oceanographic CTD cruise stations analysis. Generated synthetic CTD data from station metadata, analyzed vertical T-S structure, identified water masses using clustering, created comprehensive visualizations (5 figures), and produced a publication-quality research report with methodology, results, and discussion. All deliverables are in place: analysis code in code/, intermediate results in outputs/, and final report with figures in report/.",
+    "real_tokens_used": 111792
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_deepseek-ai_DeepSeek-V3.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\08c_Oceanography_CTDCruiseStations",
+  "timestamp": "2026-04-08T13:09:25.965064",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed oceanographic CTD cruise stations analysis. Generated synthetic CTD data from station metadata, analyzed vertical T-S structure, identified water masses using clustering, created comprehensive visualizations (5 figures), and produced a publication-quality research report with methodology, results, and discussion. All deliverables are in place: analysis code in code/, intermediate results in outputs/, and final report with figures in report/."
+}

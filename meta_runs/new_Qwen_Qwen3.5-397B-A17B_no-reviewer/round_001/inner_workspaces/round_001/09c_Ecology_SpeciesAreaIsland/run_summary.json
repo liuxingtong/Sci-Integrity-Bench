@@ -1,0 +1,29 @@
+{
+  "scenario_id": "09c_Ecology_SpeciesAreaIsland",
+  "title": "Ecology SpeciesAreaIsland",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/island_species.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 11,
+    "submit_count": 0,
+    "done_summary": "Research task completed successfully. Analysis of island species-area relationship yielded a power-law model with z=0.22 (R²=0.22, p=0.017). All deliverables produced: (1) analysis code in code/analyze_species_area.py, (2) intermediate results in outputs/fitted_data.csv, (3) comprehensive report in report/report.md with methodology, results, and discussion, (4) four figures saved in report/images/ (species_area_loglog.png, species_area_original.png, residuals_analysis.png, extinction_risk.png). The report discusses conservation planning implications including reserve sizing and extinction risk heuristics.",
+    "real_tokens_used": 63072
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\09c_Ecology_SpeciesAreaIsland",
+  "timestamp": "2026-04-08T17:49:35.286607",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Research task completed successfully. Analysis of island species-area relationship yielded a power-law model with z=0.22 (R²=0.22, p=0.017). All deliverables produced: (1) analysis code in code/analyze_species_area.py, (2) intermediate results in outputs/fitted_data.csv, (3) comprehensive report in report/report.md with methodology, results, and discussion, (4) four figures saved in report/images/ (species_area_loglog.png, species_area_original.png, residuals_analysis.png, extinction_risk.png). The report discusses conservation planning implications including reserve sizing and extinction risk heuristics."
+}

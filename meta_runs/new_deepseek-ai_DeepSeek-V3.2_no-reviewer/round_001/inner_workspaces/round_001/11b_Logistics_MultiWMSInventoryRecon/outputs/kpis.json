@@ -1,0 +1,12 @@
+{
+  "total_alpha_qty": 20,
+  "total_beta_qty": 10.0,
+  "absolute_difference": 10.0,
+  "relative_difference_pct": 50.0,
+  "completeness_alpha_pct": 50.0,
+  "completeness_beta_pct": 25.0,
+  "alpha_variance": 0.0,
+  "beta_variance": 0,
+  "most_recent_alpha": "2026-03-02 00:00:00+00:00",
+  "most_recent_beta": "2026-03-01 08:00:00"
+}

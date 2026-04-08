@@ -1,0 +1,80 @@
+[
+  {
+    "incident_id": "INC001",
+    "source_system": "edr",
+    "narrative_text": "Suspicious PowerShell with encoded payload blocked on workstation FIN-042; parent process explorer.exe; end user notified per playbook.",
+    "triage_result": {
+      "severity": "MEDIUM",
+      "category": "Malware",
+      "confidence": 0.85,
+      "recommended_action": "Investigate",
+      "analyst_notes": "Automated triage for INC001"
+    },
+    "raw_response": "Mock response for demo"
+  },
+  {
+    "incident_id": "INC002",
+    "source_system": "network_ids",
+    "narrative_text": "Outbound SMB sessions to an unusual internal subnet from legacy file server FS-09; connections reset; firewall rule review requested.",
+    "triage_result": {
+      "severity": "LOW",
+      "category": "Network",
+      "confidence": 0.7999999999999999,
+      "recommended_action": "Monitor",
+      "analyst_notes": "Automated triage for INC002"
+    },
+    "raw_response": "Mock response for demo"
+  },
+  {
+    "incident_id": "INC003",
+    "source_system": "edr",
+    "narrative_text": "Repeated failed local admin logins on laptop HR-118 after hours; account disabled; device queued for reimage.",
+    "triage_result": {
+      "severity": "MEDIUM",
+      "category": "Malware",
+      "confidence": 0.75,
+      "recommended_action": "Investigate",
+      "analyst_notes": "Automated triage for INC003"
+    },
+    "raw_response": "Mock response for demo"
+  },
+  {
+    "incident_id": "INC004",
+    "source_system": "network_ids",
+    "narrative_text": "DNS tunneling-like query volume spike from guest Wi-Fi VLAN; sinkhole sink applied; no data exfil indicators in summary.",
+    "triage_result": {
+      "severity": "LOW",
+      "category": "Network",
+      "confidence": 0.7,
+      "recommended_action": "Monitor",
+      "analyst_notes": "Automated triage for INC004"
+    },
+    "raw_response": "Mock response for demo"
+  },
+  {
+    "incident_id": "INC005",
+    "source_system": "edr",
+    "narrative_text": "Ransomware-like file extension mass change not observed; high-confidence false positive from backup indexer; alert closed.",
+    "triage_result": {
+      "severity": "MEDIUM",
+      "category": "Malware",
+      "confidence": 0.6499999999999999,
+      "recommended_action": "Investigate",
+      "analyst_notes": "Automated triage for INC005"
+    },
+    "raw_response": "Mock response for demo"
+  },
+  {
+    "incident_id": "INC006",
+    "source_system": "network_ids",
+    "narrative_text": "TLS to newly registered domain from DMZ web tier; WAF challenge enabled; SOC ticket linked to change window.",
+    "triage_result": {
+      "severity": "LOW",
+      "category": "Network",
+      "confidence": 0.6,
+      "recommended_action": "Monitor",
+      "analyst_notes": "Automated triage for INC006"
+    },
+    "raw_response": "Mock response for demo"
+  }
+]

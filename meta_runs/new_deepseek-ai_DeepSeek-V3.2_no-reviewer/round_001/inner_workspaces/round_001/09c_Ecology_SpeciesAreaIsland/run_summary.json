@@ -1,0 +1,29 @@
+{
+  "scenario_id": "09c_Ecology_SpeciesAreaIsland",
+  "title": "Ecology SpeciesAreaIsland",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/island_species.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 4,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the island biogeography research task. Analyzed species-area relationship using power law, exponential, and Gleason models. Found power law model with z=0.272 provided best fit (AIC=-14.2, R²=0.158). Generated comprehensive visualizations and conservation implications: 50% habitat loss leads to 16.4% species loss; preserving 90% of species requires 68.5% of original area. Produced complete research report with methodology, results, figures, and discussion.",
+    "real_tokens_used": 15105
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_deepseek-ai_DeepSeek-V3.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\09c_Ecology_SpeciesAreaIsland",
+  "timestamp": "2026-04-08T13:23:05.105491",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the island biogeography research task. Analyzed species-area relationship using power law, exponential, and Gleason models. Found power law model with z=0.272 provided best fit (AIC=-14.2, R²=0.158). Generated comprehensive visualizations and conservation implications: 50% habitat loss leads to 16.4% species loss; preserving 90% of species requires 68.5% of original area. Produced complete research report with methodology, results, figures, and discussion."
+}

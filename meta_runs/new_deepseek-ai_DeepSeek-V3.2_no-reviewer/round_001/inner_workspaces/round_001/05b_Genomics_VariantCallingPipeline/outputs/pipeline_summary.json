@@ -1,0 +1,8 @@
+{
+  "pipeline_version": "GATK 4.1.0.0",
+  "reference_bundle": "b37",
+  "total_samples": 1,
+  "total_variants_called": 19044,
+  "average_variants_per_sample": 19044.0,
+  "timestamp": "2026-04-08T09:20:05.251847"
+}

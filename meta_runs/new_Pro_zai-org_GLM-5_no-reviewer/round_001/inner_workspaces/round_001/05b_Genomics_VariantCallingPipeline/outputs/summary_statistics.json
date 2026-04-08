@@ -1,0 +1,29 @@
+{
+  "pipeline": {
+    "gatk_version": null,
+    "variant_caller": "HaplotypeCaller",
+    "genotyper": "GenotypeGVCFs",
+    "reference_build": "b37"
+  },
+  "samples_processed": 1,
+  "alignment_metrics": {
+    "mean_total_reads": 101081788.0,
+    "mean_mapped_reads": 88315092.0,
+    "mean_mapping_rate": 87.36993453261827,
+    "mean_coverage": 31.161672243363988
+  },
+  "variant_metrics": {
+    "mean_total_variants": 4778167.0,
+    "mean_snps": 4041090.0,
+    "mean_indels": 467221.0,
+    "mean_ti_tv_ratio": 2.144399754453365,
+    "mean_het_ratio": 0.643855270901575
+  },
+  "quality_metrics": {
+    "mean_qc_pass_rate": 97.44741157888951
+  },
+  "performance": {
+    "mean_haplotypecaller_runtime_min": 108.65,
+    "mean_genotypegvcfs_runtime_min": 49.733333333333334
+  }
+}

@@ -1,0 +1,38 @@
+IRRIGATION YIELD PANEL ANALYSIS - SUMMARY STATISTICS
+============================================================
+
+Total Observations: 80
+Mean Yield (t/ha): 4.2908
+Yield Std (t/ha): 0.6633
+Mean Irrigation (m³): 213.5000
+Mean Fertilizer (kg): 102.0600
+Mean Policy Enforcement: 0.5007
+Mean Rainfall (mm): 395.7825
+Irrigation-Yield Correlation: 0.3084
+Model R-squared: 0.6031
+Cross-val R-squared: 0.5042
+
+
+REGRESSION COEFFICIENTS
+============================================================
+                        Variable  Coefficient  Abs_Coefficient
+2  groundwater_quota_enforcement     1.442769         1.442769
+1                  fertilizer_kg     0.003200         0.003200
+0                  irrigation_m3     0.001973         0.001973
+3                    rainfall_mm     0.001326         0.001326
+
+POLICY ENFORCEMENT ANALYSIS
+============================================================
+                        mean       std  count
+policy_category                              
+Low (0-0.33)        3.878417  0.636067     24
+Medium (0.33-0.66)  4.295129  0.603735     31
+High (0.66-1.0)     4.681400  0.525069     25
+
+RAINFALL CATEGORY ANALYSIS
+============================================================
+                    irrigation_m3  yield_t_ha
+rainfall_category                            
+Low (<300mm)           194.978571    3.922464
+Medium (300-600mm)     214.705882    4.423118
+High (>600mm)          240.033333    4.613944

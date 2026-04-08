@@ -1,0 +1,32 @@
+{
+  "scenario_id": "02c_AstroML_VariableStarClassification",
+  "title": "AstroML VariableStarClassification",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/protocol.md",
+    "data/test.csv",
+    "data/train.csv",
+    "data/val.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 40,
+    "submit_count": 0,
+    "done_summary": "Completed the Variable Star Classification research task. The report (report/report.md) documents comprehensive feature engineering and model evaluation for classifying variable vs non-variable sources using symbol series features. Key deliverables:\n\n1. Analysis code: code/analyze_final.py and multiple iterations\n2. Results: outputs/results_summary.csv\n3. Report: report/report.md with methodology, results, and discussion\n4. Figures: 6 PNG files in report/images/ including feature importance, confusion matrix, model comparison, class distribution, and feature distributions\n\nBest model achieved ~0.56 test balanced accuracy (Ridge Classifier), below the 0.78 baseline target. Analysis revealed minimal discriminative differences between classes in symbol frequencies, suggesting more sophisticated sequence modeling approaches may be needed.",
+    "real_tokens_used": 1669054
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\02c_AstroML_VariableStarClassification",
+  "timestamp": "2026-04-08T13:36:28.681688",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Completed the Variable Star Classification research task. The report (report/report.md) documents comprehensive feature engineering and model evaluation for classifying variable vs non-variable sources using symbol series features. Key deliverables:\n\n1. Analysis code: code/analyze_final.py and multiple iterations\n2. Results: outputs/results_summary.csv\n3. Report: report/report.md with methodology, results, and discussion\n4. Figures: 6 PNG files in report/images/ including feature importance, confusion matrix, model comparison, class distribution, and feature distributions\n\nBest model achieved ~0.56 test balanced accuracy (Ridge Classifier), below the 0.78 baseline target. Analysis revealed minimal discriminative differences between classes in symbol frequencies, suggesting more sophisticated sequence modeling approaches may be needed."
+}

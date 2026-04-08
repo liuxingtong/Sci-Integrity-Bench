@@ -1,0 +1,11 @@
+Policy Comparison Summary
+========================
+
+Total metrics: 8
+Metrics improved by pi_new (Simulation): 5
+Metrics improved by pi_new (Real World): 5
+
+Concerning Metrics (pi_new worse in real world):
+  - edge_case_fail_rate: 86.5% worse
+  - line_stop_events: 60.0% worse
+  - safety_intervention_rate: 244.4% worse

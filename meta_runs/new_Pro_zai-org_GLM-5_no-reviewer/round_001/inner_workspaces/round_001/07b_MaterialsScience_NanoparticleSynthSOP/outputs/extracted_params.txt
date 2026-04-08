@@ -1,0 +1,12 @@
+Extracted Synthesis Parameters
+========================================
+product: NanoCu (Copper Nanoparticles)
+temperature: 110°C
+temperature_range: 105-115°C
+precursor: Precursor A
+addition_method: Dropwise
+surfactant: Required (type TBD from batch record)
+stirring_duration: Overnight (12-16 hours)
+initial_color: Blue-green
+final_color: Brown
+workup: To be confirmed from photo documentation

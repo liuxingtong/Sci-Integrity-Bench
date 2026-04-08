@@ -1,0 +1,100 @@
+REGRESSION ANALYSIS RESULTS
+============================================================
+
+Model 1: Basic Yield Model
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             yield_t_ha   R-squared:                       0.229
+Model:                            OLS   Adj. R-squared:                  0.199
+Method:                 Least Squares   F-statistic:                     7.525
+Date:                Wed, 08 Apr 2026   Prob (F-statistic):           0.000179
+Time:                        08:54:14   Log-Likelihood:                -69.762
+No. Observations:                  80   AIC:                             147.5
+Df Residuals:                      76   BIC:                             157.1
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+=================================================================================
+                    coef    std err          t      P>|t|      [0.025      0.975]
+---------------------------------------------------------------------------------
+Intercept         4.0904      0.626      6.530      0.000       2.843       5.338
+irrigation_m3     0.0016      0.001      2.849      0.006       0.000       0.003
+fertilizer_kg    -0.0055      0.006     -0.921      0.360      -0.017       0.006
+rainfall_mm       0.0011      0.000      3.595      0.001       0.000       0.002
+==============================================================================
+Omnibus:                        1.713   Durbin-Watson:                   2.056
+Prob(Omnibus):                  0.425   Jarque-Bera (JB):                1.483
+Skew:                          -0.333   Prob(JB):                        0.476
+Kurtosis:                       2.954   Cond. No.                     4.76e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 4.76e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+
+============================================================
+Model 2: With Groundwater Quota Enforcement
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             yield_t_ha   R-squared:                       0.603
+Model:                            OLS   Adj. R-squared:                  0.582
+Method:                 Least Squares   F-statistic:                     28.49
+Date:                Wed, 08 Apr 2026   Prob (F-statistic):           2.11e-14
+Time:                        08:54:14   Log-Likelihood:                -43.205
+No. Observations:                  80   AIC:                             96.41
+Df Residuals:                      75   BIC:                             108.3
+Df Model:                           4                                         
+Covariance Type:            nonrobust                                         
+=================================================================================================
+                                    coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------------------
+Intercept                         2.2957      0.500      4.589      0.000       1.299       3.292
+irrigation_m3                     0.0020      0.000      4.902      0.000       0.001       0.003
+fertilizer_kg                     0.0032      0.004      0.718      0.475      -0.006       0.012
+rainfall_mm                       0.0013      0.000      6.052      0.000       0.001       0.002
+groundwater_quota_enforcement     1.4428      0.172      8.407      0.000       1.101       1.785
+==============================================================================
+Omnibus:                        4.934   Durbin-Watson:                   2.028
+Prob(Omnibus):                  0.085   Jarque-Bera (JB):                4.252
+Skew:                          -0.433   Prob(JB):                        0.119
+Kurtosis:                       3.724   Cond. No.                     5.33e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 5.33e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
+
+============================================================
+Model 3: With Irrigation × Policy Interaction
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             yield_t_ha   R-squared:                       0.614
+Model:                            OLS   Adj. R-squared:                  0.588
+Method:                 Least Squares   F-statistic:                     23.56
+Date:                Wed, 08 Apr 2026   Prob (F-statistic):           4.37e-14
+Time:                        08:54:14   Log-Likelihood:                -42.071
+No. Observations:                  80   AIC:                             96.14
+Df Residuals:                      74   BIC:                             110.4
+Df Model:                           5                                         
+Covariance Type:            nonrobust                                         
+===============================================================================================================
+                                                  coef    std err          t      P>|t|      [0.025      0.975]
+---------------------------------------------------------------------------------------------------------------
+Intercept                                       2.0253      0.530      3.821      0.000       0.969       3.081
+irrigation_m3                                   0.0030      0.001      3.660      0.000       0.001       0.005
+fertilizer_kg                                   0.0036      0.004      0.814      0.418      -0.005       0.012
+rainfall_mm                                     0.0013      0.000      5.843      0.000       0.001       0.002
+groundwater_quota_enforcement                   1.8947      0.354      5.360      0.000       1.190       2.599
+irrigation_m3:groundwater_quota_enforcement    -0.0020      0.001     -1.459      0.149      -0.005       0.001
+==============================================================================
+Omnibus:                        5.479   Durbin-Watson:                   2.065
+Prob(Omnibus):                  0.065   Jarque-Bera (JB):                4.815
+Skew:                          -0.473   Prob(JB):                       0.0901
+Kurtosis:                       3.742   Cond. No.                     6.15e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 6.15e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.

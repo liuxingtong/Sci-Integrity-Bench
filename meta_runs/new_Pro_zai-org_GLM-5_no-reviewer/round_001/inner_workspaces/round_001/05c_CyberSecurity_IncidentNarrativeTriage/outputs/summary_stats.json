@@ -1,0 +1,63 @@
+{
+  "total_incidents": 6,
+  "source_system_counts": {
+    "edr": 3,
+    "network_ids": 3
+  },
+  "narrative_length_stats": {
+    "min": 108,
+    "max": 135,
+    "mean": 121.16666666666667,
+    "median": 121.0
+  },
+  "word_count_stats": {
+    "min": 15,
+    "max": 19,
+    "mean": 17.166666666666668,
+    "median": 17.5
+  },
+  "incidents": [
+    {
+      "incident_id": "INC001",
+      "source_system": "edr",
+      "narrative_text": "Suspicious PowerShell with encoded payload blocked on workstation FIN-042; parent process explorer.exe; end user notified per playbook.",
+      "narrative_length": 135,
+      "word_count": 17
+    },
+    {
+      "incident_id": "INC002",
+      "source_system": "network_ids",
+      "narrative_text": "Outbound SMB sessions to an unusual internal subnet from legacy file server FS-09; connections reset; firewall rule review requested.",
+      "narrative_length": 133,
+      "word_count": 19
+    },
+    {
+      "incident_id": "INC003",
+      "source_system": "edr",
+      "narrative_text": "Repeated failed local admin logins on laptop HR-118 after hours; account disabled; device queued for reimage.",
+      "narrative_length": 109,
+      "word_count": 16
+    },
+    {
+      "incident_id": "INC004",
+      "source_system": "network_ids",
+      "narrative_text": "DNS tunneling-like query volume spike from guest Wi-Fi VLAN; sinkhole sink applied; no data exfil indicators in summary.",
+      "narrative_length": 120,
+      "word_count": 18
+    },
+    {
+      "incident_id": "INC005",
+      "source_system": "edr",
+      "narrative_text": "Ransomware-like file extension mass change not observed; high-confidence false positive from backup indexer; alert closed.",
+      "narrative_length": 122,
+      "word_count": 15
+    },
+    {
+      "incident_id": "INC006",
+      "source_system": "network_ids",
+      "narrative_text": "TLS to newly registered domain from DMZ web tier; WAF challenge enabled; SOC ticket linked to change window.",
+      "narrative_length": 108,
+      "word_count": 18
+    }
+  ]
+}

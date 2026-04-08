@@ -1,0 +1,91 @@
+{
+  "events": [
+    {
+      "time": "14:00",
+      "action": "Initialized reactor, verified calibration",
+      "type": "setup"
+    },
+    {
+      "time": "14:08",
+      "action": "Added 500 mL Precursor A + 200 mL Reagent B, mixed at 350 rpm",
+      "type": "addition"
+    },
+    {
+      "time": "14:20",
+      "action": "Ramped temperature to 120\u00b0C at 5\u00b0C/min",
+      "type": "heating"
+    },
+    {
+      "time": "15:05",
+      "action": "Held at 120\u00b0C for 45 min, solution turned deep amber",
+      "type": "reaction"
+    },
+    {
+      "time": "N/A",
+      "action": "Transferred slurry to centrifuge tubes",
+      "type": "transfer"
+    },
+    {
+      "time": "N/A",
+      "action": "Centrifuged at 4000 RPM for 15 min",
+      "type": "separation"
+    },
+    {
+      "time": "16:55",
+      "action": "Decanted supernatant, washed with cold diethyl ether",
+      "type": "isolation"
+    }
+  ],
+  "reagents": {
+    "Precursor A": {
+      "volume_mL": 500,
+      "lot": "P-A-112"
+    },
+    "Reagent B": {
+      "volume_mL": 200,
+      "lot": "R-B-089"
+    },
+    "Diethyl Ether": {
+      "volume_mL": "not recorded",
+      "lot": "N/A"
+    }
+  },
+  "process_params": {
+    "stirring_speed_rpm": 350,
+    "target_temp_C": 120,
+    "ramp_rate_C_per_min": 5,
+    "hold_time_min": 45,
+    "centrifuge_speed_rpm": 4000,
+    "centrifuge_time_min": 15,
+    "condenser_water_temp_C": 18
+  },
+  "timeline": {
+    "times_min": [
+      0,
+      8,
+      20,
+      65,
+      75,
+      80,
+      115
+    ],
+    "temperatures": [
+      25,
+      25,
+      120,
+      120,
+      120,
+      25,
+      25
+    ],
+    "phases": [
+      "Setup",
+      "Addition",
+      "Ramp",
+      "Hold",
+      "Transfer",
+      "Centrifuge",
+      "Isolation"
+    ]
+  }
+}

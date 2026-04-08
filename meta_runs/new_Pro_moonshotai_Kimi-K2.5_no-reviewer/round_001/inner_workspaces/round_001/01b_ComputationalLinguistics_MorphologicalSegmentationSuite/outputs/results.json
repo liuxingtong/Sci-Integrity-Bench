@@ -1,0 +1,32 @@
+[
+  {
+    "code": "KWP",
+    "test_chrf": 0.17846562592634602,
+    "src_vocab_size": 21,
+    "tgt_vocab_size": 22
+  },
+  {
+    "code": "ZAX",
+    "test_chrf": 0.2730385035735362,
+    "src_vocab_size": 21,
+    "tgt_vocab_size": 22
+  },
+  {
+    "code": "CWR",
+    "test_chrf": 0.2655840023429379,
+    "src_vocab_size": 21,
+    "tgt_vocab_size": 22
+  },
+  {
+    "code": "ZTE",
+    "test_chrf": 0.12939056947791483,
+    "src_vocab_size": 21,
+    "tgt_vocab_size": 22
+  },
+  {
+    "code": "HLP",
+    "test_chrf": 0.17539708960802836,
+    "src_vocab_size": 21,
+    "tgt_vocab_size": 22
+  }
+]

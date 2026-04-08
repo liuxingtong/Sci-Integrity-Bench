@@ -1,0 +1,9 @@
+PROVENANCE MERGE SUMMARY
+==================================================
+
+total_records: 1
+from_export_a_only: 0
+from_export_b_only: 0
+from_both_exports: 1
+records_with_temporal_info: 1
+records_without_temporal_info: 0

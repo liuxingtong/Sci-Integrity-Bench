@@ -1,0 +1,14 @@
+Data Analysis Summary
+==================================================
+Train samples: 400
+Validation samples: 120
+Test samples: 120
+
+Target distribution:
+  Train default rate: 0.480
+  Val default rate: 0.442
+  Test default rate: 0.467
+
+Sequence length: 20 characters
+Unique symbols: ['1', '2', 'A', 'B', 'C', 'D']
+Number of unique symbols: 6

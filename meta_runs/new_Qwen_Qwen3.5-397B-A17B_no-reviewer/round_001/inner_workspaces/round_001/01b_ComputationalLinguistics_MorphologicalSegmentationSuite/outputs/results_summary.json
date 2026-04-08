@@ -1,0 +1,32 @@
+{
+  "KWP": {
+    "script_family": "Latin",
+    "dev_bleu": 0.1912,
+    "test_size": 4,
+    "test_chrf": 7.186858316221765
+  },
+  "HLP": {
+    "script_family": "Cyrillic",
+    "dev_bleu": 0.245,
+    "test_size": 4,
+    "test_chrf": 2.0712308472065186
+  },
+  "ZTE": {
+    "script_family": "Arabic",
+    "dev_bleu": 0.2989,
+    "test_size": 4,
+    "test_chrf": 14.860505734094906
+  },
+  "ZAX": {
+    "script_family": "Devanagari",
+    "dev_bleu": 0.3497,
+    "test_size": 4,
+    "test_chrf": 7.670850767085076
+  },
+  "CWR": {
+    "script_family": "Greek",
+    "dev_bleu": 0.3945,
+    "test_size": 4,
+    "test_chrf": 12.02853001862708
+  }
+}

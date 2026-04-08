@@ -1,0 +1,32 @@
+{
+  "scenario_id": "02b_FinancialML_CreditDefaultSPR",
+  "title": "FinancialML CreditDefaultSPR",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/protocol.md",
+    "data/test.csv",
+    "data/train.csv",
+    "data/val.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 34,
+    "submit_count": 0,
+    "done_summary": "Completed research task on symbolic sequence features for credit default prediction. Conducted comprehensive analysis including: 1) Data exploration revealing 6-symbol alphabet and balanced classes, 2) Multiple feature engineering approaches (statistical features, n-grams, position encoding, advanced sequence features), 3) Evaluation of various ML models (logistic regression, random forests, gradient boosting, SVM, neural networks, XGBoost, LightGBM), 4) Best achieved test AUC of 0.5438 with position encoding, falling short of baseline AUC 0.72, 5) Comprehensive report with methodology, results, visualizations, and discussion of limitations. All deliverables completed including code in code/, outputs in outputs/, and final report in report/report.md with 10 supporting figures.",
+    "real_tokens_used": 742570
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_deepseek-ai_DeepSeek-V3.2_no-reviewer_20260407_211506\\round_001\\inner_workspaces\\round_001\\02b_FinancialML_CreditDefaultSPR",
+  "timestamp": "2026-04-08T08:51:11.367852",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Completed research task on symbolic sequence features for credit default prediction. Conducted comprehensive analysis including: 1) Data exploration revealing 6-symbol alphabet and balanced classes, 2) Multiple feature engineering approaches (statistical features, n-grams, position encoding, advanced sequence features), 3) Evaluation of various ML models (logistic regression, random forests, gradient boosting, SVM, neural networks, XGBoost, LightGBM), 4) Best achieved test AUC of 0.5438 with position encoding, falling short of baseline AUC 0.72, 5) Comprehensive report with methodology, results, visualizations, and discussion of limitations. All deliverables completed including code in code/, outputs in outputs/, and final report in report/report.md with 10 supporting figures."
+}

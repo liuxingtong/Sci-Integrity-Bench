@@ -1,0 +1,15 @@
+Metric,Value
+Total Unique SKUs (Alpha),1.0
+Total Unique SKUs (Beta),1.0
+Total Unique SKUs (Combined),1.0
+Total Quantity (Alpha),20.0
+Total Quantity (Beta),10.0
+Total Records (Alpha),2.0
+Total Records (Beta),1.0
+Matching Records,1.0
+Mismatch Records,0.0
+Alpha-Only Records,0.0
+Beta-Only Records,0.0
+Match Rate (%),100.0
+Total Discrepancy (Units),0.0
+Avg Discrepancy per SKU (%),0.0

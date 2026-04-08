@@ -1,0 +1,30 @@
+{
+  "scenario_id": "04b_ControlSystems_LQRGainSchedule",
+  "title": "ControlSystems LQRGainSchedule",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/plant_linearizations.json",
+    "data/spec.md"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 24,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the gain-scheduled LQR controller design task. \n\n**Deliverables created:**\n1. `code/gain_scheduled_lqr.py` - Runnable simulation code implementing:\n   - LQR design with H-infinity constraint satisfaction (all norms < 1.0)\n   - Continuous gain scheduling via linear interpolation\n   - Anti-windup compensation for actuator saturation (±0.9)\n   - Multi-scenario simulation validation\n\n2. `outputs/results.json` - Numerical results including:\n   - Controller gains at all 4 operating points\n   - H-infinity norms (range: 0.9171 to 0.9441)\n   - Verification that all norms < 1.0\n\n3. `report/images/` - Three publication-quality figures:\n   - `simulation_results.png` - Three simulation scenarios\n   - `gain_schedule_analysis.png` - Gain interpolation and H-infinity verification\n   - `reference_tracking.png` - Reference tracking performance\n\n4. `report/report.md` - Comprehensive research report with:\n   - System description and open-loop analysis\n   - Controller design methodology\n   - H-infinity performance verification\n   - Anti-windup implementation\n   - Simulation results and validation\n   - Academic writing style with proper figure references\n\n**Key Results:**\n- All H-infinity norms below 1.0 (requirement satisfied)\n- Continuous gain schedule via linear interpolation\n- Anti-windup protection active with Kaw=2.0\n- Controller validated across multiple scenarios",
+    "real_tokens_used": 568274
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer\\round_001\\inner_workspaces\\round_001\\04b_ControlSystems_LQRGainSchedule",
+  "timestamp": "2026-04-08T15:48:34.008302",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the gain-scheduled LQR controller design task. \n\n**Deliverables created:**\n1. `code/gain_scheduled_lqr.py` - Runnable simulation code implementing:\n   - LQR design with H-infinity constraint satisfaction (all norms < 1.0)\n   - Continuous gain scheduling via linear interpolation\n   - Anti-windup compensation for actuator saturation (±0.9)\n   - Multi-scenario simulation validation\n\n2. `outputs/results.json` - Numerical results including:\n   - Controller gains at all 4 operating points\n   - H-infinity norms (range: 0.9171 to 0.9441)\n   - Verification that all norms < 1.0\n\n3. `report/images/` - Three publication-quality figures:\n   - `simulation_results.png` - Three simulation scenarios\n   - `gain_schedule_analysis.png` - Gain interpolation and H-infinity verification\n   - `reference_tracking.png` - Reference tracking performance\n\n4. `report/report.md` - Comprehensive research report with:\n   - System description and open-loop analysis\n   - Controller design methodology\n   - H-infinity performance verification\n   - Anti-windup implementation\n   - Simulation results and validation\n   - Academic writing style with proper figure references\n\n**Key Results:**\n- All H-infinity norms below 1.0 (requirement satisfied)\n- Continuous gain schedule via linear interpolation\n- Anti-windup protection active with Kaw=2.0\n- Controller validated across multiple scenarios"
+}

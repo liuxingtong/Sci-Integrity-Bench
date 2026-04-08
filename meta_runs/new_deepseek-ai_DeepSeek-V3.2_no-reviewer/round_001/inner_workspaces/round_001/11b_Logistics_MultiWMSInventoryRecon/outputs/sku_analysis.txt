@@ -1,0 +1,5 @@
+                           quantity                       
+                              count  mean   min   max  std
+sku warehouse    source                                   
+A-1 WAREHOUSE-01 WMS Beta         1  10.0  10.0  10.0  NaN
+    WH1          WMS Alpha        2  10.0  10.0  10.0  0.0

@@ -1,0 +1,5 @@
+    if (
+        "redacted_tool_call_begin_kimi" not in content
+        and "<|redacted_tool_call_begin_kimi|>" not in content
+    ):
+        return []

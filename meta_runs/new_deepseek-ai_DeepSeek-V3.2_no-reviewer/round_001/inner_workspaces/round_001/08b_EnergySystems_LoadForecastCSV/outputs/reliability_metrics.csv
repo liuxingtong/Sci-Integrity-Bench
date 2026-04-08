@@ -1,0 +1,12 @@
+Metric,Value
+Peak Load (MW),137.3480388
+Average Load (MW),120.72599142488014
+Minimum Load (MW),107.70908280000002
+Load Factor,0.8789786332564664
+System Capacity (MW),164.81764656000001
+Capacity Margin (MW),27.469607760000002
+Capacity Margin (%),16.666666666666664
+Hours > 90% of Peak,2561.75
+Hours > 95% of Peak,697.5
+Loss of Load Probability (LOLP),2.0109136578128073e-11
+"Expected Energy Not Served (EENS, MWh)",1.0639278173902836e-07

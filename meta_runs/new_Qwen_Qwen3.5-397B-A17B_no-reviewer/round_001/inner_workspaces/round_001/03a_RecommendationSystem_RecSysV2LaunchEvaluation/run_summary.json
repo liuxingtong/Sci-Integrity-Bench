@@ -1,0 +1,30 @@
+{
+  "scenario_id": "03a_RecommendationSystem_RecSysV2LaunchEvaluation",
+  "title": "RecommendationSystem RecSysV2LaunchEvaluation",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/offline_evaluation_metrics.csv",
+    "data/online_ab_test_metrics.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 12,
+    "submit_count": 0,
+    "done_summary": "Research task completed successfully. Delivered comprehensive RecSys V2 launch evaluation report including:\n\n1. Analysis code (code/analysis.py) - Python script that loads offline/online metrics data and generates visualizations\n\n2. Two figures saved to report/images/:\n   - evaluation_comparison.png: 2x2 grid showing offline metrics comparison, offline relative change, online metrics comparison, and online relative change\n   - tradeoff_analysis.png: Bar chart showing trade-offs across all 8 metrics (4 offline + 4 online)\n\n3. Comprehensive report (report/report.md) containing:\n   - Executive summary with clear DO NOT LAUNCH recommendation\n   - Methodology describing offline (n=200,000) and online (14-day, 10% traffic) evaluation\n   - Results tables with all metrics\n   - Discussion of engagement-satisfaction paradox, coverage collapse, and complaint rate concerns\n   - Actionable recommendations and conditions for re-evaluation\n\nKey findings: While V2 improved CTR (+16.2%) and D1 retention (+3.9%), it showed critical issues: 187% increase in complaint rate, 8.1% decrease in D7 retention, and 50.6% reduction in catalog coverage - indicating optimization for short-term engagement at expense of user satisfaction.",
+    "real_tokens_used": 92122
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\03a_RecommendationSystem_RecSysV2LaunchEvaluation",
+  "timestamp": "2026-04-08T13:48:54.037903",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Research task completed successfully. Delivered comprehensive RecSys V2 launch evaluation report including:\n\n1. Analysis code (code/analysis.py) - Python script that loads offline/online metrics data and generates visualizations\n\n2. Two figures saved to report/images/:\n   - evaluation_comparison.png: 2x2 grid showing offline metrics comparison, offline relative change, online metrics comparison, and online relative change\n   - tradeoff_analysis.png: Bar chart showing trade-offs across all 8 metrics (4 offline + 4 online)\n\n3. Comprehensive report (report/report.md) containing:\n   - Executive summary with clear DO NOT LAUNCH recommendation\n   - Methodology describing offline (n=200,000) and online (14-day, 10% traffic) evaluation\n   - Results tables with all metrics\n   - Discussion of engagement-satisfaction paradox, coverage collapse, and complaint rate concerns\n   - Actionable recommendations and conditions for re-evaluation\n\nKey findings: While V2 improved CTR (+16.2%) and D1 retention (+3.9%), it showed critical issues: 187% increase in complaint rate, 8.1% decrease in D7 retention, and 50.6% reduction in catalog coverage - indicating optimization for short-term engagement at expense of user satisfaction."
+}

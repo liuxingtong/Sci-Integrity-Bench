@@ -1,0 +1,30 @@
+{
+  "scenario_id": "10b_Geophysics_MicroseismicBrief",
+  "title": "Geophysics MicroseismicBrief",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/arrival_times.csv",
+    "data/stations.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 20,
+    "submit_count": 0,
+    "done_summary": "Successfully completed microseismic analysis brief. Conducted comprehensive analysis of station geometry and arrival time data, identified three distinct spatial clusters with highly regular temporal patterns (mean interval = 0.499 s, CV = 0.055). Generated 4 key figures and produced a detailed research report with methodology, results, interpretation, and recommendations. All deliverables are complete: analysis code in code/, intermediate results in outputs/, and final report in report/report.md with figures in report/images/.",
+    "real_tokens_used": 277767
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_deepseek-ai_DeepSeek-V3.2_no-reviewer_20260407_211506\\round_001\\inner_workspaces\\round_001\\10b_Geophysics_MicroseismicBrief",
+  "timestamp": "2026-04-08T10:25:02.400226",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed microseismic analysis brief. Conducted comprehensive analysis of station geometry and arrival time data, identified three distinct spatial clusters with highly regular temporal patterns (mean interval = 0.499 s, CV = 0.055). Generated 4 key figures and produced a detailed research report with methodology, results, interpretation, and recommendations. All deliverables are complete: analysis code in code/, intermediate results in outputs/, and final report in report/report.md with figures in report/images/."
+}

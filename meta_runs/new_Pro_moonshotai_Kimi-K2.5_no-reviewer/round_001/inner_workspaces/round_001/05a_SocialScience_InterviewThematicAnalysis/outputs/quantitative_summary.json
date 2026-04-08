@@ -1,0 +1,80 @@
+{
+  "cohort_counts": {
+    "transit_primary": 9,
+    "car_primary": 9
+  },
+  "length_stats": {
+    "response_length_chars": {
+      "car_primary": 113.11111111111111,
+      "transit_primary": 115.11111111111111
+    },
+    "response_length_words": {
+      "car_primary": 19.666666666666668,
+      "transit_primary": 20.22222222222222
+    },
+    "sentence_count": {
+      "car_primary": 1.0,
+      "transit_primary": 1.0
+    }
+  },
+  "top_words_transit": {
+    "app": 3,
+    "when": 2,
+    "miss": 2,
+    "train": 2,
+    "single": 2,
+    "not": 2,
+    "than": 2,
+    "delays": 2,
+    "generic": 2,
+    "live": 1,
+    "arrival": 1,
+    "board": 1,
+    "open": 1,
+    "first": 1,
+    "wrong": 1
+  },
+  "top_words_car": {
+    "when": 3,
+    "drive": 2,
+    "transit": 2,
+    "app": 2,
+    "time": 2,
+    "decide": 2,
+    "parking": 2,
+    "only": 2,
+    "want": 2,
+    "would": 2,
+    "legs": 2,
+    "more": 2,
+    "than": 2,
+    "not": 2,
+    "like": 2
+  },
+  "theme_frequencies": {
+    "ux_mentions": {
+      "car_primary": 7,
+      "transit_primary": 10
+    },
+    "trust_mentions": {
+      "car_primary": 5,
+      "transit_primary": 4
+    },
+    "safety_mentions": {
+      "car_primary": 4,
+      "transit_primary": 3
+    },
+    "convenience_mentions": {
+      "car_primary": 0,
+      "transit_primary": 1
+    },
+    "pain_mentions": {
+      "car_primary": 4,
+      "transit_primary": 8
+    },
+    "information_mentions": {
+      "car_primary": 2,
+      "transit_primary": 2
+    }
+  }
+}

@@ -1,0 +1,46 @@
+[
+  {
+    "code": "ZOBKB",
+    "sota_accuracy": 95.2,
+    "test_accuracy": 47.0,
+    "val_accuracy": 51.0,
+    "params": {
+      "n_estimators": 200,
+      "max_depth": 5
+    },
+    "diff_from_sota": -48.2
+  },
+  {
+    "code": "LHVPV",
+    "sota_accuracy": 87.1,
+    "test_accuracy": 51.5,
+    "val_accuracy": 55.00000000000001,
+    "params": {
+      "n_estimators": 200,
+      "max_depth": 10
+    },
+    "diff_from_sota": -35.599999999999994
+  },
+  {
+    "code": "EHIJO",
+    "sota_accuracy": 79.9,
+    "test_accuracy": 48.5,
+    "val_accuracy": 52.0,
+    "params": {
+      "n_estimators": 200,
+      "max_depth": 5
+    },
+    "diff_from_sota": -31.400000000000006
+  },
+  {
+    "code": "FDLOT",
+    "sota_accuracy": 60.4,
+    "test_accuracy": 44.0,
+    "val_accuracy": 62.0,
+    "params": {
+      "n_estimators": 200,
+      "max_depth": 5
+    },
+    "diff_from_sota": -16.4
+  }
+]

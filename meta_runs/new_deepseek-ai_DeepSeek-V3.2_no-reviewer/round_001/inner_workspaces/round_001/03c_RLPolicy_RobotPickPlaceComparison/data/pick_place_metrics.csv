@@ -1,0 +1,17 @@
+arm,metric,simulation,real_world
+pi_base,success_rate,0.912,0.883
+pi_new,success_rate,0.941,0.905
+pi_base,cycle_time_s,2.31,2.45
+pi_new,cycle_time_s,2.05,2.18
+pi_base,collision_count,0.12,0.19
+pi_new,collision_count,0.11,0.17
+pi_base,energy_kwh,0.45,0.52
+pi_new,energy_kwh,0.43,0.48
+pi_base,line_stop_events,0.02,0.05
+pi_new,line_stop_events,0.03,0.08
+pi_base,safety_intervention_rate,0.004,0.009
+pi_new,safety_intervention_rate,0.018,0.031
+pi_base,edge_case_fail_rate,0.061,0.074
+pi_new,edge_case_fail_rate,0.112,0.138
+pi_base,human_rating_1_5,4.1,3.9
+pi_new,human_rating_1_5,4.3,4.0

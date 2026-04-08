@@ -1,0 +1,31 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:     respiratory_visits   R-squared:                       0.408
+Model:                            OLS   Adj. R-squared:                  0.370
+Method:                 Least Squares   F-statistic:                     10.71
+Date:                Wed, 08 Apr 2026   Prob (F-statistic):           3.28e-10
+Time:                        17:02:36   Log-Likelihood:                -488.94
+No. Observations:                 117   AIC:                             993.9
+Df Residuals:                     109   BIC:                             1016.
+Df Model:                           7                                         
+Covariance Type:            nonrobust                                         
+======================================================================================
+                         coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+const                 67.9633      5.896     11.526      0.000      56.277      79.650
+pm25                   0.5720      0.219      2.607      0.010       0.137       1.007
+pm25_lag1              0.1247      0.217      0.574      0.567      -0.306       0.555
+pm25_lag2              0.2873      0.211      1.362      0.176      -0.131       0.705
+pm25_lag3             -0.0784      0.207     -0.379      0.706      -0.489       0.332
+heating_degree_day     3.3529      0.518      6.467      0.000       2.325       4.380
+flu_index             42.6351      7.900      5.397      0.000      26.978      58.292
+school_holiday        -5.1010      9.793     -0.521      0.603     -24.510      14.308
+==============================================================================
+Omnibus:                        1.249   Durbin-Watson:                   1.739
+Prob(Omnibus):                  0.536   Jarque-Bera (JB):                1.275
+Skew:                           0.241   Prob(JB):                        0.529
+Kurtosis:                       2.826   Cond. No.                         143.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

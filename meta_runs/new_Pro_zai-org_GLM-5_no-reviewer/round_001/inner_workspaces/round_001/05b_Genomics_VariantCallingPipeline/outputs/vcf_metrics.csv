@@ -1,0 +1,2 @@
+sample_id,total_variants,snps,indels,multiallelic,ti_tv_ratio,heterozygous_ratio,hom_ref_count,het_count,hom_alt_count,runtime_seconds
+S001,4778167,4041090,467221,20769,2.144399754453365,0.643855270901575,2800155753,4103355,1735796,2984

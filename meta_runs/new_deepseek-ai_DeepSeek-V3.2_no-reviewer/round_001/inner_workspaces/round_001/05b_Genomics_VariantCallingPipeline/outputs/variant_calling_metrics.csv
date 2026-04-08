@@ -1,0 +1,2 @@
+sample_id,total_variants,snps,indels,pass_variants,mean_quality,median_quality,mean_depth,ts_tv_ratio,het_hom_ratio
+S001,19044,19044,0,14516,50.091865247921206,42.96543865116951,54.12633900441084,1.9062262115611504,1.799402784085981

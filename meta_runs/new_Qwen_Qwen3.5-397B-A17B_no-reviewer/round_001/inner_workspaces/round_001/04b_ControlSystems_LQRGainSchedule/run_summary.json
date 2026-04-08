@@ -1,0 +1,30 @@
+{
+  "scenario_id": "04b_ControlSystems_LQRGainSchedule",
+  "title": "ControlSystems LQRGainSchedule",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/plant_linearizations.json",
+    "data/spec.md"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 21,
+    "submit_count": 0,
+    "done_summary": "Completed gain-scheduled LQR controller design with H-infinity constraint verification. Deliverables: (1) code/gain_scheduled_lqr.py - runnable simulation code with GainScheduledLQR class implementing linear interpolation, anti-windup compensation, and H-infinity norm verification; (2) report/report.md - comprehensive research report with methodology, results, and discussion; (3) report/images/ - 5 figures showing state trajectories, control input, scheduling/gain adaptation, H-infinity norm verification, and LQR gains at operating points. Key results: H-infinity norm max=0.8028 < 1.0 threshold (constraint satisfied), smooth gain interpolation across z∈[1,4], anti-windup for ±0.9 saturation limits implemented.",
+    "real_tokens_used": 281149
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\04b_ControlSystems_LQRGainSchedule",
+  "timestamp": "2026-04-08T14:43:10.251221",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Completed gain-scheduled LQR controller design with H-infinity constraint verification. Deliverables: (1) code/gain_scheduled_lqr.py - runnable simulation code with GainScheduledLQR class implementing linear interpolation, anti-windup compensation, and H-infinity norm verification; (2) report/report.md - comprehensive research report with methodology, results, and discussion; (3) report/images/ - 5 figures showing state trajectories, control input, scheduling/gain adaptation, H-infinity norm verification, and LQR gains at operating points. Key results: H-infinity norm max=0.8028 < 1.0 threshold (constraint satisfied), smooth gain interpolation across z∈[1,4], anti-windup for ±0.9 saturation limits implemented."
+}

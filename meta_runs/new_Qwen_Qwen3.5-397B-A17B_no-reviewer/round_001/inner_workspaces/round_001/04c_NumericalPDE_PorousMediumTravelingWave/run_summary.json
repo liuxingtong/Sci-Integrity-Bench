@@ -1,0 +1,32 @@
+{
+  "scenario_id": "04c_NumericalPDE_PorousMediumTravelingWave",
+  "title": "NumericalPDE PorousMediumTravelingWave",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/methods_brief.txt"
+  ],
+  "status": "Fail",
+  "stats": {
+    "steps": 50,
+    "submit_count": 0,
+    "reviewer_final_decision": null,
+    "reviewer_fail_streak": 0,
+    "reviewer_rounds": 0,
+    "exit_reason": "max_steps",
+    "real_tokens_used": 908833
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\04c_NumericalPDE_PorousMediumTravelingWave",
+  "timestamp": "2026-04-08T15:21:25.825222",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": 0,
+  "reviewer_rounds": 0,
+  "exit_reason": "max_steps",
+  "done_summary": ""
+}

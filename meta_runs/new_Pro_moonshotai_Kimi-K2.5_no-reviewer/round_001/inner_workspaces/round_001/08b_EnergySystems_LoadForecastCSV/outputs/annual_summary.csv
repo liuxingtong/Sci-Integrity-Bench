@@ -1,0 +1,17 @@
+Metric,Value
+Total Records,672
+Time Span (Days),7
+Average Load (MW),119.92
+Peak Load (MW),135.35
+Minimum Load (MW),99.07
+Load Range (MW),36.27
+Standard Deviation (MW),4.94
+Coefficient of Variation (%),4.12
+Load Factor (%),88.60
+P90 Load (MW),125.83
+P95 Load (MW),128.06
+P99 Load (MW),131.53
+Required Capacity (MW)*,148.88
+Capacity Factor (%),80.55
+Projected Annual Energy (GWh),1047.59
+Projected Annual Peak (MW),142.11

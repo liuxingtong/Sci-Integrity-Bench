@@ -1,0 +1,5 @@
+metric,recsys_v1,recsys_v2,relative_change_pct
+Precision@10,0.312,0.351,12.5
+NDCG@10,0.408,0.447,9.6
+Recall@50,0.671,0.638,-4.9
+Coverage_catalog,0.834,0.412,-50.6

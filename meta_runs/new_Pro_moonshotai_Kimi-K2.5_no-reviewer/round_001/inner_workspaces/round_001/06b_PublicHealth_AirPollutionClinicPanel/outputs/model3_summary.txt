@@ -1,0 +1,29 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:     respiratory_visits   R-squared:                       0.373
+Model:                            OLS   Adj. R-squared:                  0.346
+Method:                 Least Squares   F-statistic:                     13.58
+Date:                Wed, 08 Apr 2026   Prob (F-statistic):           2.16e-10
+Time:                        17:02:35   Log-Likelihood:                -504.92
+No. Observations:                 120   AIC:                             1022.
+Df Residuals:                     114   BIC:                             1039.
+Df Model:                           5                                         
+Covariance Type:            nonrobust                                         
+=========================================================================================
+                            coef    std err          t      P>|t|      [0.025      0.975]
+-----------------------------------------------------------------------------------------
+const                    76.9790      5.909     13.028      0.000      65.274      88.684
+pm25                      0.1408      0.447      0.315      0.754      -0.745       1.027
+heating_degree_day        2.6668      0.874      3.052      0.003       0.936       4.398
+flu_index                42.2647      8.088      5.225      0.000      26.242      58.288
+school_holiday           -5.3061      8.614     -0.616      0.539     -22.370      11.758
+pm25_heating_interact     0.0530      0.073      0.730      0.467      -0.091       0.197
+==============================================================================
+Omnibus:                        1.731   Durbin-Watson:                   1.781
+Prob(Omnibus):                  0.421   Jarque-Bera (JB):                1.615
+Skew:                           0.282   Prob(JB):                        0.446
+Kurtosis:                       2.932   Cond. No.                         420.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

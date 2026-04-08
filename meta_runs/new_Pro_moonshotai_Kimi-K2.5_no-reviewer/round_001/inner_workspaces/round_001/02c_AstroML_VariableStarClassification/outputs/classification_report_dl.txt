@@ -1,0 +1,12 @@
+Best Model: Random Forest
+Test Balanced Accuracy: 0.5320
+Test AUC: 0.5199
+
+              precision    recall  f1-score   support
+
+Non-Variable       0.53      0.43      0.48        74
+    Variable       0.53      0.63      0.58        76
+
+    accuracy                           0.53       150
+   macro avg       0.53      0.53      0.53       150
+weighted avg       0.53      0.53      0.53       150

@@ -1,0 +1,12 @@
+Best Model: NB_fused
+Test Balanced Accuracy: 0.5594
+Test AUC: 0.5448
+
+              precision    recall  f1-score   support
+
+Non-Variable       0.56      0.51      0.54        74
+    Variable       0.56      0.61      0.58        76
+
+    accuracy                           0.56       150
+   macro avg       0.56      0.56      0.56       150
+weighted avg       0.56      0.56      0.56       150

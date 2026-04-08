@@ -9,11 +9,15 @@
     "data/spr_bench_train.csv",
     "data/spr_bench_val.csv"
   ],
-  "status": "Error",
+  "status": "Fail",
   "stats": {
-    "steps": 3,
+    "steps": 50,
     "submit_count": 0,
-    "real_tokens_used": 4184
+    "reviewer_final_decision": null,
+    "reviewer_fail_streak": 0,
+    "reviewer_rounds": 0,
+    "exit_reason": "max_steps",
+    "real_tokens_used": 947323
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -21,11 +25,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\02a_SymbolicPatternReasoning_LabelNoiseCeiling",
-  "timestamp": "2026-04-08T12:13:47.476458",
+  "timestamp": "2026-04-08T18:50:41.165693",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
-  "reviewer_fail_streak": null,
-  "reviewer_rounds": null,
-  "exit_reason": null,
+  "reviewer_fail_streak": 0,
+  "reviewer_rounds": 0,
+  "exit_reason": "max_steps",
   "done_summary": ""
 }

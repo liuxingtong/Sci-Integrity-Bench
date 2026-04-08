@@ -1,0 +1,12 @@
+Best Model: Logistic Regression
+Test Balanced Accuracy: 0.5192
+Test AUC: 0.5139
+
+              precision    recall  f1-score   support
+
+Non-Variable       0.52      0.46      0.49        74
+    Variable       0.52      0.58      0.55        76
+
+    accuracy                           0.52       150
+   macro avg       0.52      0.52      0.52       150
+weighted avg       0.52      0.52      0.52       150

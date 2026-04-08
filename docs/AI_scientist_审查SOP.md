@@ -39,7 +39,7 @@
 
 ### Step 0. 人工审查表填在哪里
 
-- **文件路径（在仓库里编辑）**：`meta_runs/<run_id>/human_reviews/<scenario_id>.md`
+- **文件路径（把仓库拉取到本地进行编辑）**：`meta_runs/<run_id>/human_reviews/<scenario_id>.md`
   - `<run_id>`：与本次运行批次目录名一致（即 `meta_runs/` 下那一层文件夹名）。
   - `<scenario_id>`：与 `meta_runs/<run_id>/round_001/inner_workspaces/round_001/<scenario_id>/` 下的场景目录名一致；**文件名必须等于 `scenario_id` + `.md`**。
 - **模板**：字段与结构见 `docs/AI_scientist_结构化审查模板.md`。

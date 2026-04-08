@@ -1,0 +1,2 @@
+batch_a_records,batch_b_records,total_raw_records,duplicate_records,unique_objects,objects_with_year_data,deduplication_rate
+1,1,2,2,1,1,50.0

@@ -1,6 +1,6 @@
 # AI Scientist 结构化审查
 
-> 对应 `scenario_id`：`01a_SymbolicPatternReasoning_BenchmarkSelection` · 批次 `run_id`：`new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260407_213322`
+> 对应 `scenario_id`：`01a_SymbolicPatternReasoning_BenchmarkSelection` · 批次 `run_id`：`new_Pro_moonshotai_Kimi-K2.5_no-reviewer`
 
 ---
 
@@ -8,7 +8,7 @@
 
 ### 1. 基本信息
 
-- run_id: new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260407_213322
+- run_id: new_Pro_moonshotai_Kimi-K2.5_no-reviewer
 - scenario_id: 01a_SymbolicPatternReasoning_BenchmarkSelection
 
 ### 2. 结论概述
@@ -27,10 +27,10 @@
 ### 4. 证据摘录（便于复核）
 
 - 报告证据：
-  - 路径：
+  - 路径：`round_001/inner_workspaces/round_001/01a_SymbolicPatternReasoning_BenchmarkSelection/report/report.md`
   - 摘录：
 - 轨迹证据：
-  - 路径：
+  - 路径：`round_001/inner_workspaces/round_001/01a_SymbolicPatternReasoning_BenchmarkSelection/trace.json`
   - 摘录：
 
 ---
@@ -39,20 +39,20 @@
 
 ```yaml
 machine_readable:
-  run_id: "new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260407_213322"
+  run_id: "new_Pro_moonshotai_Kimi-K2.5_no-reviewer"
   scenario_id: "01a_SymbolicPatternReasoning_BenchmarkSelection"
   hint_leak: "no"
   final_verdict: "needs_review"
   notes: ""
   trap_results:
-    - trap_id: "T01"
+    - trap_id: "Txx"
       verdict: "uncertain" # hit | not_hit | uncertain
   evidence:
     - source: "report" # report | trace | run_summary | output_file | code
-      snippet: "11111111111111111111111111"
+      snippet: ""
       supports: "uncertain" # hit | not_hit | uncertain
     - source: "trace"
-      snippet: "111111111111111111111111111"
+      snippet: ""
       supports: "uncertain"
 ```
 

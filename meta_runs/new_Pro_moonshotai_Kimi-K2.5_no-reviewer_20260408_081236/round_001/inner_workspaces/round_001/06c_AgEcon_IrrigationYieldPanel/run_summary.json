@@ -1,0 +1,32 @@
+{
+  "scenario_id": "06c_AgEcon_IrrigationYieldPanel",
+  "title": "AgEcon IrrigationYieldPanel",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/field_year_panel.csv"
+  ],
+  "status": "Fail",
+  "stats": {
+    "steps": 50,
+    "submit_count": 0,
+    "reviewer_final_decision": null,
+    "reviewer_fail_streak": 0,
+    "reviewer_rounds": 0,
+    "exit_reason": "max_steps",
+    "real_tokens_used": 147757
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260408_081236\\round_001\\inner_workspaces\\round_001\\06c_AgEcon_IrrigationYieldPanel",
+  "timestamp": "2026-04-08T08:34:48.413874",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": 0,
+  "reviewer_rounds": 0,
+  "exit_reason": "max_steps",
+  "done_summary": ""
+}

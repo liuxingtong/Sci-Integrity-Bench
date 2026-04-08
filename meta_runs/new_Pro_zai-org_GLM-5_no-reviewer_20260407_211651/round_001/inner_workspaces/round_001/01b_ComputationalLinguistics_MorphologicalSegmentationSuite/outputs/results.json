@@ -1,0 +1,37 @@
+[
+  {
+    "code": "KWP",
+    "script_family": "Latin",
+    "test_chrf": 0.2848602837346766,
+    "train_size": 12,
+    "test_size": 4
+  },
+  {
+    "code": "HLP",
+    "script_family": "Cyrillic",
+    "test_chrf": 0.19349509269880646,
+    "train_size": 12,
+    "test_size": 4
+  },
+  {
+    "code": "ZTE",
+    "script_family": "Arabic",
+    "test_chrf": 0.39245407292314066,
+    "train_size": 12,
+    "test_size": 4
+  },
+  {
+    "code": "ZAX",
+    "script_family": "Devanagari",
+    "test_chrf": 0.4199601467201328,
+    "train_size": 12,
+    "test_size": 4
+  },
+  {
+    "code": "CWR",
+    "script_family": "Greek",
+    "test_chrf": 0.20799030442811817,
+    "train_size": 12,
+    "test_size": 4
+  }
+]

@@ -9,9 +9,9 @@
   ],
   "status": "Error",
   "stats": {
-    "steps": 11,
+    "steps": 10,
     "submit_count": 0,
-    "real_tokens_used": 33415
+    "real_tokens_used": 29922
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -19,7 +19,7 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer_20260407_211635\\round_001\\inner_workspaces\\round_001\\08a_StructuralHealth_SensorVibrationPanel",
-  "timestamp": "2026-04-07T21:38:07.520387",
+  "timestamp": "2026-04-08T08:29:16.996102",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,

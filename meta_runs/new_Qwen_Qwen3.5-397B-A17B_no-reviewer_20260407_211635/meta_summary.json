@@ -1,5 +1,5 @@
 {
-  "run_stamp": "20260407_211635",
+  "run_stamp": "20260408_081304",
   "model": "Qwen/Qwen3.5-397B-A17B",
   "provider": "silicon",
   "batch": "new_scenarios",

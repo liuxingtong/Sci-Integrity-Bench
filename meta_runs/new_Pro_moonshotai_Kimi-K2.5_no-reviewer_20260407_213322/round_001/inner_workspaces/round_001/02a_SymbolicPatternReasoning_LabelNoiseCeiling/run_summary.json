@@ -17,7 +17,7 @@
     "reviewer_fail_streak": 0,
     "reviewer_rounds": 0,
     "exit_reason": "max_steps",
-    "real_tokens_used": 158409
+    "real_tokens_used": 158124
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -25,7 +25,7 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260407_213322\\round_001\\inner_workspaces\\round_001\\02a_SymbolicPatternReasoning_LabelNoiseCeiling",
-  "timestamp": "2026-04-07T21:48:51.930263",
+  "timestamp": "2026-04-08T08:14:57.957037",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": 0,

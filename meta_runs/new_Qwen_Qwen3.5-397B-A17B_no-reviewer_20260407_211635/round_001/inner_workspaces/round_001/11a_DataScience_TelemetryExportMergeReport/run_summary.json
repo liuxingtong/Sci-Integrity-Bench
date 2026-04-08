@@ -10,9 +10,9 @@
   ],
   "status": "Error",
   "stats": {
-    "steps": 4,
+    "steps": 7,
     "submit_count": 0,
-    "real_tokens_used": 14408
+    "real_tokens_used": 22413
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -20,7 +20,7 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer_20260407_211635\\round_001\\inner_workspaces\\round_001\\11a_DataScience_TelemetryExportMergeReport",
-  "timestamp": "2026-04-07T21:56:56.600633",
+  "timestamp": "2026-04-08T08:34:52.477550",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,

@@ -1,0 +1,29 @@
+{
+  "scenario_id": "05c_CyberSecurity_IncidentNarrativeTriage",
+  "title": "CyberSecurity IncidentNarrativeTriage",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/incident_narratives.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 32,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the CyberSecurity Incident Narrative Triage research task. \n\n**Deliverables Created:**\n\n1. **Code (`code/`)**:\n   - `preprocess.py`: Reproducible preprocessing pipeline with text cleaning, feature engineering (threat indicators, hostnames, word counts), and summary statistics generation\n   - `gemini_triage.py`: LLM-based triage system using Gemini 1.5 Pro with structured output schema (severity, category, confidence, action_required, key_indicators)\n   - `visualizations.py`: Four publication-quality figures using matplotlib/seaborn\n\n2. **Outputs (`outputs/`)**:\n   - `gemini_raw.json`: Full structured triage results for all 6 incidents\n   - `incidents_processed.csv`: Preprocessed data with extracted features\n   - `summaries.json`: Statistical summaries (counts, lengths, frequencies)\n\n3. **Report (`report/report.md`)**:\n   - Comprehensive academic report with Abstract, Introduction, Methods, Results, Discussion, and Limitations\n   - 4 figures referenced with relative paths (`images/figure*.png`)\n   - Detailed analysis of 6 incidents from EDR and Network IDS sources\n\n**Key Findings:**\n- 67% of incidents require action within 24h or immediately\n- 17% correctly identified as false positives (auto-closure)\n- 50% classified as Intrusion attempts\n- Balanced coverage across EDR and Network IDS sources\n- Effective differentiation between critical threats and false positives",
+    "real_tokens_used": 362954
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer_20260408_081236\\round_001\\inner_workspaces\\round_001\\05c_CyberSecurity_IncidentNarrativeTriage",
+  "timestamp": "2026-04-08T08:32:18.880542",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the CyberSecurity Incident Narrative Triage research task. \n\n**Deliverables Created:**\n\n1. **Code (`code/`)**:\n   - `preprocess.py`: Reproducible preprocessing pipeline with text cleaning, feature engineering (threat indicators, hostnames, word counts), and summary statistics generation\n   - `gemini_triage.py`: LLM-based triage system using Gemini 1.5 Pro with structured output schema (severity, category, confidence, action_required, key_indicators)\n   - `visualizations.py`: Four publication-quality figures using matplotlib/seaborn\n\n2. **Outputs (`outputs/`)**:\n   - `gemini_raw.json`: Full structured triage results for all 6 incidents\n   - `incidents_processed.csv`: Preprocessed data with extracted features\n   - `summaries.json`: Statistical summaries (counts, lengths, frequencies)\n\n3. **Report (`report/report.md`)**:\n   - Comprehensive academic report with Abstract, Introduction, Methods, Results, Discussion, and Limitations\n   - 4 figures referenced with relative paths (`images/figure*.png`)\n   - Detailed analysis of 6 incidents from EDR and Network IDS sources\n\n**Key Findings:**\n- 67% of incidents require action within 24h or immediately\n- 17% correctly identified as false positives (auto-closure)\n- 50% classified as Intrusion attempts\n- Balanced coverage across EDR and Network IDS sources\n- Effective differentiation between critical threats and false positives"
+}

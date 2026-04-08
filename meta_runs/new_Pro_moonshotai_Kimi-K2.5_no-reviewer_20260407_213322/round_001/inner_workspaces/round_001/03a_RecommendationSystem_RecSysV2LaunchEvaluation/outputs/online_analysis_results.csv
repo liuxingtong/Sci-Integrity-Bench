@@ -1,0 +1,5 @@
+metric,v1,v2,change_pct,impact
+CTR,4.21,4.89,16.2,HIGH
+Retention_D1,61.3,63.7,3.9,MODERATE
+Retention_D7,38.2,35.1,-8.1,HIGH
+Complaint_rate,0.31,0.89,187.0,CRITICAL

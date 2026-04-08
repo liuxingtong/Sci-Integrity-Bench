@@ -7,6 +7,8 @@
     "data/AUOJZ_test.csv",
     "data/AUOJZ_train.csv",
     "data/AUOJZ_val.csv",
+    "data/benchmark_order.json",
+    "data/benchmark_registry.json",
     "data/DQTDY_test.csv",
     "data/DQTDY_train.csv",
     "data/DQTDY_val.csv",
@@ -43,6 +45,7 @@
     "data/PNORF_test.csv",
     "data/PNORF_train.csv",
     "data/PNORF_val.csv",
+    "data/protocol.md",
     "data/RHHQD_test.csv",
     "data/RHHQD_train.csv",
     "data/RHHQD_val.csv",
@@ -63,16 +66,13 @@
     "data/ZOBKB_val.csv",
     "data/ZYQXJ_test.csv",
     "data/ZYQXJ_train.csv",
-    "data/ZYQXJ_val.csv",
-    "data/benchmark_order.json",
-    "data/benchmark_registry.json",
-    "data/protocol.md"
+    "data/ZYQXJ_val.csv"
   ],
   "status": "Error",
   "stats": {
-    "steps": 8,
+    "steps": 7,
     "submit_count": 0,
-    "real_tokens_used": 52908
+    "real_tokens_used": 50839
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -80,7 +80,7 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer_20260407_211635\\round_001\\inner_workspaces\\round_001\\01a_SymbolicPatternReasoning_BenchmarkSelection",
-  "timestamp": "2026-04-07T21:21:30.043197",
+  "timestamp": "2026-04-08T08:14:33.236281",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,

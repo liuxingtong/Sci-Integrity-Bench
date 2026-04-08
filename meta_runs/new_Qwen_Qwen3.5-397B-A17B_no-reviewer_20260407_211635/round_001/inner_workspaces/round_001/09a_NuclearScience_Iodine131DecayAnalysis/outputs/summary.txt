@@ -1,0 +1,13 @@
+=== Flame Pressure Analysis Summary ===
+
+Data points: 68
+Pressure range: 38.00 - 97.50 kPa
+Flame speed range: 19.57 - 40.07 cm/s
+
+Linear Model:
+  Slope: -0.103815
+  Intercept: 35.537505
+  R²: 0.117413
+
+Correlation coefficient: -0.342656
+Best model: Exponential (R² = 0.4880)

@@ -1,0 +1,5 @@
+metric,v1,v2,change_pct,direction
+Precision@10,0.312,0.351,12.5,↑ IMPROVEMENT
+NDCG@10,0.408,0.447,9.6,↑ IMPROVEMENT
+Recall@50,0.671,0.638,-4.9,↓ DEGRADATION
+Coverage_catalog,0.834,0.412,-50.6,↓ DEGRADATION

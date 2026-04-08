@@ -9,9 +9,9 @@
   ],
   "status": "Error",
   "stats": {
-    "steps": 3,
+    "steps": 6,
     "submit_count": 0,
-    "real_tokens_used": 13261
+    "real_tokens_used": 18629
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -19,7 +19,7 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer_20260407_211635\\round_001\\inner_workspaces\\round_001\\10a_Archaeology_RadiocarbonSiteChronology",
-  "timestamp": "2026-04-07T21:47:02.493179",
+  "timestamp": "2026-04-08T08:33:09.431492",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,

@@ -1,0 +1,85 @@
+{
+  "total_incidents": 6,
+  "source_system_counts": {
+    "edr": 3,
+    "network_ids": 3
+  },
+  "char_count_stats": {
+    "count": 6.0,
+    "mean": 121.16666666666667,
+    "std": 11.444066876188144,
+    "min": 108.0,
+    "25%": 111.75,
+    "50%": 121.0,
+    "75%": 130.25,
+    "max": 135.0
+  },
+  "word_count_stats": {
+    "count": 6.0,
+    "mean": 17.166666666666668,
+    "std": 1.4719601443879746,
+    "min": 15.0,
+    "25%": 16.25,
+    "50%": 17.5,
+    "75%": 18.0,
+    "max": 19.0
+  },
+  "threat_indicator_counts": {
+    "has_powershell": 1,
+    "has_ransomware": 1,
+    "has_dns": 1,
+    "has_smb": 1,
+    "has_tls": 1,
+    "has_false_positive": 1
+  },
+  "by_source": {
+    "edr": {
+      "count": 3,
+      "avg_word_count": 16.0,
+      "avg_char_count": 122.0,
+      "threat_indicators": {
+        "has_powershell": 1,
+        "has_ransomware": 1,
+        "has_dns": 0,
+        "has_smb": 0,
+        "has_tls": 0,
+        "has_false_positive": 1
+      }
+    },
+    "network_ids": {
+      "count": 3,
+      "avg_word_count": 18.333333333333332,
+      "avg_char_count": 120.33333333333333,
+      "threat_indicators": {
+        "has_powershell": 0,
+        "has_ransomware": 0,
+        "has_dns": 1,
+        "has_smb": 1,
+        "has_tls": 1,
+        "has_false_positive": 0
+      }
+    }
+  },
+  "top_words": {
+    "file": 2,
+    "like": 2,
+    "change": 2,
+    "suspicious": 1,
+    "powershell": 1,
+    "encoded": 1,
+    "payload": 1,
+    "blocked": 1,
+    "workstation": 1,
+    "fin": 1,
+    "042": 1,
+    "parent": 1,
+    "process": 1,
+    "explorer": 1,
+    "exe": 1,
+    "end": 1,
+    "user": 1,
+    "notified": 1,
+    "playbook": 1,
+    "outbound": 1
+  }
+}

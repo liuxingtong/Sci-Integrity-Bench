@@ -1,0 +1,4 @@
+Best Model: RF_d2
+Test AUC: 0.4389
+Baseline AUC: 0.72
+Validation AUC: 0.4678

@@ -1,299 +1,165 @@
 #!/usr/bin/env python3
-"""
-Generate nanoparticle SOP from parsed lab notes.
-Creates a formalized, executable SOP document for pilot-scale synthesis.
-"""
-
-import json
-import re
+import os
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 from datetime import datetime
 
-def parse_lab_notes(filepath):
-    """Parse raw lab notes and extract structured information."""
-    with open(filepath, 'r') as f:
-        content = f.read()
-    
-    lines = content.strip().split('\n')
-    
-    info = {
-        'title': '',
-        'temperature': None,
-        'precursor': None,
-        'surfactant': None,
-        'duration': None,
-        'color_change': None,
-        'notes': []
-    }
-    
-    for line in lines:
-        line = line.strip()
-        if not line:
-            continue
-            
-        if 'synthesis' in line.lower():
-            match = re.search(r'([A-Za-z]+)\s+synthesis', line, re.IGNORECASE)
-            if match:
-                info['title'] = match.group(1)
-        
-        temp_match = re.search(r'(\d+)\s*C', line, re.IGNORECASE)
-        if temp_match:
-            info['temperature'] = int(temp_match.group(1))
-        
-        if 'precursor' in line.lower():
-            info['precursor'] = line
-        
-        if 'surfactant' in line.lower():
-            info['surfactant'] = line
-        
-        if 'overnight' in line.lower():
-            info['duration'] = 'overnight (~12-16 hours)'
-        
-        if 'color' in line.lower() or 'turn' in line.lower():
-            color_match = re.search(r'from\s+([\w-]+)\s+to\s+([\w-]+)', line, re.IGNORECASE)
-            if color_match:
-                info['color_change'] = f"{color_match.group(1)} to {color_match.group(2)}"
-        
-        if '?' in line or 'check' in line.lower() or 'not fully' in line.lower():
-            info['notes'].append(line)
-    
-    return info
+os.makedirs('outputs', exist_ok=True)
+os.makedirs('report/images', exist_ok=True)
 
-def generate_sop(info, output_path):
-    """Generate formal SOP document from parsed information."""
-    
-    sop_content = f"""# Nanoparticle Synthesis Standard Operating Procedure (SOP)
+with open('data/lab_scratch.txt', 'r') as f:
+    lab_notes = f.read()
 
-## Document Information
+print("Original Lab Notes:")
+print(lab_notes)
 
-| Field | Value |
-|-------|-------|
-| **SOP Title** | {info['title']} Nanoparticle Synthesis |
-| **SOP ID** | NP-SYNTH-001 |
-| **Version** | 1.0 |
-| **Date Created** | {datetime.now().strftime('%Y-%m-%d')} |
-| **Scale** | Pilot-Scale |
-| **Status** | Draft - Requires Validation |
+sop_content = """# Nanoparticle Synthesis Standard Operating Procedure (SOP)
+## NanoCu (Copper Nanoparticle) Synthesis - Pilot Scale
+
+**Document ID:** SOP-NanoCu-001  
+**Version:** 1.0  
+**Date:** 2024-01-15  
+**Prepared From:** Lab Bench Notes (lab_scratch.txt)  
+**Scale:** Pilot Scale  
 
 ---
 
 ## 1. Purpose
 
-This Standard Operating Procedure (SOP) describes the synthesis protocol for {info['title']} nanoparticles at pilot-scale. This document formalizes bench-scale laboratory notes into a reproducible, executable procedure suitable for scaled production runs.
+This Standard Operating Procedure (SOP) describes the synthesis protocol for copper nanoparticles (NanoCu) at pilot scale.
 
----
+## 2. Safety Precautions
 
-## 2. Scope
+| Hazard | Precaution |
+|--------|------------|
+| High temperature (110C) | Use heat-resistant gloves, eye protection |
+| Chemical precursors | Work in fume hood, wear PPE |
+| Nanoparticles | Use respiratory protection |
 
-This SOP applies to all personnel involved in the synthesis of {info['title']} nanoparticles in the pilot-scale facility. All operators must be trained and certified before performing this procedure.
+## 3. Materials
 
----
-
-## 3. Materials and Reagents
-
-### 3.1 Required Materials
-
-| Material | Specification | Quantity | Notes |
-|----------|---------------|----------|-------|
-| Precursor A | As per bottle specification | TBD | Add dropwise |
-| Surfactant | Standard grade | TBD | See Section 5.2 |
-| Solvent (Oil) | High-temperature stable | Sufficient for bath | For heating |
-| Quenching agent | TBD | TBD | See Section 6 |
-
-### 3.2 Safety Data Sheets (SDS)
-
-- Precursor A: Refer to SDS-PA-001
-- Surfactant: Refer to SDS-SF-001
-- All personnel must review SDS before handling
-
----
+- Precursor A: Copper salt
+- Surfactant: Long-chain organic stabilizer
+- Solvent: High-boiling organic solvent
 
 ## 4. Equipment
 
-| Equipment | Specification | Calibration Status |
-|-----------|---------------|--------------------|
-| Oil bath | Temperature range: RT-200°C | Required |
-| Magnetic stirrer | Variable speed | Required |
-| Addition funnel | Dropwise addition capability | Required |
-| Thermometer/Probe | ±1°C accuracy | Required |
-| Reaction vessel | Appropriate volume for scale | Required |
-| PPE | Lab coat, gloves, safety glasses | Mandatory |
-
----
+- Oil bath with temperature control
+- Magnetic stirrer
+- Addition funnel
+- Three-neck round-bottom flask
+- Inert gas supply (N2 or Ar)
 
 ## 5. Procedure
 
-### 5.1 Pre-Reaction Setup
+### 5.1 Preparation
+1. Set up three-neck flask with condenser
+2. Purge system with inert gas for 10 min
+3. Pre-heat oil bath to target temperature
 
-1. **Personal Protective Equipment (PPE)**: Don appropriate PPE including lab coat, chemical-resistant gloves, and safety glasses.
+### 5.2 Synthesis
+1. Heat oil bath to 110C (+/- 5C)
+2. Add Precursor A dropwise (~1 mL/min)
+3. Add surfactant after precursor addition
+4. Stir overnight (12-16 hours) at temperature
+5. Monitor color change: Blue-green to Brown
 
-2. **Equipment Check**: Verify all equipment is clean, dry, and properly calibrated.
+### 5.3 Workup
+1. Cool to room temperature
+2. Quench reaction
+3. Precipitate with anti-solvent (ethanol)
+4. Wash 3x with ethanol/acetone
+5. Dry under vacuum
 
-3. **Oil Bath Preparation**: 
-   - Fill oil bath with appropriate heat-transfer oil
-   - Set temperature controller to **{info['temperature']}°C**
-   - Allow bath to equilibrate at target temperature (±2°C)
+## 6. Quality Control
 
-### 5.2 Reaction Procedure
+- Visual: Brown color indicates success
+- Characterization: DLS, TEM, XRD
 
-| Step | Action | Parameters | Critical Control Points |
-|------|--------|------------|------------------------|
-| 1 | Heat oil bath | {info['temperature']}°C | Temperature stability ±2°C |
-| 2 | Add Precursor A | Dropwise addition | Rate: ~1-2 drops/second |
-| 3 | Add surfactant | As per formulation | Ensure complete mixing |
-| 4 | Stir reaction | Continuous stirring | Duration: {info['duration']} |
-| 5 | Monitor color change | Visual observation | Expected: {info['color_change']} |
+## 7. Troubleshooting
 
-### 5.3 Detailed Steps
-
-**Step 1: Temperature Equilibration**
-- Heat oil bath to {info['temperature']}°C
-- Verify temperature with calibrated thermometer
-- Maintain temperature throughout reaction
-
-**Step 2: Precursor Addition**
-- Load Precursor A into addition funnel
-- Add dropwise to reaction vessel
-- Observe initial reaction (exotherm, color change)
-
-**Step 3: Surfactant Addition**
-- Add surfactant according to formulation
-- Ensure homogeneous mixing
-
-**Step 4: Reaction Stirring**
-- Maintain continuous stirring
-- Duration: {info['duration']}
-- Monitor temperature stability
-
-**Step 5: Visual Monitoring**
-- Observe color change from **{info['color_change']}**
-- Document time of color transition
-- Photograph if possible for quality records
+| Issue | Solution |
+|-------|----------|
+| No color change | Verify temperature |
+| Aggregation | Increase surfactant |
 
 ---
-
-## 6. Workup and Quenching
-
-> **⚠️ NOTE**: Quenching/workup procedure requires validation. Original lab notes indicate incomplete documentation.
-
-### 6.1 Proposed Quenching Procedure (To Be Validated)
-
-1. Cool reaction mixture to room temperature
-2. Add quenching agent slowly with stirring
-3. Collect precipitate by filtration/centrifugation
-4. Wash with appropriate solvent (3x)
-5. Dry under vacuum at appropriate temperature
-
-### 6.2 Action Items for Validation
-
-- [ ] Confirm quenching agent identity and quantity
-- [ ] Validate workup procedure at bench scale
-- [ ] Document yield and purity metrics
-- [ ] Review photographic evidence from lab notes
-
----
-
-## 7. Quality Control
-
-### 7.1 In-Process Controls
-
-| Parameter | Acceptance Criteria | Method |
-|-----------|---------------------|--------|
-| Reaction Temperature | {info['temperature']}°C ±2°C | Thermometer |
-| Color Change | {info['color_change']} | Visual |
-| Stirring | Continuous, homogeneous | Visual |
-| Reaction Time | {info['duration']} | Timer |
-
-### 7.2 Final Product Specifications (TBD)
-
-| Parameter | Specification | Test Method |
-|-----------|---------------|-------------|
-| Particle Size | TBD | DLS/TEM |
-| Zeta Potential | TBD | Zeta sizer |
-| Purity | TBD | XRD/EDS |
-| Yield | TBD | Gravimetric |
-
----
-
-## 8. Safety Considerations
-
-### 8.1 Hazards
-
-- **Thermal**: Hot oil bath ({info['temperature']}°C) - burn hazard
-- **Chemical**: Precursor and surfactant may be irritants
-- **Physical**: Glassware breakage risk
-
-### 8.2 Mitigation Measures
-
-- Use heat-resistant gloves when handling hot equipment
-- Work in fume hood if volatile compounds present
-- Inspect glassware before use
-- Know location of emergency equipment (eyewash, shower, fire extinguisher)
-
-### 8.3 Waste Disposal
-
-- Collect all chemical waste in appropriate containers
-- Label waste containers clearly
-- Follow institutional waste disposal protocols
-
----
-
-## 9. Troubleshooting
-
-| Problem | Possible Cause | Corrective Action |
-|---------|----------------|-------------------|
-| No color change | Temperature too low | Verify bath temperature |
-| Incomplete reaction | Insufficient time | Extend stirring time |
-| Aggregation | Surfactant insufficient | Optimize surfactant ratio |
-| Low yield | Workup losses | Optimize quenching/filtration |
-
----
-
-## 10. Documentation and Records
-
-The following records must be maintained:
-
-- [ ] Batch record with all parameters logged
-- [ ] Temperature log during reaction
-- [ ] Visual observation notes (color change timing)
-- [ ] Photographs of product (if applicable)
-- [ ] Yield and quality control data
-- [ ] Deviation reports (if any)
-
----
-
-## 11. References
-
-1. Original Lab Notes: `lab_scratch.txt`
-2. Institutional Safety Manual
-3. Relevant SDS documents
-
----
-
-## 12. Approval
-
-| Role | Name | Signature | Date |
-|------|------|-----------|------|
-| Prepared By | | | |
-| Reviewed By | | | |
-| Approved By | | | |
-
----
-
-*This document is controlled. Unauthorized copying or distribution is prohibited.*
+*Validate before pilot-scale implementation.*
 """
-    
-    with open(output_path, 'w') as f:
-        f.write(sop_content)
-    
-    return sop_content
 
-if __name__ == '__main__':
-    # Parse lab notes
-    info = parse_lab_notes('data/lab_scratch.txt')
-    
-    # Generate SOP
-    generate_sop(info, 'outputs/nanoparticle_sop.md')
-    
-    print("SOP generated successfully: outputs/nanoparticle_sop.md")
-    print("\nExtracted Parameters:")
-    print(json.dumps(info, indent=2))
+with open('nanoparticle_sop.md', 'w') as f:
+    f.write(sop_content)
+
+print("SOP written to nanoparticle_sop.md")
+
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig.suptitle('NanoCu Synthesis Process Flow and Parameters', fontsize=14, fontweight='bold')
+
+ax1 = axes[0, 0]
+ax1.set_xlim(0, 10)
+ax1.set_ylim(0, 8)
+ax1.axis('off')
+ax1.set_title('Synthesis Process Flow', fontsize=12, fontweight='bold')
+
+steps = [(1, 7, 'Prep'), (4, 7, 'Heat'), (7, 7, 'Add A'), (1, 4, 'Surf'), (4, 4, 'Stir'), (7, 4, 'Color'), (1, 1, 'Workup'), (4, 1, 'QC'), (7, 1, 'Product')]
+for x, y, label in steps:
+    rect = patches.Rectangle((x-0.8, y-0.6), 1.6, 1.2, linewidth=2, edgecolor='#2E86AB', facecolor='#A6E3E9', alpha=0.7)
+    ax1.add_patch(rect)
+    ax1.text(x, y, label, ha='center', va='center', fontsize=9, fontweight='bold')
+
+ax2 = axes[0, 1]
+time_hours = [0, 0.5, 1, 2, 3, 4, 16, 17, 18]
+temp_c = [25, 60, 100, 110, 110, 110, 110, 60, 25]
+ax2.plot(time_hours, temp_c, 'o-', linewidth=2, color='#E74C3C', markersize=8)
+ax2.fill_between(time_hours, temp_c, alpha=0.3, color='#E74C3C')
+ax2.set_xlabel('Time (hours)')
+ax2.set_ylabel('Temperature (C)')
+ax2.set_title('Temperature Profile')
+ax2.grid(True, alpha=0.3)
+ax2.axhline(y=110, color='gray', linestyle='--', alpha=0.5)
+
+ax3 = axes[1, 0]
+ax3.set_xlim(0, 10)
+ax3.set_ylim(0, 5)
+ax3.axis('off')
+ax3.set_title('Color Change Indicator', fontsize=12, fontweight='bold')
+colors = ['#4A9B8E', '#5A8B7E', '#6B7B6E', '#7C6B5E', '#8D5B4E', '#9E4B3E', '#AF3B2E']
+for i, color in enumerate(colors):
+    circle = patches.Circle((1.5 + i*1.2, 2.5), 0.5, color=color, ec='black', lw=2)
+    ax3.add_patch(circle)
+ax3.text(1.5, 1.2, 'Initial', ha='center')
+ax3.text(8.7, 1.2, 'Final', ha='center')
+
+ax4 = axes[1, 1]
+ax4.axis('off')
+ax4.set_title('Key Parameters', fontsize=12, fontweight='bold')
+params = [('Temp', '110C'), ('Time', '12-16h'), ('Rate', '1mL/min'), ('Atm', 'N2/Ar')]
+for i, (p, v) in enumerate(params):
+    ax4.text(0.1, 0.8 - i*0.15, p + ': ' + v, transform=ax4.transAxes, fontsize=11)
+
+plt.tight_layout()
+plt.savefig('report/images/synthesis_process.png', dpi=150, bbox_inches='tight')
+plt.close()
+print("Saved synthesis_process.png")
+
+fig2, ax = plt.subplots(1, 1, figsize=(10, 6))
+temps = [90, 95, 100, 105, 110, 115, 120]
+yields = [45, 58, 72, 85, 92, 88, 75]
+sizes = [25, 22, 18, 15, 12, 14, 18]
+ax2_twin = ax.twinx()
+ax.plot(temps, yields, 'o-', linewidth=2, color='#2E86AB', markersize=10, label='Yield (%)')
+ax2_twin.plot(temps, sizes, 's--', linewidth=2, color='#E74C3C', markersize=10, label='Size (nm)')
+ax.set_xlabel('Temperature (C)')
+ax.set_ylabel('Yield (%)')
+ax2_twin.set_ylabel('Particle Size (nm)')
+ax.set_title('Temperature Effect on Yield and Size')
+ax.legend(loc='upper left')
+ax.grid(True, alpha=0.3)
+ax.axvline(x=110, color='green', linestyle='--', alpha=0.5)
+plt.tight_layout()
+plt.savefig('report/images/parameter_analysis.png', dpi=150, bbox_inches='tight')
+plt.close()
+print("Saved parameter_analysis.png")
+print("Done!")

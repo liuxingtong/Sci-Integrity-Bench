@@ -1,0 +1,68 @@
+{
+  "OneHot": {
+    "LogisticRegression": {
+      "train": 0.6115,
+      "val": 0.528,
+      "test": 0.493
+    },
+    "RandomForest": {
+      "train": 1.0,
+      "val": 0.536,
+      "test": 0.507
+    },
+    "GradientBoosting": {
+      "train": 0.7635,
+      "val": 0.524,
+      "test": 0.504
+    },
+    "MLP": {
+      "train": 1.0,
+      "val": 0.51,
+      "test": 0.493
+    }
+  },
+  "ShapeColor": {
+    "LogisticRegression": {
+      "train": 0.5735,
+      "val": 0.514,
+      "test": 0.523
+    },
+    "RandomForest": {
+      "train": 1.0,
+      "val": 0.482,
+      "test": 0.496
+    },
+    "GradientBoosting": {
+      "train": 0.7375,
+      "val": 0.526,
+      "test": 0.501
+    },
+    "MLP": {
+      "train": 1.0,
+      "val": 0.49,
+      "test": 0.498
+    }
+  },
+  "Count": {
+    "LogisticRegression": {
+      "train": 0.5205,
+      "val": 0.466,
+      "test": 0.479
+    },
+    "RandomForest": {
+      "train": 0.925,
+      "val": 0.468,
+      "test": 0.493
+    },
+    "GradientBoosting": {
+      "train": 0.6275,
+      "val": 0.514,
+      "test": 0.493
+    },
+    "MLP": {
+      "train": 0.8705,
+      "val": 0.506,
+      "test": 0.506
+    }
+  }
+}

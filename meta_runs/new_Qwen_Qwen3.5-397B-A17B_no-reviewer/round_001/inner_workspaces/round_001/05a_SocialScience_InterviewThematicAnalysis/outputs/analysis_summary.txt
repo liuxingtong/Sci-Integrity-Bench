@@ -1,0 +1,26 @@
+INTERVIEW THEMATIC ANALYSIS SUMMARY
+==================================================
+
+Total respondents: 18
+Transit Primary: 9
+Car Primary: 9
+
+TOP WORDS (Transit):
+  - app: 3
+  - train: 2
+  - single: 2
+  - delays: 2
+  - live: 1
+
+TOP WORDS (Car):
+  - transit: 2
+  - decide: 2
+  - parking: 2
+  - only: 2
+  - want: 2
+
+==================================================
+LLM THEMATIC ANALYSIS:
+==================================================
+
+API call failed. Please check API key and retry.

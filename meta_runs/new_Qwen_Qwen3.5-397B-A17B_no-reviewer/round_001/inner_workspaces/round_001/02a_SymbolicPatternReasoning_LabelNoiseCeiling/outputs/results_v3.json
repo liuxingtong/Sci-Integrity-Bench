@@ -1,0 +1,32 @@
+{
+  "LogisticRegression": {
+    "train": 0.6175,
+    "val": 0.514,
+    "test": 0.51
+  },
+  "RandomForest": {
+    "train": 0.991,
+    "val": 0.51,
+    "test": 0.499
+  },
+  "GradientBoosting": {
+    "train": 0.975,
+    "val": 0.506,
+    "test": 0.489
+  },
+  "ExtraTrees": {
+    "train": 0.995,
+    "val": 0.482,
+    "test": 0.499
+  },
+  "MLP": {
+    "train": 0.5955,
+    "val": 0.46,
+    "test": 0.496
+  },
+  "AdaBoost": {
+    "train": 0.565,
+    "val": 0.49,
+    "test": 0.518
+  }
+}

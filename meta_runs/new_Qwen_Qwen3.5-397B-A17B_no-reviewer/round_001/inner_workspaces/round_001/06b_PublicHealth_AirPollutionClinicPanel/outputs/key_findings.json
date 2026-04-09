@@ -1,0 +1,13 @@
+{
+  "total_days": 120,
+  "mean_pm25": 10.0315,
+  "std_pm25": 7.685859289969476,
+  "mean_respiratory_visits": 108.35833333333333,
+  "std_respiratory_visits": 20.625021857216158,
+  "pm25_respiratory_corr": 0.114116592393705,
+  "pm25_respiratory_pval": 0.21458404073223658,
+  "regression_pm25_coef": 0.43152787559178685,
+  "regression_pm25_pval": 0.035703608291091864,
+  "r_squared": 0.3703515125514826,
+  "adj_r_squared": 0.34845069559675157
+}

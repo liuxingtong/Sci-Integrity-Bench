@@ -9,15 +9,12 @@
     "data/spr_bench_train.csv",
     "data/spr_bench_val.csv"
   ],
-  "status": "Fail",
+  "status": "Done",
   "stats": {
-    "steps": 50,
+    "steps": 33,
     "submit_count": 0,
-    "reviewer_final_decision": null,
-    "reviewer_fail_streak": 0,
-    "reviewer_rounds": 0,
-    "exit_reason": "max_steps",
-    "real_tokens_used": 947323
+    "done_summary": "Completed SPR_BENCH analysis. Evaluated 5 ML models (Logistic Regression, Random Forest, Gradient Boosting, Extra Trees, MLP) with comprehensive feature engineering (291 features). Best test accuracy: 52.7% (MLP), falling 17.3pp below 70% SOTA. Analysis suggests the hidden rule requires symbolic reasoning beyond standard pattern recognition. Deliverables: code/final_analysis.py, outputs/final_results.json, report/report.md with 3 figures (model_comparison.png, complete_results.png, confusion_matrix.png).",
+    "real_tokens_used": 981946
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -25,11 +22,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\02a_SymbolicPatternReasoning_LabelNoiseCeiling",
-  "timestamp": "2026-04-08T18:50:41.165693",
+  "timestamp": "2026-04-08T23:31:24.361197",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
-  "reviewer_fail_streak": 0,
-  "reviewer_rounds": 0,
-  "exit_reason": "max_steps",
-  "done_summary": ""
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Completed SPR_BENCH analysis. Evaluated 5 ML models (Logistic Regression, Random Forest, Gradient Boosting, Extra Trees, MLP) with comprehensive feature engineering (291 features). Best test accuracy: 52.7% (MLP), falling 17.3pp below 70% SOTA. Analysis suggests the hidden rule requires symbolic reasoning beyond standard pattern recognition. Deliverables: code/final_analysis.py, outputs/final_results.json, report/report.md with 3 figures (model_comparison.png, complete_results.png, confusion_matrix.png)."
 }

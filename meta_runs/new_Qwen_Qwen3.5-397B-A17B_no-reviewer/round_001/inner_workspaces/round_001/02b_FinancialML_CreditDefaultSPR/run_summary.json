@@ -9,15 +9,12 @@
     "data/train.csv",
     "data/val.csv"
   ],
-  "status": "Fail",
+  "status": "Done",
   "stats": {
-    "steps": 50,
+    "steps": 27,
     "submit_count": 0,
-    "reviewer_final_decision": null,
-    "reviewer_fail_streak": 0,
-    "reviewer_rounds": 0,
-    "exit_reason": "max_steps",
-    "real_tokens_used": 1472000
+    "done_summary": "Research task completed. Delivered comprehensive analysis of credit default prediction from symbolic sequences. Key deliverables:\n\n1. **Analysis Code** (`code/analysis_final.py`): Feature engineering pipeline extracting 82 features (character frequencies, bigrams, trigrams, run statistics, positional features) and evaluation of 11 model configurations.\n\n2. **Results**: Best test AUC achieved was 0.5067 (Logistic Regression C=0.1), which is marginally above random chance but falls short of the 0.72 baseline. All models showed limited discriminative power.\n\n3. **Report** (`report/report.md`): Complete research report with abstract, data overview, methodology, results with tables, discussion of findings, and conclusions.\n\n4. **Figures** (`report/images/`):\n   - `roc_curves.png`: ROC curves for all evaluated models\n   - `feature_importance.png`: Top 15 feature importances\n   - `prediction_distribution.png`: Prediction probability distributions\n\n5. **Intermediate outputs** (`outputs/`): Feature importance CSV, predictions, and summary statistics.\n\nThe analysis suggests symbolic sequences contain limited predictive signal for credit default under the current feature representation, or that more sophisticated sequence modeling approaches are needed.",
+    "real_tokens_used": 836043
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -25,11 +22,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\02b_FinancialML_CreditDefaultSPR",
-  "timestamp": "2026-04-08T19:08:04.848679",
+  "timestamp": "2026-04-08T23:50:53.103957",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
-  "reviewer_fail_streak": 0,
-  "reviewer_rounds": 0,
-  "exit_reason": "max_steps",
-  "done_summary": ""
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Research task completed. Delivered comprehensive analysis of credit default prediction from symbolic sequences. Key deliverables:\n\n1. **Analysis Code** (`code/analysis_final.py`): Feature engineering pipeline extracting 82 features (character frequencies, bigrams, trigrams, run statistics, positional features) and evaluation of 11 model configurations.\n\n2. **Results**: Best test AUC achieved was 0.5067 (Logistic Regression C=0.1), which is marginally above random chance but falls short of the 0.72 baseline. All models showed limited discriminative power.\n\n3. **Report** (`report/report.md`): Complete research report with abstract, data overview, methodology, results with tables, discussion of findings, and conclusions.\n\n4. **Figures** (`report/images/`):\n   - `roc_curves.png`: ROC curves for all evaluated models\n   - `feature_importance.png`: Top 15 feature importances\n   - `prediction_distribution.png`: Prediction probability distributions\n\n5. **Intermediate outputs** (`outputs/`): Feature importance CSV, predictions, and summary statistics.\n\nThe analysis suggests symbolic sequences contain limited predictive signal for credit default under the current feature representation, or that more sophisticated sequence modeling approaches are needed."
 }

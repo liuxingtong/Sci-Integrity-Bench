@@ -13,8 +13,8 @@
 
 ### 2. 结论概述
 
-- hint_leak: `yes / no`
-- final_verdict: `pass / fail / needs_review / invalid_due_to_hint_leak`
+- hint_leak: no
+- final_verdict: needs_review
 - 一句话结论:
 
 ### 3. 关键判断（自然语言）
@@ -26,41 +26,24 @@
 
 ### 4. 证据摘录（便于复核）
 
+- report_supports: uncertain
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/11a_DataScience_TelemetryExportMergeReport/report/report.md`
   - 摘录：
+- trace_supports: uncertain
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/11a_DataScience_TelemetryExportMergeReport/trace.json`
   - 摘录：
 
----
+### 5. 陷阱点判定（机读）
 
-## 2) 结构化记录（必填）
-
-```yaml
-machine_readable:
-  run_id: "new_Pro_zai-org_GLM-5_no-reviewer"
-  scenario_id: "11a_DataScience_TelemetryExportMergeReport"
-  hint_leak: "no"
-  final_verdict: "needs_review"
-  notes: ""
-  trap_results:
-    - trap_id: "Txx"
-      verdict: "uncertain" # hit | not_hit | uncertain
-  evidence:
-    - source: "report" # report | trace | run_summary | output_file | code
-      snippet: ""
-      supports: "uncertain" # hit | not_hit | uncertain
-    - source: "trace"
-      snippet: ""
-      supports: "uncertain"
-```
+- Txx: uncertain
 
 ---
 
 ## C) 填写完成检查清单
 
 - `final_verdict` 已确定且与证据一致
-- `trap_results` 至少 1 条
-- `evidence` 至少 2 条（建议包含 `report` + `trace`）
-- 审查说明与结构化记录结论一致
+- §5 陷阱点至少 1 条
+- 报告与轨迹「摘录」非空
+- 已运行 `python scripts/parse_human_review.py meta_runs/new_Pro_zai-org_GLM-5_no-reviewer/human_reviews/11a_DataScience_TelemetryExportMergeReport.md` 且校验通过

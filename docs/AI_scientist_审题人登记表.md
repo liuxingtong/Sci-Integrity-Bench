@@ -34,4 +34,4 @@ python scripts/generate_reviewer_register_xlsx.py
 
 ## 与审查文件的关系
 
-- 登记表的「状态」只表示**协作与确认进度**；**审查结论**仍以 `meta_runs/<run_id>/human_reviews/<scenario_id>.md` 中 `machine_readable` 为准。
+- 登记表的「状态」只表示**协作与确认进度**；**审查结论**以 `meta_runs/<run_id>/human_reviews/<scenario_id>.md` 正文按规则解析出的 `machine_readable` 为准（`python scripts/parse_human_review.py <该文件>`，从 Markdown 解析，无需 YAML 代码块）。

@@ -1,8 +1,16 @@
 """
-Extract and validate the `machine_readable` YAML block in a human review .md file.
+Parse and validate machine_readable data from a human review .md.
+
+Primary source: Markdown narrative (## 1) 审查说明 …), see scripts/human_review_narrative.py
+and docs/AI_scientist_机器解析规则.yaml → narrative_parse.
+
+Legacy: optional ```yaml``` machine_readable block is still accepted when --source auto
+and narrative does not validate (unmigrated files).
 
 Usage:
   python scripts/parse_human_review.py <path-to-review.md>
+  python scripts/parse_human_review.py <path.md> --source narrative
+  python scripts/parse_human_review.py <path.md> --source legacy-yaml
 """
 
 from __future__ import annotations
@@ -19,6 +27,8 @@ try:
 except ImportError:
     print("Missing dependency: PyYAML. Install with: pip install pyyaml", file=sys.stderr)
     raise SystemExit(1)
+
+from human_review_narrative import parse_narrative_to_machine_readable
 
 ROOT = Path(__file__).resolve().parents[1]
 RULES_PATH = ROOT / "docs" / "AI_scientist_机器解析规则.yaml"
@@ -38,6 +48,22 @@ def extract_yaml_block(text: str) -> str | None:
         if "machine_readable:" in block:
             return block
     return None
+
+
+def try_parse_legacy_yaml_machine_readable(text: str) -> tuple[dict[str, Any] | None, list[str]]:
+    block = extract_yaml_block(text)
+    if not block:
+        return None, []
+    try:
+        data = yaml.safe_load(block)
+    except yaml.YAMLError as e:
+        return None, [f"YAML parse error: {e}"]
+    if not isinstance(data, dict) or not isinstance(data.get("machine_readable"), dict):
+        return None, ["YAML: root must be a mapping with key machine_readable."]
+    mr = data["machine_readable"]
+    if not isinstance(mr, dict):
+        return None, ["machine_readable must be a mapping."]
+    return mr, []
 
 
 def validate(mr: dict[str, Any]) -> list[str]:
@@ -111,9 +137,63 @@ def validate(mr: dict[str, Any]) -> list[str]:
     return errs
 
 
+def load_machine_readable(text: str, *, source: str) -> tuple[dict[str, Any] | None, list[str]]:
+    if source == "narrative":
+        mr, perr = parse_narrative_to_machine_readable(text)
+        if mr is None:
+            return None, perr
+        verr = validate(mr)
+        if verr:
+            return None, [f"narrative: {x}" for x in verr]
+        return mr, []
+
+    if source == "legacy-yaml":
+        ymr, yperr = try_parse_legacy_yaml_machine_readable(text)
+        if ymr is None:
+            return None, yperr if yperr else ["No ```yaml``` code block containing machine_readable."]
+        verr = validate(ymr)
+        if verr:
+            return None, [f"legacy-yaml: {x}" for x in verr]
+        return ymr, []
+
+    # auto — Markdown 正文优先；仅当正文无法通过校验时再尝试旧版 YAML 块
+    mr, perr = parse_narrative_to_machine_readable(text)
+    if mr is not None:
+        verr = validate(mr)
+        if not verr:
+            return mr, []
+
+    ymr, yperr = try_parse_legacy_yaml_machine_readable(text)
+    if ymr is not None:
+        yverr = validate(ymr)
+        if not yverr:
+            return ymr, []
+
+    errs: list[str] = []
+    if mr is not None:
+        errs.extend(f"narrative invalid: {x}" for x in validate(mr))
+    else:
+        errs.extend(perr)
+    if ymr is not None:
+        errs.extend(f"legacy yaml invalid: {x}" for x in validate(ymr))
+    else:
+        errs.extend(yperr)
+    if not errs:
+        errs.append("Could not obtain valid machine_readable from narrative or legacy YAML.")
+    return None, errs
+
+
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Parse and validate human review machine_readable YAML.")
+    ap = argparse.ArgumentParser(
+        description="Parse and validate human review machine_readable from Markdown (and optionally legacy YAML)."
+    )
     ap.add_argument("path", type=Path, help="Path to human_reviews/<scenario_id>.md")
+    ap.add_argument(
+        "--source",
+        choices=("narrative", "legacy-yaml", "auto"),
+        default="auto",
+        help="narrative=§1 only; legacy-yaml=```yaml``` only; auto=narrative first, else legacy yaml (default)",
+    )
     args = ap.parse_args()
     path: Path = args.path
     if not path.is_file():
@@ -121,25 +201,12 @@ def main() -> None:
         sys.exit(1)
 
     text = path.read_text(encoding="utf-8")
-    block = extract_yaml_block(text)
-    if block is None:
-        print("No ```yaml code block containing machine_readable: found.", file=sys.stderr)
-        sys.exit(2)
-
-    try:
-        data = yaml.safe_load(block)
-    except yaml.YAMLError as e:
-        print(f"YAML parse error: {e}", file=sys.stderr)
+    mr, load_errs = load_machine_readable(text, source=args.source)
+    if mr is None:
+        for e in load_errs:
+            print(e, file=sys.stderr)
+        print(json.dumps({"ok": False, "errors": load_errs}, ensure_ascii=False, indent=2))
         sys.exit(3)
-
-    if not isinstance(data, dict) or "machine_readable" not in data:
-        print("YAML root must be a mapping with key machine_readable.", file=sys.stderr)
-        sys.exit(4)
-
-    mr = data["machine_readable"]
-    if not isinstance(mr, dict):
-        print("machine_readable must be a mapping.", file=sys.stderr)
-        sys.exit(4)
 
     errs = validate(mr)
     rules_rel = str(RULES_PATH.relative_to(ROOT)).replace("\\", "/")

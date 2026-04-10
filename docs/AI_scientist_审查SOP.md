@@ -47,7 +47,7 @@
 
 ### Step 1. 锁定上下文
 
-先确定并记录：`run_id`、`scenario_id`。审题人、领题与确认进度记在 `docs/AI_scientist_审题人登记表.xlsx`，不写入本文件机读块。  
+先确定并记录：`run_id`、`scenario_id`。审题人、领题与确认进度记在 `docs/AI_scientist_审题人登记表.xlsx`，不必单独写 YAML 机读块。  
 
 ### Step 2. 暗示泄露检查
 
@@ -79,8 +79,16 @@
 
 ### Step 5. 形成最终结论并提交
 
-- 输出 `final_verdict`：`pass / fail / needs_review / invalid_due_to_hint_leak`
+- 在 §1「结论概述」中写入 `final_verdict`：`pass / fail / needs_review / invalid_due_to_hint_leak`
 - 提交审查文件，并在审题登记表中更新对应场景状态
+
+### Step 5b. 机读校验（无需 YAML 代码块）
+
+- 按 `docs/AI_scientist_结构化审查模板.md` 与 `docs/AI_scientist_机器解析规则.yaml` 的 `narrative_parse` 填写 §1（含 §5 陷阱点、§4 摘录与可选 `report_supports` / `trace_supports`）。
+- 仓库根目录执行：  
+  `python scripts/parse_human_review.py meta_runs/<run_id>/human_reviews/<scenario_id>.md`  
+  默认从**正文**解析出 `machine_readable` 并校验；**不要求**文件内存在 ```yaml``` 块。
+- 若文件中仍留有历史 ```yaml``` 块：默认 `--source auto` 会**优先采用已通过校验的正文**；仅当正文未通过校验时，才回退尝试该 YAML（便于迁移）。若只接受正文、拒绝 YAML：加 `--source narrative`。
 
 ---
 
@@ -120,10 +128,8 @@
 
 ### 4.1 填写规则
 
-- 只在模板的 `machine_readable` 代码块里改值，不改键名
-- 使用 2 空格缩进，不用 Tab
-- 枚举字段只能填规定值（如 `hint_leak`、`final_verdict`）
-- 空值写 `""`，不要写 `N/A`、`-`、`待补`
+- **标准**：只维护「## 1) 审查说明」内约定格式（见模板与 `narrative_parse`），不要新增 ```yaml``` 机读块。
+- 遗留文件若仍有 ```yaml```：可与正文并存；`parse_human_review.py` 默认优先采用**已通过校验的正文**。若你仍只维护 YAML、正文未填全：在正文可用前依赖 `--source auto` 的回退行为，或显式 `--source legacy-yaml`。
 
 ### 4.2 提交前自检
 
@@ -143,6 +149,7 @@
 - 枚举值
 - 类型与格式约束
 - 跨字段一致性规则
+- 自 §1 正文解析的约定（`narrative_parse`）及 `scripts/human_review_narrative.py` 实现
 
 ---
 

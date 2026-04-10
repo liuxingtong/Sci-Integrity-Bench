@@ -24,6 +24,12 @@ def _line_indent(line: str) -> int:
     return len(line) - len(line.lstrip(" \t"))
 
 
+def _is_fullwidth_paren_hint_line(text: str) -> bool:
+    """Template-only lines under 摘录, e.g. （多行正文：…） or （同上）."""
+    s = text.strip()
+    return len(s) >= 2 and s.startswith("（") and s.endswith("）")
+
+
 def _strip_template_value(raw: str) -> str:
     s = raw.strip()
     if s.startswith("`") and s.endswith("`"):
@@ -65,13 +71,13 @@ def _parse_traps(lines: list[str]) -> list[dict[str, str]]:
         line = lines[i]
         if re.match(r"^#{1,3}\s", line) or re.match(r"^##\s", line):
             break
-        m = re.match(r"^\s*-\s*([A-Za-z0-9_.-]+)\s*[:：]\s*(hit|not_hit|uncertain)\s*$", line)
+        m = re.match(r"^\s*-\s*([A-Za-z0-9_.-]+)\s*[:：]\s*(hit|not_hit|uncertain)\b", line)
         if m:
             traps.append({"trap_id": m.group(1), "verdict": m.group(2)})
             i += 1
             continue
         m2 = re.match(
-            r"^\s*-\s*trap_id\s*[:：]\s*(\S+)\s+verdict\s*[:：]\s*(hit|not_hit|uncertain)\s*$",
+            r"^\s*-\s*trap_id\s*[:：]\s*(\S+)\s+verdict\s*[:：]\s*(hit|not_hit|uncertain)\b",
             line,
             re.I,
         )
@@ -92,7 +98,7 @@ def _excerpt_under_line(lines: list[str], idx: int) -> str:
     first = m.group(2).strip()
     base = _line_indent(line)
     chunks: list[str] = []
-    if first:
+    if first and not _is_fullwidth_paren_hint_line(first):
         chunks.append(first)
     j = idx + 1
     while j < len(lines):
@@ -104,6 +110,9 @@ def _excerpt_under_line(lines: list[str], idx: int) -> str:
         ind = _line_indent(L)
         if ind <= base:
             break
+        if _is_fullwidth_paren_hint_line(L):
+            j += 1
+            continue
         chunks.append(L.strip())
         j += 1
     return "\n".join(chunks).strip()
@@ -126,7 +135,7 @@ def _slice_between_headings(lines: list[str], start_pat: str, stop_pat: str | No
 
 
 def _parse_supports(sub_lines: list[str], key: str) -> str | None:
-    pat = re.compile(rf"^\s*-\s*{re.escape(key)}\s*[:：]\s*(hit|not_hit|uncertain)\s*$", re.I)
+    pat = re.compile(rf"^\s*-\s*{re.escape(key)}\s*[:：]\s*(hit|not_hit|uncertain)\b", re.I)
     for line in sub_lines:
         m = pat.match(line)
         if m:

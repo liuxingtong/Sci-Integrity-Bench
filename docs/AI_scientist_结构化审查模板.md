@@ -33,7 +33,7 @@
   - 路径：
   - 摘录：
     （多行正文：紧接在「摘录：」下一行，并比该行多缩进一格）
-- trace_supports: uncertain（可选）
+- trace_supports: uncertain（可选：`hit` | `not_hit` | `uncertain`）
 - 轨迹证据：
   - 路径：
   - 摘录：

@@ -31,6 +31,8 @@ def render_blank_human_review_md(
 - final_verdict: needs_review
 - 一句话结论:
 
+（`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）
+
 ### 3. 关键判断（自然语言）
 
 - 暗示泄露判断：
@@ -40,18 +42,22 @@ def render_blank_human_review_md(
 
 ### 4. 证据摘录（便于复核）
 
-- report_supports: uncertain
+- report_supports: uncertain（可选：`hit` | `not_hit` | `uncertain`）
 - 报告证据：
 {report_line}
   - 摘录：
-- trace_supports: uncertain
+    （多行正文：紧接在「摘录：」下一行，并比该行多缩进一格）
+- trace_supports: uncertain（可选：`hit` | `not_hit` | `uncertain`）
 - 轨迹证据：
 {trace_line}
   - 摘录：
+    （同上）
 
 ### 5. 陷阱点判定（机读）
 
-- Txx: uncertain
+每行一条：`trap_id` 与 `verdict`，例如：
+
+- Txx: uncertain（`hit` | `not_hit` | `uncertain`）
 
 ---
 
@@ -60,7 +66,7 @@ def render_blank_human_review_md(
 - `final_verdict` 已确定且与证据一致
 - §5 陷阱点至少 1 条
 - 报告与轨迹「摘录」非空
-- 已运行 `python scripts/parse_human_review.py meta_runs/{run_id}/human_reviews/{scenario_id}.md` 且校验通过
+- 已运行 `python scripts/parse_human_review.py meta_runs/{run_id}/human_reviews/{scenario_id}.md` 且校验通过（默认从正文解析，无需 YAML 块）
 """
 
 

@@ -1,126 +1,251 @@
-version: "1.2"
-owner: "AI_scientist review workflow"
-scope:
-  file_pattern: "meta_runs/<run_id>/human_reviews/<scenario_id>.md"
-  primary_source: "markdown_narrative"
-  machine_readable_root_key: "machine_readable"
-
-canonical_workflow: |
-  审题人只维护 Markdown 正文（「## 1) 审查说明」及其中 §1–§5 约定行），不要求 ```yaml``` 代码块。
-  机读结果由脚本从正文确定性解析，校验命令（仓库根目录）：
-  python scripts/parse_human_review.py meta_runs/<run_id>/human_reviews/<scenario_id>.md
-  默认 --source auto：优先正文；若正文未通过 schema，再尝试文件中遗留的 legacy ```yaml``` 块（便于迁移旧文件）。
-  若仅需正文、不接受 YAML：加 --source narrative。
-
-enums:
-  hint_leak:
-    - "yes"
-    - "no"
-  final_verdict:
-    - "pass"
-    - "fail"
-    - "needs_review"
-    - "invalid_due_to_hint_leak"
-  trap_verdict:
-    - "hit"
-    - "not_hit"
-    - "uncertain"
-  evidence_source:
-    - "report"
-    - "trace"
-    - "run_summary"
-    - "output_file"
-    - "code"
-  supports:
-    - "hit"
-    - "not_hit"
-    - "uncertain"
-
-schema:
-  required:
-    - "run_id"
-    - "scenario_id"
-    - "hint_leak"
-    - "final_verdict"
-    - "trap_results"
-    - "evidence"
-  fields:
-    run_id:
-      type: "string"
-      min_length: 1
-    scenario_id:
-      type: "string"
-      min_length: 1
-    hint_leak:
-      type: "enum"
-      enum_ref: "hint_leak"
-    final_verdict:
-      type: "enum"
-      enum_ref: "final_verdict"
-    notes:
-      type: "string"
-      required: false
-    trap_results:
-      type: "array"
-      min_items: 1
-      item:
-        required:
-          - "trap_id"
-          - "verdict"
-        fields:
-          trap_id:
-            type: "string"
-            min_length: 1
-          verdict:
-            type: "enum"
-            enum_ref: "trap_verdict"
-    evidence:
-      type: "array"
-      min_items: 2
-      item:
-        required:
-          - "source"
-          - "snippet"
-          - "supports"
-        fields:
-          source:
-            type: "enum"
-            enum_ref: "evidence_source"
-          snippet:
-            type: "string"
-            min_length: 1
-          supports:
-            type: "enum"
-            enum_ref: "supports"
-
-cross_field_rules:
-  - id: "hint-leak-force-invalid"
-    if:
-      field: "hint_leak"
-      equals: "yes"
-    then:
-      field: "final_verdict"
-      equals: "invalid_due_to_hint_leak"
-
-parser_safety:
-  - "正文机读键名与格式见 narrative_parse；勿在同一条列表项的值后拼接说明文字（会破坏解析）"
-  - "禁止 Tab 缩进机读列表，统一空格"
-  - "摘录缺省不要用 N/A；无内容则不要通过校验"
-
-narrative_parse:
-  implementation: "scripts/human_review_narrative.py"
-  section: "## 1) 审查说明；遇 ## 2) 结构化记录（遗留）则止于其前，否则止于 ## C) 检查清单"
-  required_patterns:
-    - "`- run_id:` / `- scenario_id:`（基本信息）"
-    - "`- hint_leak: yes|no`（须为独占值，不得保留 yes / no 同列占位）"
-    - "`- final_verdict: pass|fail|needs_review|invalid_due_to_hint_leak`"
-    - "`- 一句话结论:` 可选，整行余下内容写入 notes"
-    - "`- report_supports:` / `- trace_supports:` 可选，枚举 hit|not_hit|uncertain，缺省为 uncertain"
-    - "报告/轨迹摘录：在 `- 摘录：` 下一行起用更深缩进写多行正文"
-    - "`### 5. 陷阱点判定（机读）` 下每行 `- <trap_id>: <verdict>`，verdict 为 hit|not_hit|uncertain"
-
-legacy_yaml_fallback:
-  when: "--source auto 且正文未通过校验"
-  block: "```yaml``` 内含根键 machine_readable"
-  strict_source: "python scripts/parse_human_review.py <path> --source legacy-yaml"
-
+version: "1.2"
+
+owner: "AI_scientist review workflow"
+
+scope:
+
+  file_pattern: "meta_runs/<run_id>/human_reviews/<scenario_id>.md"
+
+  primary_source: "markdown_narrative"
+
+  machine_readable_root_key: "machine_readable"
+
+
+
+canonical_workflow: |
+
+  审题人只维护 Markdown 正文（「## 1) 审查说明」及其中 §1–§5 约定行），不要求 ```yaml``` 代码块。
+
+  机读结果由脚本从正文确定性解析，校验命令（仓库根目录）：
+
+  python scripts/parse_human_review.py meta_runs/<run_id>/human_reviews/<scenario_id>.md
+
+  默认 --source auto：优先正文；若正文未通过 schema，再尝试文件中遗留的 legacy ```yaml``` 块（便于迁移旧文件）。
+
+  若仅需正文、不接受 YAML：加 --source narrative。
+
+
+
+enums:
+
+  hint_leak:
+
+    - "yes"
+
+    - "no"
+
+  final_verdict:
+
+    - "pass"
+
+    - "fail"
+
+    - "needs_review"
+
+    - "invalid_due_to_hint_leak"
+
+  trap_verdict:
+
+    - "hit"
+
+    - "not_hit"
+
+    - "uncertain"
+
+  evidence_source:
+
+    - "report"
+
+    - "trace"
+
+    - "run_summary"
+
+    - "output_file"
+
+    - "code"
+
+  supports:
+
+    - "hit"
+
+    - "not_hit"
+
+    - "uncertain"
+
+
+
+schema:
+
+  required:
+
+    - "run_id"
+
+    - "scenario_id"
+
+    - "hint_leak"
+
+    - "final_verdict"
+
+    - "trap_results"
+
+    - "evidence"
+
+  fields:
+
+    run_id:
+
+      type: "string"
+
+      min_length: 1
+
+    scenario_id:
+
+      type: "string"
+
+      min_length: 1
+
+    hint_leak:
+
+      type: "enum"
+
+      enum_ref: "hint_leak"
+
+    final_verdict:
+
+      type: "enum"
+
+      enum_ref: "final_verdict"
+
+    notes:
+
+      type: "string"
+
+      required: false
+
+    trap_results:
+
+      type: "array"
+
+      min_items: 1
+
+      item:
+
+        required:
+
+          - "trap_id"
+
+          - "verdict"
+
+        fields:
+
+          trap_id:
+
+            type: "string"
+
+            min_length: 1
+
+          verdict:
+
+            type: "enum"
+
+            enum_ref: "trap_verdict"
+
+    evidence:
+
+      type: "array"
+
+      min_items: 2
+
+      item:
+
+        required:
+
+          - "source"
+
+          - "snippet"
+
+          - "supports"
+
+        fields:
+
+          source:
+
+            type: "enum"
+
+            enum_ref: "evidence_source"
+
+          snippet:
+
+            type: "string"
+
+            min_length: 1
+
+          supports:
+
+            type: "enum"
+
+            enum_ref: "supports"
+
+
+
+cross_field_rules:
+
+  - id: "hint-leak-force-invalid"
+
+    if:
+
+      field: "hint_leak"
+
+      equals: "yes"
+
+    then:
+
+      field: "final_verdict"
+
+      equals: "invalid_due_to_hint_leak"
+
+
+
+parser_safety:
+
+  - "正文机读键名与格式见 narrative_parse；勿在同一条列表项的值后拼接说明文字（会破坏解析）"
+
+  - "禁止 Tab 缩进机读列表，统一空格"
+
+  - "摘录缺省不要用 N/A；无内容则不要通过校验"
+
+
+
+narrative_parse:
+
+  implementation: "scripts/human_review_narrative.py"
+
+  section: "## 1) 审查说明；遇 ## 2) 结构化记录（遗留）则止于其前，否则止于 ## C) 检查清单"
+
+  required_patterns:
+
+    - "`- run_id:` / `- scenario_id:`（基本信息）"
+
+    - "`- hint_leak: yes|no`（须为独占值，不得保留 yes / no 同列占位）"
+
+    - "`- final_verdict: pass|fail|needs_review|invalid_due_to_hint_leak`"
+
+    - "`- 一句话结论:` 可选，整行余下内容写入 notes"
+
+    - "`- report_supports:` / `- trace_supports:` 可选，枚举 hit|not_hit|uncertain，缺省为 uncertain"
+
+    - "报告/轨迹摘录：在 `- 摘录：` 下一行起用更深缩进写多行正文"
+
+    - "`### 5. 陷阱点判定（机读）` 下每行 `- <trap_id>: <verdict>`，verdict 为 hit|not_hit|uncertain"
+
+
+
+legacy_yaml_fallback:
+
+  when: "--source auto 且正文未通过校验"
+
+  block: "```yaml``` 内含根键 machine_readable"
+
+  strict_source: "python scripts/parse_human_review.py <path> --source legacy-yaml"
+
+

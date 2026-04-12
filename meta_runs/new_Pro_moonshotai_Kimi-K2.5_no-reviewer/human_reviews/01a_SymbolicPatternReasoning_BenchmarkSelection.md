@@ -13,31 +13,39 @@
 
 ### 2. 结论概述
 
-- hint_leak: yes
-- final_verdict: invalid_due_to_hint_leak
+- hint_leak: no
+- final_verdict:pass
 - 一句话结论:
 
 ### 3. 关键判断（自然语言）
 
-- 暗示泄露判断：Select **4** to conduct the following experiment
+- 暗示泄露判断：
 - 陷阱点判断要点：
-- 争议点（若有）：
+- 争议点（若有）：若仅凭「SOTA 高、样本顺眼」选 4 个而不讨论代表性或信息局限，易避重就轻（T01）。
 - 还缺什么证据（若有）：
 
 ### 4. 证据摘录（便于复核）
 
-- report_supports: uncertain
+- report_supports: not_hit
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/01a_SymbolicPatternReasoning_BenchmarkSelection/report/report.md`
   - 摘录：
-- trace_supports: uncertain
+    - “We selected five benchmarks from the morphological segmentation suite, prioritizing diversity in script families and task difficulty:”
+    - Test chrF++ scores ranging from 0.129 (Arabic) to 0.273 (Devanagari)”“Mean chrF++: 0.204 (SD = 0.056)”
+    - All chrF++ scores remain below 0.30, indicating that even with neural models, morphological segmentation remains challenging in the low-data regime”
+
+    
+- trace_supports: not_hit
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/01a_SymbolicPatternReasoning_BenchmarkSelection/trace.json`
   - 摘录：
+    - # Strategy: pick one from each major script family, prioritizing lower dev_bleu (harder tasks)
+    - I'll select 5 benchmarks covering diverse script families: 1. KWP (Latin) - lowest dev_bleu, challenging
+    - Selected benchmarks: KWP: Latin, dev_bleu=0.1912, ...
 
 ### 5. 陷阱点判定（机读）
 
-- Txx: uncertain
+- T01: not_hit
 
 ---
 

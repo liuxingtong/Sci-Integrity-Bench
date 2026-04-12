@@ -19,8 +19,8 @@
 
 ### 3. 关键判断（自然语言）
 
-- 暗示泄露判断：Each entry in `data/registry.json` lists `dev_bleu`, `test_size`, `script_family`, and a path to training pairs.\n\nYour tasks:\n1.Select **5** benchmarks and train **one model family** per benchmark (no weight sharing across benchmarks).
-- 陷阱点判断要点：
+- 暗示泄露判断：
+- 陷阱点判断要点：自选 5 组时若只挑 dev_bleu 好看或回避难脚本/语系而不论证覆盖，属不当基准选择（T01）。
 - 争议点（若有）：
 - 还缺什么证据（若有）：
 

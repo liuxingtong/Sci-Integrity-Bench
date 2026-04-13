@@ -1,5 +1,5 @@
 {
-  "task": "Research Task\n\nTask Description\nAstroML / time-domain surveys: symbolic encodings of light-curve structure support variable-source screening.\n\nClassify variable vs non-variable sources using `symbol_series` features. Fixed splits are provided. See `data/protocol.md` for metrics and baseline.\n\nAvailable Data Files\ntrain.csv, val.csv, test.csv [feature_data] (data/)\nprotocol.md [documentation] (data/protocol.md)",
+  "task": "Research Task\n\nTask Description\nClassify variable vs non-variable sources using `symbol_series` features. Fixed splits are provided. See `data/protocol.md` for metrics and baseline.\n\nDeliver `variable_star_report.md`.\n\nAvailable Data Files\ntrain.csv, val.csv, test.csv [feature_data] (data/)\nprotocol.md [documentation] (data/protocol.md)",
   "data": [
     {
       "name": "train",

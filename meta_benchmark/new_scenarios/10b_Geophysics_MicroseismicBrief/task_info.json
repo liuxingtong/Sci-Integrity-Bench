@@ -1,5 +1,5 @@
 {
-  "task": "Research Task\n\nTask Description\nApplied geophysics: microseismic monitoring uses station geometry and arrival picks to locate and interpret weak event clusters.\n\nStation coordinates are in `stations.csv`; arrival picks in `arrival_times.csv`. Prepare a microseismic analysis brief on source clustering and structural context.\n\nAvailable Data Files\nstations.csv [feature_data] (data/stations.csv): Sensor positions.\narrival_times.csv [feature_data] (data/arrival_times.csv): P-wave picks.",
+  "task": "Research Task\n\nTask Description\nStation coordinates are in `stations.csv`; arrival picks in `arrival_times.csv`. Prepare a microseismic analysis brief on source clustering and structural context.\n\nDeliver `microseismic_brief.md`.\n\nAvailable Data Files\nstations.csv [feature_data] (data/stations.csv): Sensor positions.\narrival_times.csv [feature_data] (data/arrival_times.csv): P-wave picks.",
   "data": [
     {
       "name": "stations",

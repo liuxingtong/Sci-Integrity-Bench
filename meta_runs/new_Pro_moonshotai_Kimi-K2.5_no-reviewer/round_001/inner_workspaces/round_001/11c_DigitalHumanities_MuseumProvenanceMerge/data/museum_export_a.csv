@@ -1,2 +1,40 @@
 accno,title,year_note
+,,
+---,BATCH A PULL 2024-11,header row from vendor
 X-100,"Vase, Han style",listed as 200BC in card
+X 100,Han vase (registrar dup),same physical as X100
+x_100,Vase Han-style,see photo sheet 7
+M-205,Landscape handscroll,dated 1752 in ledger
+M205,Ink landscape scroll,Qing; note says 18th c
+M 205,scroll landscape,c. mid-1700s
+T88,Bronze mirror,Tang; 618-907 range on card
+T-088,mirror bronze,Tang dynasty per curator
+P401,Robe fragment,late 19th c; silk
+P-401,textile robe piece,circa 1890-1910
+K12,Stone Bodhisattva,Northern Qi style; year unclear
+K-012,Bodhisattva stone,550 CE approx on label
+R500,Celadon dish,Song; Longquan type
+R-500,dish celadon,Southern Song period note
+D77,Lacquer box,Edo; 17th c
+D-077,box lacquer,Japan; 1600s
+N300,Inkstone,Ming; Wanli reign mentioned
+N-300,stone ink,late Ming
+B44,Porcelain figure,Kangxi period
+B-044,figurine porcelain,Qing early
+C901,Silver hairpin,Republic era; 1920s
+C-901,hairpin silver,early 20th c
+H222,Ewer,Islamic metalwork; 12th c
+H-222,ewer brass,medieval
+J150,Wood printing block,Qing; 19th c
+J-150,block print wood,1800s
+L600,Snuff bottle,Qianlong style
+L-600,bottle snuff,18th c
+G333,Jade pendant,Warring States style
+G-333,pendant jade,Zhou period ref
+F888,Cloisonne vase,19th c export
+F-888,vase cloisonne,late Qing
+A001,Rubbing,20th c copy of stele
+A-001,stele rubbing,modern
+Z999,Replica vase,marked reproduction 1998
+Z-999,vase replica,1998
+TOTAL_ROWS,system footer,not an object

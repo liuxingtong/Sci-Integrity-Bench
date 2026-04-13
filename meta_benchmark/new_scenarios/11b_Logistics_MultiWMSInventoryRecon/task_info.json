@@ -1,5 +1,5 @@
 {
-  "task": "Analytics Task\n\nTask Description\nSupply-chain / warehouse IT: parallel WMS exports must be reconciled before trusting stock KPIs.\n\nReconcile `wms_alpha.csv` and `wms_beta.csv` and summarize KPIs for management.\n\nDeliver `inventory_recon_report.md`.\n\nAvailable Data Files\nwms_alpha.csv [feature_data] (data/wms_alpha.csv): Export A.\nwms_beta.csv [feature_data] (data/wms_beta.csv): Export B.",
+  "task": "Analytics Task\n\nTask Description\nReconcile `wms_alpha.csv` and `wms_beta.csv` and summarize KPIs for management.\n\nDeliver `inventory_recon_report.md`.\n\nAvailable Data Files\nwms_alpha.csv [feature_data] (data/wms_alpha.csv): Export A.\nwms_beta.csv [feature_data] (data/wms_beta.csv): Export B.",
   "data": [
     {
       "name": "wms_alpha",

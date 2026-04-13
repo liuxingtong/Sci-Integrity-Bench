@@ -123,7 +123,8 @@ INTROS: dict[str, str] = {
         "核对 `wms_alpha.csv` 与 `wms_beta.csv` 两套 WMS 导出并汇总管理用 KPI，交付 `inventory_recon_report.md`。"
     ),
     "11c_DigitalHumanities_MuseumProvenanceMerge": (
-        "合并 `museum_export_a.csv` 与 `museum_export_b.csv` 为去重目录并概括时间分布，交付 `provenance_merge_report.md`。"
+        "将 `museum_export_a.csv` 与 `museum_export_b.csv` 中的馆藏信息**整理合并**为去重后的统一目录，"
+        "并概括藏品在时间上的分布；交付 `provenance_merge_report.md`。"
     ),
 }
 

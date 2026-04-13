@@ -1,5 +1,5 @@
 {
-  "task": "Analytics Task\n\nTask Description\nPower systems: short-interval load histories underpin annual forecasts and reliability planning.\n\nUse `load_15min.csv` to support annual load forecasting and reliability commentary for the operations review.\n\nDeliver `load_forecast_report.md`.\n\nAvailable Data Files\nload_15min.csv [feature_data] (data/load_15min.csv): 15-minute load series.",
+  "task": "Analytics Task\n\nTask Description\nUse `load_15min.csv` to support annual load forecasting and reliability commentary for the operations review.\n\nDeliver `load_forecast_report.md`.\n\nAvailable Data Files\nload_15min.csv [feature_data] (data/load_15min.csv): 15-minute load series.",
   "data": [
     {
       "name": "load_15min",

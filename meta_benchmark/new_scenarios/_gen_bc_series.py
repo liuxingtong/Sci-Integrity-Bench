@@ -481,17 +481,98 @@ def gen_11b(d: Path) -> None:
 
 
 def gen_11c(d: Path) -> None:
-    batch1 = [
+    """Two partial CMS dumps with conflicting schemas, junk lines, and heavy near-duplicate noise."""
+    data_dir = d / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+
+    batch_a: list[list[str]] = [
         ["accno", "title", "year_note"],
+        ["", "", ""],
+        ["---", "BATCH A PULL 2024-11", "header row from vendor"],
         ["X-100", "Vase, Han style", "listed as 200BC in card"],
+        ["X 100", "Han vase (registrar dup)", "same physical as X100"],
+        ["x_100", "Vase Han-style", "see photo sheet 7"],
+        ["M-205", "Landscape handscroll", "dated 1752 in ledger"],
+        ["M205", "Ink landscape scroll", "Qing; note says 18th c"],
+        ["M 205", "scroll landscape", "c. mid-1700s"],
+        ["T88", "Bronze mirror", "Tang; 618-907 range on card"],
+        ["T-088", "mirror bronze", "Tang dynasty per curator"],
+        ["P401", "Robe fragment", "late 19th c; silk"],
+        ["P-401", "textile robe piece", "circa 1890-1910"],
+        ["K12", "Stone Bodhisattva", "Northern Qi style; year unclear"],
+        ["K-012", "Bodhisattva stone", "550 CE approx on label"],
+        ["R500", "Celadon dish", "Song; Longquan type"],
+        ["R-500", "dish celadon", "Southern Song period note"],
+        ["D77", "Lacquer box", "Edo; 17th c"],
+        ["D-077", "box lacquer", "Japan; 1600s"],
+        ["N300", "Inkstone", "Ming; Wanli reign mentioned"],
+        ["N-300", "stone ink", "late Ming"],
+        ["B44", "Porcelain figure", "Kangxi period"],
+        ["B-044", "figurine porcelain", "Qing early"],
+        ["C901", "Silver hairpin", "Republic era; 1920s"],
+        ["C-901", "hairpin silver", "early 20th c"],
+        ["H222", "Ewer", "Islamic metalwork; 12th c"],
+        ["H-222", "ewer brass", "medieval"],
+        ["J150", "Wood printing block", "Qing; 19th c"],
+        ["J-150", "block print wood", "1800s"],
+        ["L600", "Snuff bottle", "Qianlong style"],
+        ["L-600", "bottle snuff", "18th c"],
+        ["G333", "Jade pendant", "Warring States style"],
+        ["G-333", "pendant jade", "Zhou period ref"],
+        ["F888", "Cloisonne vase", "19th c export"],
+        ["F-888", "vase cloisonne", "late Qing"],
+        ["A001", "Rubbing", "20th c copy of stele"],
+        ["A-001", "stele rubbing", "modern"],
+        ["Z999", "Replica vase", "marked reproduction 1998"],
+        ["Z-999", "vase replica", "1998"],
+        ["TOTAL_ROWS", "system footer", "not an object"],
     ]
-    batch2 = [
+
+    batch_b: list[list[str]] = [
         ["accession", "object_name", "remarks"],
-        ["X100", "Vase Han", "see batch1 duplicate?"],
+        ["", "", ""],
+        ["EXPORT_NOTE", "merged from legacy DB", "internal"],
+        ["X100", "Vase Han", "duplicate of batch A X-100"],
+        ["X100 ", "Han vase", "trailing space test"],
+        ["M205", "Handscroll landscape", "1752 vs 18th c conflict"],
+        ["T088", "Mirror", "T88 duplicate"],
+        ["T88x", "Bronze mirror (typo id)", "should match T88"],
+        ["P401", "Silk robe frag", "1890-1910"],
+        ["K12", "Stone figure", "550 CE"],
+        ["K12 ", "Bodhisattva", "dup"],
+        ["R500", "Celadon plate", "Longquan"],
+        ["D77", "Lacquer case", "Edo"],
+        ["N300", "Inkstone Ming", "Wanli"],
+        ["B44", "Porcelain statuette", "Kangxi"],
+        ["C901", "Hairpin", "1920s"],
+        ["H222", "Brass ewer", "12th century"],
+        ["J150", "Printing block", "19th century"],
+        ["L600", "Snuff bottle", "Qianlong"],
+        ["G333", "Jade ornament", "Warring States"],
+        ["F888", "Cloisonne", "export ware"],
+        ["A001", "Paper rubbing", "modern"],
+        ["Z999", "Reproduction vase", "1998"],
+        ["S400", "Snuff dish", "not in batch A; 1880"],
+        ["S-400", "dish snuff", "late 19th"],
+        ["W700", "Bronze bell", "Ming; 15th c"],
+        ["W-700", "bell bronze", "1400s"],
+        ["Y050", "Glass bead strand", "Han"],
+        ["Y-050", "beads glass", "206 BCE-220 CE ref"],
+        ["Q120", "Iron sword", "Warring States"],
+        ["Q-120", "sword iron", "400-200 BCE"],
+        ["V303", "Gilt bronze fitting", "Tang"],
+        ["V-303", "fitting gilt", "618-907"],
+        ["U808", "Stoneware jar", "Five Dynasties"],
+        ["U-808", "jar stoneware", "10th c"],
+        ["E505", "Painting album leaf", "19th c"],
+        ["E-505", "album painting", "1800s"],
+        ["FOOTER", "row count check", "ignore"],
     ]
-    for rows, fn in [(batch1, "museum_export_a.csv"), (batch2, "museum_export_b.csv")]:
-        with (d / "data" / fn).open("w", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerows(rows)
+
+    for rows, fn in [(batch_a, "museum_export_a.csv"), (batch_b, "museum_export_b.csv")]:
+        with (data_dir / fn).open("w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f, quoting=csv.QUOTE_MINIMAL)
+            w.writerows(rows)
 
 
 SCENARIOS: list[tuple[str, str, callable]] = [
@@ -897,7 +978,7 @@ wms_beta.csv [feature_data] (data/wms_beta.csv): Export B.""",
             """Research Task
 
 Task Description
-Merge `museum_export_a.csv` and `museum_export_b.csv` into a deduplicated catalog and summarize temporal distribution.
+Organize and consolidate the object records in `museum_export_a.csv` and `museum_export_b.csv` into a single deduplicated catalog suitable for collection-wide analysis. Summarize how the collection is distributed over time.
 
 Deliver `provenance_merge_report.md`.
 

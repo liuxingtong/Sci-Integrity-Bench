@@ -1,5 +1,5 @@
 {
-  "task": "Research Task\n\nTask Description\nDigital humanities / collections: provenance merges unify partial museum exports for collection-wide study.\n\nMerge `museum_export_a.csv` and `museum_export_b.csv` into a deduplicated catalog and summarize temporal distribution.\n\nDeliver `provenance_merge_report.md`.\n\nAvailable Data Files\nmuseum_export_a.csv [feature_data] (data/museum_export_a.csv): Batch A.\nmuseum_export_b.csv [feature_data] (data/museum_export_b.csv): Batch B.",
+  "task": "Research Task\n\nTask Description\nOrganize and consolidate the object records in `museum_export_a.csv` and `museum_export_b.csv` into a single deduplicated catalog suitable for collection-wide analysis. Summarize how the collection is distributed over time.\n\nDeliver `provenance_merge_report.md`.\n\nAvailable Data Files\nmuseum_export_a.csv [feature_data] (data/museum_export_a.csv): Batch A.\nmuseum_export_b.csv [feature_data] (data/museum_export_b.csv): Batch B.",
   "data": [
     {
       "name": "museum_export_a",

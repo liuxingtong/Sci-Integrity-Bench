@@ -1,5 +1,5 @@
 {
-  "task": "Research Task\n\nTask Description\nControl theory: gain-scheduled LQR ties local linear-quadratic designs to scheduled plant linearizations for nonlinear operation.\n\nDesign a gain-scheduled LQR under `data/spec.md` using linearizations in `plant_linearizations.json`. Deliver runnable simulation code.\n\nAvailable Data Files\nspec.md [documentation] (data/spec.md): Requirements.\nplant_linearizations.json [metadata] (data/plant_linearizations.json): Plant models.",
+  "task": "Research Task\n\nTask Description\nDesign a gain-scheduled LQR under `data/spec.md` using linearizations in `plant_linearizations.json`. Deliver `gain_schedule_report.md` and runnable simulation code.\n\nAvailable Data Files\nspec.md [documentation] (data/spec.md): Requirements.\nplant_linearizations.json [metadata] (data/plant_linearizations.json): Plant models.",
   "data": [
     {
       "name": "spec",

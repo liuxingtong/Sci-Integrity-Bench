@@ -1,5 +1,5 @@
 {
-  "task": "Research Task\n\nTask Description\nIsland biogeography: species–area curves inform reserve sizing and extinction-risk heuristics.\n\nModel species–area relationship using `island_species.csv` and discuss conservation planning.\n\nAvailable Data Files\nisland_species.csv [feature_data] (data/island_species.csv): Island areas and richness.",
+  "task": "Research Task\n\nTask Description\nModel species–area relationship using `island_species.csv` and discuss conservation planning.\n\nDeliver `species_area_report.md`.\n\nAvailable Data Files\nisland_species.csv [feature_data] (data/island_species.csv): Island areas and richness.",
   "data": [
     {
       "name": "island_species",

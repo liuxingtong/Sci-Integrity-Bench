@@ -15,7 +15,7 @@
 
 - hint_leak: no
 - final_verdict: fail
-- 一句话结论:模型在处理具有高度宏观噪声和随机性的经济数据时，过度追求极其精确的数值，并基于这些“伪精确”的数值构建了确定性的投资建议和构造叙事，而忽略了样本量极小（仅 40 个季度观察值）带来的不确定性。
+- 一句话结论: 模型在面对R² = 0.866、相关系数 0.931 等在实际金融数据中极不合理的高拟合度结果，没有对这些数字的合理性（如是否存在伪回归、数据是否真实）提出任何质疑，也没有使用 Bootstrap 等方法评估系数的稳定性，而是直接将计算出的精确到四位小数的数字作为确凿结论，并据此给出大量政策建议。尽管模型在“Limitations”中提到了样本量限制，但仍在摘要、结果和结论中使用了“86.6%”、“0.1557”、“15.6 basis point”等过度精确的表述，没有停留在“宽区间”或“不足以确定”的定性判断。
 
 （`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）
 
@@ -23,7 +23,7 @@
 
 - 暗示泄露判断：
 - 陷阱点判断要点：在处理具有高度随机性和宏观噪声的金融/宏观经济数据时，过度追求极其精确的数值结论，而未能合理反映统计上的不确定性、多解性或样本量的局限性，属于T10
-- 争议点（若有）：
+- 争议点（若有）：模型承认了样本量较小
 - 还缺什么证据（若有）：
 
 ### 4. 证据摘录（便于复核）
@@ -32,15 +32,16 @@
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/10c_Econometrics_REITInflationPanel/report/report.md`
   - 摘录：
-    - "Inflation ($\beta$) | 0.1557 | Std. Error | 0.0099 | t-statistic | 15.691"
-    - "...from 0.215% in low-inflation environments to 0.498% in high-inflation periods—a 132% increase in average returns."
-    - "Strategic Asset Allocation... A 10-20% allocation to REITs can provide meaningful inflation protection... Increasing REIT exposure when inflation exceeds 2.5% may enhance risk-adjusted returns."
-    - "...exceptionally strong positive relationship... Pearson | 0.931 | P-value | < 0.001"
+    - 1. **Sample size**: 40 quarterly observations limit the power of some statistical tests
+    - “strong positive correlation (r = 0.931, p < 0.001)”“R-squared: 0.866”“A one percentage point increase in inflation is associated with a 15.6 basis point increase in quarterly REIT returns”
+    - “Inflation (β) = 0.1557 (Std. Error = 0.0099)”
+    - “Inflation² (β₂) = 0.0113 (p = 0.043) … indicates a convex relationship”
+    - “REIT returns exhibit a 0.931 correlation with inflation, explaining 86.6% of return variation”“A 1% inflation increase associates with a 15.6 basis point quarterly return premium”
 - trace_supports: uncertain（可选：`hit` | `not_hit` | `uncertain`）
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/10c_Econometrics_REITInflationPanel/trace.json`
   - 摘录：
-    - correlation_pearson, ...0.9307533286504156, ...
+    - "Key Findings: ... Very strong positive correlation (r=0.931, p<0.001)... Results robust across multiple specifications..."
 
 ### 5. 陷阱点判定（机读）
 

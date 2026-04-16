@@ -6,10 +6,10 @@
   "data_files": [],
   "status": "Done",
   "stats": {
-    "steps": 20,
+    "steps": 21,
     "submit_count": 0,
-    "done_summary": "Task completed successfully. Implemented numerical solver for porous media equation traveling wave ODE. Key deliverables:\n\n1. **Code** (`code/porous_media_tw.py`): Solves f' = -c·f^(1-m) using scipy's solve_ivp with RK45 method\n\n2. **Verification**: Quantified via residual R = f' + c·f^(1-m)\n   - L2 residual norm: 2.68×10⁻³\n   - Max residual: 8.46×10⁻²\n   - Convergence study shows ~1st order convergence\n\n3. **Figures** (`report/images/`):\n   - traveling_wave_solution.png: Numerical vs analytical profile, residuals, error, phase portrait\n   - convergence_study.png: Grid resolution vs residual norm\n\n4. **Report** (`report/report.md`): Complete methodology, results, and discussion with academic writing style",
-    "real_tokens_used": 162855
+    "done_summary": "Task completed successfully. Implemented adaptive-step numerical integration of the porous media equation traveling wave ODE using SciPy's DOP853 method (rtol=1e-8, atol=1e-10). Generated 6 figures showing: (1) traveling wave profiles for m∈{0.5,1.0,1.5,2.0,3.0}, (2) numerical vs analytical validation (max error 2.41e-7), (3) error convergence analysis (front position error reaches 4.24e-14 at tol=1e-12), (4) adaptive step size evolution, (5) front position vs exponent, and (6) normalized profiles. Front positions captured with errors below 1e-10 for m≥1.5. All deliverables complete: code/porous_media_tw.py, outputs/numerical_results.npz, report/report.md, and 6 PNG figures in report/images/.",
+    "real_tokens_used": 275224
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -17,11 +17,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\04c_NumericalPDE_PorousMediumTravelingWave",
-  "timestamp": "2026-04-16T08:32:19.003326",
+  "timestamp": "2026-04-16T16:35:45.400384",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Task completed successfully. Implemented numerical solver for porous media equation traveling wave ODE. Key deliverables:\n\n1. **Code** (`code/porous_media_tw.py`): Solves f' = -c·f^(1-m) using scipy's solve_ivp with RK45 method\n\n2. **Verification**: Quantified via residual R = f' + c·f^(1-m)\n   - L2 residual norm: 2.68×10⁻³\n   - Max residual: 8.46×10⁻²\n   - Convergence study shows ~1st order convergence\n\n3. **Figures** (`report/images/`):\n   - traveling_wave_solution.png: Numerical vs analytical profile, residuals, error, phase portrait\n   - convergence_study.png: Grid resolution vs residual norm\n\n4. **Report** (`report/report.md`): Complete methodology, results, and discussion with academic writing style"
+  "done_summary": "Task completed successfully. Implemented adaptive-step numerical integration of the porous media equation traveling wave ODE using SciPy's DOP853 method (rtol=1e-8, atol=1e-10). Generated 6 figures showing: (1) traveling wave profiles for m∈{0.5,1.0,1.5,2.0,3.0}, (2) numerical vs analytical validation (max error 2.41e-7), (3) error convergence analysis (front position error reaches 4.24e-14 at tol=1e-12), (4) adaptive step size evolution, (5) front position vs exponent, and (6) normalized profiles. Front positions captured with errors below 1e-10 for m≥1.5. All deliverables complete: code/porous_media_tw.py, outputs/numerical_results.npz, report/report.md, and 6 PNG figures in report/images/."
 }

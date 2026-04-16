@@ -8,10 +8,10 @@
   ],
   "status": "Done",
   "stats": {
-    "steps": 13,
+    "steps": 60,
     "submit_count": 0,
-    "done_summary": "Task completed successfully. Implemented gain-scheduled LQR controller with:\n\n1. **LQR gains computed** at 4 operating points (z=1,2,3,4) with linear interpolation for continuous gain scheduling\n2. **Anti-windup compensation** using back-calculation method for ±0.9 actuator saturation\n3. **H-infinity norm verification**: All 4 operating points PASS with norms [0.9288, 0.8766, 0.8349, 0.8025] < 1.0\n4. **Simulation results** demonstrating stable closed-loop behavior under fixed and time-varying scheduling\n\nDeliverables:\n- `code/gain_scheduled_lqr.py` - Runnable analysis code\n- `report/images/gain_scheduling.png` - LQR gains vs operating point\n- `report/images/hinf_norms.png` - H-infinity norm verification\n- `report/images/simulation_results.png` - Closed-loop simulation\n- `report/report.md` - Comprehensive research report with methodology, results, and discussion",
-    "real_tokens_used": 166716
+    "done_summary": "Completed LQR Gain Scheduling analysis for hot-water header tank. Deliverables: (1) code/analysis.py - runnable Python script implementing parameter interpolation, stability verification, and saturation-aware simulation; (2) outputs/stability_table.json and simulation_data.json - intermediate results; (3) report/images/ - three PNG figures (time_response.png, z_profile.png, parameter_interpolation.png); (4) report/report.md - comprehensive report with methodology, stability table at z=[0,0.5,1], simulation setup, and discussion explaining why interior check points matter and why endpoint gains cannot be reused. All verification points confirm |A_cl(z)|<1, demonstrating closed-loop stability across the scheduling range.",
+    "real_tokens_used": 1606281
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -19,11 +19,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\04b_ControlSystems_LQRGainSchedule",
-  "timestamp": "2026-04-16T08:26:51.905100",
+  "timestamp": "2026-04-16T19:53:55.783214",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Task completed successfully. Implemented gain-scheduled LQR controller with:\n\n1. **LQR gains computed** at 4 operating points (z=1,2,3,4) with linear interpolation for continuous gain scheduling\n2. **Anti-windup compensation** using back-calculation method for ±0.9 actuator saturation\n3. **H-infinity norm verification**: All 4 operating points PASS with norms [0.9288, 0.8766, 0.8349, 0.8025] < 1.0\n4. **Simulation results** demonstrating stable closed-loop behavior under fixed and time-varying scheduling\n\nDeliverables:\n- `code/gain_scheduled_lqr.py` - Runnable analysis code\n- `report/images/gain_scheduling.png` - LQR gains vs operating point\n- `report/images/hinf_norms.png` - H-infinity norm verification\n- `report/images/simulation_results.png` - Closed-loop simulation\n- `report/report.md` - Comprehensive research report with methodology, results, and discussion"
+  "done_summary": "Completed LQR Gain Scheduling analysis for hot-water header tank. Deliverables: (1) code/analysis.py - runnable Python script implementing parameter interpolation, stability verification, and saturation-aware simulation; (2) outputs/stability_table.json and simulation_data.json - intermediate results; (3) report/images/ - three PNG figures (time_response.png, z_profile.png, parameter_interpolation.png); (4) report/report.md - comprehensive report with methodology, stability table at z=[0,0.5,1], simulation setup, and discussion explaining why interior check points matter and why endpoint gains cannot be reused. All verification points confirm |A_cl(z)|<1, demonstrating closed-loop stability across the scheduling range."
 }

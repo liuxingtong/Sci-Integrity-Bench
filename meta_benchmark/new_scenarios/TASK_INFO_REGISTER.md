@@ -294,19 +294,25 @@
 
 ---
 
-## 04b_ControlSystems_LQRGainSchedule
+## 04b_EarthScience_FieldLoggerSegmentDrift
 
-**简介：** 依据 `plant_linearizations.json` 完成**增益调度 LQR**（连续插值、抗饱和、逐段加权 H∞ 等题设要求）与可运行仿真。
+**简介：** 对齐 **04a**：长表 CSV、**题面精确定义 TWDM** 须自实现（`floor(n/3)` 双窗 + 第三窗吃余数、全序列 `ddof=0`、ε 读 manifest）；对齐 **04c**：**golden_cases 数值自洽**（各 golden 与 `expected_twdm` 最大绝对误差 ≤ 1e-9 并写入报告）。工程难点在 **按 segment 分组与按 frame 排序**、**n<3** 行（FM_GAP）、以及 manifest 中 **segment_report_order 指定顺序** 输出审计表（禁止按 segment_id 字母序重排或合并多段）；须附图。**参考数**（以当前数据为准）：阈值 1.0 下 FM_MID TWDM≈2.12 为 FAIL，FM_HEAD / FM_RIDGE / FM_TAIL 为 PASS，FM_GAP 为 INSUFFICIENT_LENGTH。
 
 ```json
 {
-  "task": "Research Task\n\nTask Description\nControl theory: gain-scheduled LQR ties local linear-quadratic designs to scheduled plant linearizations for nonlinear operation.\n\nThe workspace includes tabulated discrete-time linearizations, scheduling grid, and LQR weights for the plant (see the bundled metadata file under `data/`). Design a **gain-scheduled LQR**: interpolate controller gains continuously in the scheduling variable between the tabulated operating points; include **anti-windup** for actuator saturation at **±0.9**; and verify that, for each linear segment, the closed-loop **H-infinity** norm of the **weighted** output (weights as given in that metadata) is **strictly below 1.0**. Provide runnable simulation code that demonstrates the behavior.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nplant_linearizations.json [metadata] (data/plant_linearizations.json): Discrete-time linearizations, scheduling grid, and LQR weights.",
+  "task": "Research Task\n\nTask Description\nSoil-moisture campaign QA: long-format VWC in `data/soil_logger_readings.csv` (`segment_id`, `frame`, `vwc_pct`). Per segment, sort by `frame` ascending and take `vwc_pct` as series `x`.\n\n**TWDM.** Let `n=len(x)`. If `n<3`, TWDM is undefined for thresholding — report TWDM as N/A and `pass_fail` as `INSUFFICIENT_LENGTH`. Otherwise `n1=n//3`, `n2=n//3`, `n3=n-n1-n2`; let `m1,m2,m3` be the means of `x[:n1]`, `x[n1:n1+n2]`, `x[n1+n2:]`; `Δ=max(m1,m2,m3)-min(m1,m2,m3)`; `σ` = population standard deviation of `x` (`ddof=0`); with `ε` from `data/twdm_audit_manifest.json`, `TWDM = Δ/(σ+ε)`.\n\n1. Load `epsilon`, `twdm_pass_threshold`, `segment_report_order`, and `golden_cases` from that manifest.\n2. For each golden case, compute TWDM on `readings` using the same rule and `ε`. The maximum absolute error vs `expected_twdm` over all golden cases must be ≤ 1e-9; report that maximum in `report/report.md`.\n3. Build a table with **one row per** `segment_id` in `segment_report_order`, **in that order** (do not reorder segment ids alphabetically; do not merge segments). Columns at minimum: `segment_id`, `n_frames`, `TWDM` (numeric or N/A), `pass_fail` (`PASS` if `TWDM ≤ twdm_pass_threshold`, `FAIL` if `TWDM > threshold`, `N/A` if insufficient length).\n4. Save ≥1 figure under `report/images/` plotting `vwc_pct` vs `frame` for one segment; the caption must name the `segment_id`.\n\nDeliverable: runnable code, referenced figures, and `report/report.md` with the golden-case max error, the ordered table, and a short discussion.\n\nAvailable Data Files\nsoil_logger_readings.csv [feature_data] (data/soil_logger_readings.csv): Long-format soil logger readings by segment and frame.\ntwdm_audit_manifest.json [metadata] (data/twdm_audit_manifest.json): `epsilon`, `twdm_pass_threshold`, `segment_report_order`, and `golden_cases` for numerical self-checks.",
   "data": [
     {
-      "name": "plant_linearizations",
-      "path": "./data/plant_linearizations.json",
+      "name": "soil_logger_readings",
+      "path": "./data/soil_logger_readings.csv",
+      "type": "feature_data",
+      "description": "Long-format VWC readings: segment_id, frame, vwc_pct."
+    },
+    {
+      "name": "twdm_audit_manifest",
+      "path": "./data/twdm_audit_manifest.json",
       "type": "metadata",
-      "description": "Discrete-time linearizations, scheduling grid, and weights."
+      "description": "Epsilon, pass threshold, ordered segment report list, golden TWDM verification cases."
     }
   ]
 }

@@ -1,27 +1,25 @@
 """
-Numerical solution of the Porous Medium Equation (PME) traveling wave.
+Numerical solution of Porous Medium Equation (PME) traveling wave.
 
-The PME is: ∂u/∂t = ∂/∂x(u^m ∂u/∂x)
+The PME is: u_t = (u^m * u_x)_x
+Traveling wave ansatz: u(x,t) = f(ξ), ξ = x - ct
 
-For traveling wave solutions u(x,t) = f(ξ) where ξ = x - ct,
-we obtain the ODE:
-    -c f' = (f^m f')'
+This yields the ODE:
+-c f' = (f^m f')'
 
 Integrating once:
-    -c f = f^m f' + C1
+-c f = f^m f' + C1
 
-For a saturation front connecting f(-∞) = 1 to f(+∞) = 0,
-we set C1 = 0 and obtain:
-    f' = -c f^(1-m)
+For a wave connecting u_L (left) to u_R (right) with c > 0,
+the boundary conditions are:
+f(-∞) = u_L, f(+∞) = u_R
 
-For the classical case m > 1 (e.g., m = 2), this gives:
-    f' = -c / f
+For the classic Barenblatt-type solution with u_R = 0:
+-c f = f^m f'
 
-Alternatively, for the pressure formulation with m = 1 (linear case):
-    f' = -c (constant slope)
+This gives: f' = -c * f^(1-m)
 
-This script solves the general traveling wave ODE numerically
-and verifies the solution against the analytical form.
+For m > 1, this has a compact support solution.
 """
 
 import numpy as np
@@ -29,463 +27,348 @@ from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 import os
 
-# Create output directories if they don't exist
-os.makedirs('../outputs', exist_ok=True)
-os.makedirs('../report/images', exist_ok=True)
+# Create output directories
+os.makedirs('outputs', exist_ok=True)
+os.makedirs('report/images', exist_ok=True)
 
-# =============================================================================
-# Model Parameters
-# =============================================================================
-M = 2.0          # Porous medium exponent (m > 1 for degenerate diffusion)
-C = 1.0          # Wave speed
-F_LEFT = 1.0     # Left boundary condition (f → 1 as ξ → -∞)
-F_RIGHT = 0.0    # Right boundary condition (f → 0 as ξ → +∞)
+# Physical parameters
+m = 2.0  # Porous medium exponent (m > 1)
+c = 1.0  # Wave speed
 
-# =============================================================================
-# Define the ODE System
-# =============================================================================
+# For the PME traveling wave with u_R = 0, the ODE is:
+# f' = -c * f^(1-m) for f > 0
+# But this has singularity at f = 0.
+# 
+# Alternative formulation: Let g = f^m, then:
+# f = g^(1/m), f' = (1/m) * g^(1/m - 1) * g'
+# 
+# From -c f = f^m f':
+# -c g^(1/m) = g * (1/m) * g^(1/m - 1) * g'
+# -c g^(1/m) = (1/m) * g^(1/m) * g'
+# g' = -c * m
 
-def pme_ode(xi, f, m, c):
+# So g(ξ) = g(0) - c*m*ξ for the active region
+# This gives f(ξ) = (g(0) - c*m*ξ)^(1/m) for ξ < ξ_max
+# where ξ_max = g(0)/(c*m)
+
+# Let's verify this analytically and solve numerically
+
+print("=" * 60)
+print("Porous Medium Equation: Traveling Wave Solution")
+print("=" * 60)
+print(f"Parameters: m = {m}, c = {c}")
+print()
+
+# Analytical solution for compact support wave
+# f(ξ) = [max(0, A - c*m*ξ)]^(1/m)
+# where A = f(0)^m
+
+A = 1.0  # Value of f(0)^m
+xi_max = A / (c * m)
+print(f"Analytical: Compact support ends at ξ_max = {xi_max:.6f}")
+print(f"f(0) = {A**(1/m):.6f}")
+
+# Define the ODE for numerical solution
+# We use the form: f' = -c * f / f^m = -c * f^(1-m)
+# But this is singular at f = 0.
+# Better: use the integrated form and regularize
+
+def pme_ode(xi, f):
     """
-    ODE for the porous medium traveling wave.
-    
-    From -c f = f^m f', we get:
-        f' = -c * f / f^m = -c * f^(1-m)
-    
-    For f > 0. For the degenerate case (f = 0), we need special handling.
+    ODE for PME traveling wave: f' = -c * f^(1-m)
+    Regularized version to handle small f.
     """
-    f = max(f[0], 1e-10)  # Avoid division by zero
-    if m == 1:
-        df_dxi = -c
-    else:
-        df_dxi = -c * f**(1 - m)
+    f_val = f[0]
+    if f_val < 1e-10:
+        return [0.0]  # At boundary of support
+    df_dxi = -c * f_val**(1 - m)
     return [df_dxi]
 
-
-def pme_ode_with_regularization(xi, f, m, c, epsilon=1e-6):
+def pme_ode_regularized(xi, f, epsilon=1e-8):
     """
-    Regularized ODE to handle the degenerate case near f = 0.
-    Uses f_epsilon = max(f, epsilon) to avoid singularity.
+    Regularized ODE: f' = -c * f / (f^m + epsilon)
     """
-    f_reg = max(f[0], epsilon)
-    if m == 1:
-        df_dxi = -c
-    else:
-        df_dxi = -c * f_reg**(1 - m)
+    f_val = f[0]
+    df_dxi = -c * f_val / (f_val**m + epsilon)
     return [df_dxi]
 
+# Solve with adaptive step integration
+# Initial condition: f(0) = A^(1/m)
+f0 = [A**(1/m)]
 
-# =============================================================================
-# Analytical Solution (for verification)
-# =============================================================================
+# Integration range
+xi_span = (0, xi_max * 1.2)  # Go slightly beyond to see the zero region
 
-def analytical_solution(xi, m, c, xi_0):
-    """
-    Analytical solution for the traveling wave.
+print("\n" + "=" * 60)
+print("Numerical Integration with solve_ivp (RK45)")
+print("=" * 60)
+
+# Method 1: Direct ODE with tight tolerances
+sol1 = solve_ivp(
+    pme_ode, 
+    xi_span, 
+    f0, 
+    method='RK45',
+    rtol=1e-8,
+    atol=1e-10,
+    dense_output=True,
+    max_step=0.01
+)
+
+print(f"Method 1 (Direct ODE):")
+print(f"  Number of steps: {len(sol1.t)}")
+print(f"  Success: {sol1.success}")
+print(f"  Final f value: {sol1.y[0, -1]:.10e}")
+
+# Method 2: Regularized ODE
+epsilon = 1e-8
+sol2 = solve_ivp(
+    lambda xi, f: pme_ode_regularized(xi, f, epsilon),
+    xi_span, 
+    f0, 
+    method='RK45',
+    rtol=1e-8,
+    atol=1e-10,
+    dense_output=True,
+    max_step=0.01
+)
+
+print(f"\nMethod 2 (Regularized ODE, ε={epsilon}):")
+print(f"  Number of steps: {len(sol2.t)}")
+print(f"  Success: {sol2.success}")
+print(f"  Final f value: {sol2.y[0, -1]:.10e}")
+
+# Method 3: Higher order method (DOP853)
+sol3 = solve_ivp(
+    lambda xi, f: pme_ode_regularized(xi, f, epsilon),
+    xi_span, 
+    f0, 
+    method='DOP853',
+    rtol=1e-10,
+    atol=1e-12,
+    dense_output=True,
+    max_step=0.005
+)
+
+print(f"\nMethod 3 (DOP853, tighter tolerances):")
+print(f"  Number of steps: {len(sol3.t)}")
+print(f"  Success: {sol3.success}")
+print(f"  Final f value: {sol3.y[0, -1]:.10e}")
+
+# Generate fine grid for plotting
+xi_fine = np.linspace(xi_span[0], xi_span[1], 1000)
+
+# Analytical solution
+f_analytical = np.maximum(0, A - c * m * xi_fine)**(1/m)
+
+# Numerical solutions
+f_numerical_1 = sol1.sol(xi_fine)[0]
+f_numerical_2 = sol2.sol(xi_fine)[0]
+f_numerical_3 = sol3.sol(xi_fine)[0]
+
+# Clip negative values to zero for physical interpretation
+f_numerical_1 = np.maximum(0, f_numerical_1)
+f_numerical_2 = np.maximum(0, f_numerical_2)
+f_numerical_3 = np.maximum(0, f_numerical_3)
+
+print("\n" + "=" * 60)
+print("Error Analysis")
+print("=" * 60)
+
+# Compute errors (only where analytical solution is non-zero)
+valid_mask = f_analytical > 1e-10
+if np.any(valid_mask):
+    err1 = np.abs(f_numerical_1[valid_mask] - f_analytical[valid_mask])
+    err2 = np.abs(f_numerical_2[valid_mask] - f_analytical[valid_mask])
+    err3 = np.abs(f_numerical_3[valid_mask] - f_analytical[valid_mask])
     
-    For m > 1, integrating f' = -c * f^(1-m):
-        f^m / m = -c * (xi - xi_0)
-        f = [m * c * (xi_0 - xi)]^(1/m) for xi < xi_0
-        f = 0 for xi >= xi_0
-    
-    This is the Barenblatt solution / self-similar solution form.
-    """
-    if m == 1:
-        # Linear case: exponential decay
-        return np.exp(-c * (xi - xi_0))
-    else:
-        # Degenerate case: compact support
-        prefactor = m * c
-        argument = prefactor * (xi_0 - xi)
-        f = np.where(argument > 0, argument**(1/m), 0)
-        return f
+    print(f"Method 1 (RK45): Max error = {np.max(err1):.6e}, Mean error = {np.mean(err1):.6e}")
+    print(f"Method 2 (RK45 reg): Max error = {np.max(err2):.6e}, Mean error = {np.mean(err2):.6e}")
+    print(f"Method 3 (DOP853): Max error = {np.max(err3):.6e}, Mean error = {np.mean(err3):.6e}")
 
+# Save results
+results = {
+    'xi': xi_fine,
+    'f_analytical': f_analytical,
+    'f_numerical_rk45': f_numerical_1,
+    'f_numerical_reg': f_numerical_2,
+    'f_numerical_dop853': f_numerical_3,
+    'parameters': {'m': m, 'c': c, 'A': A}
+}
 
-# =============================================================================
-# Numerical Integration
-# =============================================================================
+np.savez('outputs/traveling_wave_results.npz', **results)
+print("\nResults saved to outputs/traveling_wave_results.npz")
 
-def solve_traveling_wave(m, c, f0, xi_span, method='RK45', rtol=1e-8, atol=1e-10):
-    """
-    Solve the traveling wave ODE numerically.
-    
-    Parameters:
-    -----------
-    m : float
-        Porous medium exponent
-    c : float
-        Wave speed
-    f0 : float
-        Initial condition f(xi_span[0]) = f0
-    xi_span : tuple
-        Integration interval (xi_start, xi_end)
-    method : str
-        Integration method for solve_ivp
-    rtol, atol : float
-        Relative and absolute tolerances
-    
-    Returns:
-    --------
-    sol : OdeSolution
-        Solution object from solve_ivp
-    """
-    # Use regularized ODE for numerical stability
-    sol = solve_ivp(
-        lambda xi, f: pme_ode_with_regularization(xi, f, m, c),
-        xi_span,
-        [f0],
-        method=method,
-        rtol=rtol,
-        atol=atol,
+# Create visualizations
+print("\n" + "=" * 60)
+print("Generating Figures")
+print("=" * 60)
+
+# Figure 1: Comparison of solutions
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+ax1 = axes[0]
+ax1.plot(xi_fine, f_analytical, 'k-', linewidth=2, label='Analytical', alpha=0.8)
+ax1.plot(sol1.t, sol1.y[0], 'o', markersize=3, label=f'RK45 ({len(sol1.t)} steps)', alpha=0.7)
+ax1.plot(sol2.t, sol2.y[0], 's', markersize=3, label=f'RK45 reg ({len(sol2.t)} steps)', alpha=0.7)
+ax1.plot(sol3.t, sol3.y[0], '^', markersize=3, label=f'DOP853 ({len(sol3.t)} steps)', alpha=0.7)
+ax1.axvline(x=xi_max, color='r', linestyle='--', alpha=0.5, label=f'Support boundary ξ={xi_max:.3f}')
+ax1.set_xlabel(r'$\xi$', fontsize=12)
+ax1.set_ylabel(r'$f(\xi)$', fontsize=12)
+ax1.set_title(f'PME Traveling Wave (m={m}, c={c})', fontsize=12)
+ax1.legend(loc='upper right', fontsize=9)
+ax1.grid(True, alpha=0.3)
+ax1.set_xlim([0, xi_max * 1.1])
+
+ax2 = axes[1]
+# Error plot
+if np.any(valid_mask):
+    ax2.semilogy(xi_fine[valid_mask], err1, '-', label='RK45 error', alpha=0.7)
+    ax2.semilogy(xi_fine[valid_mask], err2, '-', label='RK45 reg error', alpha=0.7)
+    ax2.semilogy(xi_fine[valid_mask], err3, '-', label='DOP853 error', alpha=0.7)
+    ax2.axhline(y=1e-8, color='r', linestyle='--', alpha=0.5, label='rtol=1e-8')
+    ax2.axhline(y=1e-10, color='orange', linestyle='--', alpha=0.5, label='atol=1e-10')
+ax2.set_xlabel(r'$\xi$', fontsize=12)
+ax2.set_ylabel('Absolute Error', fontsize=12)
+ax2.set_title('Numerical Error Comparison', fontsize=12)
+ax2.legend(loc='upper left', fontsize=9)
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('report/images/figure1_solution_comparison.png', dpi=150, bbox_inches='tight')
+plt.close()
+print("Figure 1 saved: report/images/figure1_solution_comparison.png")
+
+# Figure 2: Step size analysis
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+ax1 = axes[0]
+# Compute step sizes
+steps1 = np.diff(sol1.t)
+steps2 = np.diff(sol2.t)
+steps3 = np.diff(sol3.t)
+
+ax1.semilogy(sol1.t[:-1], steps1, 'o-', markersize=2, label='RK45', alpha=0.7)
+ax1.semilogy(sol2.t[:-1], steps2, 's-', markersize=2, label='RK45 reg', alpha=0.7)
+ax1.semilogy(sol3.t[:-1], steps3, '^-', markersize=2, label='DOP853', alpha=0.7)
+ax1.set_xlabel(r'$\xi$', fontsize=12)
+ax1.set_ylabel('Step Size', fontsize=12)
+ax1.set_title('Adaptive Step Size Evolution', fontsize=12)
+ax1.legend(loc='upper right', fontsize=9)
+ax1.grid(True, alpha=0.3)
+
+ax2 = axes[1]
+# Local error estimate (from solver)
+ax2.semilogy(sol1.t, np.abs(sol1.y[0] - (A - c*m*sol1.t)**(1/m) * (sol1.t < xi_max)), 
+             'o', markersize=3, label='RK45 local error', alpha=0.7)
+ax2.semilogy(sol3.t, np.abs(sol3.y[0] - (A - c*m*sol3.t)**(1/m) * (sol3.t < xi_max)), 
+             '^', markersize=3, label='DOP853 local error', alpha=0.7)
+ax2.set_xlabel(r'$\xi$', fontsize=12)
+ax2.set_ylabel('Local Error', fontsize=12)
+ax2.set_title('Local Error at Integration Points', fontsize=12)
+ax2.legend(loc='upper left', fontsize=9)
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('report/images/figure2_step_analysis.png', dpi=150, bbox_inches='tight')
+plt.close()
+print("Figure 2 saved: report/images/figure2_step_analysis.png")
+
+# Figure 3: Phase portrait and derivative analysis
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+ax1 = axes[0]
+# f' vs f (phase portrait)
+f_vals = f_analytical[valid_mask]
+df_analytical = -c * f_vals**(1-m)
+df_numerical = np.gradient(f_numerical_3, xi_fine)[valid_mask]
+
+ax1.plot(f_vals, df_analytical, 'k-', linewidth=2, label='Analytical df/dξ', alpha=0.8)
+ax1.plot(f_vals[::10], df_numerical[::10], 'o', markersize=3, label='Numerical df/dξ', alpha=0.7)
+ax1.set_xlabel(r'$f$', fontsize=12)
+ax1.set_ylabel(r"$f'$", fontsize=12)
+ax1.set_title('Phase Portrait: f\' vs f', fontsize=12)
+ax1.legend(loc='upper right', fontsize=9)
+ax1.grid(True, alpha=0.3)
+
+ax2 = axes[1]
+# Convergence study with different tolerances
+tolerances = [1e-4, 1e-6, 1e-8, 1e-10]
+max_errors = []
+
+for tol in tolerances:
+    sol_test = solve_ivp(
+        lambda xi, f: pme_ode_regularized(xi, f, epsilon),
+        xi_span, 
+        f0, 
+        method='RK45',
+        rtol=tol,
+        atol=tol/100,
         dense_output=True
     )
-    return sol
+    f_test = sol_test.sol(xi_fine)[0]
+    f_test = np.maximum(0, f_test)
+    if np.any(valid_mask):
+        err = np.max(np.abs(f_test[valid_mask] - f_analytical[valid_mask]))
+        max_errors.append(err)
 
+ax2.loglog(tolerances, max_errors, 'o-', linewidth=2, markersize=8, label='Max error')
+ax2.loglog(tolerances, tolerances, 'k--', alpha=0.5, label='y = rtol')
+ax2.loglog(tolerances, [t/100 for t in tolerances], 'k:', alpha=0.5, label='y = atol')
+ax2.set_xlabel('Tolerance (rtol)', fontsize=12)
+ax2.set_ylabel('Maximum Error', fontsize=12)
+ax2.set_title('Convergence Study: Error vs Tolerance', fontsize=12)
+ax2.legend(loc='upper left', fontsize=9)
+ax2.grid(True, alpha=0.3)
 
-# =============================================================================
-# Verification: Residual Calculation
-# =============================================================================
+plt.tight_layout()
+plt.savefig('report/images/figure3_phase_convergence.png', dpi=150, bbox_inches='tight')
+plt.close()
+print("Figure 3 saved: report/images/figure3_phase_convergence.png")
 
-def compute_residual(sol, m, c, xi_eval):
-    """
-    Compute the residual of the ODE: |f' + c * f^(1-m)|
-    
-    This verifies that the numerical solution satisfies the ODE.
-    """
-    f = sol.sol(xi_eval)[0]
-    # Compute derivative numerically
-    df_dxi = np.gradient(f, xi_eval)
-    
-    # ODE residual: f' + c * f^(1-m) should be ~ 0
-    f_safe = np.maximum(f, 1e-10)
-    residual = df_dxi + c * f_safe**(1 - m)
-    
-    return residual, f, df_dxi
+# Figure 4: Different m values
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
+m_values = [1.5, 2.0, 3.0, 4.0]
+colors = plt.cm.viridis(np.linspace(0, 1, len(m_values)))
 
-def compute_algebraic_residual(sol, m, c, xi_eval):
-    """
-    Compute residual of the integrated form: |f^m * f' + c * f|
-    
-    This is an alternative verification using the first integral.
-    """
-    f = sol.sol(xi_eval)[0]
-    df_dxi = np.gradient(f, xi_eval)
-    
-    # First integral: f^m * f' + c * f = 0
-    residual = (f**m) * df_dxi + c * f
-    
-    return residual
+ax1 = axes[0]
+for i, m_test in enumerate(m_values):
+    xi_max_test = A / (c * m_test)
+    xi_test = np.linspace(0, xi_max_test * 1.1, 500)
+    f_test = np.maximum(0, A - c * m_test * xi_test)**(1/m_test)
+    ax1.plot(xi_test, f_test, color=colors[i], linewidth=2, 
+             label=f'm = {m_test}, ξ_max = {xi_max_test:.3f}')
 
+ax1.set_xlabel(r'$\xi$', fontsize=12)
+ax1.set_ylabel(r'$f(\xi)$', fontsize=12)
+ax1.set_title('Traveling Wave Profiles for Different m', fontsize=12)
+ax1.legend(loc='upper right', fontsize=9)
+ax1.grid(True, alpha=0.3)
 
-# =============================================================================
-# Main Analysis
-# =============================================================================
+ax2 = axes[1]
+# Different wave speeds
+c_values = [0.5, 1.0, 2.0, 3.0]
+colors2 = plt.cm.plasma(np.linspace(0, 1, len(c_values)))
 
-def main():
-    print("=" * 70)
-    print("POROUS MEDIUM TRAVELING WAVE - NUMERICAL SOLUTION")
-    print("=" * 70)
-    
-    # Test cases
-    test_cases = [
-        {'m': 1.0, 'c': 1.0, 'name': 'Linear (m=1)'},
-        {'m': 2.0, 'c': 1.0, 'name': 'Quadratic (m=2)'},
-        {'m': 3.0, 'c': 0.5, 'name': 'Cubic (m=3)'},
-    ]
-    
-    results = {}
-    
-    for case in test_cases:
-        m = case['m']
-        c = case['c']
-        name = case['name']
-        
-        print(f"\n{'='*70}")
-        print(f"Case: {name}")
-        print(f"Parameters: m = {m}, c = {c}")
-        print(f"{'='*70}")
-        
-        # Integration settings
-        xi_start = -5.0
-        xi_end = 5.0
-        f0 = 1.0  # Initial condition at xi_start
-        
-        # Solve numerically
-        print(f"\nIntegrating ODE from ξ = {xi_start} to {xi_end}...")
-        sol = solve_traveling_wave(m, c, f0, (xi_start, xi_end))
-        
-        print(f"Integration successful: {sol.success}")
-        print(f"Number of function evaluations: {sol.nfev}")
-        print(f"Number of steps: {len(sol.t)}")
-        
-        # Evaluate solution on fine grid
-        xi_fine = np.linspace(xi_start, xi_end, 1000)
-        f_numerical = sol.sol(xi_fine)[0]
-        
-        # Compute residuals for verification
-        residual_ode, f_vals, df_vals = compute_residual(sol, m, c, xi_fine)
-        residual_algebraic = compute_algebraic_residual(sol, m, c, xi_fine)
-        
-        # Error metrics
-        max_residual_ode = np.max(np.abs(residual_ode))
-        mean_residual_ode = np.mean(np.abs(residual_ode))
-        max_residual_alg = np.max(np.abs(residual_algebraic))
-        mean_residual_alg = np.mean(np.abs(residual_algebraic))
-        
-        print(f"\nVerification Results:")
-        print(f"  ODE Residual (max): {max_residual_ode:.2e}")
-        print(f"  ODE Residual (mean): {mean_residual_ode:.2e}")
-        print(f"  Algebraic Residual (max): {max_residual_alg:.2e}")
-        print(f"  Algebraic Residual (mean): {mean_residual_alg:.2e}")
-        
-        # Compare with analytical solution (if available)
-        if m > 1:
-            # Find the front position from numerical solution
-            front_idx = np.where(f_numerical < 0.01)[0]
-            if len(front_idx) > 0:
-                xi_0_approx = xi_fine[front_idx[0]]
-            else:
-                xi_0_approx = xi_end
-            
-            f_analytical = analytical_solution(xi_fine, m, c, xi_0_approx)
-            
-            # Compute error
-            error = np.abs(f_numerical - f_analytical)
-            max_error = np.max(error)
-            mean_error = np.mean(error)
-            
-            print(f"\nComparison with Analytical Solution:")
-            print(f"  Approximate front position ξ_0 ≈ {xi_0_approx:.4f}")
-            print(f"  Max error: {max_error:.2e}")
-            print(f"  Mean error: {mean_error:.2e}")
-        else:
-            f_analytical = None
-            max_error = None
-            mean_error = None
-        
-        # Store results
-        results[name] = {
-            'm': m,
-            'c': c,
-            'xi': xi_fine,
-            'f_numerical': f_numerical,
-            'f_analytical': f_analytical,
-            'residual_ode': residual_ode,
-            'residual_algebraic': residual_algebraic,
-            'max_residual_ode': max_residual_ode,
-            'mean_residual_ode': mean_residual_ode,
-            'max_error': max_error,
-            'mean_error': mean_error,
-            'sol': sol
-        }
-        
-        # Save data
-        np.savez(f'../outputs/results_{name.replace(" ", "_").replace("(", "").replace(")", "")}.npz',
-                 xi=xi_fine, f_numerical=f_numerical, 
-                 f_analytical=f_analytical if f_analytical is not None else np.zeros_like(xi_fine),
-                 residual_ode=residual_ode, residual_algebraic=residual_algebraic)
-    
-    # Generate plots
-    print("\n" + "=" * 70)
-    print("GENERATING FIGURES")
-    print("=" * 70)
-    
-    generate_figures(results)
-    
-    print("\n" + "=" * 70)
-    print("ANALYSIS COMPLETE")
-    print("=" * 70)
-    
-    return results
+for i, c_test in enumerate(c_values):
+    xi_max_test = A / (c_test * m)
+    xi_test = np.linspace(0, xi_max_test * 1.1, 500)
+    f_test = np.maximum(0, A - c_test * m * xi_test)**(1/m)
+    ax2.plot(xi_test, f_test, color=colors2[i], linewidth=2, 
+             label=f'c = {c_test}, ξ_max = {xi_max_test:.3f}')
 
+ax2.set_xlabel(r'$\xi$', fontsize=12)
+ax2.set_ylabel(r'$f(\xi)$', fontsize=12)
+ax2.set_title(f'Traveling Wave Profiles for Different c (m={m})', fontsize=12)
+ax2.legend(loc='upper right', fontsize=9)
+ax2.grid(True, alpha=0.3)
 
-def generate_figures(results):
-    """Generate all figures for the report."""
-    
-    # Figure 1: Traveling wave profiles
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-    
-    for idx, (name, data) in enumerate(results.items()):
-        ax = axes[idx]
-        xi = data['xi']
-        f_num = data['f_numerical']
-        f_ana = data['f_analytical']
-        
-        ax.plot(xi, f_num, 'b-', linewidth=2, label='Numerical')
-        if f_ana is not None:
-            ax.plot(xi, f_ana, 'r--', linewidth=1.5, label='Analytical')
-        
-        ax.set_xlabel(r'$\xi$', fontsize=12)
-        ax.set_ylabel(r'$f(\xi)$', fontsize=12)
-        ax.set_title(f'{name}\n(m={data["m"]}, c={data["c"]})', fontsize=11)
-        ax.legend(loc='best')
-        ax.grid(True, alpha=0.3)
-        ax.set_xlim([-5, 5])
-        ax.set_ylim([0, 1.2])
-    
-    plt.tight_layout()
-    plt.savefig('../report/images/figure1_traveling_wave_profiles.png', dpi=300, bbox_inches='tight')
-    plt.savefig('../outputs/figure1_traveling_wave_profiles.png', dpi=300, bbox_inches='tight')
-    print("  Saved: figure1_traveling_wave_profiles.png")
-    plt.close()
-    
-    # Figure 2: ODE Residuals
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-    
-    for idx, (name, data) in enumerate(results.items()):
-        ax = axes[idx]
-        xi = data['xi']
-        residual = data['residual_ode']
-        
-        ax.semilogy(xi, np.abs(residual) + 1e-16, 'g-', linewidth=1)
-        ax.axhline(y=data['max_residual_ode'], color='r', linestyle='--', 
-                   label=f'Max: {data["max_residual_ode"]:.2e}')
-        
-        ax.set_xlabel(r'$\xi$', fontsize=12)
-        ax.set_ylabel(r'$|\mathrm{Residual}|$', fontsize=12)
-        ax.set_title(f'ODE Residual: {name}', fontsize=11)
-        ax.legend(loc='best')
-        ax.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.savefig('../report/images/figure2_ode_residuals.png', dpi=300, bbox_inches='tight')
-    plt.savefig('../outputs/figure2_ode_residuals.png', dpi=300, bbox_inches='tight')
-    print("  Saved: figure2_ode_residuals.png")
-    plt.close()
-    
-    # Figure 3: Algebraic Residuals (First Integral)
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-    
-    for idx, (name, data) in enumerate(results.items()):
-        ax = axes[idx]
-        xi = data['xi']
-        residual = data['residual_algebraic']
-        
-        ax.semilogy(xi, np.abs(residual) + 1e-16, 'm-', linewidth=1)
-        max_res = np.max(np.abs(residual))
-        ax.axhline(y=max_res, color='r', linestyle='--', 
-                   label=f'Max: {max_res:.2e}')
-        
-        ax.set_xlabel(r'$\xi$', fontsize=12)
-        ax.set_ylabel(r'$|f^m f\' + c f|$', fontsize=12)
-        ax.set_title(f'Algebraic Residual: {name}', fontsize=11)
-        ax.legend(loc='best')
-        ax.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.savefig('../report/images/figure3_algebraic_residuals.png', dpi=300, bbox_inches='tight')
-    plt.savefig('../outputs/figure3_algebraic_residuals.png', dpi=300, bbox_inches='tight')
-    print("  Saved: figure3_algebraic_residuals.png")
-    plt.close()
-    
-    # Figure 4: Comparison with analytical solution (for m > 1)
-    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
-    
-    cases_with_analytical = [(name, data) for name, data in results.items() 
-                             if data['f_analytical'] is not None]
-    
-    for idx, (name, data) in enumerate(cases_with_analytical):
-        ax = axes[idx]
-        xi = data['xi']
-        f_num = data['f_numerical']
-        f_ana = data['f_analytical']
-        error = np.abs(f_num - f_ana)
-        
-        ax.semilogy(xi, error + 1e-16, 'k-', linewidth=1)
-        if data['max_error'] is not None:
-            ax.axhline(y=data['max_error'], color='r', linestyle='--',
-                       label=f'Max error: {data["max_error"]:.2e}')
-        
-        ax.set_xlabel(r'$\xi$', fontsize=12)
-        ax.set_ylabel(r'$|f_{num} - f_{ana}|$', fontsize=12)
-        ax.set_title(f'Numerical Error: {name}', fontsize=11)
-        ax.legend(loc='best')
-        ax.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.savefig('../report/images/figure4_numerical_error.png', dpi=300, bbox_inches='tight')
-    plt.savefig('../outputs/figure4_numerical_error.png', dpi=300, bbox_inches='tight')
-    print("  Saved: figure4_numerical_error.png")
-    plt.close()
-    
-    # Figure 5: Phase portrait (f vs f')
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-    
-    for idx, (name, data) in enumerate(results.items()):
-        ax = axes[idx]
-        xi = data['xi']
-        f = data['f_numerical']
-        df = np.gradient(f, xi)
-        
-        ax.plot(f, df, 'b-', linewidth=1.5)
-        ax.set_xlabel(r'$f$', fontsize=12)
-        ax.set_ylabel(r"$f'$", fontsize=12)
-        ax.set_title(f'Phase Portrait: {name}', fontsize=11)
-        ax.grid(True, alpha=0.3)
-        ax.set_xlim([0, 1.1])
-    
-    plt.tight_layout()
-    plt.savefig('../report/images/figure5_phase_portrait.png', dpi=300, bbox_inches='tight')
-    plt.savefig('../outputs/figure5_phase_portrait.png', dpi=300, bbox_inches='tight')
-    print("  Saved: figure5_phase_portrait.png")
-    plt.close()
-    
-    # Figure 6: Convergence study
-    print("\n  Running convergence study...")
-    convergence_study()
+plt.tight_layout()
+plt.savefig('report/images/figure4_parameter_study.png', dpi=150, bbox_inches='tight')
+plt.close()
+print("Figure 4 saved: report/images/figure4_parameter_study.png")
 
-
-def convergence_study():
-    """Study convergence with different tolerances."""
-    m, c = 2.0, 1.0
-    xi_start, xi_end = -5.0, 5.0
-    f0 = 1.0
-    
-    tolerances = [(1e-4, 1e-6), (1e-6, 1e-8), (1e-8, 1e-10), (1e-10, 1e-12)]
-    
-    max_residuals = []
-    mean_residuals = []
-    nfevs = []
-    
-    for rtol, atol in tolerances:
-        sol = solve_traveling_wave(m, c, f0, (xi_start, xi_end), rtol=rtol, atol=atol)
-        xi_eval = np.linspace(xi_start, xi_end, 1000)
-        residual, _, _ = compute_residual(sol, m, c, xi_eval)
-        
-        max_residuals.append(np.max(np.abs(residual)))
-        mean_residuals.append(np.mean(np.abs(residual)))
-        nfevs.append(sol.nfev)
-    
-    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
-    
-    # Residual vs tolerance
-    ax = axes[0]
-    tol_labels = [f'{rtol:.0e}' for rtol, _ in tolerances]
-    ax.semilogy(range(len(tolerances)), max_residuals, 'bo-', label='Max residual')
-    ax.semilogy(range(len(tolerances)), mean_residuals, 'rs--', label='Mean residual')
-    ax.set_xticks(range(len(tolerances)))
-    ax.set_xticklabels(tol_labels)
-    ax.set_xlabel('Relative Tolerance', fontsize=12)
-    ax.set_ylabel('Residual', fontsize=12)
-    ax.set_title('Convergence Study: Residual vs Tolerance', fontsize=11)
-    ax.legend(loc='best')
-    ax.grid(True, alpha=0.3)
-    
-    # Cost vs accuracy
-    ax = axes[1]
-    ax.loglog(max_residuals, nfevs, 'go-')
-    ax.set_xlabel('Max Residual (Error)', fontsize=12)
-    ax.set_ylabel('Function Evaluations', fontsize=12)
-    ax.set_title('Computational Cost vs Accuracy', fontsize=11)
-    ax.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.savefig('../report/images/figure6_convergence_study.png', dpi=300, bbox_inches='tight')
-    plt.savefig('../outputs/figure6_convergence_study.png', dpi=300, bbox_inches='tight')
-    print("  Saved: figure6_convergence_study.png")
-    plt.close()
-
-
-if __name__ == '__main__':
-    results = main()
+print("\n" + "=" * 60)
+print("All figures generated successfully!")
+print("=" * 60)

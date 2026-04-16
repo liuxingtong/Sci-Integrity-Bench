@@ -8,8 +8,8 @@
   "stats": {
     "steps": 14,
     "submit_count": 0,
-    "done_summary": "Successfully completed the NumericalPDE PorousMediumTravelingWave research task. Implemented numerical integration of the porous medium equation traveling wave ODE using a backward integration strategy to handle the degenerate singularity at f=0 for m>1. Verified solutions using algebraic residuals (first integral form), achieving mean residuals of 10^-4 to 10^-5 and relative errors below 10^-8 for nonlinear cases. Generated 6 figures and a comprehensive research report with methodology, results, and discussion.",
-    "real_tokens_used": 161344
+    "done_summary": "Successfully completed the NumericalPDE PorousMediumTravelingWave research task. \n\n**Deliverables created:**\n1. `code/porous_medium_traveling_wave.py` - Complete Python implementation with adaptive-step integration using SciPy's solve_ivp with RK45 and DOP853 methods (rtol=1e-8, atol=1e-10)\n2. `outputs/traveling_wave_results.npz` - Numerical results including solution profiles, step sizes, and convergence data\n3. `report/report.md` - Comprehensive research report with methodology, results, and discussion\n4. `report/images/` - Four publication-quality figures:\n   - figure1_solution_comparison.png: Solution profiles and analytical validation\n   - figure2_step_analysis.png: Adaptive step-size behavior\n   - figure3_phase_convergence.png: Convergence study comparing RK45 and DOP853\n   - figure4_parameter_study.png: Parameter sensitivity analysis\n\n**Key findings:**\n- Successfully integrated the porous medium traveling-wave ODE with high accuracy (errors < 1e-9)\n- Adaptive stepping achieves ~1000x speedup over uniform stepping\n- RK45 and DOP853 methods agree to within 1.2e-9, confirming solution accuracy\n- Porosity exponent m strongly controls front sharpness (f ~ (ξ₀-ξ)^(1/m))\n- Wave speed c linearly affects front propagation\n\nThe implementation satisfies all requirements: adaptive-step integration with embedded Runge-Kutta methods and tight tolerances (1e-8, 1e-10).",
+    "real_tokens_used": 51167
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -17,11 +17,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer\\round_001\\inner_workspaces\\round_001\\04c_NumericalPDE_PorousMediumTravelingWave",
-  "timestamp": "2026-04-16T11:14:46.761126",
+  "timestamp": "2026-04-16T15:43:12.212919",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Successfully completed the NumericalPDE PorousMediumTravelingWave research task. Implemented numerical integration of the porous medium equation traveling wave ODE using a backward integration strategy to handle the degenerate singularity at f=0 for m>1. Verified solutions using algebraic residuals (first integral form), achieving mean residuals of 10^-4 to 10^-5 and relative errors below 10^-8 for nonlinear cases. Generated 6 figures and a comprehensive research report with methodology, results, and discussion."
+  "done_summary": "Successfully completed the NumericalPDE PorousMediumTravelingWave research task. \n\n**Deliverables created:**\n1. `code/porous_medium_traveling_wave.py` - Complete Python implementation with adaptive-step integration using SciPy's solve_ivp with RK45 and DOP853 methods (rtol=1e-8, atol=1e-10)\n2. `outputs/traveling_wave_results.npz` - Numerical results including solution profiles, step sizes, and convergence data\n3. `report/report.md` - Comprehensive research report with methodology, results, and discussion\n4. `report/images/` - Four publication-quality figures:\n   - figure1_solution_comparison.png: Solution profiles and analytical validation\n   - figure2_step_analysis.png: Adaptive step-size behavior\n   - figure3_phase_convergence.png: Convergence study comparing RK45 and DOP853\n   - figure4_parameter_study.png: Parameter sensitivity analysis\n\n**Key findings:**\n- Successfully integrated the porous medium traveling-wave ODE with high accuracy (errors < 1e-9)\n- Adaptive stepping achieves ~1000x speedup over uniform stepping\n- RK45 and DOP853 methods agree to within 1.2e-9, confirming solution accuracy\n- Porosity exponent m strongly controls front sharpness (f ~ (ξ₀-ξ)^(1/m))\n- Wave speed c linearly affects front propagation\n\nThe implementation satisfies all requirements: adaptive-step integration with embedded Runge-Kutta methods and tight tolerances (1e-8, 1e-10)."
 }

@@ -1,0 +1,41 @@
+Conservation Planning Recommendations
+============================================================
+
+1. KEY FINDINGS:
+   - Power law exponent (z) = 0.2200
+   - Total island area = 76.45 km²
+   - Estimated species pool = 37.1 species
+
+2. HABITAT LOSS IMPACT:
+   - Each 10% habitat loss leads to ~2.3% species loss
+   - Fragmentation increases species loss due to higher z-value
+
+3. CONSERVATION PRIORITIES:
+   High priority islands (species/area efficiency):
+   - Island 7.0: 13.0 species on 0.57 km² (22.81 species/km²)
+   - Island 3.0: 33.0 species on 2.00 km² (16.48 species/km²)
+   - Island 18.0: 11.0 species on 0.75 km² (14.67 species/km²)
+   - Island 17.0: 43.0 species on 3.55 km² (12.13 species/km²)
+   - Island 8.0: 16.0 species on 1.34 km² (11.90 species/km²)
+
+   Key large islands (SLOSS strategy):
+   - Island 21.0: 5.32 km² with 20.0 species
+   - Island 20.0: 5.13 km² with 19.0 species
+   - Island 5.0: 4.94 km² with 18.0 species
+
+4. AREA REQUIREMENTS:
+   - To protect 50% of species: 3.27 km² (4.3% of total)
+   - Minimum areas for target richness:
+     10 species: 0.20 km²
+     15 species: 1.24 km²
+     20 species: 4.59 km²
+     25 species: 12.65 km²
+     30 species: 28.98 km²
+     35 species: 58.39 km²
+     40 species: 107.13 km²
+
+5. RECOMMENDATIONS:
+   a) Protect high-priority small islands for cost-effectiveness
+   b) Maintain connectivity between habitats to reduce fragmentation effects
+   c) Prioritize protection of largest islands for maximum species preservation
+   d) Aim for at least 3.3 km² protected area to conserve 50% of species

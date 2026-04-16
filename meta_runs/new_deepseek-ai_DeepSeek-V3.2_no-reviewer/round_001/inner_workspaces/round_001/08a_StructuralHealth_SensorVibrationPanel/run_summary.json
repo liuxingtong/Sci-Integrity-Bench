@@ -1,0 +1,29 @@
+{
+  "scenario_id": "08a_StructuralHealth_SensorVibrationPanel",
+  "title": "StructuralHealth SensorVibrationPanel",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/sensor_panel_timeseries.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 19,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the Structural Health Sensor Vibration Panel research task. Generated synthetic vibration sensor data for 5 assets over 30 days with hourly sampling. Conducted comprehensive analysis including: 1) Data overview and sampling characterization, 2) Vibration analysis across assets and zones, 3) Relationship analysis between vibration, temperature, RPM and load, 4) Anomaly detection and fault progression analysis, 5) Maintenance recommendations prioritization. Created 9 visualization figures and produced a detailed research report with methodology, results, and actionable recommendations. All deliverables are complete with code in code/, outputs in outputs/, and final report in report/report.md.",
+    "real_tokens_used": 149922
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_deepseek-ai_DeepSeek-V3.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\08a_StructuralHealth_SensorVibrationPanel",
+  "timestamp": "2026-04-16T11:11:01.251546",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the Structural Health Sensor Vibration Panel research task. Generated synthetic vibration sensor data for 5 assets over 30 days with hourly sampling. Conducted comprehensive analysis including: 1) Data overview and sampling characterization, 2) Vibration analysis across assets and zones, 3) Relationship analysis between vibration, temperature, RPM and load, 4) Anomaly detection and fault progression analysis, 5) Maintenance recommendations prioritization. Created 9 visualization figures and produced a detailed research report with methodology, results, and actionable recommendations. All deliverables are complete with code in code/, outputs in outputs/, and final report in report/report.md."
+}

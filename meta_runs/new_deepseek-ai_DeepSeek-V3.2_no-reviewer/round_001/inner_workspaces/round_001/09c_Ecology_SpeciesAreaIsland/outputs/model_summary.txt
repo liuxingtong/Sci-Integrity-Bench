@@ -1,0 +1,37 @@
+Species-Area Relationship Analysis
+==================================================
+
+Power law model: S = c * A^z
+c = 14.3046
+z = 0.2200
+
+Pearson correlation (log-log): 0.4723
+R-squared: 0.2231
+Adjusted R-squared: 0.1893
+
+Model summary:
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:           log_richness   R-squared:                       0.223
+Model:                            OLS   Adj. R-squared:                  0.189
+Method:                 Least Squares   F-statistic:                     6.603
+Date:                Thu, 16 Apr 2026   Prob (F-statistic):             0.0171
+Time:                        11:23:10   Log-Likelihood:                 21.117
+No. Observations:                  25   AIC:                            -38.23
+Df Residuals:                      23   BIC:                            -35.80
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const          1.1555      0.042     27.247      0.000       1.068       1.243
+log_area       0.2200      0.086      2.570      0.017       0.043       0.397
+==============================================================================
+Omnibus:                       29.357   Durbin-Watson:                   2.156
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               53.935
+Skew:                           2.423   Prob(JB):                     1.94e-12
+Kurtosis:                       8.320   Cond. No.                         4.71
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

@@ -1,0 +1,14 @@
+Model Comparison
+==================================================
+
+1. Linear model (S = a + b*A):
+   R-squared: 0.0775
+   AIC: 165.75
+   BIC: 168.19
+
+2. Power law model (S = c*A^z):
+   R-squared: 0.2231
+   AIC: -38.23
+   BIC: -35.80
+
+Conclusion: Power law model is preferred based on AIC.

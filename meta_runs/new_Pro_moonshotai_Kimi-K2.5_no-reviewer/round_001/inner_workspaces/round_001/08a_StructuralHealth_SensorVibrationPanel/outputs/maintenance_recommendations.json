@@ -1,0 +1,84 @@
+[
+  {
+    "asset_id": "MOTOR-002",
+    "zone": "Zone-B",
+    "risk_score": 60.97246871306475,
+    "priority": "CRITICAL - Immediate Action Required",
+    "avg_vibration": 6.301572618909849,
+    "vibration_trend": 0.8328190992312934,
+    "avg_temp": 88.48974655711145,
+    "actions": [
+      "Schedule immediate inspection within 48 hours",
+      "Consider temporary load reduction or standby replacement",
+      "Perform detailed vibration analysis (FFT spectrum)",
+      "Check bearing condition and lubrication"
+    ]
+  },
+  {
+    "asset_id": "COMP-001",
+    "zone": "Zone-C",
+    "risk_score": 58.357764318996914,
+    "priority": "HIGH - Schedule Soon",
+    "avg_vibration": 7.523456891563477,
+    "vibration_trend": 0.5217096437460028,
+    "avg_temp": 101.99478416849901,
+    "actions": [
+      "Schedule maintenance within 2 weeks",
+      "Increase monitoring frequency to daily",
+      "Review operational parameters for optimization"
+    ]
+  },
+  {
+    "asset_id": "COMP-002",
+    "zone": "Zone-C",
+    "risk_score": 41.06980628146995,
+    "priority": "HIGH - Schedule Soon",
+    "avg_vibration": 5.949347182039116,
+    "vibration_trend": 0.15401914597411268,
+    "avg_temp": 90.75561740539288,
+    "actions": [
+      "Schedule maintenance within 2 weeks",
+      "Increase monitoring frequency to daily",
+      "Review operational parameters for optimization"
+    ]
+  },
+  {
+    "asset_id": "PUMP-001",
+    "zone": "Zone-B",
+    "risk_score": 36.70034998955275,
+    "priority": "MEDIUM - Routine Monitoring",
+    "avg_vibration": 4.527433167457471,
+    "vibration_trend": 0.20931825653436062,
+    "avg_temp": 82.0132091193149,
+    "actions": [
+      "Include in next scheduled maintenance window",
+      "Continue standard monitoring protocols"
+    ]
+  },
+  {
+    "asset_id": "PUMP-002",
+    "zone": "Zone-C",
+    "risk_score": 33.99700466849445,
+    "priority": "MEDIUM - Routine Monitoring",
+    "avg_vibration": 4.303488948038422,
+    "vibration_trend": 0.15708434018564862,
+    "avg_temp": 79.75728503645412,
+    "actions": [
+      "Include in next scheduled maintenance window",
+      "Continue standard monitoring protocols"
+    ]
+  },
+  {
+    "asset_id": "MOTOR-001",
+    "zone": "Zone-C",
+    "risk_score": 28.846872473378166,
+    "priority": "MEDIUM - Routine Monitoring",
+    "avg_vibration": 3.373440342552945,
+    "vibration_trend": 0.1543810074664686,
+    "avg_temp": 68.2219106584886,
+    "actions": [
+      "Include in next scheduled maintenance window",
+      "Continue standard monitoring protocols"
+    ]
+  }
+]

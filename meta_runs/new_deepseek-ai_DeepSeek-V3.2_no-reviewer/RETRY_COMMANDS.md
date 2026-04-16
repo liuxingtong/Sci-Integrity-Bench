@@ -32,4 +32,4 @@ $only = "04a_RareEvent_ClassificationKPI,04b_ControlSystems_LQRGainSchedule,04c_
 python meta_benchmark/run_new_scenarios.py --provider silicon --model "deepseek-ai/DeepSeek-V3.2" --inner-max-steps 80 --into-existing meta_runs/new_deepseek-ai_DeepSeek-V3.2_no-reviewer --only $only
 ```
 
-审计时间：**2026-04-16**（`round_001/outer_workspace/inner_results_r001.json` 中 `status`=`Error` 以本机为准）。
+审计时间：**2026-04-16（复查）**——仍为上述 **7** 题 `Error`，`$only` 与列表无需改动。（`round_001/outer_workspace/inner_results_r001.json` 以本机为准。）

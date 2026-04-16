@@ -1,13 +1,34 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import optimize
 import os
 
-# Load data
-df = pd.read_csv('../data/beverage_temperature_series.csv')
+# Set style for better plots
+plt.style.use('seaborn-v0_8-whitegrid')
+sns.set_palette("husl")
 
-# Create output directory for images
+# Create output directories
+os.makedirs('outputs', exist_ok=True)
 os.makedirs('report/images', exist_ok=True)
+
+# Load the data
+data_path = 'data/beverage_temperature_series.csv'
+df = pd.read_csv(data_path)
+print("Data shape:", df.shape)
+print("\nFirst few rows:")
+print(df.head())
+print("\nLast few rows:")
+print(df.tail())
+print("\nData info:")
+print(df.info())
+print("\nDescriptive statistics:")
+print(df.describe())
+
+# Check for missing values
+print("\nMissing values:")
+print(df.isnull().sum())
 
 # Plot the full temperature series
 plt.figure(figsize=(12, 6))
@@ -15,59 +36,41 @@ plt.plot(df['time_min'], df['temperature_c'], 'b-', linewidth=2, label='Temperat
 plt.xlabel('Time (minutes)')
 plt.ylabel('Temperature (°C)')
 plt.title('Beverage Cooling Over Time')
-plt.grid(True, alpha=0.3)
 plt.legend()
+plt.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig('report/images/full_temperature_series.png', dpi=150)
-plt.close()
+plt.savefig('report/images/full_temperature_series.png', dpi=300, bbox_inches='tight')
+plt.savefig('outputs/full_temperature_series.png', dpi=300, bbox_inches='tight')
+plt.show()
 
-# Identify the anomaly point
-anomaly_idx = df[df['time_min'] == 80].index[0]
-print(f"Anomaly detected at time {df.loc[anomaly_idx, 'time_min']} min, temperature {df.loc[anomaly_idx, 'temperature_c']}°C")
-print(f"Previous temperature at time 79 min: {df.loc[anomaly_idx-1, 'temperature_c']}°C")
-print(f"Temperature jump: {df.loc[anomaly_idx, 'temperature_c'] - df.loc[anomaly_idx-1, 'temperature_c']:.2f}°C")
+# Look for the anomaly around time 80
+print("\nData around time 80:")
+print(df[(df['time_min'] >= 75) & (df['time_min'] <= 85)])
 
-# Also check for other anomalies
-temp_diff = df['temperature_c'].diff()
-large_jumps = df[abs(temp_diff) > 1]
-print(f"\nLarge temperature jumps (>1°C):")
-print(large_jumps)
+# Calculate cooling rate (derivative)
+df['cooling_rate'] = -np.gradient(df['temperature_c'], df['time_min'])
 
-# Plot with anomaly highlighted
 plt.figure(figsize=(12, 6))
-plt.plot(df['time_min'], df['temperature_c'], 'b-', linewidth=2, label='Temperature')
-plt.scatter(df.loc[anomaly_idx, 'time_min'], df.loc[anomaly_idx, 'temperature_c'], 
-            color='red', s=100, zorder=5, label='Anomaly (time=80)')
+plt.plot(df['time_min'], df['cooling_rate'], 'r-', linewidth=2, label='Cooling Rate (°C/min)')
 plt.xlabel('Time (minutes)')
-plt.ylabel('Temperature (°C)')
-plt.title('Beverage Cooling Over Time with Anomaly Highlighted')
-plt.grid(True, alpha=0.3)
+plt.ylabel('Cooling Rate (°C/min)')
+plt.title('Cooling Rate Over Time')
 plt.legend()
-plt.tight_layout()
-plt.savefig('report/images/temperature_with_anomaly.png', dpi=150)
-plt.close()
-
-# Check if there are multiple segments
-print(f"\nData segments based on anomalies:")
-# The data seems to have 3 segments: 0-79, 80-120, 121-199
-segment1 = df[df['time_min'] <= 79]
-segment2 = df[(df['time_min'] >= 80) & (df['time_min'] <= 120)]
-segment3 = df[df['time_min'] >= 121]
-
-print(f"Segment 1: time {segment1['time_min'].min()} to {segment1['time_min'].max()} min, {len(segment1)} points")
-print(f"Segment 2: time {segment2['time_min'].min()} to {segment2['time_min'].max()} min, {len(segment2)} points")
-print(f"Segment 3: time {segment3['time_min'].min()} to {segment3['time_min'].max()} min, {len(segment3)} points")
-
-# Plot segments separately
-plt.figure(figsize=(12, 6))
-plt.plot(segment1['time_min'], segment1['temperature_c'], 'b-', linewidth=2, label='Segment 1 (0-79 min)')
-plt.plot(segment2['time_min'], segment2['temperature_c'], 'r-', linewidth=2, label='Segment 2 (80-120 min)')
-plt.plot(segment3['time_min'], segment3['temperature_c'], 'g-', linewidth=2, label='Segment 3 (121-199 min)')
-plt.xlabel('Time (minutes)')
-plt.ylabel('Temperature (°C)')
-plt.title('Beverage Cooling - Three Segments')
 plt.grid(True, alpha=0.3)
-plt.legend()
 plt.tight_layout()
-plt.savefig('report/images/three_segments.png', dpi=150)
-plt.close()
+plt.savefig('report/images/cooling_rate.png', dpi=300, bbox_inches='tight')
+plt.savefig('outputs/cooling_rate.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Check if there are multiple cooling phases
+# The jump at time 80 suggests we might need to analyze segments separately
+print("\nIdentifying cooling segments...")
+# Find where temperature increases instead of decreases
+temp_diff = np.diff(df['temperature_c'])
+increase_indices = np.where(temp_diff > 0)[0]
+print(f"Temperature increases at time indices: {increase_indices}")
+print(f"Corresponding times: {df['time_min'].iloc[increase_indices].values if len(increase_indices) > 0 else 'None'}")
+
+# Save processed data
+df.to_csv('outputs/processed_data.csv', index=False)
+print("\nExploration complete. Data saved to outputs/processed_data.csv")

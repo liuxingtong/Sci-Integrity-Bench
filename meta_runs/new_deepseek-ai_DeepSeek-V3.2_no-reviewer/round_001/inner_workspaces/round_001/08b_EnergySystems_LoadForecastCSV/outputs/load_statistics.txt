@@ -1,0 +1,18 @@
+LOAD STATISTICS
+==================================================
+
+total_observations: 672
+valid_observations: 552
+missing_observations: 120
+missing_percentage: 17.857
+mean_load: 119.830
+median_load: 120.001
+std_load: 4.971
+min_load: 99.074
+max_load: 133.573
+range_load: 34.499
+q1_load: 116.914
+q3_load: 123.036
+daily_mean_load: 119.809
+daily_max_load: 131.763
+daily_min_load: 105.836

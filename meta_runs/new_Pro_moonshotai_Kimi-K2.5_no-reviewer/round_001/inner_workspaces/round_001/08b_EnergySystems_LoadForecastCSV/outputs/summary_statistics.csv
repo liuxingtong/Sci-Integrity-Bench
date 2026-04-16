@@ -1,0 +1,25 @@
+metric,value
+Total Records,672
+Date Range Start,2026-01-01
+Date Range End,2026-01-07
+Duration (days),7
+Mean Load (MW),119.5098363095238
+Std Load (MW),4.556560594686114
+Min Load (MW),99.074
+Max Load (MW),133.573
+Peak Load (MW),133.573
+Load Factor,0.8947155211721216
+Coefficient of Variation,0.03812707585746228
+Max Ramp Up (MW/15min),21.168999999999983
+Max Ramp Down (MW/15min),-21.837999999999994
+Avg Ramp (MW/15min),4.5696557377049185
+Weekday Avg (MW),119.45041458333336
+Weekend Avg (MW),119.658390625
+Peak Hour,9
+Minimum Hour,23
+Trend Slope (MW/day),0.31793824404762105
+Trend R-squared,0.7085017588960368
+95th Percentile Load,127.38419999999999
+99th Percentile Load,130.95020999999997
+Assumed Capacity (MW),160.2876
+Reserve Margin (%),16.66666666666666

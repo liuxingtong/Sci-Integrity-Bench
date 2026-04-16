@@ -1,8 +1,8 @@
-# Temporal Stability Index (TSI) Analysis of Industrial Control Telemetry
+# Temporal Stability Index Analysis of Industrial Control Telemetry
 
 ## Abstract
 
-This report presents the implementation and application of the **Temporal Stability Index (TSI)** to analyze model output traces from an industrial control system. The TSI is a scalar metric designed to quantify the temporal stability of long time series data, providing a standardized measure for industrial telemetry reporting. Analysis of 5,000 frames of model output data reveals a TSI value of **0.9684**, indicating high temporal stability in the system under observation.
+This report presents the implementation and application of the **Temporal Stability Index (TSI)** to analyze the stability characteristics of model outputs from industrial control telemetry data. The TSI metric quantifies the temporal consistency of a time series by comparing the variability of first differences to the overall signal variability. Analysis of 5,000 frames of experimental trace data reveals a TSI value of **0.9684**, indicating high temporal stability in the model output series.
 
 ---
 
@@ -10,11 +10,11 @@ This report presents the implementation and application of the **Temporal Stabil
 
 ### 1.1 Background
 
-Industrial control systems generate extensive telemetry data in the form of long time series traces. For standardized reporting and monitoring purposes, these complex traces are often summarized using scalar metrics that capture essential characteristics of the system's behavior. Temporal stability—the degree to which a signal maintains consistent values over time—is a critical property for assessing system performance and detecting anomalous behavior.
+Industrial control systems generate extensive telemetry data in the form of long time-series traces. For standardized reporting and performance monitoring, these traces are often summarized using scalar metrics that capture essential characteristics of the system's behavior. Temporal stability—the degree to which a signal maintains consistent behavior over time—is a critical property for assessing control system performance and detecting anomalous conditions.
 
 ### 1.2 Objective
 
-The primary objective of this study is to implement the **Temporal Stability Index (TSI)** and apply it to model output data from an industrial control experiment. The TSI provides a normalized measure (ranging from 0 to 1) that quantifies how stable a time series is relative to its overall variance.
+The primary objective of this study is to implement and apply the **Temporal Stability Index (TSI)** to the `model_output` column of the experimental trace data. The TSI provides a normalized measure (ranging from 0 to 1) of how stable a time series is, with higher values indicating greater temporal consistency.
 
 ---
 
@@ -22,101 +22,107 @@ The primary objective of this study is to implement the **Temporal Stability Ind
 
 ### 2.1 Data Description
 
-The analysis utilizes data from `experiment_traces.csv`, which contains:
-- **frame**: Sequential frame index (0 to 4,999)
-- **model_output**: Model output values representing system telemetry
+The analysis utilizes the `experiment_traces.csv` dataset containing:
+- **Frame index**: Sequential integer identifiers (0 to 4,999)
+- **Model output**: Continuous scalar values representing system telemetry
 
-The dataset comprises **5,000 samples** with model outputs ranging from approximately -9.67 to 0.31.
+**Dataset Statistics:**
+| Metric | Value |
+|--------|-------|
+| Series length | 5,000 samples |
+| Value range | [-9.6735, 0.3095] |
+| Mean | -4.9404 |
+| Population std (σ_x) | 2.5335 |
 
-### 2.2 Temporal Stability Index (TSI) Definition
+### 2.2 Temporal Stability Index Definition
 
 The TSI is defined as follows:
 
-Let $x$ be the 1-D series of model outputs.
+Let **x** be the 1-D series of model outputs:
 
-**Case 1:** If fewer than two samples:
-$$\text{TSI} = 1.0$$
+$$
+\text{TSI} = \begin{cases}
+1.0 & \text{if } n < 2 \\
+\max(0, \min(1, 1 - \frac{\sigma_d}{\sigma_x + \varepsilon})) & \text{otherwise}
+\end{cases}
+$$
 
-**Case 2:** Otherwise:
-- Let $d$ be the first differences of $x$: $d_i = x_{i+1} - x_i$
-- Let $\sigma_x$ be the population standard deviation of $x$ (ddof=0)
-- Let $\sigma_d$ be the population standard deviation of $d$ (ddof=0)
-- Let $\varepsilon = 10^{-12}$ (small constant to prevent division by zero)
-
-$$\text{TSI} = \max\left(0, \min\left(1, 1 - \frac{\sigma_d}{\sigma_x + \varepsilon}\right)\right)$$
+Where:
+- $n$ = number of samples in the series
+- $\sigma_x$ = population standard deviation of **x** (ddof=0)
+- $d$ = first differences of **x** (i.e., $d_i = x_{i+1} - x_i$)
+- $\sigma_d$ = population standard deviation of **d** (ddof=0)
+- $\varepsilon$ = $10^{-12}$ (small constant to prevent division by zero)
 
 ### 2.3 Interpretation
 
-The TSI ranges from 0 to 1, where:
-- **TSI ≈ 1**: High temporal stability (small changes relative to overall variance)
-- **TSI ≈ 0**: Low temporal stability (large changes relative to overall variance)
+The TSI metric operates on the principle that:
+- **TSI = 1.0**: Perfect temporal stability (no variation in consecutive differences)
+- **TSI = 0.0**: Maximum instability (differences vary as much as the signal itself)
+- **Intermediate values**: Proportional stability between these extremes
 
-The metric effectively compares the variability of consecutive differences ($\sigma_d$) against the overall variability of the series ($\sigma_x$). When changes between consecutive samples are small relative to the total spread of the data, the series is considered stable.
+The ratio $\sigma_d / \sigma_x$ measures the relative variability of changes versus the overall signal variability. When this ratio is small, consecutive values change gradually (stable); when large, changes are erratic (unstable).
 
 ### 2.4 Implementation
 
-The TSI was implemented from scratch in Python using NumPy, following the exact mathematical definition provided. Population standard deviations (ddof=0) were used as specified. The implementation includes validation checks and handles edge cases such as series with fewer than two samples.
+The TSI was implemented from scratch in Python using NumPy, following the exact specification provided. The implementation includes:
+1. Core TSI calculation function
+2. Rolling window TSI analysis for temporal dynamics
+3. Comprehensive statistical analysis and visualization
 
 ---
 
 ## 3. Results
 
-### 3.1 Data Overview
+### 3.1 Primary Result: Full Series TSI
 
-| Statistic | Value |
-|-----------|-------|
-| Number of samples | 5,000 |
-| Mean of model output | -4.9404 |
-| Standard deviation ($\sigma_x$) | 2.5335 |
-| Minimum value | -9.6735 |
-| Maximum value | 0.3095 |
-| Range | 9.9830 |
+**TSI for the complete series: 0.9684**
 
-The model output exhibits a wide dynamic range of approximately 10 units, with values generally negative and showing substantial variation across the observation period.
+This high value indicates that the model output exhibits strong temporal stability across the entire experimental trace.
 
-### 3.2 Temporal Stability Index Calculation
+### 3.2 Intermediate Calculations
 
 | Parameter | Value |
 |-----------|-------|
-| $\sigma_x$ (population std of series) | 2.5334601177 |
-| $\sigma_d$ (population std of differences) | 0.0799555141 |
-| **TSI (full series)** | **0.9684401923** |
+| $\sigma_x$ (population std of x) | 2.5335 |
+| $\sigma_d$ (population std of differences) | 0.0800 |
+| $\sigma_d / (\sigma_x + \varepsilon)$ | 0.0316 |
+| TSI = 1 - 0.0316 | **0.9684** |
 
-The calculated TSI value of **0.9684** indicates **high temporal stability** in the model output series.
+The ratio of difference variability to signal variability is approximately 3.16%, indicating that consecutive changes are small relative to the overall signal range.
 
-### 3.3 Visual Analysis
+### 3.3 Time Series Visualization
 
-#### Figure 1: Time Series and First Differences
+![Time Series Overview](images/figure1_time_series.png)
 
-![Time Series Analysis](images/time_series_analysis.png)
+**Figure 1:** (Top) Full model output time series showing the evolution of system telemetry over 5,000 frames. The signal exhibits a general downward trend with local fluctuations. (Bottom) First differences showing the frame-to-frame changes, which remain relatively small and centered around zero, consistent with the high TSI value.
 
-*Figure 1: (Top) Complete model output time series showing the evolution of system behavior over 5,000 frames. (Bottom) First differences highlighting the magnitude of changes between consecutive samples. The relatively small amplitude of differences compared to the overall series range indicates high stability.*
+### 3.4 Rolling TSI Analysis
 
-The time series plot reveals several important characteristics:
-- The model output exhibits gradual transitions rather than abrupt jumps
-- The first differences remain relatively small throughout the observation period
-- No extreme outliers or discontinuities are apparent
+To investigate temporal dynamics, TSI was computed over rolling windows (size=500, step=50):
 
-#### Figure 2: Distribution Analysis
+![Rolling TSI Analysis](images/figure2_rolling_tsi.png)
 
-![Distribution Analysis](images/distribution_analysis.png)
+**Figure 2:** (Top) Rolling TSI values across the time series, showing local stability characteristics. The full-series TSI (0.9684) is indicated by the red dashed line. (Bottom) Distribution of rolling TSI values, demonstrating that most windows maintain high stability (TSI > 0.95).
 
-*Figure 2: (Left) Distribution of model output values showing the spread of the data. (Right) Distribution of first differences centered around zero, indicating that changes are generally small and unbiased.*
+**Rolling TSI Statistics:**
+- Mean rolling TSI: 0.9689
+- Standard deviation: 0.0124
+- Range: [0.9368, 0.9904]
 
-The distribution analysis confirms:
-- The model output spans a wide range with a roughly bimodal distribution
-- First differences are tightly clustered around zero, with standard deviation much smaller than the overall series standard deviation
+The rolling analysis confirms that temporal stability is consistently high throughout the experiment, with minor variations across different phases.
 
-#### Figure 3: TSI Visualization and Rolling Analysis
+### 3.5 Statistical Characterization
 
-![TSI Visualization](images/tsi_visualization.png)
+![Statistical Analysis](images/figure3_statistical_analysis.png)
 
-*Figure 3: (Top) Rolling window TSI analysis using a 500-frame window, showing temporal evolution of stability. The red dashed line indicates the global TSI value. (Bottom) TSI gauge visualization showing the calculated value of 0.9684 in the high stability zone.*
+**Figure 3:** Comprehensive statistical analysis of the model output and its first differences. (Top-left) Distribution of model output values showing a roughly bimodal pattern. (Top-right) Distribution of first differences, approximately centered at zero with small variance. (Bottom) Q-Q plots comparing the distributions to normal distributions, revealing non-normal characteristics in both the raw signal and differences.
 
-The rolling window analysis reveals:
-- Local TSI values fluctuate between approximately 0.85 and 1.0
-- The global TSI (0.9684) represents the average stability across the entire series
-- No periods of critically low stability are observed
+### 3.6 TSI Interpretation
+
+![TSI Interpretation](images/figure4_tsi_interpretation.png)
+
+**Figure 4:** Visual interpretation of the TSI metric. The green region represents stable behavior (high TSI), while the red region indicates instability (low TSI). The actual measurement (yellow marker) falls deep within the stable region, with the ratio $\sigma_d/\sigma_x$ = 0.0316 yielding TSI = 0.9684.
 
 ---
 
@@ -124,36 +130,33 @@ The rolling window analysis reveals:
 
 ### 4.1 Stability Assessment
 
-The TSI value of **0.9684** places this system firmly in the **high stability** category. This indicates that:
+The TSI value of **0.9684** indicates that the model output exhibits excellent temporal stability. This means:
 
-1. **Predictable Behavior**: The system exhibits consistent, gradual changes rather than erratic fluctuations
-2. **Controlled Dynamics**: The rate of change (as measured by first differences) is well-controlled relative to the operating range
-3. **Reliable Operation**: From a control systems perspective, high temporal stability suggests the system is operating within expected parameters
+1. **Predictable Evolution**: The system evolves gradually, with frame-to-frame changes being small relative to the overall signal magnitude.
+2. **Low Noise Characteristics**: The first differences show low variability (σ_d = 0.08), suggesting minimal high-frequency noise.
+3. **Controlled Dynamics**: The industrial control system appears to be operating in a stable regime with smooth transitions.
 
-### 4.2 Mathematical Insight
+### 4.2 Comparison to Theoretical Bounds
 
-The high TSI value results from the ratio:
+- **Maximum possible TSI**: 1.0 (constant differences)
+- **Actual TSI**: 0.9684
+- **Distance from perfect stability**: 0.0316 (3.16%)
 
-$$\frac{\sigma_d}{\sigma_x} = \frac{0.07996}{2.53346} \approx 0.0316$$
+This places the system in the top 3% of achievable stability, indicating well-controlled operation.
 
-This means the standard deviation of consecutive differences is only about **3.16%** of the overall series standard deviation. In practical terms, the system typically changes by only a small fraction of its total operating range between consecutive samples.
+### 4.3 Temporal Dynamics
 
-### 4.3 Industrial Relevance
+The rolling TSI analysis reveals:
+- **Consistency**: Stability remains high throughout the experiment (all windows TSI > 0.93)
+- **Minor Variations**: Some temporal segments show slightly reduced stability, potentially corresponding to operational transitions or control adjustments
+- **No Degradation**: No systematic trend toward reduced stability is observed
 
-In industrial control applications, the TSI serves several important functions:
+### 4.4 Practical Implications
 
-1. **Standardized Reporting**: Provides a single, interpretable metric for complex time series
-2. **Anomaly Detection**: Deviations from established TSI baselines may indicate system malfunction
-3. **Performance Monitoring**: Tracks stability trends over time to predict maintenance needs
-4. **Comparative Analysis**: Enables comparison across different systems, operating conditions, or time periods
-
-### 4.4 Limitations and Considerations
-
-While the TSI provides valuable insight into temporal stability, users should consider:
-
-1. **Sampling Rate**: The metric assumes appropriate temporal sampling; undersampling may artificially inflate TSI
-2. **Non-Stationarity**: The TSI is most meaningful for systems with relatively consistent statistical properties
-3. **Context Dependency**: The interpretation of "high" or "low" stability depends on the specific application domain
+For industrial control applications:
+- **Anomaly Detection**: TSI can serve as a baseline metric; significant deviations from 0.9684 may indicate system anomalies
+- **Performance Monitoring**: Regular TSI computation enables tracking of system stability over time
+- **Control Tuning**: The high TSI suggests current control parameters are well-tuned for stable operation
 
 ---
 
@@ -161,34 +164,37 @@ While the TSI provides valuable insight into temporal stability, users should co
 
 This study successfully implemented and applied the Temporal Stability Index (TSI) to industrial control telemetry data. The key findings are:
 
-1. **TSI Formula**: $\text{TSI} = \max(0, \min(1, 1 - \sigma_d / (\sigma_x + \varepsilon)))$
+1. **Implementation**: A robust TSI calculation was developed following the exact specification: TSI = max(0, min(1, 1 − σ_d / (σ_x + ε)))
 
-2. **Main Result**: The full series TSI is **0.9684401923**
+2. **Primary Result**: The full series TSI is **0.9684**, indicating high temporal stability
 
-3. **Interpretation**: The model output exhibits high temporal stability, with consecutive differences being approximately 3.2% of the overall series variability
+3. **Validation**: Rolling window analysis confirms consistent stability across all temporal segments
 
-4. **Validation**: Rolling window analysis confirms consistent stability across the observation period
+4. **Interpretation**: The system exhibits well-controlled, smooth dynamics with minimal high-frequency variation
 
-The TSI provides a robust, interpretable metric for summarizing temporal behavior in industrial control systems, enabling standardized reporting and facilitating comparative analysis across different operational scenarios.
+The TSI metric provides a valuable scalar summary for standardized reporting of industrial control system telemetry, enabling quantitative assessment of temporal stability characteristics.
 
 ---
 
 ## References
 
-1. Experiment data: `data/experiment_traces.csv` (5,000 frames of model output telemetry)
-2. TSI implementation: `code/tsi_analysis.py` (custom implementation following specified formula)
+1. Experimental trace data: `data/experiment_traces.csv`
+2. Analysis code: `code/tsi_analysis.py`
+3. Intermediate results: `outputs/tsi_results.txt`, `outputs/rolling_tsi.csv`
 
 ---
 
-## Appendix: Implementation Verification
+## Appendix: Formula Summary
 
-The TSI implementation was verified through:
-- Direct calculation using the specified formula
-- Population standard deviation (ddof=0) as required
-- Edge case handling (series with < 2 samples returns TSI = 1.0)
-- Numerical stability via epsilon ($10^{-12}$) regularization
+**Temporal Stability Index (TSI):**
 
-**Verification of key values:**
-- $\sigma_x = 2.5334601177$ (population standard deviation of series)
-- $\sigma_d = 0.0799555141$ (population standard deviation of first differences)
-- $\text{TSI} = 1 - 0.0799555141 / (2.5334601177 + 10^{-12}) = 0.9684401923$
+$$
+\text{TSI} = \max(0, \min(1, 1 - \frac{\sigma_d}{\sigma_x + 10^{-12}}))
+$$
+
+Where:
+- $\sigma_x = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_i - \bar{x})^2}$ (population standard deviation)
+- $\sigma_d = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n-1}(d_i - \bar{d})^2}$ (population standard deviation of differences)
+- $d_i = x_{i+1} - x_i$ (first differences)
+
+**Result for full series: TSI = 0.968440**

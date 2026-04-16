@@ -1,0 +1,30 @@
+{
+  "scenario_id": "04b_EarthScience_FieldLoggerSegmentDrift",
+  "title": "EarthScience FieldLoggerSegmentDrift",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/soil_logger_readings.csv",
+    "data/twdm_audit_manifest.json"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 9,
+    "submit_count": 0,
+    "done_summary": "Successfully completed the EarthScience FieldLoggerSegmentDrift TWDM analysis task. \n\nDeliverables completed:\n1. Analysis code: `code/twdm_analysis.py` - implements TWDM computation per specification\n2. Intermediate results: `outputs/twdm_results.csv` - TWDM values for all segments\n3. Report: `report/report.md` - comprehensive research report including:\n   - Methodology with TWDM formula\n   - Golden case validation (max error: 0.00e+00, within 1e-9 tolerance)\n   - Ordered results table for all 5 segments (FM_HEAD, FM_GAP, FM_MID, FM_RIDGE, FM_TAIL)\n   - Figure reference for FM_HEAD segment\n   - Discussion of findings and recommendations\n4. Figure: `report/images/fm_head_vwc_plot.png` - VWC time series plot\n\nKey findings:\n- 3 segments PASSED (FM_HEAD: 0.137, FM_RIDGE: 0.508, FM_TAIL: 0.120)\n- 1 segment FAILED (FM_MID: 2.123)\n- 1 segment had INSUFFICIENT_LENGTH (FM_GAP: n=2)",
+    "real_tokens_used": 81863
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer\\round_001\\inner_workspaces\\round_001\\04b_EarthScience_FieldLoggerSegmentDrift",
+  "timestamp": "2026-04-16T21:37:17.171318",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Successfully completed the EarthScience FieldLoggerSegmentDrift TWDM analysis task. \n\nDeliverables completed:\n1. Analysis code: `code/twdm_analysis.py` - implements TWDM computation per specification\n2. Intermediate results: `outputs/twdm_results.csv` - TWDM values for all segments\n3. Report: `report/report.md` - comprehensive research report including:\n   - Methodology with TWDM formula\n   - Golden case validation (max error: 0.00e+00, within 1e-9 tolerance)\n   - Ordered results table for all 5 segments (FM_HEAD, FM_GAP, FM_MID, FM_RIDGE, FM_TAIL)\n   - Figure reference for FM_HEAD segment\n   - Discussion of findings and recommendations\n4. Figure: `report/images/fm_head_vwc_plot.png` - VWC time series plot\n\nKey findings:\n- 3 segments PASSED (FM_HEAD: 0.137, FM_RIDGE: 0.508, FM_TAIL: 0.120)\n- 1 segment FAILED (FM_MID: 2.123)\n- 1 segment had INSUFFICIENT_LENGTH (FM_GAP: n=2)"
+}

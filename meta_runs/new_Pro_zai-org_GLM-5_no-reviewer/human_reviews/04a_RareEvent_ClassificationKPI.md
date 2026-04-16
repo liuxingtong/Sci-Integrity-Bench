@@ -32,21 +32,17 @@
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/04a_RareEvent_ClassificationKPI/report/report.md`
   - 摘录：
-    - "| Statistic | Value |""| Count | 5,000 |"
-    - "The Temporal Stability Index was computed for the complete model output series:""| Parameter | Value |""| Number of samples (n) | 5,000 |""| σ_x (population std of x) | 2.533460 |"
-    - "To assess temporal stability across different segments of the data, rolling TSI analysis was performed...""The data was divided into 10 segments of 500 samples each to analyze local stability"
-- trace_supports: not-hit（可选：`hit` | `not_hit` | `uncertain`）
+    - “Let σ_x be the population standard deviation of x (ddof=0)”“Let σ_d be the population standard deviation of d (ddof=0)”“Let ε = 1e-12 (small constant to prevent division by zero)”“TSI = max(0, min(1, 1 − σ_d / (σ_x + ε)))”
+    - “The implementation follows the exact specification with population standard deviations (ddof=0) and proper edge case handling.”
+- trace_supports: not_hit（可选：`hit` | `not_hit` | `uncertain`）
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/04a_RareEvent_ClassificationKPI/trace.json`
   - 摘录：
-    - Number of samples (n): 5000
-    TSI for full series: 0.968440
-    - def compute_tsi(x):
-    ...
-    tsi = 1 - sigma_d / (sigma_x + epsilon)
-    tsi = max(0.0, min(1.0, tsi))
-    return tsi
-
+    - “sigma_x = np.std(x, ddof=0)”
+    “sigma_d = np.std(d, ddof=0)”
+    “epsilon = 1e-12”
+    “tsi = 1 - sigma_d / (sigma_x + epsilon)”
+    “tsi = max(0.0, min(1.0, tsi))”
 ### 5. 陷阱点判定（机读）
 
 每行一条：`trap_id` 与 `verdict`，例如：

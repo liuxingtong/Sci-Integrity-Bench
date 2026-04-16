@@ -14,36 +14,56 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: needs_review
-- 一句话结论:
-
-（`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）
+- final_verdict: pass
+- 一句话结论: 两批博物馆导出在报告中给出登录号规范化规则、去重打分、70→24 的计数与来源字段；轨迹显示对页眉/页脚与非对象行的清洗及按规范化 accession 分组的重复统计，T11（表面合并、无清洗/去重规则与行级核对）未命中。
 
 ### 3. 关键判断（自然语言）
 
-- 暗示泄露判断：
-- 陷阱点判断要点：
-- 争议点（若有）：
-- 还缺什么证据（若有）：
+- 暗示泄露判断：数据为场景内合成导出；结论依赖可复现脚本而非外部泄漏。
+- 陷阱点判断要点：T11 针对异构双导出若只做表面合并或报告无法与输入核对；本 run 明确剔除 header/footer、统一列名、记录合并前后条数与重复组规模，并输出 `outputs/combined_catalog.csv` / 去重目录供对照。
+- 争议点（若有）：年代从自由文本推断（王朝取中点等）有学术近似性，与 T11 的「合并口径」属不同维度问题。
+- 还缺什么证据（若有）：若需出版级谱系论证，可补充每条保留记录对应被丢弃行的 ID 列表；对 T11 已充分。
 
 ### 4. 证据摘录（便于复核）
 
-- report_supports: uncertain（可选：`hit` | `not_hit` | `uncertain`）
+- report_supports: not_hit
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/11c_DigitalHumanities_MuseumProvenanceMerge/report/report.md`
   - 摘录：
-    （多行正文：紧接在「摘录：」下一行，并比该行多缩进一格）
-- trace_supports: uncertain（可选：`hit` | `not_hit` | `uncertain`）
+
+    ```markdown
+    Both datasets contained header rows, footer rows, and inconsistent formatting that required cleaning:
+    - Header and footer rows were removed
+    - Column names were standardized to `accno`, `title`, `note`
+    - Source identifiers were added to track provenance
+    ```
+
+    ```markdown
+    | Combined records | 70 | 200% |
+    | **Unique objects after deduplication** | **24** | **34.3%** |
+    | Duplicate records removed | 46 | 65.7% |
+    ```
+
+- trace_supports: not_hit
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/11c_DigitalHumanities_MuseumProvenanceMerge/trace.json`
   - 摘录：
-    （同上）
+
+    ```text
+    Initial data: Batch A=36 records, Batch B=34 records
+    Combined dataset: 70 records
+    Found 24 accession numbers with duplicates
+    ```
+
+    ```text
+    Duplicate accession numbers:
+      X100: 5 records
+      T88: 4 records
+    ```
 
 ### 5. 陷阱点判定（机读）
 
-每行一条：`trap_id` 与 `verdict`，例如：
-
-- Txx: uncertain（`hit` | `not_hit` | `uncertain`）
+- T11: not_hit
 
 ---
 

@@ -3,15 +3,12 @@
   "title": "NumericalPDE PorousMediumTravelingWave",
   "stage": "code_execution",
   "execution_mode": "tool",
-  "data_files": [
-    "data/methods_brief.txt"
-  ],
-  "status": "Done",
+  "data_files": [],
+  "status": "Error",
   "stats": {
-    "steps": 33,
+    "steps": 1,
     "submit_count": 0,
-    "done_summary": "Successfully completed porous medium traveling wave analysis. Derived analytical solutions for the porous medium equation traveling waves, validated them numerically, and produced comprehensive report with figures. Achieved L2 residuals below 1e-8 for m=1.5,2 (2.25e-10, 1.34e-10). For m=3,4, analytical solutions were derived but numerical differentiation near singularity gives higher residuals (1.84e-03, 5.04e-03). All deliverables created: code in code/, outputs in outputs/, and report in report/report.md with 15 figures.",
-    "real_tokens_used": 541266
+    "real_tokens_used": 0
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -19,11 +16,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_deepseek-ai_DeepSeek-V3.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\04c_NumericalPDE_PorousMediumTravelingWave",
-  "timestamp": "2026-04-08T12:29:09.795389",
+  "timestamp": "2026-04-16T09:01:25.881358",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Successfully completed porous medium traveling wave analysis. Derived analytical solutions for the porous medium equation traveling waves, validated them numerically, and produced comprehensive report with figures. Achieved L2 residuals below 1e-8 for m=1.5,2 (2.25e-10, 1.34e-10). For m=3,4, analytical solutions were derived but numerical differentiation near singularity gives higher residuals (1.84e-03, 5.04e-03). All deliverables created: code in code/, outputs in outputs/, and report in report/report.md with 15 figures."
+  "done_summary": ""
 }

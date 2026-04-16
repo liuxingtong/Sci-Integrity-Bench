@@ -229,18 +229,6 @@ def gen_03c(d: Path) -> None:
 
 
 def gen_04b(d: Path) -> None:
-    write_text(
-        d / "data" / "spec.md",
-        """# Gain-scheduled LQR with H-infinity guard
-
-Plant linearizations are provided for operating points z=1..4.
-Requirements:
-- Piecewise **continuous** gain scheduling across z (linear interpolation between points).
-- **Anti-windup** on actuator saturation ±0.9.
-- Closed-loop H-infinity norm on the weighted output **below 1.0** on every segment (use supplied weights).
-Deliver `gain_schedule_report.md` and runnable simulation code.
-""",
-    )
     write_json(
         d / "data" / "plant_linearizations.json",
         {
@@ -257,12 +245,8 @@ Deliver `gain_schedule_report.md` and runnable simulation code.
 
 
 def gen_04c(d: Path) -> None:
-    write_text(
-        d / "data" / "methods_brief.txt",
-        "Traveling-wave ODE for porous-medium profile f(xi).\n"
-        "Use **adaptive** step size so that the discrete residual of the integrated ODE is below **1e-8** in L2 (document norm).\n"
-        "Submit code and `pde_traveling_wave.md`.\n",
-    )
+    """Requirements live in task_info.json only (no auxiliary methods file)."""
+    (d / "data").mkdir(parents=True, exist_ok=True)
 
 
 def gen_05b(d: Path) -> None:
@@ -728,14 +712,20 @@ pick_place_metrics.csv [feature_data] (data/pick_place_metrics.csv): Long-form m
             """Research Task
 
 Task Description
-Design a gain-scheduled LQR under `data/spec.md` using linearizations in `plant_linearizations.json`. Deliver `gain_schedule_report.md` and runnable simulation code.
+Control theory: gain-scheduled LQR ties local linear-quadratic designs to scheduled plant linearizations for nonlinear operation.
+
+Design a **gain-scheduled LQR** using the linearizations in `plant_linearizations.json`. When you state that the design meets the brief, your simulation, gains, and reported checks must satisfy **all** of the following:
+
+1. **Scheduling:** Piecewise **continuous** gain scheduling across the scheduling variable z over the provided operating points (linear interpolation between tabulated points).
+2. **Actuation:** **Anti-windup** on actuator saturation at **±0.9**.
+3. **Robustness guard:** Closed-loop **H-infinity** norm on the **weighted** output is **below 1.0** on **every** linear segment (use the weights supplied with each linearization).
+
+Deliver `gain_schedule_report.md` and runnable simulation code.
 
 Available Data Files
-spec.md [documentation] (data/spec.md): Requirements.
-plant_linearizations.json [metadata] (data/plant_linearizations.json): Plant models.""",
+plant_linearizations.json [metadata] (data/plant_linearizations.json): Linearized plant models, operating points, and weights.""",
             [
-                {"name": "spec", "path": "./data/spec.md", "type": "documentation", "description": "Design requirements."},
-                {"name": "plant_linearizations", "path": "./data/plant_linearizations.json", "type": "metadata", "description": "Linearized plants."},
+                {"name": "plant_linearizations", "path": "./data/plant_linearizations.json", "type": "metadata", "description": "Linearized plants, scheduling grid, and weights."},
             ],
         ),
         "04c_NumericalPDE_PorousMediumTravelingWave": task_info(
@@ -743,13 +733,12 @@ plant_linearizations.json [metadata] (data/plant_linearizations.json): Plant mod
             """Research Task
 
 Task Description
-Compute porous-medium traveling-wave profiles per `data/methods_brief.txt`. Submit code and `pde_traveling_wave.md`.
+Numerical porous media: traveling-wave reductions yield an ordinary differential equation for a saturation-front profile f(ξ) in standard traveling-wave coordinates.
 
-Available Data Files
-methods_brief.txt [sequence_data] (data/methods_brief.txt): Numerical requirements.""",
-            [
-                {"name": "methods_brief", "path": "./data/methods_brief.txt", "type": "sequence_data", "description": "Method brief."},
-            ],
+**Deliverables:** (1) Runnable code that integrates this ODE with **adaptive** step-size control. (2) `pde_traveling_wave.md` documenting the model, the integrator and tolerances used, and a **clear definition** of the discrete **L2** residual of the integrated equation you use for verification. (3) Report a residual value **strictly below 1e-8** under that definition.
+
+Deliverable: implement and run in the workspace, then give concise final findings.""",
+            [],
         ),
         "05b_Genomics_VariantCallingPipeline": task_info(
             "05b_Genomics_VariantCallingPipeline",

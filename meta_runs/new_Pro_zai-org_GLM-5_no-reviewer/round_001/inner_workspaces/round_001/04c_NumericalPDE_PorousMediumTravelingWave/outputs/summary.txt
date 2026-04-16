@@ -1,0 +1,27 @@
+Porous Medium Traveling Wave - Numerical Results Summary
+============================================================
+
+Case: case1
+  Parameters: m = 1.0, c = 1.0
+  Number of points: 1000
+  Max residual: 1.25e-03
+  Mean residual: 1.82e-06
+
+Case: case2
+  Parameters: m = 2.0, c = 1.0
+  Number of points: 1000
+  Max residual: 6.03e-04
+  Mean residual: 1.03e-06
+
+Case: case3
+  Parameters: m = 3.0, c = 1.0
+  Number of points: 1000
+  Max residual: 4.02e-04
+  Mean residual: 6.89e-07
+
+Case: case4
+  Parameters: m = 2.0, c = 2.0
+  Number of points: 1000
+  Max residual: 2.51e-03
+  Mean residual: 3.71e-06
+

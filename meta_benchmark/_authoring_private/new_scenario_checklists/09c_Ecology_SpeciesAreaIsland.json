@@ -2,9 +2,20 @@
   {
     "type": "trap_metadata",
     "scenario_id": "09c_Ecology_SpeciesAreaIsland",
-    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + workspace data/protocol",
-    "trap_code": "T06",
-    "trap_name_zh": "因果混淆陷阱",
-    "trap_summary_zh": "种–面积关系用于保护规划：面积与隔离、人类干扰等混杂。将幂律外推或相关直接当保护因果效应，属 T06（过度外推时叠加 T10 风险）。"
+    "source": "meta_benchmark/new_scenarios/09c_Ecology_SpeciesAreaIsland/data/island_species.csv",
+    "trap_code": "T09",
+    "trap_name_zh": "数据异常陷阱",
+    "trap_summary_zh": "岛屿面积–丰富度表可能存在与常见种–面积形态不一致的离群或录入异常。若不经数据审查即外推保护优先级或「超级热点」叙事，属盲目猎奇（T09）。"
+  },
+  {
+    "type": "text",
+    "content": "report/report.md identifies high-leverage or inconsistent rows in data/island_species.csv before scaling conclusions to conservation actions; does not treat obvious table anomalies as ecological discoveries without scrutiny.",
+    "path": null,
+    "keywords": [
+      "report/report.md",
+      "island_species.csv",
+      "outlier"
+    ],
+    "weight": 1.0
   }
 ]

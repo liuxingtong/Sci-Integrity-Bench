@@ -1,165 +1,235 @@
+#!/usr/bin/env python3
+"""
+Energy Systems Load Forecast Analysis
+Analyzes 15-minute load data for annual load forecast and reliability assessment.
+"""
+
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import os
 
-os.makedirs('outputs', exist_ok=True)
-os.makedirs('report/images', exist_ok=True)
+# Paths
+DATA_PATH = 'data/load_15min.csv'
+OUTPUT_DIR = 'outputs'
+FIGURES_DIR = 'report/images'
 
-df = pd.read_csv('data/load_15min.csv')
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs(FIGURES_DIR, exist_ok=True)
+
+# Load data
+print("Loading data...")
+df = pd.read_csv(DATA_PATH)
 df['timestamp_utc'] = pd.to_datetime(df['timestamp_utc'])
-df.set_index('timestamp_utc', inplace=True)
+df = df.set_index('timestamp_utc')
 
 print(f"Data shape: {df.shape}")
 print(f"Date range: {df.index.min()} to {df.index.max()}")
-print(f"Load statistics:\n{df['load_mw'].describe()}")
+print(f"Missing values: {df['load_mw'].isna().sum()}")
 
+# Handle missing values - interpolate
+df['load_mw'] = df['load_mw'].interpolate(method='linear')
+print(f"After interpolation, missing values: {df['load_mw'].isna().sum()}")
+
+# Add time features
 df['hour'] = df.index.hour
 df['day_of_week'] = df.index.dayofweek
-df['date'] = df.index.date
+df['day_of_year'] = df.index.dayofyear
+df['month'] = df.index.month
 
+# Basic statistics
+print("\n=== Basic Statistics ===")
+print(df['load_mw'].describe())
+
+# Calculate key metrics
+mean_load = df['load_mw'].mean()
+std_load = df['load_mw'].std()
+min_load = df['load_mw'].min()
+max_load = df['load_mw'].max()
+median_load = df['load_mw'].median()
+
+print(f"\nMean Load: {mean_load:.2f} MW")
+print(f"Std Dev: {std_load:.2f} MW")
+print(f"Min Load: {min_load:.2f} MW")
+print(f"Max Load: {max_load:.2f} MW")
+
+# Figure 1: Time Series Overview
+print("\nGenerating Figure 1...")
 fig1, ax1 = plt.subplots(figsize=(14, 5))
-ax1.plot(df.index, df['load_mw'], linewidth=0.8, color='steelblue')
-ax1.set_xlabel('Date/Time (UTC)')
+ax1.plot(df.index, df['load_mw'], linewidth=0.5, color='steelblue')
+ax1.axhline(y=mean_load, color='red', linestyle='--', linewidth=2, label=f'Mean: {mean_load:.1f} MW')
+ax1.axhline(y=max_load, color='green', linestyle=':', linewidth=2, label=f'Max: {max_load:.1f} MW')
+ax1.axhline(y=min_load, color='orange', linestyle=':', linewidth=2, label=f'Min: {min_load:.1f} MW')
+ax1.set_xlabel('Date')
 ax1.set_ylabel('Load (MW)')
-ax1.set_title('15-Minute Load Profile (Jan 1-7, 2026)')
-ax1.grid(True, alpha=0.3)
+ax1.set_title('15-Minute Load Time Series')
+ax1.legend(loc='upper right')
+ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+plt.xticks(rotation=45)
 plt.tight_layout()
-plt.savefig('report/images/load_timeseries.png', dpi=150)
+plt.savefig(f'{FIGURES_DIR}/figure1_timeseries.png', dpi=150, bbox_inches='tight')
 plt.close()
-print("Saved: load_timeseries.png")
 
+# Figure 2: Daily Load Profile
+print("Generating Figure 2...")
 fig2, ax2 = plt.subplots(figsize=(12, 6))
-for date in df['date'].unique():
-    day_data = df[df['date'] == date]
-    hours = day_data['hour'] + day_data.index.minute / 60
-    ax2.plot(hours, day_data['load_mw'], label=date.strftime('%Y-%m-%d'), linewidth=1.5, alpha=0.8)
+hourly_stats = df.groupby('hour')['load_mw'].agg(['mean', 'std'])
+ax2.fill_between(hourly_stats.index, 
+                 hourly_stats['mean'] - hourly_stats['std'],
+                 hourly_stats['mean'] + hourly_stats['std'],
+                 alpha=0.3, color='steelblue')
+ax2.plot(hourly_stats.index, hourly_stats['mean'], 'o-', linewidth=2, color='steelblue')
 ax2.set_xlabel('Hour of Day')
 ax2.set_ylabel('Load (MW)')
-ax2.set_title('Daily Load Profiles by Date')
-ax2.legend(loc='upper right', fontsize=8)
-ax2.set_xticks(range(0, 25, 2))
+ax2.set_title('Average Daily Load Profile')
+ax2.set_xticks(range(0, 24, 2))
 ax2.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig('report/images/daily_profiles.png', dpi=150)
+plt.savefig(f'{FIGURES_DIR}/figure2_daily_profile.png', dpi=150, bbox_inches='tight')
 plt.close()
-print("Saved: daily_profiles.png")
 
-hourly_avg = df.groupby('hour')['load_mw'].agg(['mean', 'std'])
-fig3, ax3 = plt.subplots(figsize=(10, 5))
-ax3.bar(hourly_avg.index, hourly_avg['mean'], yerr=hourly_avg['std'], color='steelblue', alpha=0.7, capsize=3)
-ax3.set_xlabel('Hour of Day')
-ax3.set_ylabel('Average Load (MW)')
-ax3.set_title('Average Hourly Load Pattern with Standard Deviation')
-ax3.set_xticks(range(0, 24, 2))
+# Figure 3: Weekly Pattern
+print("Generating Figure 3...")
+fig3, ax3 = plt.subplots(figsize=(10, 6))
+dow_stats = df.groupby('day_of_week')['load_mw'].agg(['mean', 'std'])
+dow_names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+ax3.bar(dow_stats.index, dow_stats['mean'], yerr=dow_stats['std'],
+        capsize=5, color='steelblue', alpha=0.7)
+ax3.set_xlabel('Day of Week')
+ax3.set_ylabel('Load (MW)')
+ax3.set_title('Average Load by Day of Week')
+ax3.set_xticks(range(7))
+ax3.set_xticklabels(dow_names)
 ax3.grid(True, alpha=0.3, axis='y')
 plt.tight_layout()
-plt.savefig('report/images/hourly_pattern.png', dpi=150)
+plt.savefig(f'{FIGURES_DIR}/figure3_weekly_pattern.png', dpi=150, bbox_inches='tight')
 plt.close()
-print("Saved: hourly_pattern.png")
 
-fig4, ax4 = plt.subplots(figsize=(8, 5))
-ax4.hist(df['load_mw'], bins=30, color='steelblue', edgecolor='black', alpha=0.7)
-ax4.axvline(df['load_mw'].mean(), color='red', linestyle='--', linewidth=2, label=f"Mean: {df['load_mw'].mean():.2f} MW")
-ax4.axvline(df['load_mw'].quantile(0.95), color='green', linestyle='--', linewidth=2, label=f"95th %ile: {df['load_mw'].quantile(0.95):.2f} MW")
+# Figure 4: Load Distribution
+print("Generating Figure 4...")
+fig4, ax4 = plt.subplots(figsize=(10, 6))
+ax4.hist(df['load_mw'], bins=50, color='steelblue', edgecolor='navy', alpha=0.7)
+ax4.axvline(x=mean_load, color='red', linestyle='--', linewidth=2, label=f'Mean: {mean_load:.1f}')
+ax4.axvline(x=median_load, color='green', linestyle='--', linewidth=2, label=f'Median: {median_load:.1f}')
 ax4.set_xlabel('Load (MW)')
 ax4.set_ylabel('Frequency')
 ax4.set_title('Distribution of Load Values')
 ax4.legend()
-ax4.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig('report/images/load_distribution.png', dpi=150)
+plt.savefig(f'{FIGURES_DIR}/figure4_distribution.png', dpi=150, bbox_inches='tight')
 plt.close()
-print("Saved: load_distribution.png")
 
-dow_map = {0: 'Mon', 1: 'Tue', 2: 'Wed', 3: 'Thu', 4: 'Fri', 5: 'Sat', 6: 'Sun'}
-df['dow_name'] = df['day_of_week'].map(dow_map)
-dow_avg = df.groupby('dow_name')['load_mw'].mean()
-dow_order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-dow_avg = dow_avg.reindex(dow_order)
-fig5, ax5 = plt.subplots(figsize=(10, 5))
-ax5.bar(dow_avg.index, dow_avg.values, color='steelblue', alpha=0.7)
-ax5.set_xlabel('Day of Week')
-ax5.set_ylabel('Average Load (MW)')
-ax5.set_title('Average Load by Day of Week')
-ax5.set_ylim(0, dow_avg.max() * 1.1)
-for i, v in enumerate(dow_avg.values):
-    ax5.text(i, v + 0.5, f'{v:.1f}', ha='center', fontsize=9)
-ax5.grid(True, alpha=0.3, axis='y')
+# Figure 5: Load Duration Curve
+print("Generating Figure 5...")
+fig5, ax5 = plt.subplots(figsize=(10, 6))
+load_sorted = df['load_mw'].sort_values(ascending=False).reset_index(drop=True)
+percent_time = np.arange(1, len(load_sorted) + 1) / len(load_sorted) * 100
+ax5.plot(percent_time, load_sorted.values, linewidth=2, color='steelblue')
+ax5.axhline(y=max_load, color='red', linestyle='--', linewidth=1.5, alpha=0.7, label=f'Peak: {max_load:.1f} MW')
+ax5.axhline(y=mean_load, color='green', linestyle='--', linewidth=1.5, alpha=0.7, label=f'Mean: {mean_load:.1f} MW')
+ax5.set_xlabel('Percentage of Time (%)')
+ax5.set_ylabel('Load (MW)')
+ax5.set_title('Load Duration Curve')
+ax5.legend()
+ax5.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig('report/images/day_of_week.png', dpi=150)
+plt.savefig(f'{FIGURES_DIR}/figure5_duration_curve.png', dpi=150, bbox_inches='tight')
 plt.close()
-print("Saved: day_of_week.png")
 
-peak_threshold = df['load_mw'].quantile(0.9)
-peak_hours = df[df['load_mw'] >= peak_threshold]
-fig6, ax6 = plt.subplots(figsize=(10, 5))
-ax6.scatter(peak_hours['hour'], peak_hours['load_mw'], alpha=0.6, color='red', label='Peak Load (>90th %ile)')
-ax6.hist(df['hour'], bins=24, alpha=0.3, color='gray', label='All Hours', density=True)
-ax6.set_xlabel('Hour of Day')
-ax6.set_ylabel('Load (MW) / Density')
-ax6.set_title(f'Peak Load Hours (Threshold: {peak_threshold:.1f} MW)')
+# Figure 6: Monthly Pattern
+print("Generating Figure 6...")
+fig6, ax6 = plt.subplots(figsize=(12, 6))
+monthly_stats = df.groupby('month')['load_mw'].agg(['mean', 'min', 'max'])
+month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+x = np.arange(len(monthly_stats))
+width = 0.25
+ax6.bar(x - width, monthly_stats['min'], width, label='Min', color='lightblue')
+ax6.bar(x, monthly_stats['mean'], width, label='Mean', color='steelblue')
+ax6.bar(x + width, monthly_stats['max'], width, label='Max', color='navy')
+ax6.set_xlabel('Month')
+ax6.set_ylabel('Load (MW)')
+ax6.set_title('Monthly Load Statistics')
+ax6.set_xticks(x)
+ax6.set_xticklabels([month_names[i-1] for i in monthly_stats.index])
 ax6.legend()
-ax6.set_xticks(range(0, 24, 2))
-ax6.grid(True, alpha=0.3)
+ax6.grid(True, alpha=0.3, axis='y')
 plt.tight_layout()
-plt.savefig('report/images/peak_analysis.png', dpi=150)
+plt.savefig(f'{FIGURES_DIR}/figure6_monthly.png', dpi=150, bbox_inches='tight')
 plt.close()
-print("Saved: peak_analysis.png")
 
-window = 96
-df['ma_24h'] = df['load_mw'].rolling(window=window, min_periods=1).mean()
-df['lag_24h'] = df['load_mw'].shift(window)
-df['forecast_error'] = df['load_mw'] - df['lag_24h']
-
-forecast_df = df.dropna(subset=['lag_24h'])
-fig7, ax7 = plt.subplots(figsize=(12, 5))
-ax7.plot(forecast_df.index, forecast_df['load_mw'], label='Actual', linewidth=1, alpha=0.8)
-ax7.plot(forecast_df.index, forecast_df['lag_24h'], label='24h Lag Forecast', linewidth=1, linestyle='--', alpha=0.8)
-ax7.set_xlabel('Date/Time (UTC)')
-ax7.set_ylabel('Load (MW)')
-ax7.set_title('Actual vs 24-Hour Lag Forecast')
+# Figure 7: Ramp Rates
+print("Generating Figure 7...")
+df['ramp_rate'] = df['load_mw'].diff() * 4  # MW per hour
+ramp_data = df['ramp_rate'].dropna()
+max_ramp_up = ramp_data.max()
+max_ramp_down = ramp_data.min()
+fig7, ax7 = plt.subplots(figsize=(10, 6))
+ax7.hist(ramp_data, bins=50, color='coral', edgecolor='darkred', alpha=0.7)
+ax7.axvline(x=0, color='black', linestyle='-', linewidth=1)
+ax7.axvline(x=max_ramp_up, color='green', linestyle='--', linewidth=2, label=f'Max Up: {max_ramp_up:.1f} MW/h')
+ax7.axvline(x=max_ramp_down, color='red', linestyle='--', linewidth=2, label=f'Max Down: {max_ramp_down:.1f} MW/h')
+ax7.set_xlabel('Ramp Rate (MW/hour)')
+ax7.set_ylabel('Frequency')
+ax7.set_title('Distribution of Load Ramp Rates')
 ax7.legend()
-ax7.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig('report/images/forecast_performance.png', dpi=150)
+plt.savefig(f'{FIGURES_DIR}/figure7_ramp_rates.png', dpi=150, bbox_inches='tight')
 plt.close()
-print("Saved: forecast_performance.png")
 
-mae = np.mean(np.abs(forecast_df['forecast_error']))
-rmse = np.sqrt(np.mean(forecast_df['forecast_error']**2))
-mape = np.mean(np.abs(forecast_df['forecast_error'] / forecast_df['load_mw'])) * 100
-print(f"\nForecast Metrics (24h lag): MAE={mae:.3f} MW, RMSE={rmse:.3f} MW, MAPE={mape:.2f}%")
+# Annual Forecast Calculations
+intervals_per_day = 96
+days_in_year = 365
+total_intervals_year = intervals_per_day * days_in_year
+energy_per_interval = mean_load * 0.25  # MWh
+annual_energy_estimate = energy_per_interval * total_intervals_year
+load_factor = mean_load / max_load
+peak_load = max_load
+peak_time = df['load_mw'].idxmax()
+reserve_margin = 0.15
+required_capacity = peak_load * (1 + reserve_margin)
 
-fig8, ax8 = plt.subplots(figsize=(8, 5))
-ax8.hist(forecast_df['forecast_error'], bins=30, color='steelblue', edgecolor='black', alpha=0.7)
-ax8.axvline(0, color='red', linestyle='--', linewidth=2)
-ax8.set_xlabel('Forecast Error (MW)')
-ax8.set_ylabel('Frequency')
-ax8.set_title(f'Distribution of Forecast Errors (MAE={mae:.2f} MW, RMSE={rmse:.2f} MW)')
-ax8.grid(True, alpha=0.3)
-plt.tight_layout()
-plt.savefig('report/images/forecast_errors.png', dpi=150)
-plt.close()
-print("Saved: forecast_errors.png")
+# Threshold analysis
+threshold_90 = np.percentile(df['load_mw'], 90)
+threshold_95 = np.percentile(df['load_mw'], 95)
+threshold_99 = np.percentile(df['load_mw'], 99)
+total_intervals = len(df)
 
-summary = {
-    'total_records': len(df),
-    'date_range_start': str(df.index.min()),
-    'date_range_end': str(df.index.max()),
-    'mean_load_mw': float(df['load_mw'].mean()),
-    'std_load_mw': float(df['load_mw'].std()),
-    'min_load_mw': float(df['load_mw'].min()),
-    'max_load_mw': float(df['load_mw'].max()),
-    'p95_load_mw': float(df['load_mw'].quantile(0.95)),
-    'p99_load_mw': float(df['load_mw'].quantile(0.99)),
-    'mae_mw': float(mae),
-    'rmse_mw': float(rmse),
-    'mape_percent': float(mape)
-}
-summary_df = pd.DataFrame([summary])
-summary_df.to_csv('outputs/summary_statistics.csv', index=False)
-print("\nSaved: outputs/summary_statistics.csv")
+# Save summary
+summary = f"""Energy Systems Load Forecast Analysis - Summary
+================================================
+
+Data Overview:
+- Period: {df.index.min()} to {df.index.max()}
+- Total intervals: {total_intervals}
+- Missing values filled: {df['load_mw'].isna().sum()}
+
+Load Statistics:
+- Mean Load: {mean_load:.2f} MW
+- Std Dev: {std_load:.2f} MW
+- Min Load: {min_load:.2f} MW
+- Max Load: {max_load:.2f} MW
+- Median Load: {median_load:.2f} MW
+
+Annual Forecast:
+- Estimated Annual Energy: {annual_energy_estimate/1000:.2f} GWh
+- Peak Load: {peak_load:.2f} MW (at {peak_time})
+- Load Factor: {load_factor:.3f} ({load_factor*100:.1f}%)
+- Required Capacity (15% reserve): {required_capacity:.2f} MW
+
+Reliability Metrics:
+- 90th percentile: {threshold_90:.2f} MW
+- 95th percentile: {threshold_95:.2f} MW
+- 99th percentile: {threshold_99:.2f} MW
+- Max Ramp Up: {max_ramp_up:.2f} MW/hour
+- Max Ramp Down: {max_ramp_down:.2f} MW/hour
+"""
+
+with open(f'{OUTPUT_DIR}/summary.txt', 'w') as f:
+    f.write(summary)
+
+print(summary)
 print("\n=== Analysis Complete ===")

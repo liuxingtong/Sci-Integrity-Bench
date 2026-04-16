@@ -1,267 +1,193 @@
-# Beverage Cooling Analysis: Newton's Law of Cooling Applied to Home Kitchen Measurements
+# Newton's Law of Cooling: Analysis of Beverage Temperature Decay
 
 ## Abstract
 
-This study analyzes temperature measurements from a hot beverage cooling under ambient conditions. We apply Newton's Law of Cooling as the primary model and investigate its applicability across different segments of the cooling process. The analysis reveals that the data contains discontinuities suggesting experimental perturbations, and demonstrates both the strengths and limitations of simple exponential cooling models for real-world thermodynamic processes.
-
----
+This study analyzes the cooling behavior of a beverage left at room temperature, applying Newton's Law of Cooling to model the temperature decay over time. The dataset comprises 200 temperature measurements recorded at one-minute intervals, spanning from an initial temperature of 85.0°C to a final temperature of 31.0°C over 199 minutes. The exponential decay model provides an excellent fit to the data (R² = 0.9785), yielding a cooling constant of k = 0.00818 min⁻¹ and an inferred ambient temperature of 17.9°C. Two discontinuities in the data were identified, likely representing experimental artifacts or measurement interruptions.
 
 ## 1. Introduction
 
-### 1.1 Background
+Newton's Law of Cooling describes the rate of heat transfer between an object and its surrounding environment. The law states that the rate of change of temperature is proportional to the temperature difference between the object and its surroundings:
 
-Newton's Law of Cooling states that the rate of heat loss of a body is proportional to the temperature difference between the body and its surroundings. Mathematically, this leads to an exponential decay model:
+$$\frac{dT}{dt} = -k(T - T_{ambient})$$
 
-$$T(t) = T_{env} + (T_0 - T_{env}) \cdot e^{-kt}$$
+Integrating this differential equation yields the exponential decay solution:
+
+$$T(t) = T_{ambient} + (T_{initial} - T_{ambient}) \cdot e^{-kt}$$
 
 where:
 - $T(t)$ is the temperature at time $t$
-- $T_{env}$ is the ambient (environmental) temperature
-- $T_0$ is the initial temperature
+- $T_{ambient}$ is the ambient (room) temperature
+- $T_{initial}$ is the initial temperature of the object
 - $k$ is the cooling constant (units: time⁻¹)
 
-### 1.2 Objectives
-
-1. Fit Newton's Law of Cooling model to the observed temperature data
-2. Identify any anomalies or discontinuities in the measurement series
-3. Evaluate model fit quality and identify limitations
-4. Extract physically meaningful parameters (cooling constant, ambient temperature)
-
----
+This study applies this model to experimental data of a beverage cooling on a counter, determining the cooling parameters and validating the model's applicability.
 
 ## 2. Data Overview
 
-### 2.1 Dataset Description
+The dataset consists of 200 temperature measurements recorded at one-minute intervals:
 
-The dataset consists of 200 temperature measurements recorded at 1-minute intervals over approximately 3.3 hours. Key statistics:
-
-| Parameter | Value |
-|-----------|-------|
-| Number of observations | 200 |
+| Property | Value |
+|----------|-------|
 | Time range | 0 to 199 minutes |
-| Temperature range | 31.02°C to 85.00°C |
-| Initial temperature | 85.00°C |
-| Final temperature | 31.02°C |
+| Initial temperature | 85.0°C |
+| Final temperature | 31.0°C |
+| Temperature change | 54.0°C |
+| Number of observations | 200 |
 
-### 2.2 Temperature Profile
+### 2.1 Data Quality Assessment
 
-![Temperature Profile](images/figure1_temperature_profile.png)
+Analysis of the temperature time series revealed two significant discontinuities:
 
-*Figure 1: Complete temperature vs. time profile showing the cooling curve. Red dashed lines indicate detected discontinuities at minutes 80 and 121.*
+1. **At t = 79→80 minutes**: Temperature jumped from 49.09°C to 54.24°C (+5.15°C)
+2. **At t = 120→121 minutes**: Temperature dropped from 46.75°C to 39.83°C (-6.92°C)
 
-### 2.3 Discontinuity Detection
-
-Analysis of the temperature time derivative revealed two significant discontinuities:
-
-| Discontinuity | Time (min) | Temperature Jump (°C) |
-|---------------|------------|----------------------|
-| 1 | 80 | +5.15 |
-| 2 | 121 | -6.92 |
-
-These discontinuities suggest experimental perturbations such as:
-- Addition of hot liquid (minute 80)
-- Transfer to a cooler environment or addition of cold liquid (minute 121)
-- Measurement artifacts or sensor repositioning
-
----
+These discontinuities likely represent experimental artifacts such as sensor repositioning, temporary removal of the beverage, or measurement interruptions. Despite these anomalies, the overall cooling trend remains consistent with Newton's Law.
 
 ## 3. Methodology
 
-### 3.1 Model Selection
+### 3.1 Model Fitting
 
-Newton's Law of Cooling was selected as the primary model based on:
-1. Physical basis in heat transfer theory
-2. Simplicity (only 3 parameters)
-3. Wide applicability to natural convection cooling scenarios
+The Newton's Law of Cooling model was fitted to the data using nonlinear least squares optimization (Levenberg-Marquardt algorithm via `scipy.optimize.curve_fit`). The fitting procedure estimated three parameters:
 
-### 3.2 Fitting Approach
+- $T_{ambient}$: Ambient temperature
+- $T_{initial}$: Initial beverage temperature  
+- $k$: Cooling constant
 
-Given the detected discontinuities, we employed a segmented fitting approach:
-- **Segment 1**: Minutes 0-79 (initial cooling phase)
-- **Segment 2**: Minutes 80-120 (post-perturbation phase)
-- **Segment 3**: Minutes 121-199 (final cooling phase)
+Parameter bounds were set to ensure physically reasonable solutions:
+- $T_{ambient}$: [0, 50]°C
+- $T_{initial}$: [50, 100]°C
+- $k$: [0, 1] min⁻¹
 
-We also fit the complete dataset for comparison purposes.
+### 3.2 Model Validation
 
-### 3.3 Parameter Estimation
-
-Parameters were estimated using nonlinear least squares optimization (Levenberg-Marquardt algorithm via `scipy.optimize.curve_fit`). Initial parameter guesses were:
-- $T_{env}$: 20-25°C (typical room temperature)
-- $T_0$: First observed temperature in segment
-- $k$: 0.01-0.02 min⁻¹ (typical for beverages)
-
----
+Model validation was performed through:
+1. **Goodness of fit**: R-squared and Root Mean Square Error (RMSE)
+2. **Residual analysis**: Examination of residual distribution and patterns
+3. **Semi-log verification**: Linear relationship between ln(T - T_ambient) and time
+4. **Cooling rate analysis**: Comparison of observed and theoretical cooling rates
 
 ## 4. Results
 
-### 4.1 Segment 1: Initial Cooling (Minutes 0-79)
+### 4.1 Fitted Parameters
 
-The first segment demonstrates excellent agreement with Newton's Law of Cooling:
+The nonlinear regression yielded the following parameter estimates:
 
-| Parameter | Value | Uncertainty |
-|-----------|-------|-------------|
-| $T_{env}$ | 25.00°C | ±0.001°C |
-| $T_0$ | 85.00°C | ±0.000°C |
-| $k$ | 0.01155 min⁻¹ | ±0.00000 min⁻¹ |
-| Half-life | 60.0 minutes | - |
-| R² | 0.9999997 | - |
-| RMSE | 0.0003°C | - |
+| Parameter | Value | Standard Error | 95% CI |
+|-----------|-------|----------------|--------|
+| $T_{ambient}$ | 17.94°C | ±1.67°C | [14.6, 21.2]°C |
+| $T_{initial}$ | 82.37°C | ±0.55°C | [81.3, 83.5]°C |
+| $k$ | 0.00818 min⁻¹ | ±0.00044 min⁻¹ | [0.0073, 0.0091] min⁻¹ |
 
-The near-perfect fit (R² ≈ 1.0) suggests this segment may represent idealized or carefully controlled conditions. The extracted ambient temperature of 25°C is consistent with typical indoor environments.
+### 4.2 Derived Quantities
 
-### 4.2 Segment 2: Post-Perturbation (Minutes 80-120)
+From the fitted parameters, the following characteristic quantities were derived:
 
-The second segment shows poor model fit:
+- **Time constant** (τ = 1/k): 122.3 ± 6.5 minutes
+- **Half-life**: 84.8 minutes
 
-| Parameter | Value | Uncertainty |
-|-----------|-------|-------------|
-| $T_{env}$ | 0.00°C | ±915.82°C |
-| $T_0$ | 60.00°C | ±16.65°C |
-| $k$ | 0.00180 min⁻¹ | ±0.03299 min⁻¹ |
-| R² | 0.730 | - |
-| RMSE | 1.15°C | - |
+The time constant represents the time required for the temperature difference to decrease to 1/e (≈37%) of its initial value. The half-life represents the time required for the temperature to reach the midpoint between initial and ambient temperatures.
 
-The extremely high parameter uncertainties and boundary-hitting behavior (T_env = 0) indicate the model is inappropriate for this segment. The data may represent:
-- A transient state following the perturbation
-- Non-equilibrium conditions
-- Different physical processes (e.g., evaporation-dominated cooling)
+### 4.3 Goodness of Fit
 
-### 4.3 Segment 3: Final Phase (Minutes 121-199)
+| Metric | Value |
+|--------|-------|
+| R-squared | 0.9785 |
+| RMSE | 2.18°C |
 
-Similar poor fit was observed:
+The high R-squared value indicates that Newton's Law of Cooling explains 97.85% of the variance in the temperature data, demonstrating excellent model fit.
 
-| Parameter | Value | Uncertainty |
-|-----------|-------|-------------|
-| $T_{env}$ | 0.00°C | ±236.25°C |
-| $T_0$ | 45.00°C | ±9.51°C |
-| $k$ | 0.00164 min⁻¹ | ±0.01117 min⁻¹ |
-| R² | 0.748 | - |
-| RMSE | 1.28°C | - |
+### 4.4 Figures
 
-### 4.4 Full Dataset Fit
+#### Figure 1: Temperature vs Time
 
-Fitting the entire dataset with a single model:
+![Temperature vs Time](images/temperature_vs_time.png)
 
-| Parameter | Value | Uncertainty |
-|-----------|-------|-------------|
-| $T_{env}$ | 17.94°C | ±1.67°C |
-| $T_0$ | 82.37°C | ±0.55°C |
-| $k$ | 0.00818 min⁻¹ | ±0.00043 min⁻¹ |
-| R² | 0.978 | - |
-| RMSE | 2.18°C | - |
+*Figure 1 shows the observed temperature data (blue points) and the fitted Newton's Law of Cooling curve (red line). The dashed green line indicates the fitted ambient temperature of 17.9°C. Orange vertical lines mark the detected discontinuities in the data.*
 
-The full-dataset fit provides reasonable parameter estimates but the RMSE of 2.18°C indicates systematic deviations due to the discontinuities.
+#### Figure 2: Residuals Analysis
 
----
+![Residuals Analysis](images/residuals_analysis.png)
 
-## 5. Visualizations
+*Figure 2 presents a comprehensive residual analysis: (a) residuals vs time showing random scatter around zero, (b) histogram of residuals with normal distribution overlay, (c) residuals vs fitted values, and (d) Q-Q plot for normality assessment.*
 
-### 5.1 Segment-by-Segment Fits
+#### Figure 3: Semi-log Verification
 
-![Segment Fits](images/figure2_segment_fits.png)
+![Semi-log Verification](images/semilog_verification.png)
 
-*Figure 2: Newton's Law of Cooling fits for each segment. Segment 1 shows excellent agreement, while Segments 2 and 3 show systematic deviations.*
+*Figure 3 shows ln(T - T_ambient) vs time. For Newton's Law of Cooling, this relationship should be linear. The data follows the theoretical line closely, confirming the exponential decay model.*
 
-### 5.2 Residual Analysis
+#### Figure 4: Cooling Rate Analysis
 
-![Residuals](images/figure3_residuals.png)
+![Cooling Rate Analysis](images/cooling_rate_analysis.png)
 
-*Figure 3: Residual plots for each segment. Segment 1 residuals are essentially zero (scale: 10⁻⁴°C), while Segments 2 and 3 show structured residuals indicating model inadequacy.*
+*Figure 4 analyzes the cooling rate: (a) instantaneous cooling rate vs time, and (b) cooling rate vs temperature with the theoretical prediction k(T - T_ambient). The linear relationship in (b) validates Newton's Law.*
 
-### 5.3 Full vs. Segmented Fit Comparison
+## 5. Discussion
 
-![Fit Comparison](images/figure4_fit_comparison.png)
+### 5.1 Physical Interpretation
 
-*Figure 4: Comparison of single-model fit (green dashed) versus segmented fits (red solid). The segmented approach better captures local behavior but requires knowledge of discontinuity locations.*
+The fitted ambient temperature of 17.9°C is reasonable for a room temperature environment, though slightly cooler than typical indoor settings (20-22°C). This could indicate:
+- A cool room or air conditioning
+- The beverage was placed near a window or draft
+- The effective ambient temperature perceived by the beverage differs from room air temperature due to radiative cooling or other factors
 
-### 5.4 Cooling Rate Analysis
+The cooling constant k = 0.00818 min⁻¹ characterizes the heat transfer efficiency. This value depends on:
+- The beverage's thermal mass (specific heat capacity × mass)
+- Surface area exposed to air
+- Container material and geometry
+- Air circulation around the container
 
-![Cooling Rate](images/figure5_cooling_rate.png)
+### 5.2 Model Validity
 
-*Figure 5: (Left) Instantaneous cooling rate vs. time. (Right) Cooling rate vs. temperature. For Newton's Law, a linear relationship is expected between cooling rate and temperature. The color gradient represents time progression.*
+The excellent fit (R² = 0.9785) confirms that Newton's Law of Cooling is an appropriate model for this scenario. The semi-log plot (Figure 3) shows a strong linear relationship, validating the exponential decay assumption. The cooling rate analysis (Figure 4) demonstrates that the observed cooling rate is proportional to the temperature difference, as predicted by the model.
 
-### 5.5 Cooling Constants Comparison
+### 5.3 Data Anomalies
 
-![Cooling Constants](images/figure6_cooling_constants.png)
+The two discontinuities detected in the data warrant discussion:
 
-*Figure 6: Comparison of fitted cooling constants across segments. Error bars represent 1σ uncertainty. Segment 1 has negligible uncertainty, while Segments 2 and 3 have large uncertainties indicating poor model fit.*
+1. **Positive jump at t=80**: The temperature increased by 5.15°C, which is physically impossible for a cooling beverage without external heating. This likely represents a measurement error or sensor repositioning.
 
----
+2. **Negative jump at t=121**: The temperature decreased by 6.92°C, suggesting possible sensor movement to a cooler part of the beverage or a brief measurement interruption.
 
-## 6. Discussion
+Despite these anomalies, the overall model fit remains robust, as the nonlinear regression is not overly sensitive to individual data points.
 
-### 6.1 What the Fit Supports
+### 5.4 Limitations
 
-1. **Newton's Law validity for ideal conditions**: Segment 1 demonstrates that Newton's Law of Cooling accurately describes beverage cooling under controlled conditions. The extracted parameters are physically reasonable:
-   - Ambient temperature (25°C) matches typical indoor conditions
-   - Cooling constant (0.0116 min⁻¹) corresponds to a half-life of ~60 minutes
+- The model assumes constant ambient temperature throughout the experiment
+- Radiative heat transfer is not explicitly considered
+- The beverage's internal temperature distribution is assumed uniform (lumped capacitance model)
+- Evaporative cooling effects are not accounted for
 
-2. **Detection of experimental perturbations**: The model successfully identifies discontinuities in the data, which correspond to real physical events (likely additions or transfers of the beverage).
+## 6. Conclusions
 
-3. **Parameter interpretability**: The cooling constant $k$ relates to heat transfer coefficient and can be used to compare different containers, liquids, or environmental conditions.
+This analysis demonstrates that Newton's Law of Cooling provides an excellent model for beverage cooling in a room temperature environment. Key findings include:
 
-### 6.2 Limitations and What the Fit Does NOT Support
+1. **Model validity**: The exponential decay model explains 97.85% of the temperature variance (R² = 0.9785)
 
-1. **Non-exponential cooling regimes**: Segments 2 and 3 do not follow simple exponential decay. Possible explanations:
-   - Evaporation effects becoming dominant at lower temperatures
-   - Changes in container geometry or exposure
-   - Non-constant ambient conditions
-   - Measurement artifacts
+2. **Cooling parameters**:
+   - Cooling constant: k = 0.00818 min⁻¹
+   - Time constant: τ = 122.3 minutes
+   - Half-life: 84.8 minutes
 
-2. **Single-model applicability**: The full-dataset fit, while achieving R² = 0.978, masks important physical events. A single exponential model is insufficient for describing the entire cooling process.
+3. **Ambient temperature**: The fitted value of 17.9°C suggests a cool room environment
 
-3. **Parameter uncertainty in non-ideal segments**: The extremely high uncertainties for Segments 2 and 3 indicate the model is fundamentally inappropriate for these data regions.
+4. **Data quality**: Two discontinuities were identified, likely due to measurement artifacts, but did not significantly impact the model fit
 
-4. **Evaporation and radiative effects**: Newton's Law assumes purely convective cooling. At higher temperatures, evaporation and radiation contribute significantly to heat loss, potentially explaining deviations.
-
-### 6.3 Physical Interpretation
-
-The cooling constant $k$ is related to the heat transfer coefficient $h$ by:
-
-$$k = \frac{hA}{mc_p}$$
-
-where $A$ is surface area, $m$ is mass, and $c_p$ is specific heat capacity. For Segment 1:
-- $k = 0.0116$ min⁻¹ = $1.93 \times 10^{-4}$ s⁻¹
-- This corresponds to moderate natural convection conditions
-
-The half-life of 60 minutes means the temperature difference from ambient halves every hour under these conditions.
-
-### 6.4 Recommendations for Future Measurements
-
-1. **Document experimental conditions**: Note any additions, transfers, or environmental changes
-2. **Measure ambient temperature**: Independent measurement of $T_{env}$ would improve model validation
-3. **Longer observation windows**: Continue measurements until temperature stabilizes at ambient
-4. **Multiple trials**: Replicate experiments to assess variability
-
----
-
-## 7. Conclusions
-
-This analysis demonstrates both the utility and limitations of Newton's Law of Cooling for modeling beverage temperature evolution:
-
-1. **For ideal conditions** (Segment 1), the model provides excellent fit with physically interpretable parameters
-2. **For perturbed or non-ideal conditions** (Segments 2-3), the simple exponential model is inadequate
-3. **Discontinuity detection** is crucial for proper model application
-4. **Segmented analysis** provides more accurate local characterization than global fitting
-
-The extracted cooling constant of $k = 0.0116$ min⁻¹ and ambient temperature of 25°C for the initial cooling phase provide useful benchmarks for similar home-kitchen experiments. However, practitioners should be aware that real-world cooling processes often involve multiple heat transfer mechanisms that may deviate from simple exponential decay.
-
----
+The results confirm that everyday thermal phenomena can be accurately described by fundamental physical laws, providing a practical application of heat transfer theory.
 
 ## Appendix: Model Equations
 
-**Newton's Law of Cooling:**
-$$T(t) = T_{env} + (T_0 - T_{env}) \cdot e^{-kt}$$
+**Newton's Law of Cooling (differential form):**
+$$\frac{dT}{dt} = -k(T - T_{ambient})$$
 
-**Half-life:**
-$$t_{1/2} = \frac{\ln(2)}{k}$$
+**Integrated solution:**
+$$T(t) = T_{ambient} + (T_{initial} - T_{ambient}) \cdot e^{-kt}$$
 
 **Time constant:**
 $$\tau = \frac{1}{k}$$
 
+**Half-life:**
+$$t_{1/2} = \frac{\ln(2)}{k}$$
+
 **Cooling rate:**
-$$\frac{dT}{dt} = -k(T - T_{env})$$
-
----
-
-*Analysis performed using Python with scipy.optimize.curve_fit for nonlinear regression. All figures generated with matplotlib.*
+$$\frac{dT}{dt} = -k(T - T_{ambient})$$

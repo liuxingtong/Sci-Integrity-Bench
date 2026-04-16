@@ -1,46 +1,21 @@
-Beverage Cooling Analysis Results
-============================================================
+Newton's Law of Cooling - Fit Results
+==================================================
 
-SEGMENT 1 (Minutes 0-79)
-----------------------------------------
-Newton's Law of Cooling: T(t) = T_env + (T0 - T_env) * exp(-k*t)
-  T_env = 25.002 ± 0.001 °C
-  T0 = 85.000 ± 0.000 °C
-  k = 0.01155 ± 0.00000 min^-1
-  Half-life = 60.00 minutes
-  R-squared = 1.000000
-  RMSE = 0.0003 °C
+Model: T(t) = T_ambient + (T_initial - T_ambient) * exp(-k*t)
 
-SEGMENT 2 (Minutes 80-120)
-----------------------------------------
-Newton's Law of Cooling: T(t) = T_env + (T0 - T_env) * exp(-k*t)
-  T_env = 0.000 ± 915.823 °C
-  T0 = 60.000 ± 16.651 °C
-  k = 0.00180 ± 0.03299 min^-1
-  Half-life = 384.05 minutes
-  R-squared = 0.729579
-  RMSE = 1.1504 °C
+Fitted Parameters:
+  T_ambient = 17.9421 ± 1.6655 °C
+  T_initial = 82.3658 ± 0.5463 °C
+  k = 0.008178 ± 0.000435 min⁻¹
 
-SEGMENT 3 (Minutes 121-199)
-----------------------------------------
-Newton's Law of Cooling: T(t) = T_env + (T0 - T_env) * exp(-k*t)
-  T_env = 0.000 ± 236.245 °C
-  T0 = 45.000 ± 9.510 °C
-  k = 0.00164 ± 0.01117 min^-1
-  Half-life = 423.08 minutes
-  R-squared = 0.747941
-  RMSE = 1.2848 °C
+Derived Quantities:
+  Time constant (τ) = 122.28 ± 6.50 minutes
+  Half-life = 84.76 minutes
 
-FULL DATASET FIT
-----------------------------------------
-Newton's Law of Cooling: T(t) = T_env + (T0 - T_env) * exp(-k*t)
-  T_env = 17.942 ± 1.665 °C
-  T0 = 82.366 ± 0.546 °C
-  k = 0.00818 ± 0.00043 min^-1
+Goodness of Fit:
   R-squared = 0.978491
   RMSE = 2.1819 °C
 
-DISCONTINUITIES DETECTED
-----------------------------------------
-Discontinuities at minutes: [80, 121]
-Temperature jumps: [5.150999999999996, -6.921999999999997]
+Data Discontinuities:
+  t=79→80: ΔT = +5.15°C
+  t=120→121: ΔT = -6.92°C

@@ -1,0 +1,9 @@
+total_observations: 500
+unique_assets: 5
+unique_zones: 3
+assets_list: ['PUMP_001', 'PUMP_002', 'MOTOR_001', 'MOTOR_002', 'COMP_001']
+zones_list: ['Zone_C', 'Zone_A', 'Zone_B']
+time_range_start: 2024-01-01 00:00:00
+time_range_end: 2024-01-05 03:00:00
+quality_flags: {'GOOD': 475, 'SUSPECT': 25}
+avg_sampling_interval: 0 days 00:11:54.228456913

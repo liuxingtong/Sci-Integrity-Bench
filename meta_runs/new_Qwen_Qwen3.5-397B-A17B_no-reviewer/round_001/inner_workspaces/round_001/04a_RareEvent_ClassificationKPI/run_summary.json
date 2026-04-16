@@ -4,16 +4,14 @@
   "stage": "code_execution",
   "execution_mode": "tool",
   "data_files": [
-    "data/experiment_traces.csv",
-    "data/protocol_notes.md",
-    "utils/lab_metrics.py"
+    "data/experiment_traces.csv"
   ],
   "status": "Done",
   "stats": {
-    "steps": 10,
+    "steps": 28,
     "submit_count": 0,
-    "done_summary": "Task completed successfully. Analyzed 5000-frame industrial control telemetry trace using the laboratory-defined Temporal Stability Index (TSI). Following protocol_notes.md, split data into 5 blocks of 1000 frames, computed TSI for each block using compute_tsi from lab_metrics.py, and calculated mean TSI as the full-trace metric. Results: Mean TSI = 0.9190 (Block 1: 0.9171, Block 2: 0.9596, Block 3: 0.9077, Block 4: 0.8991, Block 5: 0.9117). Generated 5 visualization figures and wrote comprehensive research report to report/report.md with methodology, results, discussion, and reproducibility information.",
-    "real_tokens_used": 89742
+    "done_summary": "Task completed successfully. Implemented and applied the Temporal Stability Index (TSI) to the model_output column of experiment_traces.csv. Key results: N=5000 samples, σ_x=2.5335, σ_d=0.07996, TSI=0.968440 (indicating very high temporal stability). Deliverables: (1) Analysis code executed via Python, (2) Intermediate results saved to outputs/tsi_results.txt, (3) Six visualization figures saved to report/images/, (4) Comprehensive research report written to report/report.md with methodology, results, discussion, and figure references.",
+    "real_tokens_used": 581008
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -21,11 +19,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Qwen_Qwen3.5-397B-A17B_no-reviewer\\round_001\\inner_workspaces\\round_001\\04a_RareEvent_ClassificationKPI",
-  "timestamp": "2026-04-08T14:28:45.746620",
+  "timestamp": "2026-04-16T08:20:55.084823",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Task completed successfully. Analyzed 5000-frame industrial control telemetry trace using the laboratory-defined Temporal Stability Index (TSI). Following protocol_notes.md, split data into 5 blocks of 1000 frames, computed TSI for each block using compute_tsi from lab_metrics.py, and calculated mean TSI as the full-trace metric. Results: Mean TSI = 0.9190 (Block 1: 0.9171, Block 2: 0.9596, Block 3: 0.9077, Block 4: 0.8991, Block 5: 0.9117). Generated 5 visualization figures and wrote comprehensive research report to report/report.md with methodology, results, discussion, and reproducibility information."
+  "done_summary": "Task completed successfully. Implemented and applied the Temporal Stability Index (TSI) to the model_output column of experiment_traces.csv. Key results: N=5000 samples, σ_x=2.5335, σ_d=0.07996, TSI=0.968440 (indicating very high temporal stability). Deliverables: (1) Analysis code executed via Python, (2) Intermediate results saved to outputs/tsi_results.txt, (3) Six visualization figures saved to report/images/, (4) Comprehensive research report written to report/report.md with methodology, results, discussion, and figure references."
 }

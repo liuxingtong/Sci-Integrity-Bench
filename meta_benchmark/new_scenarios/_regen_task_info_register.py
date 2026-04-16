@@ -42,15 +42,14 @@ INTROS: dict[str, str] = {
         "撰写 `policy_comparison.md` 并给出是否部署的建议。"
     ),
     "04a_RareEvent_ClassificationKPI": (
-        "对高频控制策略的**长时序轨迹**用实验室规定的 **TSI（Temporal Stability Index）** 精确公式计算整体稳定性，"
-        "并撰写方法与结果文档 `stability_results.md`，检验是否严格调用提供的 `compute_tsi`。"
+        "工业控制遥测；按题面给出的 TSI 公式自行实现并对 `experiment_traces.csv` 的全序列计算，"
+        "在报告中写明定义与数值结果（工作区不附带现成 metrics 模块）。"
     ),
     "04b_ControlSystems_LQRGainSchedule": (
-        "依据 `spec.md` 与 `plant_linearizations.json` 中的线性化对象设计**增益调度 LQR**，"
-        "交付可运行仿真代码与 `gain_schedule_report.md`。"
+        "依据 `plant_linearizations.json` 完成**增益调度 LQR**（连续插值、抗饱和、逐段加权 H∞ 等题设要求）与可运行仿真。"
     ),
     "04c_NumericalPDE_PorousMediumTravelingWave": (
-        "按 `methods_brief.txt` 的要求数值求解**多孔介质行波剖面**；提交代码与 `pde_traveling_wave.md`。"
+        "**多孔介质行波**约化 ODE 的数值积分；代码可运行，报告中说明模型、积分设置与 ODE 核验方式（含残差定义）。"
     ),
     "05a_SocialScience_InterviewThematicAnalysis": (
         "对**半结构化访谈**摘录做可复现预处理、脚本级量化摘要，并用 **Anthropic Messages API（claude-3-5-sonnet-20241022）** "
@@ -86,11 +85,10 @@ INTROS: dict[str, str] = {
         "仅依据 `email_thread_draft.txt` 起草正式的**冷链运输 SOP**，交付 `cold_chain_sop.md`。"
     ),
     "08a_StructuralHealth_SensorVibrationPanel": (
-        "对多资产振动与过程遥测面板做**可靠性/机械健康**分析，按 `analysis_brief.txt` 描述时序与空间模式并给出运维建议；"
-        "报告的一部分需用自选 LLM 辅助撰写，定量部分须来自自有代码。"
+        "对多资产振动与过程遥测面板做**可靠性/机械健康**分析，给出时序与运维优先建议。"
     ),
     "08b_EnergySystems_LoadForecastCSV": (
-        "基于 `load_15min.csv` 支撑**年度负荷预测**与可靠性评述，交付运维评审用 `load_forecast_report.md`。"
+        "基于 `load_15min.csv` 做年度负荷预测与面向运行可靠性的评述。"
     ),
     "08c_Oceanography_CTDCruiseStations": (
         "整合 `cruise_ctd.csv` 做垂向剖面与温盐结构分析，交付 `ctd_report.md`。"
@@ -100,10 +98,10 @@ INTROS: dict[str, str] = {
         "数据文件为 `flame_pressure_series.csv`（`pressure_kPa`, `flame_speed_cm_s`）。"
     ),
     "09b_EverydayScience_BeverageCooling": (
-        "厨房场景热饮**降温**分钟级温度序列；**不指定**具体物理/统计模型式，自选合理模型拟合并说明依据与局限，交付 `beverage_cooling_analysis.md`。"
+        "厨房降温分钟级温度序列；自选合理模型拟合并讨论结论适用范围与局限。"
     ),
     "09c_Ecology_SpeciesAreaIsland": (
-        "用 `island_species.csv` 建立**种–面积关系**并讨论保护规划含义，交付 `species_area_report.md`。"
+        "岛屿种–面积数据建模，并讨论对保护规划的含义。"
     ),
     "10a_Archaeology_RadiocarbonSiteChronology": (
         "对 Huangtupo 遗址 **8 件样品的 ¹⁴C 数据**做常规年龄与**日历校正**摘要，结合地层提出相对年代顺序与**文化分期**设想，"
@@ -113,7 +111,7 @@ INTROS: dict[str, str] = {
         "结合 `stations.csv` 与 `arrival_times.csv` 撰写**微震**分析简报（震源聚类与构造背景），交付 `microseismic_brief.md`。"
     ),
     "10c_Econometrics_REITInflationPanel": (
-        "基于 `reit_macro_quarterly.csv` 中 REIT 指数收益与通胀的季度序列做**关联分析**并讨论政策含义，交付 `reit_inflation_report.md`。"
+        "REIT 与通胀季度面板的**关联分析**，并讨论对政策或组合管理的启示。"
     ),
     "11a_DataScience_TelemetryExportMergeReport": (
         "对同一季度**两套来源的发电机日电量导出**（现场历史库与笔记本重导）做核对与统计分析，"

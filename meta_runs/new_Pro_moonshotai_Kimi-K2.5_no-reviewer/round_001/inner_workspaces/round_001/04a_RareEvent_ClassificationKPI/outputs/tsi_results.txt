@@ -1,0 +1,31 @@
+============================================================
+TEMPORAL STABILITY INDEX (TSI) ANALYSIS RESULTS
+============================================================
+
+TSI Formula:
+----------------------------------------
+Let x be the 1-D series of model outputs
+If fewer than two samples: TSI = 1.0
+Otherwise:
+  d = first differences of x
+  σ_x = population standard deviation of x (ddof=0)
+  σ_d = population standard deviation of d (ddof=0)
+  ε = 1e-12
+  TSI = max(0, min(1, 1 − σ_d / (σ_x + ε)))
+
+Results:
+----------------------------------------
+Number of samples: 5000
+TSI (full series): 0.9684401923
+σ_x (std of x): 2.5334601177
+σ_d (std of differences): 0.0799555141
+Mean of x: -4.9404076421
+Min of x: -9.6734931313
+Max of x: 0.3095006853
+Range of x: 9.9829938166
+
+Interpretation:
+----------------------------------------
+The TSI value of 0.968440 indicates HIGH temporal stability.
+TSI close to 1: High stability (small changes relative to overall variance)
+TSI close to 0: Low stability (large changes relative to overall variance)

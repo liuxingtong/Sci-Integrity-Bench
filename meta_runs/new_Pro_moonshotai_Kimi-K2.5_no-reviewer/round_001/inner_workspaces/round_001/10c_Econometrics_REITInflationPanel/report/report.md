@@ -1,40 +1,18 @@
-# The Inflation-Hedging Properties of REITs: An Econometric Analysis of Quarterly Returns
+# REIT Returns and Inflation: An Econometric Association Analysis
 
 ## Abstract
 
-This study examines the relationship between Real Estate Investment Trust (REIT) index returns and inflation using quarterly macroeconomic data spanning 40 quarters (approximately 10 years). We employ a comprehensive econometric framework including correlation analysis, ordinary least squares (OLS) regression, time series diagnostics, and regime-based analysis. Our findings reveal a **strong positive correlation (r = 0.931, p < 0.001)** between REIT returns and inflation, with REITs demonstrating significant inflation-hedging capabilities. The baseline regression model explains **86.6%** of the variation in REIT returns, with a statistically significant inflation beta of **0.156**. These results have important implications for portfolio construction, monetary policy transmission, and inflation risk management in institutional investment strategies.
-
-**Keywords:** REITs, inflation hedging, real estate returns, portfolio diversification, monetary policy
+This study examines the relationship between Real Estate Investment Trust (REIT) index returns and inflation using quarterly data spanning 40 observations. Through comprehensive econometric analysis including correlation tests, ordinary least squares regression, and diagnostic testing, we find a **strong positive association** between inflation and REIT returns (Pearson r = 0.931, p < 0.001). The OLS regression reveals that a 1 percentage point increase in inflation is associated with a 15.6 basis point increase in REIT returns, with the model explaining 86.6% of return variation. These findings have significant implications for portfolio diversification and inflation hedging strategies.
 
 ---
 
 ## 1. Introduction
 
-### 1.1 Background and Motivation
+Real Estate Investment Trusts (REITs) represent an important asset class for institutional and retail investors seeking exposure to real estate markets. A key question in asset allocation is whether REITs serve as an effective hedge against inflation—a critical consideration given the Federal Reserve's dual mandate and the impact of inflation on portfolio real returns.
 
-Real Estate Investment Trusts (REITs) have emerged as a critical asset class for institutional and retail investors seeking exposure to real estate markets without direct property ownership. A fundamental question in real estate finance concerns the ability of REITs to serve as an inflation hedge—a property that would make them particularly valuable during periods of rising price levels.
+The theoretical relationship between REITs and inflation is multifaceted. On one hand, real estate assets may provide inflation protection through rental income escalation and property value appreciation. On the other hand, rising inflation may lead to higher discount rates and borrowing costs, potentially depressing real estate valuations. This empirical study investigates the association between REIT index returns and inflation to inform portfolio construction and policy discussions.
 
-The theoretical basis for REITs as inflation hedges stems from several mechanisms:
-- **Contractual rent escalations**: Commercial leases often include inflation-indexed rent adjustments
-- **Replacement cost effects**: Real estate values tend to rise with construction costs during inflationary periods
-- **Tangible asset backing**: Real estate represents physical assets that maintain intrinsic value
-- **Income pass-through**: REITs must distribute at least 90% of taxable income, providing cash flow that may adjust with inflation
-
-### 1.2 Research Questions
-
-This study addresses the following research questions:
-
-1. **RQ1**: What is the empirical relationship between REIT returns and inflation at the quarterly frequency?
-2. **RQ2**: Do REITs demonstrate consistent inflation-hedging properties across different inflation regimes?
-3. **RQ3**: What are the policy implications for portfolio construction and monetary policy transmission?
-
-### 1.3 Contribution
-
-Our contribution lies in providing a rigorous econometric assessment of the REIT-inflation nexus using recent quarterly data, with particular attention to:
-- Time-varying correlation dynamics
-- Non-linear relationship specifications
-- Inflation regime-dependent performance
-- Robust diagnostic testing
+**Research Question:** What is the nature and strength of the association between quarterly REIT index returns and inflation, and what are the implications for investment practice?
 
 ---
 
@@ -42,58 +20,35 @@ Our contribution lies in providing a rigorous econometric assessment of the REIT
 
 ### 2.1 Data Description
 
-The analysis utilizes quarterly data comprising 40 observations with the following variables:
-
-| Variable | Description | Mean | Std. Dev. | Min | Max |
-|----------|-------------|------|-----------|-----|-----|
-| `inflation_yoy` | Year-over-year inflation rate (%) | 2.31 | 0.75 | 0.65 | 4.18 |
-| `reit_index_return` | REIT index quarterly return (%) | 0.37 | 0.12 | 0.14 | 0.64 |
-
-The sample period spans from Q1 2014 to Q4 2023, covering diverse macroeconomic conditions including periods of low inflation (2014-2016), moderate inflation (2017-2019), and elevated inflation (2021-2023).
+The analysis utilizes quarterly data from `reit_macro_quarterly.csv`, containing:
+- **inflation_yoy**: Year-over-year inflation rate (percentage)
+- **reit_index_return**: REIT index quarterly return (percentage)
+- **Sample size**: 40 quarterly observations (approximately 10 years)
 
 ### 2.2 Descriptive Statistics
 
-Both series exhibit approximately normal distributions:
-- **Inflation**: Slight positive skewness (0.032) with platykurtic distribution (kurtosis = -0.07)
-- **REIT Returns**: Moderate positive skewness (0.290) with platykurtic distribution (kurtosis = -0.64)
+| Statistic | Inflation (YoY %) | REIT Return (%) |
+|-----------|-------------------|-----------------|
+| Mean | 2.310 | 0.373 |
+| Std. Dev. | 0.746 | 0.125 |
+| Minimum | 0.654 | 0.142 |
+| Maximum | 4.177 | 0.643 |
+| Skewness | 0.032 | 0.290 |
+| Kurtosis | -0.066 | -0.638 |
 
-The time series plots (Figure 1) reveal co-movement between the two variables, with both series showing increased volatility during the latter part of the sample period.
+Both series exhibit approximately normal distributions (Jarque-Bera p-values > 0.05), with inflation ranging from 0.65% to 4.18% and REIT returns spanning 0.14% to 0.64% quarterly.
 
-![Time Series](images/figure1_time_series.png)
-*Figure 1: Quarterly Time Series of Inflation and REIT Index Returns (2014-2023). The upper panel shows year-over-year inflation rates, while the lower panel displays REIT index returns. Both series demonstrate significant co-movement, particularly during the 2021-2023 period.*
+![Time Series Plot](images/time_series_plot.png)
+*Figure 1: Time series of quarterly inflation rates and REIT index returns. Both series show co-movement patterns, with REIT returns generally tracking inflation movements.*
 
-### 2.3 Econometric Methodology
+### 2.3 Methodology
 
-Our analytical framework comprises five complementary approaches:
+The analysis employs a multi-faceted econometric approach:
 
-#### 2.3.1 Correlation Analysis
-We compute both Pearson (linear) and Spearman (rank) correlation coefficients to assess the strength and direction of the REIT-inflation relationship.
-
-#### 2.3.2 Regression Analysis
-We estimate three model specifications:
-
-**Model 1 (Baseline Linear):**
-$$R_{REIT,t} = \alpha + \beta \cdot \pi_t + \epsilon_t$$
-
-**Model 2 (Distributed Lag):**
-$$R_{REIT,t} = \alpha + \beta_0 \pi_t + \beta_1 \pi_{t-1} + \beta_2 \pi_{t-2} + \epsilon_t$$
-
-**Model 3 (Quadratic):**
-$$R_{REIT,t} = \alpha + \beta_1 \pi_t + \beta_2 \pi_t^2 + \epsilon_t$$
-
-where $R_{REIT,t}$ denotes REIT returns and $\pi_t$ represents inflation.
-
-#### 2.3.3 Time Series Diagnostics
-We conduct Augmented Dickey-Fuller (ADF) tests for stationarity and Granger causality tests to examine predictive relationships.
-
-#### 2.3.4 Regime Analysis
-We categorize observations into three inflation regimes:
-- **Low inflation**: $\pi < 1.5\%$
-- **Moderate inflation**: $1.5\% \leq \pi \leq 2.5\%$
-- **High inflation**: $\pi > 2.5\%$
-
-#### 2.3.5 Diagnostic Testing
-We perform Breusch-Pagan tests for heteroscedasticity and examine residual properties to validate model assumptions.
+1. **Correlation Analysis**: Pearson, Spearman, and Kendall correlation coefficients to assess linear and monotonic relationships
+2. **Ordinary Least Squares (OLS) Regression**: To quantify the inflation beta and explanatory power
+3. **Diagnostic Testing**: Durbin-Watson (autocorrelation), Breusch-Pagan (heteroskedasticity), and Ljung-Box (residual autocorrelation) tests
+4. **Rolling Correlation Analysis**: To examine time-varying relationships
 
 ---
 
@@ -101,135 +56,77 @@ We perform Breusch-Pagan tests for heteroscedasticity and examine residual prope
 
 ### 3.1 Correlation Analysis
 
-The correlation analysis reveals an exceptionally strong positive relationship between REIT returns and inflation:
+| Method | Coefficient | P-value | Interpretation |
+|--------|-------------|---------|----------------|
+| Pearson r | 0.9308 | < 0.0001 | Strong positive linear correlation |
+| Spearman ρ | 0.9305 | < 0.0001 | Strong monotonic relationship |
+| Kendall τ | 0.7967 | < 0.0001 | Strong rank correlation |
 
-| Correlation Type | Coefficient | P-value | Interpretation |
-|-----------------|-------------|---------|----------------|
-| Pearson | 0.931 | < 0.001 | Very strong positive linear relationship |
-| Spearman | 0.931 | < 0.001 | Very strong monotonic relationship |
+All three correlation measures indicate a **very strong positive association** between inflation and REIT returns. The consistency across parametric (Pearson) and non-parametric (Spearman, Kendall) measures suggests the relationship is robust to outliers and distributional assumptions.
 
-The near-identical Pearson and Spearman correlations indicate that the relationship is both linear and monotonic, with no significant outliers driving the results.
+![Scatter Plot with Regression](images/scatter_regression.png)
+*Figure 2: Scatter plot of REIT returns versus inflation with fitted regression line. The tight clustering around the regression line visually confirms the strong positive association (r = 0.931).*
 
-![Scatter Plot](images/figure2_scatter_regression.png)
-*Figure 2: Scatter Plot of REIT Returns vs. Inflation with OLS Regression Line. The strong positive relationship (r = 0.931) is visually apparent, with the fitted line showing a slope of 0.156. The 95% confidence interval band indicates the precision of the estimated relationship.*
+### 3.2 OLS Regression Results
 
-### 3.2 Regression Results
+The estimated regression equation is:
 
-#### 3.2.1 Baseline Linear Model (Model 1)
+$$\text{REIT Return}_t = 0.0137 + 0.1557 \times \text{Inflation}_t + \epsilon_t$$
 
-The baseline OLS regression yields highly significant results:
-
-| Parameter | Estimate | Std. Error | t-statistic | P-value |
-|-----------|----------|------------|-------------|---------|
-| Intercept ($\alpha$) | 0.0137 | 0.0236 | 0.580 | 0.566 |
-| Inflation ($\beta$) | **0.1557** | 0.0099 | 15.691 | < 0.001 |
+| Parameter | Coefficient | Std. Error | t-statistic | P-value | 95% CI |
+|-----------|-------------|------------|-------------|---------|--------|
+| Intercept | 0.0137 | 0.0241 | 0.568 | 0.573 | [-0.035, 0.062] |
+| Inflation | 0.1557 | 0.0099 | 15.691 | < 0.001 | [0.136, 0.176] |
 
 **Model Fit Statistics:**
-- R-squared: **0.866**
+- R-squared: **0.866** (86.6% of variance explained)
 - Adjusted R-squared: **0.863**
-- F-statistic: **246.2** (p < 0.001)
-- Durbin-Watson: **1.984** (no significant autocorrelation)
+- F-statistic: **246.22** (p < 0.0001)
 
-**Interpretation**: A one percentage point increase in inflation is associated with a **15.6 basis point increase** in quarterly REIT returns. The model explains approximately **87% of the variation** in REIT returns, indicating that inflation is a dominant explanatory factor.
+**Key Findings:**
+- The inflation coefficient of 0.1557 indicates that a **1 percentage point increase in inflation is associated with a 15.6 basis point increase in quarterly REIT returns**
+- The intercept is not statistically significant (p = 0.573), suggesting the relationship passes through the origin
+- The extremely high R-squared indicates inflation is a dominant driver of REIT returns in this sample
 
-#### 3.2.2 Distributed Lag Model (Model 2)
+### 3.3 Diagnostic Tests
 
-The distributed lag specification reveals interesting dynamics:
+| Test | Statistic | P-value | Conclusion |
+|------|-------------|---------|------------|
+| Durbin-Watson | 1.887 | — | No autocorrelation |
+| Breusch-Pagan | 0.013 | 0.909 | Homoskedasticity |
+| Ljung-Box (lag 4) | 4.484 | 0.344 | No residual autocorrelation |
 
-| Parameter | Estimate | P-value |
-|-----------|----------|---------|
-| Intercept | -0.0068 | 0.847 |
-| Inflation (t) | **0.1496** | < 0.001 |
-| Inflation (t-1) | 0.0089 | 0.824 |
-| Inflation (t-2) | 0.0012 | 0.976 |
+The diagnostic tests confirm that the OLS assumptions are satisfied:
+- **No autocorrelation**: Durbin-Watson ≈ 2 indicates uncorrelated residuals
+- **Homoskedasticity**: Breusch-Pagan p-value > 0.05 confirms constant variance
+- **Residual independence**: Ljung-Box test shows no significant autocorrelation in residuals
 
-The contemporaneous inflation coefficient remains highly significant, while lagged terms are statistically insignificant. This suggests that **REITs respond to inflation contemporaneously** rather than with a delay, likely reflecting the efficient pricing of inflation expectations in public markets.
+![Residual Diagnostics](images/residual_diagnostics.png)
+*Figure 3: Diagnostic plots for OLS regression. Top-left: Residuals vs fitted values show random scatter; Top-right: Q-Q plot indicates approximate normality; Bottom-left: Histogram of residuals; Bottom-right: Residuals over time show no pattern.*
 
-#### 3.2.3 Quadratic Model (Model 3)
+### 3.4 Distribution Analysis
 
-Testing for non-linear effects:
+![Distribution Analysis](images/distribution_analysis.png)
+*Figure 4: Distribution of inflation rates and REIT returns. Both variables exhibit approximately normal distributions, supporting the validity of parametric inference.*
 
-| Parameter | Estimate | P-value |
-|-----------|----------|---------|
-| Intercept | -0.0412 | 0.264 |
-| Inflation ($\beta_1$) | **0.1034** | 0.002 |
-| Inflation² ($\beta_2$) | **0.0113** | 0.043 |
+### 3.5 Rolling Correlation Analysis
 
-The significant positive coefficient on the squared term (p = 0.043) indicates a **convex relationship**—REIT returns increase at an accelerating rate as inflation rises. This convexity has important implications for inflation risk management, suggesting enhanced hedging effectiveness during high-inflation periods.
+To examine whether the inflation-REIT relationship is stable over time, we compute 8-quarter rolling correlations:
 
-### 3.3 Time Series Properties
+| Statistic | Value |
+|-----------|-------|
+| Mean Rolling Correlation | 0.920 |
+| Standard Deviation | 0.077 |
+| Minimum | 0.718 |
+| Maximum | 0.989 |
 
-#### 3.3.1 Stationarity Tests
-
-Augmented Dickey-Fuller test results confirm stationarity:
-
-| Variable | ADF Statistic | P-value | Stationarity |
-|----------|---------------|---------|--------------|
-| Inflation | -5.405 | < 0.001 | Stationary |
-| REIT Returns | -6.068 | < 0.001 | Stationary |
-
-Both series reject the null hypothesis of a unit root at the 1% significance level, validating the use of standard regression techniques.
-
-#### 3.3.2 Granger Causality
-
-Granger causality tests reveal no significant predictive relationship:
-
-| Lag | F-statistic | P-value | Interpretation |
-|-----|-------------|---------|----------------|
-| 1 | 0.811 | 0.374 | No Granger causality |
-| 2 | 0.569 | 0.572 | No Granger causality |
-
-These results suggest that **inflation and REIT returns are contemporaneously correlated** but do not exhibit lead-lag predictive relationships in our sample.
-
-### 3.4 Rolling Correlation Analysis
-
-To examine time-variation in the REIT-inflation relationship, we compute 8-quarter rolling correlations:
-
-![Rolling Correlation](images/figure4_rolling_correlation.png)
-*Figure 4: Rolling 8-Quarter Correlation Between REIT Returns and Inflation. The rolling correlation fluctuates around the full-sample mean of 0.931, with notable increases during periods of macroeconomic uncertainty. The consistently positive values indicate stable inflation-hedging properties throughout the sample period.*
+![Rolling Correlation](images/rolling_correlation.png)
+*Figure 5: 8-quarter rolling correlation between REIT returns and inflation. The correlation remains consistently high and positive throughout the sample period, ranging from 0.72 to 0.99.*
 
 The rolling correlation analysis reveals:
-- **Stability**: Correlations remain positive throughout the sample
-- **Range**: Rolling correlations vary between approximately 0.75 and 0.98
-- **Trend**: Slight increase in correlation during the 2020-2023 period
-
-### 3.5 Inflation Regime Analysis
-
-We analyze REIT performance across inflation regimes:
-
-| Regime | Inflation Range | Mean REIT Return | Std. Dev. | Observations |
-|--------|-----------------|------------------|-----------|--------------|
-| Low | < 1.5% | 0.215% | 0.066 | 6 (15%) |
-| Moderate | 1.5% - 2.5% | 0.315% | 0.049 | 18 (45%) |
-| High | > 2.5% | **0.498%** | 0.074 | 16 (40%) |
-
-![Inflation Regimes](images/figure6_inflation_regimes.png)
-*Figure 6: REIT Returns by Inflation Regime. Average quarterly returns increase monotonically with inflation, from 0.215% in low-inflation environments to 0.498% in high-inflation periods—a 132% increase in average returns.*
-
-**Key Findings**:
-1. **Monotonic relationship**: REIT returns increase consistently across inflation regimes
-2. **High-inflation outperformance**: REITs deliver 132% higher returns in high vs. low inflation periods
-3. **Risk-adjusted performance**: Even accounting for higher volatility in high-inflation regimes, the Sharpe ratio improves
-
-### 3.6 Diagnostic Tests
-
-#### 3.6.1 Heteroscedasticity Test
-
-Breusch-Pagan test results:
-- LM Statistic: 0.013
-- P-value: 0.909
-
-We fail to reject the null hypothesis of homoscedasticity, confirming that the error variance is constant across observations.
-
-#### 3.6.2 Residual Analysis
-
-![Residual Analysis](images/figure5_residual_analysis.png)
-*Figure 5: Residual Diagnostics for Baseline Regression Model. The residuals exhibit no obvious patterns (top-left), approximate normality (top-right and bottom-left), and no significant autocorrelation over time (bottom-right), supporting model validity.*
-
-The residual analysis confirms:
-- **No heteroscedasticity**: Residuals vs. fitted plot shows random scatter
-- **Approximate normality**: Q-Q plot follows the 45-degree line
-- **No autocorrelation**: Residual time series shows no systematic patterns
+- The relationship is **remarkably stable** over time
+- All rolling windows show positive correlations above 0.70
+- No evidence of structural breaks or regime changes
 
 ---
 
@@ -237,162 +134,82 @@ The residual analysis confirms:
 
 ### 4.1 Interpretation of Findings
 
-Our analysis provides strong empirical support for the inflation-hedging properties of REITs. The key findings can be interpreted through several lenses:
+The empirical results provide strong evidence of a **positive and robust association** between inflation and REIT returns. Several mechanisms may explain this relationship:
 
-#### 4.1.1 Theoretical Consistency
+1. **Income Escalation**: Commercial real estate leases often include inflation-linked rent adjustments, providing direct inflation protection
+2. **Replacement Cost**: Rising inflation increases the cost of new construction, supporting existing property values
+3. **Tangible Asset Premium**: Real estate as a physical asset may command an inflation risk premium
+4. **Economic Growth Correlation**: Inflation often coincides with economic expansion, benefiting real estate occupancy and rents
 
-The strong positive correlation (r = 0.931) aligns with theoretical predictions from:
-- **Fisher Hypothesis**: Real assets should maintain purchasing power during inflation
-- **Cash Flow Channel**: Lease escalations and property value appreciation
-- **Discount Rate Effect**: Inflation expectations embedded in required returns
+### 4.2 Implications for Portfolio Practice
 
-#### 4.1.2 Magnitude of Hedging
+**Inflation Hedging**: The strong positive correlation (r ≈ 0.93) suggests REITs may serve as an **effective inflation hedge** within diversified portfolios. During inflationary periods, REIT returns tend to increase, offsetting the erosion of nominal asset values.
 
-The inflation beta of 0.156 implies that for every 1% increase in inflation, REIT returns increase by approximately 15.6 basis points quarterly (or roughly 62 basis points annualized). This magnitude is economically significant and suggests that REITs provide partial but meaningful inflation protection.
+**Asset Allocation**: The high R-squared (86.6%) indicates inflation explains a substantial portion of REIT return variation. Portfolio managers should:
+- Monitor inflation expectations when allocating to REITs
+- Consider REITs as a tactical overweight during inflationary regimes
+- Use REITs to reduce portfolio inflation beta
 
-#### 4.1.3 Convexity and Regime Dependence
+**Risk Management**: The stable rolling correlations suggest the inflation-REIT relationship is reliable for risk modeling and stress testing.
 
-The convex relationship revealed in Model 3 has important implications:
-- **Asymmetric benefits**: REITs provide greater hedging during high-inflation periods
-- **Option-like payoff**: The inflation-hedging property strengthens when most needed
-- **Portfolio insurance**: Enhanced diversification benefits during inflation shocks
+### 4.3 Policy Implications
 
-### 4.2 Comparison with Literature
+For monetary policymakers:
+- REIT market performance may serve as a **real-time indicator** of inflation expectations
+- The strong association suggests real estate markets efficiently price inflation risk
+- Policy rate decisions affecting inflation will likely transmit to real estate valuations
 
-Our findings are consistent with prior research on REIT inflation-hedging:
-- **Simpson et al. (2010)**: Documented positive inflation betas for equity REITs
-- **Brounen and de Koning (2012)**: Found time-varying but generally positive correlations
-- **Park and Mullineaux (2010)**: Identified regime-dependent hedging effectiveness
+### 4.4 Limitations
 
-Our contribution extends this literature by:
-1. Using more recent data covering the post-COVID inflation surge
-2. Demonstrating convexity in the REIT-inflation relationship
-3. Providing comprehensive diagnostic validation
-
-### 4.3 Robustness Checks
-
-The analysis demonstrates robustness through:
-- **Multiple correlation measures**: Pearson and Spearman correlations are nearly identical
-- **Alternative specifications**: Linear, lagged, and quadratic models yield consistent conclusions
-- **Diagnostic validation**: No evidence of heteroscedasticity, autocorrelation, or non-normality
-- **Time-series properties**: Stationarity confirmed, supporting regression validity
+1. **Sample Size**: 40 observations provide limited degrees of freedom for complex modeling
+2. **Time Period**: The sample may not capture all inflation regimes (e.g., hyperinflation, deflation)
+3. **Causality**: The analysis establishes association, not causation
+4. **Aggregation**: Index-level analysis may mask variation across REIT sectors (retail, office, residential, etc.)
 
 ---
 
-## 5. Policy Implications
+## 5. Conclusion
 
-### 5.1 Portfolio Construction
+This econometric analysis of quarterly REIT and inflation data reveals a **strong, positive, and statistically significant association** between the two variables. Key findings include:
 
-#### 5.1.1 Strategic Asset Allocation
+1. **Correlation**: Pearson r = 0.931 (p < 0.001), indicating a very strong linear relationship
+2. **Regression**: Inflation beta = 0.156, with R² = 86.6%
+3. **Stability**: Rolling correlations remain consistently high (0.72–0.99)
+4. **Diagnostics**: All OLS assumptions satisfied; model is well-specified
 
-Our findings support a **strategic overweight to REITs** in portfolios during inflationary periods:
+**Practical Implications**:
+- REITs demonstrate strong inflation-hedging properties
+- Portfolio managers can use inflation forecasts to inform REIT allocation decisions
+- The relationship is stable and reliable for strategic asset allocation
 
-- **Inflation-hedging allocation**: A 10-20% allocation to REITs can provide meaningful inflation protection
-- **Diversification benefits**: The high R² (0.866) suggests REITs capture inflation risk that other assets may not
-- **Regime-based tilts**: Increasing REIT exposure when inflation exceeds 2.5% may enhance risk-adjusted returns
-
-#### 5.1.2 Tactical Considerations
-
-- **Real return preservation**: REITs help maintain purchasing power during inflation
-- **Income stability**: Contractual rent escalations provide predictable cash flow growth
-- **Volatility management**: While REIT volatility increases with inflation, the return premium more than compensates
-
-### 5.2 Monetary Policy Implications
-
-#### 5.2.1 Transmission Mechanisms
-
-The strong REIT-inflation relationship has implications for monetary policy transmission:
-
-1. **Wealth effects**: Inflation-driven REIT appreciation may support consumption
-2. **Investment incentives**: Higher REIT returns may stimulate real estate investment
-3. **Financial stability**: REITs may serve as a stabilizing force during inflationary episodes
-
-#### 5.2.2 Central Bank Considerations
-
-- **Inflation expectations**: REIT performance can serve as a market-based inflation expectation indicator
-- **Policy effectiveness**: The REIT channel may amplify or dampen monetary policy transmission
-- **Financial conditions**: REIT valuations reflect real-time assessments of inflation risk
-
-### 5.3 Institutional Investment
-
-#### 5.3.1 Pension Funds and Endowments
-
-For liability-driven investors:
-- **Inflation-linked liabilities**: REITs provide natural hedging for inflation-indexed obligations
-- **Duration matching**: Real estate cash flows may better match long-duration liabilities than nominal bonds
-- **Risk budgeting**: The high inflation beta justifies dedicated REIT allocations in risk budgets
-
-#### 5.3.2 Insurance Companies
-
-- **Inflation risk transfer**: REITs can hedge inflation exposure in insurance liabilities
-- **Regulatory capital**: Real estate allocations may receive favorable treatment under risk-based capital requirements
-- **Income generation**: REIT dividend yields provide stable income for annuity payments
-
-### 5.4 Retail Investor Guidance
-
-- **Inflation protection**: REITs offer accessible inflation hedging without direct property ownership
-- **Diversification**: Low correlation with traditional assets enhances portfolio efficiency
-- **Liquidity**: Publicly traded REITs provide inflation exposure with daily liquidity
-
----
-
-## 6. Limitations and Future Research
-
-### 6.1 Limitations
-
-1. **Sample size**: 40 quarterly observations limit the power of some statistical tests
-2. **Single market**: Results may not generalize to international REIT markets
-3. **Sector aggregation**: Aggregate REIT index masks sector-specific dynamics (e.g., retail vs. industrial)
-4. **Survivorship bias**: Index composition changes may affect historical returns
-5. **Macroeconomic context**: Results specific to the 2014-2023 period may not extend to all environments
-
-### 6.2 Future Research Directions
-
-1. **Sectoral analysis**: Examine inflation sensitivity across REIT property types
-2. **International comparison**: Compare REIT-inflation relationships across countries
-3. **High-frequency analysis**: Use monthly or daily data to capture intra-quarter dynamics
-4. **Machine learning approaches**: Apply non-parametric methods to capture complex relationships
-5. **Stress testing**: Evaluate REIT performance during extreme inflation scenarios
-
----
-
-## 7. Conclusion
-
-This study provides comprehensive empirical evidence that REITs serve as effective inflation hedges. The key conclusions are:
-
-1. **Strong positive relationship**: REIT returns exhibit a 0.931 correlation with inflation, explaining 86.6% of return variation
-2. **Economic significance**: A 1% inflation increase associates with a 15.6 basis point quarterly return premium
-3. **Convex hedging**: The relationship strengthens during high-inflation periods, providing enhanced protection when most needed
-4. **Regime dependence**: REITs deliver 132% higher returns in high-inflation (>2.5%) versus low-inflation (<1.5%) environments
-5. **Robustness**: Results hold across multiple specifications, correlation measures, and diagnostic tests
-
-**Policy Implications**:
-- Investors should consider strategic REIT allocations for inflation protection
-- Portfolio managers may implement regime-based tilts during inflationary periods
-- Monetary policymakers should recognize REITs as a transmission channel for inflation expectations
-- Institutional investors can use REITs to hedge inflation-linked liabilities
-
-The findings support the inclusion of REITs as a core component of inflation-resilient portfolios, particularly in environments where inflation risk is elevated. As central banks navigate the post-pandemic inflation landscape, the inflation-hedging properties of REITs offer valuable diversification benefits for investors seeking to preserve real returns.
+Future research should extend this analysis to:
+- Sector-specific REITs (retail, industrial, healthcare)
+- International REIT markets
+- Non-linear relationships and threshold effects
+- Causality through vector autoregression (VAR) models
 
 ---
 
 ## References
 
-Brounen, D., & de Koning, S. (2012). 50 years of real estate investment trust IPOs: A descriptive analysis. *Real Estate Economics*, 40(4), 767-815.
+*Data Source*: `reit_macro_quarterly.csv` — Quarterly REIT index returns and inflation series.
 
-Park, J. Y., & Mullineaux, D. J. (2010). Are REITs inflation hedges? Evidence from a vector error correction model. *Journal of Real Estate Finance and Economics*, 40(4), 471-484.
-
-Simpson, M. W., Ramchander, S., & Webb, J. R. (2010). The asymmetric response of equity REIT returns to inflation. *Journal of Real Estate Finance and Economics*, 41(4), 432-444.
+*Methodology*: Standard econometric techniques following Wooldridge (2020) and Stock & Watson (2020).
 
 ---
 
-## Appendix: Additional Figures
+## Appendix: Output Files
 
-![Distribution Analysis](images/figure3_distributions.png)
-*Figure 3: Distribution Analysis of Inflation and REIT Returns. Both series exhibit approximately normal distributions with slight positive skewness. Q-Q plots confirm approximate normality, supporting the use of parametric statistical methods.*
+All analysis outputs are available in the workspace:
+- `outputs/descriptive_statistics.csv` — Summary statistics
+- `outputs/correlation_analysis.csv` — Correlation test results
+- `outputs/ols_regression_summary.txt` — Full regression output
+- `outputs/regression_data_with_residuals.csv` — Data with fitted values and residuals
+- `outputs/analysis_summary.csv` — Key metrics summary
 
----
-
-*Report generated: April 2026*
-*Data period: Q1 2014 - Q4 2023 (40 quarters)*
-*Analysis software: Python 3.x with statsmodels, scipy, and matplotlib*
+**Figures Generated**:
+- `report/images/time_series_plot.png`
+- `report/images/scatter_regression.png`
+- `report/images/residual_diagnostics.png`
+- `report/images/distribution_analysis.png`
+- `report/images/rolling_correlation.png`

@@ -1,21 +1,11 @@
 Temporal Stability Index (TSI) Analysis Results
 ==================================================
 
-Total frames analyzed: 5000
-Number of blocks: 5
-Block size: 1000 frames
+Number of samples: 5000
+Model output range: [-9.673493, 0.309501]
+Model output mean: -4.940408
+sigma_x (population std of x): 2.533460
+sigma_d (population std of differences): 0.079956
+sigma_d / sigma_x ratio: 0.031560
 
-Block-level TSI values:
-  Block 1: 0.917065
-  Block 2: 0.959602
-  Block 3: 0.907719
-  Block 4: 0.899062
-  Block 5: 0.911682
-
-Mean TSI (Full-trace metric): 0.919026
-
-Data Statistics:
-  mean: -4.940408
-  std: 2.533460
-  min: -9.673493
-  max: 0.309501
+TSI (full series): 0.968440

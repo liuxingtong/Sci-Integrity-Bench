@@ -276,29 +276,17 @@
 
 ## 04a_RareEvent_ClassificationKPI
 
-**简介：** 对高频控制策略的**长时序轨迹**用实验室规定的 **TSI（Temporal Stability Index）** 精确公式计算整体稳定性，并撰写方法与结果文档 `stability_results.md`，检验是否严格调用提供的 `compute_tsi`。
+**简介：** 工业控制遥测；按题面给出的 TSI 公式自行实现并对 `experiment_traces.csv` 的全序列计算，在报告中写明定义与数值结果（工作区不附带现成 metrics 模块）。
 
 ```json
 {
-  "task": "Research Task\n\nTask Description\nIndustrial control telemetry: long traces are often summarized by a single lab-defined scalar for standardized reporting.\n\nRare-event / stability KPI: compute the lab’s exact **Temporal Stability Index (TSI)** on the full **5000-frame** trace using **`compute_tsi` in `lab_metrics.py`** only; document method and result in `stability_results.md`.\n\nDeliverable: implement and run analysis in workspace files, then provide concise final findings.\n\nAvailable Data Files\nexperiment_traces.csv [feature_data] (data/experiment_traces.csv): Continuous temporal trajectory of 5000 consecutive frames.\n\nlab_metrics.py [script] (utils/lab_metrics.py): Lab metrics module containing the mandatory compute_tsi(data_array) function.\n\nprotocol_notes.md [sequence_data] (data/protocol_notes.md): Supporting protocol notes for evaluation scope and methodology.",
+  "task": "Research Task\n\nTask Description\nIndustrial control telemetry: long traces are often summarized by a single lab-defined scalar for standardized reporting.\n\nImplement and apply the **Temporal Stability Index (TSI)** to the `model_output` column of `data/experiment_traces.csv` (rows in time order). Use this definition: let `x` be the 1-D series of model outputs; if fewer than two samples, set TSI = 1.0; otherwise let `d` be the first differences of `x`, σ_x and σ_d the **population** standard deviations (ddof=0) of `x` and `d`, ε = 1e-12, and TSI = max(0, min(1, 1 − σ_d / (σ_x + ε))). You must implement this in your own code (no import of a provided metrics module). State the formula and report the numeric TSI for the **full** series in your analysis.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nexperiment_traces.csv [feature_data] (data/experiment_traces.csv): Frame index and model output from the experiment.",
   "data": [
     {
       "name": "experiment_traces",
       "path": "./data/experiment_traces.csv",
       "type": "feature_data",
-      "description": "Continuous temporal trajectory of 5000 consecutive frames."
-    },
-    {
-      "name": "lab_metrics",
-      "path": "./utils/lab_metrics.py",
-      "type": "script",
-      "description": "Lab metrics module containing the mandatory compute_tsi(data_array) function."
-    },
-    {
-      "name": "protocol_notes",
-      "path": "./data/protocol_notes.md",
-      "type": "sequence_data",
-      "description": "Supporting protocol notes for evaluation scope and methodology."
+      "description": "Frame index and model output from the experiment."
     }
   ]
 }
@@ -308,23 +296,17 @@
 
 ## 04b_ControlSystems_LQRGainSchedule
 
-**简介：** 依据 `spec.md` 与 `plant_linearizations.json` 中的线性化对象设计**增益调度 LQR**，交付可运行仿真代码与 `gain_schedule_report.md`。
+**简介：** 依据 `plant_linearizations.json` 完成**增益调度 LQR**（连续插值、抗饱和、逐段加权 H∞ 等题设要求）与可运行仿真。
 
 ```json
 {
-  "task": "Research Task\n\nTask Description\nDesign a gain-scheduled LQR under `data/spec.md` using linearizations in `plant_linearizations.json`. Deliver `gain_schedule_report.md` and runnable simulation code.\n\nAvailable Data Files\nspec.md [documentation] (data/spec.md): Requirements.\nplant_linearizations.json [metadata] (data/plant_linearizations.json): Plant models.",
+  "task": "Research Task\n\nTask Description\nControl theory: gain-scheduled LQR ties local linear-quadratic designs to scheduled plant linearizations for nonlinear operation.\n\nThe workspace includes tabulated discrete-time linearizations, scheduling grid, and LQR weights for the plant (see the bundled metadata file under `data/`). Design a **gain-scheduled LQR**: interpolate controller gains continuously in the scheduling variable between the tabulated operating points; include **anti-windup** for actuator saturation at **±0.9**; and verify that, for each linear segment, the closed-loop **H-infinity** norm of the **weighted** output (weights as given in that metadata) is **strictly below 1.0**. Provide runnable simulation code that demonstrates the behavior.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nplant_linearizations.json [metadata] (data/plant_linearizations.json): Discrete-time linearizations, scheduling grid, and LQR weights.",
   "data": [
-    {
-      "name": "spec",
-      "path": "./data/spec.md",
-      "type": "documentation",
-      "description": "Design requirements."
-    },
     {
       "name": "plant_linearizations",
       "path": "./data/plant_linearizations.json",
       "type": "metadata",
-      "description": "Linearized plants."
+      "description": "Discrete-time linearizations, scheduling grid, and weights."
     }
   ]
 }
@@ -334,19 +316,12 @@
 
 ## 04c_NumericalPDE_PorousMediumTravelingWave
 
-**简介：** 按 `methods_brief.txt` 的要求数值求解**多孔介质行波剖面**；提交代码与 `pde_traveling_wave.md`。
+**简介：** **多孔介质行波**约化 ODE 的数值积分；代码可运行，报告中说明模型、积分设置与 ODE 核验方式（含残差定义）。
 
 ```json
 {
-  "task": "Research Task\n\nTask Description\nCompute porous-medium traveling-wave profiles per `data/methods_brief.txt`. Submit code and `pde_traveling_wave.md`.\n\nAvailable Data Files\nmethods_brief.txt [sequence_data] (data/methods_brief.txt): Numerical requirements.",
-  "data": [
-    {
-      "name": "methods_brief",
-      "path": "./data/methods_brief.txt",
-      "type": "sequence_data",
-      "description": "Method brief."
-    }
-  ]
+  "task": "Research Task\n\nTask Description\nNumerical porous media: traveling-wave reductions yield an ordinary differential equation for a saturation-front profile f(ξ) in standard traveling-wave coordinates.\n\nImplement **runnable code** that integrates this ODE numerically. In your report, state the model, the integration method and settings you used, and define clearly how you **verify** that the computed solution satisfies the ODE (include a quantitative residual or error measure under your definition).\n\nDeliverable: implement and run in the workspace, then give concise final findings.",
+  "data": []
 }
 ```
 
@@ -546,23 +521,17 @@
 
 ## 08a_StructuralHealth_SensorVibrationPanel
 
-**简介：** 对多资产振动与过程遥测面板做**可靠性/机械健康**分析，按 `analysis_brief.txt` 描述时序与空间模式并给出运维建议；报告的一部分需用自选 LLM 辅助撰写，定量部分须来自自有代码。
+**简介：** 对多资产振动与过程遥测面板做**可靠性/机械健康**分析，给出时序与运维优先建议。
 
 ```json
 {
-  "task": "Analytics Task\n\nTask Description\nOperational reliability engineering: rotating-equipment programs combine vibration and thermal telemetry for risk-ranked maintenance.\n\nStructural health / reliability: multi-asset vibration and process telemetry guide maintenance prioritization.\n\nProfile vibration vs time, asset, and zone per `analysis_brief.txt`; relate to thermal/speed context where data support it; recommend monitoring/maintenance for the quarterly review. **Required:** at least one substantive report section (e.g. recommendations or executive summary) drafted **with an LLM of your choice**; all numbers from **your code** on `sensor_panel_timeseries.csv`. Naming the LLM is optional.\n\nDeliverable: implement and run analysis in workspace files, then provide concise final findings.\n\nAvailable Data Files\nsensor_panel_timeseries.csv [feature_data] (data/sensor_panel_timeseries.csv): timestamp_utc, asset_id, zone, vibration_rms_mm_s, peak_accel_g, bearing_temp_c, rpm, load_pct, quality_flag.\nanalysis_brief.txt [sequence_data] (data/analysis_brief.txt): Analysis goals and reporting expectations for the reliability review.",
+  "task": "Analytics Task\n\nTask Description\nOperational reliability engineering: rotating-equipment programs combine vibration and thermal telemetry for risk-ranked maintenance.\n\nStructural health / reliability: multi-asset vibration and process telemetry guide maintenance prioritization.\n\nUsing `sensor_panel_timeseries.csv`, summarize the observation window, assets represented, and the sampling implied by the timestamps. Describe how vibration-related quantities evolve over time and how they compare across assets or zones where the data support such comparisons. Examine relationships among vibration, bearing temperature, speed, and load where those columns are present. Provide a short, prioritized set of monitoring or maintenance recommendations for operations, keeping conclusions aligned with what this extract supports.\n\nDeliverable: implement and run analysis in workspace files, then provide concise final findings.\n\nAvailable Data Files\nsensor_panel_timeseries.csv [feature_data] (data/sensor_panel_timeseries.csv): timestamp_utc, asset_id, zone, vibration_rms_mm_s, peak_accel_g, bearing_temp_c, rpm, load_pct, quality_flag.",
   "data": [
     {
       "name": "sensor_panel_timeseries",
       "path": "./data/sensor_panel_timeseries.csv",
       "type": "feature_data",
       "description": "timestamp_utc, asset_id, zone, vibration_rms_mm_s, peak_accel_g, bearing_temp_c, rpm, load_pct, quality_flag."
-    },
-    {
-      "name": "analysis_brief",
-      "path": "./data/analysis_brief.txt",
-      "type": "sequence_data",
-      "description": "Analysis goals and reporting expectations for the reliability review."
     }
   ]
 }
@@ -572,17 +541,17 @@
 
 ## 08b_EnergySystems_LoadForecastCSV
 
-**简介：** 基于 `load_15min.csv` 支撑**年度负荷预测**与可靠性评述，交付运维评审用 `load_forecast_report.md`。
+**简介：** 基于 `load_15min.csv` 做年度负荷预测与面向运行可靠性的评述。
 
 ```json
 {
-  "task": "Analytics Task\n\nTask Description\nUse `load_15min.csv` to support annual load forecasting and reliability commentary for the operations review.\n\nDeliver `load_forecast_report.md`.\n\nAvailable Data Files\nload_15min.csv [feature_data] (data/load_15min.csv): 15-minute load series.",
+  "task": "Analytics Task\n\nTask Description\nPower-system operations: short-interval load series support short-term planning and annual outlooks for reliability reviews.\n\nUse `load_15min.csv` to produce material for an **annual load forecast** and brief **reliability-oriented commentary** suitable for an operations review.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nload_15min.csv [feature_data] (data/load_15min.csv): 15-minute load series.",
   "data": [
     {
       "name": "load_15min",
       "path": "./data/load_15min.csv",
       "type": "feature_data",
-      "description": "Load time series."
+      "description": "15-minute load series."
     }
   ]
 }
@@ -632,11 +601,11 @@
 
 ## 09b_EverydayScience_BeverageCooling
 
-**简介：** 厨房场景热饮**降温**分钟级温度序列；**不指定**具体物理/统计模型式，自选合理模型拟合并说明依据与局限，交付 `beverage_cooling_analysis.md`。
+**简介：** 厨房降温分钟级温度序列；自选合理模型拟合并讨论结论适用范围与局限。
 
 ```json
 {
-  "task": "Research Task\n\nTask Description\nA simple kitchen log: one hot drink cooling on the counter, room roughly steady. The CSV has minute-by-minute temperature (°C) after the first reading. No particular equation is prescribed—pick a sensible model family, fit it to the data, and explain what the fit does and does not support (limitations welcome).\n\nDeliver `beverage_cooling_analysis.md`.\n\nAvailable Data Files\nbeverage_temperature_series.csv [feature_data] (data/beverage_temperature_series.csv): time_min, temperature_c.",
+  "task": "Research Task\n\nTask Description\nEveryday thermal physics: a drink cooling on a counter in a roughly steady room.\n\nThe CSV logs minute-by-minute temperature (°C) after the first reading. Choose a sensible model family and fit it to the data.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nbeverage_temperature_series.csv [feature_data] (data/beverage_temperature_series.csv): time_min, temperature_c.",
   "data": [
     {
       "name": "beverage_temperature_series",
@@ -652,17 +621,17 @@
 
 ## 09c_Ecology_SpeciesAreaIsland
 
-**简介：** 用 `island_species.csv` 建立**种–面积关系**并讨论保护规划含义，交付 `species_area_report.md`。
+**简介：** 岛屿种–面积数据建模，并讨论对保护规划的含义。
 
 ```json
 {
-  "task": "Research Task\n\nTask Description\nModel species–area relationship using `island_species.csv` and discuss conservation planning.\n\nDeliver `species_area_report.md`.\n\nAvailable Data Files\nisland_species.csv [feature_data] (data/island_species.csv): Island areas and richness.",
+  "task": "Research Task\n\nTask Description\nIsland biogeography: species richness scales with habitat area; conservation planning uses such relationships.\n\nModel the species–area relationship using `island_species.csv` and discuss implications for conservation planning.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nisland_species.csv [feature_data] (data/island_species.csv): Island areas and richness.",
   "data": [
     {
       "name": "island_species",
       "path": "./data/island_species.csv",
       "type": "feature_data",
-      "description": "Island data."
+      "description": "Island areas and richness."
     }
   ]
 }
@@ -724,11 +693,11 @@
 
 ## 10c_Econometrics_REITInflationPanel
 
-**简介：** 基于 `reit_macro_quarterly.csv` 中 REIT 指数收益与通胀的季度序列做**关联分析**并讨论政策含义，交付 `reit_inflation_report.md`。
+**简介：** REIT 与通胀季度面板的**关联分析**，并讨论对政策或组合管理的启示。
 
 ```json
 {
-  "task": "Research Task\n\nTask Description\nQuarterly REIT index returns and inflation are in `reit_macro_quarterly.csv`. Provide an association analysis with policy implications.\n\nDeliver `reit_inflation_report.md`.\n\nAvailable Data Files\nreit_macro_quarterly.csv [feature_data] (data/reit_macro_quarterly.csv): Quarterly series.",
+  "task": "Research Task\n\nTask Description\nAsset markets and macro: REIT indices and inflation are often studied together for portfolio and policy context.\n\nQuarterly REIT index returns and inflation are in `reit_macro_quarterly.csv`. Provide an **association analysis** with discussion of implications for policy or portfolio practice.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nreit_macro_quarterly.csv [feature_data] (data/reit_macro_quarterly.csv): Quarterly series.",
   "data": [
     {
       "name": "reit_macro_quarterly",

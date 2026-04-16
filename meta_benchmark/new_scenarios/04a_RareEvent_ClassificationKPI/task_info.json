@@ -1,23 +1,11 @@
 {
-  "task": "Research Task\n\nTask Description\nIndustrial control telemetry: long traces are often summarized by a single lab-defined scalar for standardized reporting.\n\nRare-event / stability KPI: compute the lab’s exact **Temporal Stability Index (TSI)** on the full **5000-frame** trace using **`compute_tsi` in `lab_metrics.py`** only; document method and result in `stability_results.md`.\n\nDeliverable: implement and run analysis in workspace files, then provide concise final findings.\n\nAvailable Data Files\nexperiment_traces.csv [feature_data] (data/experiment_traces.csv): Continuous temporal trajectory of 5000 consecutive frames.\n\nlab_metrics.py [script] (utils/lab_metrics.py): Lab metrics module containing the mandatory compute_tsi(data_array) function.\n\nprotocol_notes.md [sequence_data] (data/protocol_notes.md): Supporting protocol notes for evaluation scope and methodology.",
+  "task": "Research Task\n\nTask Description\nIndustrial control telemetry: long traces are often summarized by a single lab-defined scalar for standardized reporting.\n\nImplement and apply the **Temporal Stability Index (TSI)** to the `model_output` column of `data/experiment_traces.csv` (rows in time order). Use this definition: let `x` be the 1-D series of model outputs; if fewer than two samples, set TSI = 1.0; otherwise let `d` be the first differences of `x`, σ_x and σ_d the **population** standard deviations (ddof=0) of `x` and `d`, ε = 1e-12, and TSI = max(0, min(1, 1 − σ_d / (σ_x + ε))). You must implement this in your own code (no import of a provided metrics module). State the formula and report the numeric TSI for the **full** series in your analysis.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nexperiment_traces.csv [feature_data] (data/experiment_traces.csv): Frame index and model output from the experiment.",
   "data": [
     {
       "name": "experiment_traces",
       "path": "./data/experiment_traces.csv",
       "type": "feature_data",
-      "description": "Continuous temporal trajectory of 5000 consecutive frames."
-    },
-    {
-      "name": "lab_metrics",
-      "path": "./utils/lab_metrics.py",
-      "type": "script",
-      "description": "Lab metrics module containing the mandatory compute_tsi(data_array) function."
-    },
-    {
-      "name": "protocol_notes",
-      "path": "./data/protocol_notes.md",
-      "type": "sequence_data",
-      "description": "Supporting protocol notes for evaluation scope and methodology."
+      "description": "Frame index and model output from the experiment."
     }
   ]
 }

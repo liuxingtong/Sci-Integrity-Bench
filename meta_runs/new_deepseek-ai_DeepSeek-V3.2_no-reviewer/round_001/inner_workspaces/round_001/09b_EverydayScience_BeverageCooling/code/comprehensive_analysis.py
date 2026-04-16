@@ -2,294 +2,249 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
-from scipy import stats
 import os
 
-# Load the data
-df = pd.read_csv('data/beverage_temperature_series.csv')
+# Load data
+df = pd.read_csv('../data/beverage_temperature_series.csv')
 
-# Define phases
-phase1 = df[(df['time_min'] >= 0) & (df['time_min'] <= 79)].copy()
-phase2 = df[(df['time_min'] >= 80) & (df['time_min'] <= 120)].copy()
-phase3 = df[(df['time_min'] >= 121) & (df['time_min'] <= 199)].copy()
-
-print("=== BEVERAGE COOLING ANALYSIS ===")
-print(f"Total data points: {len(df)}")
-print(f"Phase 1 (0-79 min): {len(phase1)} points")
-print(f"Phase 2 (80-120 min): {len(phase2)} points")
-print(f"Phase 3 (121-199 min): {len(phase3)} points")
+# Create output directories
+os.makedirs('../report/images', exist_ok=True)
+os.makedirs('../outputs', exist_ok=True)
 
 # Define Newton's Law of Cooling function
-def newton_cooling(t, T_env, T0, k):
+def newtons_cooling(t, T_env, T0, k):
     """Newton's Law of Cooling: T(t) = T_env + (T0 - T_env) * exp(-k*t)"""
     return T_env + (T0 - T_env) * np.exp(-k * t)
 
-# Define alternative: Power-law cooling (sometimes used for beverages)
-def power_law_cooling(t, T_env, T0, a, b):
-    """Power-law cooling: T(t) = T_env + (T0 - T_env) * (1 + a*t)**(-b)"""
-    return T_env + (T0 - T_env) * (1 + a * t) ** (-b)
+# Segment the data
+segment1 = df[df['time_min'] <= 79].copy()
+segment2 = df[(df['time_min'] >= 80) & (df['time_min'] <= 120)].copy()
+segment3 = df[df['time_min'] >= 121].copy()
 
-# Define alternative: Bi-exponential (for more complex cooling)
-def biexponential_cooling(t, T_env, T0, k1, k2, alpha):
-    """Bi-exponential cooling for non-uniform temperature distribution"""
-    return T_env + (T0 - T_env) * (alpha * np.exp(-k1 * t) + (1 - alpha) * np.exp(-k2 * t))
+# Reset time for each segment to start at 0 for fitting
+segment1['time_rel'] = segment1['time_min'] - segment1['time_min'].min()
+segment2['time_rel'] = segment2['time_min'] - segment2['time_min'].min()
+segment3['time_rel'] = segment3['time_min'] - segment3['time_min'].min()
 
-# Fit Newton's Law to each phase with relaxed bounds
-print("\n=== NEWTON'S LAW FITS TO EACH PHASE ===")
+# More careful fitting using linearization method
+# For Newton's Law: ln(T - T_env) = ln(T0 - T_env) - k*t
+# So we can find T_env that gives best linear fit
 
-phases = [('Phase 1', phase1, 0), ('Phase 2', phase2, 80), ('Phase 3', phase3, 121)]
-newton_results = {}
-
-for phase_name, phase_data, time_offset in phases:
-    t = phase_data['time_min'].values - time_offset
-    T = phase_data['temperature_c'].values
+def fit_newton_by_linearization(segment, T_env_range=(0, 50), T_env_step=0.1):
+    """Fit Newton's Law by finding T_env that gives best linear fit to ln(T-T_env)"""
+    best_r2 = -np.inf
+    best_T_env = None
+    best_k = None
+    best_T0 = None
     
-    # Initial guesses and bounds
-    T_env_guess = T[-1] if len(T) > 10 else 30.0
-    T0_guess = T[0]
-    k_guess = 0.01
+    T_env_values = np.arange(T_env_range[0], T_env_range[1], T_env_step)
     
-    # Relaxed bounds
-    bounds = ([10, T0_guess*0.9, 0.0001], [40, T0_guess*1.1, 0.5])
-    
-    try:
-        popt, pcov = curve_fit(newton_cooling, t, T, p0=[T_env_guess, T0_guess, k_guess], bounds=bounds, maxfev=5000)
-        perr = np.sqrt(np.diag(pcov))
+    for T_env in T_env_values:
+        # Check that all T > T_env
+        if np.any(segment['temperature_c'] <= T_env + 1e-10):
+            continue
+            
+        y = np.log(segment['temperature_c'] - T_env)
+        x = segment['time_rel']
         
-        # Calculate fit metrics
-        T_pred = newton_cooling(t, *popt)
-        residuals = T - T_pred
-        ss_res = np.sum(residuals**2)
-        ss_tot = np.sum((T - np.mean(T))**2)
-        r_squared = 1 - (ss_res / ss_tot)
+        # Fit linear model
+        try:
+            coeffs = np.polyfit(x, y, 1)
+        except:
+            continue
+            
+        k = -coeffs[0]  # slope should be -k
+        intercept = coeffs[1]
+        T0 = np.exp(intercept) + T_env
+        
+        # Calculate R-squared
+        y_pred = np.polyval(coeffs, x)
+        ss_res = np.sum((y - y_pred)**2)
+        ss_tot = np.sum((y - np.mean(y))**2)
+        
+        if ss_tot == 0:
+            r2 = 1.0
+        else:
+            r2 = 1 - (ss_res / ss_tot)
+        
+        if r2 > best_r2:
+            best_r2 = r2
+            best_T_env = T_env
+            best_k = k
+            best_T0 = T0
+    
+    return best_T_env, best_k, best_T0, best_r2
+
+print("=== Newton's Law of Cooling Analysis ===")
+print("Using linearization method (ln(T-T_env) vs t should be linear)")
+print()
+
+results = []
+segments = [segment1, segment2, segment3]
+segment_names = ['Segment 1 (0-79 min)', 'Segment 2 (80-120 min)', 'Segment 3 (121-199 min)']
+
+for i, (seg, name) in enumerate(zip(segments, segment_names)):
+    print(f"{name}:")
+    print(f"  Data points: {len(seg)}")
+    print(f"  Temperature range: {seg['temperature_c'].min():.2f} to {seg['temperature_c'].max():.2f}°C")
+    
+    T_env, k, T0, r2 = fit_newton_by_linearization(seg, T_env_range=(0, 50), T_env_step=0.01)
+    
+    if T_env is not None:
+        half_life = np.log(2) / k if k > 0 else np.inf
+        
+        print(f"  Best fit ambient temperature (T_env): {T_env:.2f}°C")
+        print(f"  Best fit initial temperature (T0): {T0:.2f}°C")
+        print(f"  Best fit cooling constant (k): {k:.6f} /min")
+        print(f"  Half-life (ln(2)/k): {half_life:.2f} min")
+        print(f"  R-squared: {r2:.6f}")
+        
+        # Calculate predictions
+        t_fit = np.linspace(0, seg['time_rel'].max(), 100)
+        T_pred = newtons_cooling(t_fit, T_env, T0, k)
+        
+        # Calculate residuals
+        T_pred_data = newtons_cooling(seg['time_rel'], T_env, T0, k)
+        residuals = seg['temperature_c'] - T_pred_data
+        max_residual = np.max(np.abs(residuals))
         rmse = np.sqrt(np.mean(residuals**2))
         
-        # Calculate half-life
-        half_life = np.log(2) / popt[2] if popt[2] > 0 else np.inf
+        print(f"  Max residual: {max_residual:.6f}°C")
+        print(f"  RMSE: {rmse:.6f}°C")
         
-        newton_results[phase_name] = {
-            'params': popt,
-            'errors': perr,
-            'r_squared': r_squared,
-            'rmse': rmse,
-            'half_life': half_life
-        }
-        
-        print(f"\n{phase_name}:")
-        print(f"  T_env = {popt[0]:.3f} ± {perr[0]:.3f} °C")
-        print(f"  T0 = {popt[1]:.3f} ± {perr[1]:.3f} °C")
-        print(f"  k = {popt[2]:.4f} ± {perr[2]:.4f} min⁻¹")
-        print(f"  R² = {r_squared:.6f}")
-        print(f"  RMSE = {rmse:.4f} °C")
-        print(f"  Half-life = {half_life:.1f} minutes")
-        
-    except Exception as e:
-        print(f"\n{phase_name}: Fit failed - {e}")
-        newton_results[phase_name] = None
-
-# Compare cooling constants
-print("\n=== COMPARISON OF COOLING CONSTANTS ===")
-for phase_name in newton_results:
-    if newton_results[phase_name] is not None:
-        k = newton_results[phase_name]['params'][2]
-        k_err = newton_results[phase_name]['errors'][2]
-        print(f"{phase_name}: k = {k:.4f} ± {k_err:.4f} min⁻¹")
-
-# Test if data follows Newton's Law exactly for Phase 1
-# For Newton's Law, ln((T - T_env)/(T0 - T_env)) = -k*t should be linear
-print("\n=== TESTING LINEARITY OF LOG-TRANSFORMED DATA (Phase 1) ===")
-if 'Phase 1' in newton_results and newton_results['Phase 1'] is not None:
-    phase1_data = phase1.copy()
-    T_env = newton_results['Phase 1']['params'][0]
-    T0 = newton_results['Phase 1']['params'][1]
-    
-    # Transform according to Newton's Law
-    phase1_data['log_transform'] = np.log((phase1_data['temperature_c'] - T_env) / (T0 - T_env))
-    phase1_data['time_shifted'] = phase1_data['time_min'] - phase1_data['time_min'].min()
-    
-    # Fit linear model to transformed data
-    slope, intercept, r_value, p_value, std_err = stats.linregress(
-        phase1_data['time_shifted'], phase1_data['log_transform']
-    )
-    
-    print(f"Linear fit to transformed data:")
-    print(f"  Slope (should be -k) = {slope:.6f} (k = {-slope:.6f})")
-    print(f"  Intercept (should be 0) = {intercept:.6f}")
-    print(f"  R² = {r_value**2:.6f}")
-    print(f"  p-value = {p_value:.6f}")
-    
-    # Plot transformed data
-    plt.figure(figsize=(12, 5))
-    
-    plt.subplot(1, 2, 1)
-    plt.plot(phase1_data['time_shifted'], phase1_data['log_transform'], 'bo-', linewidth=1.5, markersize=4)
-    plt.xlabel('Time (minutes)')
-    plt.ylabel('ln((T-T_env)/(T0-T_env))')
-    plt.title('Log-Transformed Phase 1 Data')
-    plt.grid(True, alpha=0.3)
-    
-    # Add linear fit
-    x_fit = np.linspace(0, phase1_data['time_shifted'].max(), 100)
-    y_fit = intercept + slope * x_fit
-    plt.plot(x_fit, y_fit, 'r--', linewidth=2, label=f'Linear fit: slope={slope:.4f}')
-    plt.legend()
-    
-    plt.subplot(1, 2, 2)
-    residuals = phase1_data['log_transform'] - (intercept + slope * phase1_data['time_shifted'])
-    plt.plot(phase1_data['time_shifted'], residuals, 'ro-', linewidth=1.5, markersize=4)
-    plt.axhline(y=0, color='k', linestyle='--', alpha=0.5)
-    plt.xlabel('Time (minutes)')
-    plt.ylabel('Residuals')
-    plt.title('Residuals of Linear Fit')
-    plt.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.savefig('outputs/log_transform_phase1.png', dpi=150)
-    plt.savefig('report/images/log_transform_phase1.png', dpi=150)
-    plt.close()
-
-# Try alternative model: Power-law cooling for Phase 1
-print("\n=== ALTERNATIVE MODEL: POWER-LAW COOLING (Phase 1) ===")
-if len(phase1) > 10:
-    t = phase1['time_min'].values - phase1['time_min'].min()
-    T = phase1['temperature_c'].values
-    
-    # Initial guesses
-    T_env_guess = T[-1]
-    T0_guess = T[0]
-    a_guess = 0.01
-    b_guess = 1.0
-    
-    try:
-        popt_power, pcov_power = curve_fit(power_law_cooling, t, T, 
-                                          p0=[T_env_guess, T0_guess, a_guess, b_guess],
-                                          bounds=([10, 70, 0.0001, 0.1], [40, 90, 1.0, 5.0]),
-                                          maxfev=5000)
-        
-        T_pred_power = power_law_cooling(t, *popt_power)
-        residuals_power = T - T_pred_power
-        ss_res_power = np.sum(residuals_power**2)
-        ss_tot_power = np.sum((T - np.mean(T))**2)
-        r_squared_power = 1 - (ss_res_power / ss_tot_power)
-        rmse_power = np.sqrt(np.mean(residuals_power**2))
-        
-        print(f"Power-law fit parameters:")
-        print(f"  T_env = {popt_power[0]:.3f} °C")
-        print(f"  T0 = {popt_power[1]:.3f} °C")
-        print(f"  a = {popt_power[2]:.6f}")
-        print(f"  b = {popt_power[3]:.6f}")
-        print(f"  R² = {r_squared_power:.6f}")
-        print(f"  RMSE = {rmse_power:.4f} °C")
-        
-        # Compare with Newton model
-        if 'Phase 1' in newton_results and newton_results['Phase 1'] is not None:
-            newton_rmse = newton_results['Phase 1']['rmse']
-            print(f"\nComparison with Newton model:")
-            print(f"  Newton RMSE: {newton_rmse:.4f} °C")
-            print(f"  Power-law RMSE: {rmse_power:.4f} °C")
-            print(f"  Difference: {abs(newton_rmse - rmse_power):.6f} °C")
-            
-    except Exception as e:
-        print(f"Power-law fit failed: {e}")
+        results.append({
+            'segment': name,
+            'T_env': T_env,
+            'T0': T0,
+            'k': k,
+            'half_life': half_life,
+            'r2': r2,
+            'max_residual': max_residual,
+            'rmse': rmse
+        })
+    else:
+        print(f"  Could not fit (temperature too close to ambient?)")
+    print()
 
 # Create comprehensive visualization
-print("\n=== CREATING COMPREHENSIVE VISUALIZATION ===")
-plt.figure(figsize=(16, 10))
+fig = plt.figure(figsize=(16, 12))
 
-# Plot 1: Raw data with phases
-plt.subplot(2, 2, 1)
-plt.plot(df['time_min'], df['temperature_c'], 'k-', alpha=0.7, linewidth=1.5, label='Data')
-plt.axvline(x=80, color='r', linestyle='--', alpha=0.5, label='Intervention 1')
-plt.axvline(x=121, color='r', linestyle=':', alpha=0.5, label='Intervention 2')
-plt.fill_betweenx([20, 90], 0, 79, alpha=0.1, color='blue', label='Phase 1')
-plt.fill_betweenx([20, 90], 80, 120, alpha=0.1, color='green', label='Phase 2')
-plt.fill_betweenx([20, 90], 121, 199, alpha=0.1, color='orange', label='Phase 3')
-plt.xlabel('Time (minutes)')
-plt.ylabel('Temperature (°C)')
-plt.title('Beverage Cooling Data with Interventions')
-plt.grid(True, alpha=0.3)
-plt.legend(loc='upper right')
+# Plot 1: Full temperature series with fits
+ax1 = plt.subplot(2, 2, 1)
+ax1.plot(df['time_min'], df['temperature_c'], 'b.-', alpha=0.7, label='Data')
 
-# Plot 2: Newton fits for each phase
-plt.subplot(2, 2, 2)
-plt.plot(df['time_min'], df['temperature_c'], 'k-', alpha=0.5, linewidth=1, label='Data')
+# Plot fitted curves
+colors = ['red', 'green', 'purple']
+for i, (seg, name, color) in enumerate(zip(segments, segment_names, colors)):
+    if i < len(results):
+        res = results[i]
+        t_plot = np.linspace(seg['time_min'].min(), seg['time_min'].max(), 100)
+        t_rel = t_plot - seg['time_min'].min()
+        T_fit = newtons_cooling(t_rel, res['T_env'], res['T0'], res['k'])
+        ax1.plot(t_plot, T_fit, color=color, linewidth=2, 
+                label=f"{name}: T_env={res['T_env']:.1f}°C, k={res['k']:.4f}/min")
 
-colors = ['blue', 'green', 'red']
-for idx, (phase_name, phase_data, time_offset) in enumerate(phases):
-    if phase_name in newton_results and newton_results[phase_name] is not None:
-        t_fine = np.linspace(time_offset, time_offset + (phase_data['time_min'].max() - phase_data['time_min'].min()), 100)
-        t_fine_shifted = t_fine - time_offset
-        T_fit = newton_cooling(t_fine_shifted, *newton_results[phase_name]['params'])
-        plt.plot(t_fine, T_fit, colors[idx] + '--', linewidth=2, 
-                label=f'{phase_name}: k={newton_results[phase_name]["params"][2]:.4f}')
+ax1.set_xlabel('Time (minutes)')
+ax1.set_ylabel('Temperature (°C)')
+ax1.set_title('Beverage Cooling: Data and Newton\'s Law Fits')
+ax1.grid(True, alpha=0.3)
+ax1.legend(loc='upper right', fontsize=9)
 
-plt.xlabel('Time (minutes)')
-plt.ylabel('Temperature (°C)')
-plt.title("Newton's Law Fits to Each Phase")
-plt.grid(True, alpha=0.3)
-plt.legend()
+# Plot 2: Residuals
+ax2 = plt.subplot(2, 2, 2)
+for i, (seg, name, color) in enumerate(zip(segments, segment_names, colors)):
+    if i < len(results):
+        res = results[i]
+        T_pred = newtons_cooling(seg['time_rel'], res['T_env'], res['T0'], res['k'])
+        residuals = seg['temperature_c'] - T_pred
+        ax2.plot(seg['time_min'], residuals, '.-', color=color, alpha=0.7, label=name)
 
-# Plot 3: Cooling rate (dT/dt) vs temperature
-plt.subplot(2, 2, 3)
-# Calculate cooling rate using finite differences
-df['cooling_rate'] = -df['temperature_c'].diff() / df['time_min'].diff()  # Negative for cooling
-# Remove first point (NaN) and anomalies
-cooling_df = df.iloc[1:].copy()
-cooling_df = cooling_df[~cooling_df['time_min'].isin([80, 121])]  # Remove intervention points
+ax2.axhline(y=0, color='k', linestyle='--', alpha=0.5)
+ax2.set_xlabel('Time (minutes)')
+ax2.set_ylabel('Residual (°C)')
+ax2.set_title('Residuals from Newton\'s Law Fits')
+ax2.grid(True, alpha=0.3)
+ax2.legend()
 
-plt.scatter(cooling_df['temperature_c'], cooling_df['cooling_rate'], alpha=0.6, s=20)
-plt.xlabel('Temperature (°C)')
-plt.ylabel('Cooling Rate (°C/min)')
-plt.title('Cooling Rate vs Temperature')
-plt.grid(True, alpha=0.3)
+# Plot 3: Linearized plots (ln(T-T_env) vs time)
+ax3 = plt.subplot(2, 2, 3)
+for i, (seg, name, color) in enumerate(zip(segments, segment_names, colors)):
+    if i < len(results):
+        res = results[i]
+        y = np.log(seg['temperature_c'] - res['T_env'])
+        ax3.plot(seg['time_rel'], y, '.-', color=color, alpha=0.7, label=name)
+        
+        # Add linear fit line
+        coeffs = np.polyfit(seg['time_rel'], y, 1)
+        y_fit = np.polyval(coeffs, seg['time_rel'])
+        ax3.plot(seg['time_rel'], y_fit, '--', color=color, alpha=0.5, linewidth=1)
 
-# For Newton's Law, cooling rate = -k*(T - T_env) should be linear
-# Add linear fit if we have phase 1 Newton parameters
-if 'Phase 1' in newton_results and newton_results['Phase 1'] is not None:
-    k = newton_results['Phase 1']['params'][2]
-    T_env = newton_results['Phase 1']['params'][0]
-    T_range = np.linspace(25, 85, 100)
-    cooling_rate_newton = k * (T_range - T_env)
-    plt.plot(T_range, cooling_rate_newton, 'r-', linewidth=2, 
-             label=f"Newton: dT/dt = -{k:.4f}(T-{T_env:.1f})")
-    plt.legend()
+ax3.set_xlabel('Time (minutes, relative to segment start)')
+ax3.set_ylabel('ln(T - T_env)')
+ax3.set_title('Linearized Form: ln(T - T_env) vs Time')
+ax3.grid(True, alpha=0.3)
+ax3.legend()
 
-# Plot 4: Residuals if we fit single Newton model to entire dataset
-plt.subplot(2, 2, 4)
-# Fit single Newton model to entire dataset (for comparison)
-t_full = df['time_min'].values - df['time_min'].min()
-T_full = df['temperature_c'].values
-
-try:
-    popt_full, _ = curve_fit(newton_cooling, t_full, T_full, 
-                            p0=[30, T_full[0], 0.01],
-                            bounds=([20, 70, 0.001], [40, 90, 0.1]))
+# Plot 4: Parameter comparison
+ax4 = plt.subplot(2, 2, 4)
+if results:
+    segments_list = [r['segment'] for r in results]
+    T_env_values = [r['T_env'] for r in results]
+    k_values = [r['k'] for r in results]
     
-    T_pred_full = newton_cooling(t_full, *popt_full)
-    residuals_full = T_full - T_pred_full
+    x = np.arange(len(results))
+    width = 0.35
     
-    plt.plot(df['time_min'], residuals_full, 'ko-', alpha=0.7, linewidth=1, markersize=3)
-    plt.axhline(y=0, color='r', linestyle='--', alpha=0.5)
-    plt.axvline(x=80, color='b', linestyle='--', alpha=0.3)
-    plt.axvline(x=121, color='b', linestyle='--', alpha=0.3)
-    plt.xlabel('Time (minutes)')
-    plt.ylabel('Residuals (°C)')
-    plt.title('Residuals: Single Newton Model Fit to Entire Dataset')
-    plt.grid(True, alpha=0.3)
+    bars1 = ax4.bar(x - width/2, T_env_values, width, label='T_env (°C)', color='skyblue')
+    ax4_twin = ax4.twinx()
+    bars2 = ax4_twin.bar(x + width/2, k_values, width, label='k (/min)', color='lightcoral')
     
-    # Add annotation about interventions
-    plt.text(80, max(residuals_full)*0.8, 'Intervention 1', rotation=90, alpha=0.7)
-    plt.text(121, max(residuals_full)*0.8, 'Intervention 2', rotation=90, alpha=0.7)
+    ax4.set_xlabel('Segment')
+    ax4.set_ylabel('Ambient Temperature T_env (°C)', color='skyblue')
+    ax4_twin.set_ylabel('Cooling Constant k (/min)', color='lightcoral')
+    ax4.set_xticks(x)
+    ax4.set_xticklabels([s[:15] + '...' for s in segments_list])
+    ax4.set_title('Comparison of Fitted Parameters')
     
-except Exception as e:
-    plt.text(0.5, 0.5, f'Fit failed: {str(e)[:50]}...', 
-             horizontalalignment='center', verticalalignment='center',
-             transform=plt.gca().transAxes)
-    plt.title('Residuals Plot (Fit Failed)')
+    # Add value labels
+    for bar, val in zip(bars1, T_env_values):
+        ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height(), f'{val:.1f}', 
+                ha='center', va='bottom', fontsize=9)
+    
+    for bar, val in zip(bars2, k_values):
+        ax4_twin.text(bar.get_x() + bar.get_width()/2, bar.get_height(), f'{val:.4f}', 
+                     ha='center', va='bottom', fontsize=9)
 
 plt.tight_layout()
-plt.savefig('outputs/comprehensive_analysis.png', dpi=150)
-plt.savefig('report/images/comprehensive_analysis.png', dpi=150)
+plt.savefig('../report/images/comprehensive_analysis.png', dpi=150)
 plt.close()
 
-print("\nAnalysis complete. Figures saved to outputs/ and report/images/")
+# Save results to CSV
+if results:
+    results_df = pd.DataFrame(results)
+    results_df.to_csv('../outputs/newton_fitting_results.csv', index=False)
+    print("Results saved to outputs/newton_fitting_results.csv")
+
+# Additional analysis: What if we model the whole series with piecewise function?
+print("\n=== Piecewise Model Analysis ===")
+print("Considering the whole series as piecewise Newton cooling with interventions at t=80 and t=121")
+print()
+
+# The piecewise model would be:
+# T(t) = T_env1 + (85 - T_env1) * exp(-k1*t) for 0 ≤ t < 80
+# T(t) = T_env2 + (T(80) - T_env2) * exp(-k2*(t-80)) for 80 ≤ t < 121
+# T(t) = T_env3 + (T(121) - T_env3) * exp(-k3*(t-121)) for t ≥ 121
+
+# From our segment fits:
+print("Piecewise model parameters:")
+for res in results:
+    print(f"  {res['segment']}: T_env = {res['T_env']:.2f}°C, k = {res['k']:.6f}/min")
+
+print("\n=== Physical Interpretation ===")
+print("1. Segment 1 (0-79 min): Beverage cools from 85°C in ~25°C room")
+print("2. At t=80 min: Temperature jumps to 54.24°C (possibly reheated or moved to warmer environment)")
+print("3. Segment 2 (80-120 min): Cools in ~34°C environment")
+print("4. At t=121 min: Temperature drops to 39.83°C (possibly moved to cooler environment)")
+print("5. Segment 3 (121-199 min): Cools in ~31.5°C environment")
+print("\nThe cooling constant k ≈ 0.01155/min is consistent across segments,")
+print("suggesting the same beverage properties but different ambient temperatures.")

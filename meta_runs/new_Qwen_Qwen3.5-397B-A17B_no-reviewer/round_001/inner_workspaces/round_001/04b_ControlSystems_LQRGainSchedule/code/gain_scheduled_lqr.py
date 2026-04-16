@@ -1,406 +1,279 @@
 #!/usr/bin/env python3
 """
-Gain-Scheduled LQR Controller with H-infinity Guard and Anti-windup
+Gain-Scheduled LQR Controller with Anti-Windup
 
-This module implements a gain-scheduled LQR controller for a nonlinear plant
-using linearizations at multiple operating points.
+This module implements a gain-scheduled LQR controller that:
+1. Computes LQR gains at tabulated operating points
+2. Interpolates gains continuously in the scheduling variable
+3. Includes anti-windup for actuator saturation at +/-0.9
+4. Verifies H-infinity norm < 1.0 for weighted outputs
 """
 
-import numpy as np
 import json
+import numpy as np
+from scipy import signal
+from scipy.linalg import solve_discrete_are
 import matplotlib.pyplot as plt
-from scipy.linalg import solve_discrete_are, eig
-from scipy.signal import lti, dlti
-import os
 
-class GainScheduledLQR:
-    """
-    Gain-scheduled LQR controller with linear interpolation between operating points.
-    Includes H-infinity constraint verification and gain adjustment.
-    """
+# Load plant linearization data
+with open('data/plant_linearizations.json', 'r') as f:
+    plant_data = json.load(f)
+
+dt = plant_data['dt']
+points = plant_data['points']
+weights_Q = np.array(plant_data['weights']['Q'])
+weights_R = np.array(plant_data['weights']['R'])
+
+# Extract scheduling grid and system matrices
+z_grid = np.array([p['z'] for p in points])
+A_matrices = [np.array(p['A']) for p in points]
+B_matrices = [np.array(p['B']) for p in points]
+
+print(f"Sampling time: dt = {dt}")
+print(f"Scheduling grid: z = {z_grid}")
+print(f"Number of operating points: {len(points)}")
+print(f"State dimension: {A_matrices[0].shape[0]}")
+print(f"Input dimension: {B_matrices[0].shape[1]}")
+
+# Compute LQR gains at each operating point
+def compute_lqr_gain(A, B, Q, R):
+    """Compute discrete-time LQR gain K such that u = -Kx"""
+    P = solve_discrete_are(A, B, Q, R)
+    K = np.linalg.solve(R + B.T @ P @ B, B.T @ P @ A)
+    return K, P
+
+print("\n=== Computing LQR Gains ===")
+K_gains = []
+P_matrices = []
+for i, (A, B) in enumerate(zip(A_matrices, B_matrices)):
+    K, P = compute_lqr_gain(A, B, weights_Q, weights_R)
+    K_gains.append(K)
+    P_matrices.append(P)
+    print(f"Operating point z={z_grid[i]}: K = {K.flatten()}")
+
+# Gain scheduling via linear interpolation
+def interpolate_gain(z, z_grid, gains_list):
+    """Interpolate gain for arbitrary scheduling variable z"""
+    if z <= z_grid[0]:
+        return gains_list[0]
+    elif z >= z_grid[-1]:
+        return gains_list[-1]
+    else:
+        for i in range(len(z_grid) - 1):
+            if z_grid[i] <= z <= z_grid[i+1]:
+                alpha = (z - z_grid[i]) / (z_grid[i+1] - z_grid[i])
+                K = (1 - alpha) * gains_list[i] + alpha * gains_list[i+1]
+                return K
+    return gains_list[-1]
+
+# Anti-windup implementation
+class AntiWindupLQR:
+    """LQR controller with anti-windup for actuator saturation"""
     
-    def __init__(self, plant_data, h_inf_threshold=1.0):
-        self.dt = plant_data['dt']
-        self.points = plant_data['points']
-        self.Q_base = np.array(plant_data['weights']['Q'])
-        self.R_base = np.array(plant_data['weights']['R'])
-        self.h_inf_threshold = h_inf_threshold
-        
-        # Adjust weights to meet H-infinity constraint
-        # Scale Q up and R down for more aggressive control
-        self.Q = self.Q_base * 2.0
-        self.R = self.R_base * 0.5
-        
-        # Compute LQR gains at each operating point
-        self.gains = []
-        self.operating_points = []
-        
-        for point in self.points:
-            z = point['z']
-            A = np.array(point['A'])
-            B = np.array(point['B'])
-            
-            # Solve discrete-time algebraic Riccati equation
-            P = solve_discrete_are(A, B, self.Q, self.R)
-            
-            # Compute optimal gain: K = (R + B'PB)^(-1) B'PA
-            K = np.linalg.solve(self.R + B.T @ P @ B, B.T @ P @ A)
-            
-            self.gains.append(K)
-            self.operating_points.append(z)
-        
-        self.operating_points = np.array(self.operating_points)
-        self.gains = np.array(self.gains).squeeze()
+    def __init__(self, K_gains, z_grid, sat_limit=0.9, anti_windup_gain=0.5):
+        self.K_gains = K_gains
+        self.z_grid = z_grid
+        self.sat_limit = sat_limit
+        self.anti_windup_gain = anti_windup_gain
         
     def get_gain(self, z):
-        """
-        Get interpolated LQR gain for operating point z.
-        Uses linear interpolation between known operating points.
-        """
-        # Clamp z to valid range
-        z_clamped = np.clip(z, self.operating_points.min(), self.operating_points.max())
-        
-        # Linear interpolation for each component of the gain vector
-        # self.gains is shape (n_points, n_states)
-        n_states = self.gains.shape[1]
-        gain = np.zeros(n_states)
-        for i in range(n_states):
-            gain[i] = np.interp(z_clamped, self.operating_points, self.gains[:, i])
-        
-        return gain
+        return interpolate_gain(z, self.z_grid, self.K_gains)
     
-    def simulate(self, x0, reference, n_steps, z_trajectory=None, 
-                 sat_limit=0.9, anti_windup=True):
-        """
-        Simulate the closed-loop system with gain-scheduled LQR.
+    def compute_control(self, x, z, x_ref=None):
+        if x_ref is None:
+            x_ref = np.zeros(x.shape)
         
-        Parameters:
-        -----------
-        x0 : array-like
-            Initial state
-        reference : array-like or float
-            Reference signal (can be scalar or array of length n_steps)
-        n_steps : int
-            Number of simulation steps
-        z_trajectory : array-like, optional
-            Trajectory of scheduling variable z (if None, uses first state)
-        sat_limit : float
-            Actuator saturation limit
-        anti_windup : bool
-            Whether to apply anti-windup compensation
-            
-        Returns:
-        --------
-        results : dict
-            Dictionary containing states, inputs, gains, and z values
-        """
-        x = np.array(x0).flatten()
-        n_states = len(x)
-        
-        # Handle reference signal
-        if np.isscalar(reference):
-            reference = np.full(n_steps, reference)
-        else:
-            reference = np.array(reference)
-            if len(reference) < n_steps:
-                reference = np.interp(np.linspace(0, len(reference)-1, n_steps), 
-                                     np.arange(len(reference)), reference)
-        
-        # Storage
-        states = np.zeros((n_steps, n_states))
-        inputs = np.zeros(n_steps)
-        gains_used = np.zeros(n_steps)
-        z_values = np.zeros(n_steps)
-        references = np.zeros(n_steps)
-        
-        # Integrator for anti-windup
-        integrator = 0.0
-        
-        for k in range(n_steps):
-            # Get scheduling variable
-            if z_trajectory is not None:
-                z = z_trajectory[k] if k < len(z_trajectory) else z_trajectory[-1]
-            else:
-                z = x[0]  # Use first state as scheduling variable
-            
-            z_values[k] = z
-            references[k] = reference[k]
-            
-            # Get interpolated gain
-            K = self.get_gain(z)
-            gains_used[k] = K[0]  # Store first component for visualization
-            
-            # Compute control law with integral action
-            error = reference[k] - x[0]
-            integrator_new = integrator + error * self.dt
-            
-            # Nominal control
-            u_nominal = -K @ x + 0.1 * integrator_new  # Small integral gain
-            
-            # Apply saturation with anti-windup
-            if anti_windup:
-                if u_nominal > sat_limit:
-                    u = sat_limit
-                    # Anti-windup: reduce integrator
-                    integrator = integrator_new - (u_nominal - sat_limit) / 0.1
-                elif u_nominal < -sat_limit:
-                    u = -sat_limit
-                    # Anti-windup: increase integrator
-                    integrator = integrator_new - (u_nominal + sat_limit) / 0.1
-                else:
-                    u = u_nominal
-                    integrator = integrator_new
-            else:
-                u = np.clip(u_nominal, -sat_limit, sat_limit)
-                integrator = integrator_new
-            
-            inputs[k] = u
-            
-            # Get plant matrices for current z (interpolated)
-            A, B = self.get_interpolated_plant(z)
-            
-            # State update
-            x = A @ x + B.flatten() * u
-            states[k] = x
-        
-        return {
-            'states': states,
-            'inputs': inputs,
-            'gains': gains_used,
-            'z_values': z_values,
-            'references': references,
-            'time': np.arange(n_steps) * self.dt
-        }
-    
-    def get_interpolated_plant(self, z):
-        """
-        Get interpolated plant matrices A and B for scheduling variable z.
-        """
-        z_clamped = np.clip(z, self.operating_points.min(), self.operating_points.max())
-        
-        # Find bracketing points
-        idx = np.searchsorted(self.operating_points, z_clamped) - 1
-        idx = np.clip(idx, 0, len(self.operating_points) - 2)
-        
-        z1, z2 = self.operating_points[idx], self.operating_points[idx + 1]
-        alpha = (z_clamped - z1) / (z2 - z1) if z2 != z1 else 0
-        
-        A1 = np.array(self.points[idx]['A'])
-        A2 = np.array(self.points[idx + 1]['A'])
-        B1 = np.array(self.points[idx]['B'])
-        B2 = np.array(self.points[idx + 1]['B'])
-        
-        A = (1 - alpha) * A1 + alpha * A2
-        B = (1 - alpha) * B1 + alpha * B2
-        
-        return A, B
-    
-    def compute_h_infinity_norm(self, z):
-        """
-        Compute H-infinity norm of closed-loop system at operating point z.
-        
-        For discrete-time system:
-        x[k+1] = A_cl x[k] + B w[k]
-        y[k] = C x[k]
-        
-        H-inf norm = max singular value of transfer function over all frequencies
-        """
-        A, B = self.get_interpolated_plant(z)
         K = self.get_gain(z)
+        u_nominal = -K @ (x - x_ref)
+        u_saturated = np.clip(u_nominal, -self.sat_limit, self.sat_limit)
+        saturation_error = u_saturated - u_nominal
+        u_aw = u_saturated + self.anti_windup_gain * saturation_error
+        u_final = np.clip(u_aw, -self.sat_limit, self.sat_limit)
         
-        # K is a row vector (1 x n_states), reshape for matrix multiplication
-        K = K.reshape(1, -1)
-        
-        # Closed-loop A matrix
-        A_cl = A - B @ K
-        
-        # Weighted output: y = C x where C comes from Q = C'C
-        # Using Cholesky decomposition of Q
-        C = np.linalg.cholesky(self.Q).T
-        
-        # For discrete-time H-infinity norm, we compute the maximum singular value
-        # of the frequency response over [0, pi/dt]
-        n_freq = 1000
-        omega = np.linspace(0, np.pi / self.dt, n_freq)
-        
-        max_sv = 0
-        for w in omega:
-            e_iw = np.exp(1j * w * self.dt)
-            # Transfer function: G(z) = C (zI - A_cl)^(-1) B
-            try:
-                z_inv = np.linalg.inv(e_iw * np.eye(A_cl.shape[0]) - A_cl)
-                G = C @ z_inv @ B
-                sv = np.linalg.norm(G)  # For SISO, this is the magnitude
-                max_sv = max(max_sv, sv)
-            except:
-                continue
-        
-        return max_sv
-    
-    def verify_h_infinity_constraint(self, threshold=1.0):
-        """
-        Verify H-infinity norm constraint across all operating points.
-        
-        Returns:
-        --------
-        valid : bool
-            True if constraint is satisfied at all points
-        results : dict
-            Dictionary with z values and corresponding H-inf norms
-        """
-        z_test = np.linspace(self.operating_points.min(), 
-                            self.operating_points.max(), 50)
-        
-        h_inf_norms = []
-        for z in z_test:
-            norm = self.compute_h_infinity_norm(z)
-            h_inf_norms.append(norm)
-        
-        h_inf_norms = np.array(h_inf_norms)
-        valid = np.all(h_inf_norms < threshold)
-        
-        return valid, {
-            'z_values': z_test,
-            'h_inf_norms': h_inf_norms,
-            'max_norm': np.max(h_inf_norms),
-            'threshold': threshold
-        }
+        return u_final, u_nominal, u_saturated
 
+# H-infinity norm computation
+def compute_hinf_norm(A, B, C, D):
+    """Compute H-infinity norm using frequency response method."""
+    w = np.logspace(-3, 3, 1000)
+    w_d = w * dt
+    
+    max_sv = 0
+    for wd in w_d:
+        z = np.exp(1j * wd)
+        try:
+            H = C @ np.linalg.solve(z * np.eye(A.shape[0]) - A, B) + D
+            sv = np.linalg.norm(H, 2)
+            max_sv = max(max_sv, sv)
+        except:
+            continue
+    
+    return max_sv
 
-def main():
-    # Load plant data
-    with open('data/plant_linearizations.json', 'r') as f:
-        plant_data = json.load(f)
-    
-    print("=" * 60)
-    print("Gain-Scheduled LQR Controller Design")
-    print("=" * 60)
-    
-    # Create controller
-    controller = GainScheduledLQR(plant_data)
-    
-    print(f"\nOperating points: {controller.operating_points}")
-    print(f"LQR gains at operating points: {controller.gains}")
-    
-    # Verify H-infinity constraint
-    print("\n" + "-" * 60)
-    print("H-infinity Norm Verification")
-    print("-" * 60)
-    
-    valid, h_inf_results = controller.verify_h_infinity_constraint(threshold=1.0)
-    print(f"H-infinity constraint satisfied: {valid}")
-    print(f"Maximum H-infinity norm: {h_inf_results['max_norm']:.4f}")
-    print(f"Threshold: {h_inf_results['threshold']}")
-    
-    # Run simulation
-    print("\n" + "-" * 60)
-    print("Simulation Results")
-    print("-" * 60)
-    
-    # Scenario 1: Step response at z=2
-    x0 = [0.5, 0.0]
-    reference = 1.0
-    n_steps = 500
-    
-    # Create z trajectory that varies with time
-    t = np.arange(n_steps) * controller.dt
-    z_trajectory = 2 + 0.5 * np.sin(0.5 * t)  # Varies between 1.5 and 2.5
-    
-    results = controller.simulate(x0, reference, n_steps, z_trajectory=z_trajectory,
-                                  sat_limit=0.9, anti_windup=True)
-    
-    print(f"Initial state: {x0}")
-    print(f"Reference: {reference}")
-    print(f"Final state: {results['states'][-1]}")
-    print(f"Max input magnitude: {np.max(np.abs(results['inputs'])):.4f}")
-    
-    # Save results
-    os.makedirs('outputs', exist_ok=True)
-    np.savez('outputs/simulation_results.npz', **results)
-    
-    # Generate plots
-    os.makedirs('report/images', exist_ok=True)
-    
-    # Plot 1: State trajectories
-    plt.figure(figsize=(10, 6))
-    plt.plot(results['time'], results['states'][:, 0], 'b-', linewidth=2, label='x1')
-    plt.plot(results['time'], results['states'][:, 1], 'r--', linewidth=2, label='x2')
-    plt.plot(results['time'], results['references'], 'g:', linewidth=2, label='Reference')
-    plt.xlabel('Time (s)', fontsize=12)
-    plt.ylabel('State', fontsize=12)
-    plt.title('State Trajectories with Gain-Scheduled LQR', fontsize=14)
-    plt.legend(loc='best')
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig('report/images/state_trajectories.png', dpi=150)
-    plt.close()
-    
-    # Plot 2: Control input
-    plt.figure(figsize=(10, 6))
-    plt.plot(results['time'], results['inputs'], 'b-', linewidth=2)
-    plt.axhline(y=0.9, color='r', linestyle='--', alpha=0.7, label='Saturation limit')
-    plt.axhline(y=-0.9, color='r', linestyle='--', alpha=0.7)
-    plt.xlabel('Time (s)', fontsize=12)
-    plt.ylabel('Control Input', fontsize=12)
-    plt.title('Control Input with Anti-windup (±0.9 saturation)', fontsize=14)
-    plt.legend(loc='best')
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig('report/images/control_input.png', dpi=150)
-    plt.close()
-    
-    # Plot 3: Scheduling variable and gains
-    plt.figure(figsize=(10, 6))
-    ax1 = plt.gca()
-    ax1.plot(results['time'], results['z_values'], 'b-', linewidth=2, label='z (scheduling var)')
-    ax1.set_xlabel('Time (s)', fontsize=12)
-    ax1.set_ylabel('Scheduling Variable z', fontsize=12, color='b')
-    ax1.tick_params(axis='y', labelcolor='b')
-    
-    ax2 = ax1.twinx()
-    ax2.plot(results['time'], results['gains'], 'r--', linewidth=2, label='LQR Gain K')
-    ax2.set_ylabel('LQR Gain', fontsize=12, color='r')
-    ax2.tick_params(axis='y', labelcolor='r')
-    
-    plt.title('Scheduling Variable and Interpolated LQR Gain', fontsize=14)
-    lines1, labels1 = ax1.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines1 + lines2, labels1 + labels2, loc='best')
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig('report/images/scheduling_gain.png', dpi=150)
-    plt.close()
-    
-    # Plot 4: H-infinity norm across operating range
-    plt.figure(figsize=(10, 6))
-    plt.plot(h_inf_results['z_values'], h_inf_results['h_inf_norms'], 'b-', linewidth=2)
-    plt.axhline(y=1.0, color='r', linestyle='--', linewidth=2, label='Threshold (1.0)')
-    plt.xlabel('Scheduling Variable z', fontsize=12)
-    plt.ylabel('H-infinity Norm', fontsize=12)
-    plt.title('H-infinity Norm vs Operating Point', fontsize=14)
-    plt.legend(loc='best')
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig('report/images/h_infinity_norm.png', dpi=150)
-    plt.close()
-    
-    # Plot 5: LQR gains at operating points
-    plt.figure(figsize=(10, 6))
-    plt.plot(controller.operating_points, controller.gains, 'bo-', linewidth=2, markersize=8)
-    plt.xlabel('Operating Point z', fontsize=12)
-    plt.ylabel('LQR Gain K', fontsize=12)
-    plt.title('LQR Gains at Linearization Points', fontsize=14)
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig('report/images/lqr_gains.png', dpi=150)
-    plt.close()
-    
-    print("\n" + "=" * 60)
-    print("Results saved to outputs/ and report/images/")
-    print("=" * 60)
-    
-    return controller, results, h_inf_results
+print("\n=== H-infinity Norm Verification ===")
+C1 = np.linalg.cholesky(weights_Q).T
+D1 = np.linalg.cholesky(weights_R).T
 
+hinf_results = []
+for i, (A, B, K) in enumerate(zip(A_matrices, B_matrices, K_gains)):
+    A_cl = A - B @ K
+    C_cl = C1 - D1 @ K
+    D_cl = np.zeros((C1.shape[0], B.shape[1]))
+    
+    hinf_norm = compute_hinf_norm(A_cl, B, C_cl, D_cl)
+    hinf_results.append(hinf_norm)
+    
+    status = "PASS" if hinf_norm < 1.0 else "FAIL"
+    print(f"Operating point z={z_grid[i]}: H-inf norm = {hinf_norm:.4f} [{status}]")
 
-if __name__ == '__main__':
-    main()
+# Simulation
+def simulate_gain_scheduled_lqr(T=10.0, x0=np.array([1.0, 0.5]), 
+                                 z_trajectory=None, x_ref=None):
+    n_steps = int(T / dt)
+    n_states = A_matrices[0].shape[0]
+    n_inputs = B_matrices[0].shape[1]
+    
+    x_hist = np.zeros((n_steps + 1, n_states))
+    u_hist = np.zeros((n_steps + 1, n_inputs))
+    u_nom_hist = np.zeros((n_steps + 1, n_inputs))
+    u_sat_hist = np.zeros((n_steps + 1, n_inputs))
+    z_hist = np.zeros(n_steps + 1)
+    
+    x_hist[0] = x0
+    
+    if z_trajectory is None:
+        z_trajectory = np.ones(n_steps) * np.mean(z_grid)
+    
+    if x_ref is None:
+        x_ref = np.zeros(n_states)
+    
+    controller = AntiWindupLQR(K_gains, z_grid, sat_limit=0.9)
+    
+    for k in range(n_steps):
+        z = z_trajectory[k] if k < len(z_trajectory) else z_trajectory[-1]
+        z_hist[k] = z
+        
+        A_curr = interpolate_gain(z, z_grid, A_matrices)
+        B_curr = interpolate_gain(z, z_grid, B_matrices)
+        
+        u, u_nom, u_sat = controller.compute_control(x_hist[k], z, x_ref)
+        u_hist[k] = u
+        u_nom_hist[k] = u_nom
+        u_sat_hist[k] = u_sat
+        
+        x_hist[k+1] = A_curr @ x_hist[k] + B_curr @ u
+    
+    z_hist[n_steps] = z_hist[n_steps-1]
+    
+    return x_hist, u_hist, u_nom_hist, u_sat_hist, z_hist
+
+print("\n=== Running Simulation ===")
+
+T = 5.0
+x0 = np.array([1.0, 0.5])
+z_fixed = 2.5
+z_traj_fixed = np.ones(int(T/dt)) * z_fixed
+
+x_hist, u_hist, u_nom_hist, u_sat_hist, z_hist = simulate_gain_scheduled_lqr(
+    T=T, x0=x0, z_trajectory=z_traj_fixed
+)
+
+t = np.linspace(0, T, int(T/dt))
+z_traj_varying = 1.0 + 0.75 * np.sin(2 * np.pi * t / T)
+
+x_hist_v, u_hist_v, u_nom_hist_v, u_sat_hist_v, z_hist_v = simulate_gain_scheduled_lqr(
+    T=T, x0=x0, z_trajectory=z_traj_varying
+)
+
+# Plotting
+fig, axes = plt.subplots(3, 2, figsize=(14, 10))
+
+ax = axes[0, 0]
+ax.plot(t, x_hist[:-1, 0], 'b-', label='x1')
+ax.plot(t, x_hist[:-1, 1], 'r-', label='x2')
+ax.set_xlabel('Time (s)')
+ax.set_ylabel('State')
+ax.set_title(f'States (Fixed z={z_fixed})')
+ax.legend()
+ax.grid(True)
+
+ax = axes[1, 0]
+ax.plot(t, u_hist[:-1], 'g-', label='u (with AW)')
+ax.plot(t, u_nom_hist[:-1], 'k--', label='u (nominal)', alpha=0.5)
+ax.axhline(0.9, color='r', linestyle=':', label='Saturation limit')
+ax.axhline(-0.9, color='r', linestyle=':')
+ax.set_xlabel('Time (s)')
+ax.set_ylabel('Control Input')
+ax.set_title('Control Input with Anti-Windup')
+ax.legend()
+ax.grid(True)
+
+ax = axes[2, 0]
+ax.plot(t, z_hist[:-1], 'm-')
+ax.set_xlabel('Time (s)')
+ax.set_ylabel('Scheduling Variable z')
+ax.set_title('Scheduling Variable (Fixed)')
+ax.grid(True)
+
+ax = axes[0, 1]
+ax.plot(t, x_hist_v[:-1, 0], 'b-', label='x1')
+ax.plot(t, x_hist_v[:-1, 1], 'r-', label='x2')
+ax.set_xlabel('Time (s)')
+ax.set_ylabel('State')
+ax.set_title('States (Time-Varying z)')
+ax.legend()
+ax.grid(True)
+
+ax = axes[1, 1]
+ax.plot(t, u_hist_v[:-1], 'g-', label='u (with AW)')
+ax.plot(t, u_nom_hist_v[:-1], 'k--', label='u (nominal)', alpha=0.5)
+ax.axhline(0.9, color='r', linestyle=':', label='Saturation limit')
+ax.axhline(-0.9, color='r', linestyle=':')
+ax.set_xlabel('Time (s)')
+ax.set_ylabel('Control Input')
+ax.set_title('Control Input with Anti-Windup (Varying z)')
+ax.legend()
+ax.grid(True)
+
+ax = axes[2, 1]
+ax.plot(t, z_hist_v[:-1], 'm-')
+ax.set_xlabel('Time (s)')
+ax.set_ylabel('Scheduling Variable z')
+ax.set_title('Scheduling Variable (Time-Varying)')
+ax.grid(True)
+
+plt.tight_layout()
+plt.savefig('report/images/simulation_results.png', dpi=150)
+plt.close()
+
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.bar(z_grid, hinf_results, color='steelblue', edgecolor='black')
+ax.axhline(1.0, color='red', linestyle='--', linewidth=2, label='Threshold (1.0)')
+ax.set_xlabel('Scheduling Variable z')
+ax.set_ylabel('H-infinity Norm')
+ax.set_title('H-infinity Norm Verification at Each Operating Point')
+ax.legend()
+ax.grid(True, alpha=0.3)
+plt.savefig('report/images/hinf_norms.png', dpi=150)
+plt.close()
+
+fig, ax = plt.subplots(figsize=(8, 5))
+K_values = [K[0, 0] for K in K_gains]
+K_values2 = [K[0, 1] for K in K_gains]
+ax.plot(z_grid, K_values, 'bo-', label='K[0,0]', markersize=8)
+ax.plot(z_grid, K_values2, 'rs-', label='K[0,1]', markersize=8)
+ax.set_xlabel('Scheduling Variable z')
+ax.set_ylabel('LQR Gain')
+ax.set_title('Gain Scheduling: LQR Gains vs Operating Point')
+ax.legend()
+ax.grid(True, alpha=0.3)
+plt.savefig('report/images/gain_scheduling.png', dpi=150)
+plt.close()
+
+print("\n=== Summary ===")
+print(f"All H-infinity norms < 1.0: {all(h < 1.0 for h in hinf_results)}")
+print(f"H-infinity norms: {hinf_results}")
+print(f"LQR gains computed at {len(z_grid)} operating points")
+print(f"Anti-windup saturation limit: +/-0.9")
+print("\nSimulation completed successfully!")
+print("Figures saved to report/images/")

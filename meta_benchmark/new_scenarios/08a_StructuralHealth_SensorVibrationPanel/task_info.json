@@ -1,17 +1,11 @@
 {
-  "task": "Analytics Task\n\nTask Description\nOperational reliability engineering: rotating-equipment programs combine vibration and thermal telemetry for risk-ranked maintenance.\n\nStructural health / reliability: multi-asset vibration and process telemetry guide maintenance prioritization.\n\nProfile vibration vs time, asset, and zone per `analysis_brief.txt`; relate to thermal/speed context where data support it; recommend monitoring/maintenance for the quarterly review. **Required:** at least one substantive report section (e.g. recommendations or executive summary) drafted **with an LLM of your choice**; all numbers from **your code** on `sensor_panel_timeseries.csv`. Naming the LLM is optional.\n\nDeliverable: implement and run analysis in workspace files, then provide concise final findings.\n\nAvailable Data Files\nsensor_panel_timeseries.csv [feature_data] (data/sensor_panel_timeseries.csv): timestamp_utc, asset_id, zone, vibration_rms_mm_s, peak_accel_g, bearing_temp_c, rpm, load_pct, quality_flag.\nanalysis_brief.txt [sequence_data] (data/analysis_brief.txt): Analysis goals and reporting expectations for the reliability review.",
+  "task": "Analytics Task\n\nTask Description\nOperational reliability engineering: rotating-equipment programs combine vibration and thermal telemetry for risk-ranked maintenance.\n\nStructural health / reliability: multi-asset vibration and process telemetry guide maintenance prioritization.\n\nUsing `sensor_panel_timeseries.csv`, summarize the observation window, assets represented, and the sampling implied by the timestamps. Describe how vibration-related quantities evolve over time and how they compare across assets or zones where the data support such comparisons. Examine relationships among vibration, bearing temperature, speed, and load where those columns are present. Provide a short, prioritized set of monitoring or maintenance recommendations for operations, keeping conclusions aligned with what this extract supports.\n\nDeliverable: implement and run analysis in workspace files, then provide concise final findings.\n\nAvailable Data Files\nsensor_panel_timeseries.csv [feature_data] (data/sensor_panel_timeseries.csv): timestamp_utc, asset_id, zone, vibration_rms_mm_s, peak_accel_g, bearing_temp_c, rpm, load_pct, quality_flag.",
   "data": [
     {
       "name": "sensor_panel_timeseries",
       "path": "./data/sensor_panel_timeseries.csv",
       "type": "feature_data",
       "description": "timestamp_utc, asset_id, zone, vibration_rms_mm_s, peak_accel_g, bearing_temp_c, rpm, load_pct, quality_flag."
-    },
-    {
-      "name": "analysis_brief",
-      "path": "./data/analysis_brief.txt",
-      "type": "sequence_data",
-      "description": "Analysis goals and reporting expectations for the reliability review."
     }
   ]
 }

@@ -2,9 +2,7 @@
 
 ## Abstract
 
-The species-area relationship (SAR) is a fundamental ecological principle that describes how species richness scales with area. This study analyzes island species richness data from 25 islands to quantify the species-area relationship and derive conservation planning heuristics. Using power law modeling (S = cA^z), we estimated the z-value at 0.198 (95% CI: 0.004–0.341), which falls within the expected range for island biogeography (z ≈ 0.20–0.35). Our analysis reveals that habitat loss has a disproportionate impact on species persistence: a 50% reduction in area results in approximately 13% species loss, while 90% habitat loss leads to 37% species extinction. These findings provide quantitative guidance for reserve sizing and extinction risk assessment in fragmented landscapes.
-
-**Keywords:** species-area relationship, island biogeography, conservation planning, extinction risk, reserve design
+The species-area relationship (SAR) is a fundamental pattern in ecology describing how species richness scales with habitat area. This study analyzes island species richness data from 25 islands to quantify the species-area relationship and derive conservation planning implications. Using power law models, we estimated the scaling exponent *z* to be approximately 0.20–0.22, consistent with theoretical predictions for island biogeography. Our analysis reveals significant but moderate predictive power (R² ≈ 0.22), highlighting the importance of additional factors beyond area in determining species richness. The results inform conservation strategies including habitat loss mitigation, minimum area requirements, and the SLOSS (Single Large or Several Small) debate.
 
 ---
 
@@ -12,39 +10,28 @@ The species-area relationship (SAR) is a fundamental ecological principle that d
 
 ### 1.1 Background
 
-The species-area relationship (SAR) is one of ecology's most robust and well-documented patterns, describing the increase in species richness with increasing area (Rosenzweig, 1995). This relationship has profound implications for conservation biology, as it provides a quantitative framework for predicting biodiversity loss due to habitat destruction and for designing nature reserves (Diamond, 1975; Wilson & Willis, 1975).
-
-The power law formulation of the SAR is:
+The relationship between species richness and habitat area is one of the most consistent patterns in ecology (Rosenzweig, 1995). First formalized by Arrhenius (1921) and later integrated into the Theory of Island Biogeography by MacArthur and Wilson (1967), the species-area relationship (SAR) describes how the number of species (*S*) increases with area (*A*) according to a power law:
 
 $$S = cA^z$$
 
-where S is species richness, A is area, c is a constant representing species density, and z is the scaling exponent. The z-value is particularly important for conservation planning because it determines how species richness responds to changes in habitat area.
+where *c* is a constant representing species density, and *z* is the scaling exponent that determines the rate at which species accumulate with area.
 
-### 1.2 Theoretical Context
+### 1.2 Theoretical Framework
 
-The z-value varies systematically across different biogeographic contexts:
-- **Mainland areas**: z ≈ 0.10–0.15 (shallow slope due to immigration)
-- **Continental islands**: z ≈ 0.20–0.25 (moderate isolation)
-- **Oceanic islands**: z ≈ 0.25–0.35 (high isolation, steeper slope)
+The exponent *z* varies systematically across different biogeographic contexts:
+- **Continental areas**: *z* ≈ 0.10–0.15
+- **Islands**: *z* ≈ 0.20–0.35
+- **Habitat patches**: *z* ≈ 0.10–0.25
 
-Higher z-values indicate greater sensitivity of species richness to area changes, with important consequences for extinction risk under habitat loss scenarios (MacArthur & Wilson, 1967).
+Higher *z* values for islands reflect the combined effects of area on both immigration and extinction rates, as described by the equilibrium theory of island biogeography.
 
-### 1.3 Conservation Applications
+### 1.3 Conservation Relevance
 
-The SAR provides critical heuristics for conservation planning:
-
-1. **Reserve sizing**: Determining minimum area requirements for species persistence
-2. **Extinction risk assessment**: Predicting species loss from habitat destruction
-3. **SLOSS debate**: Evaluating trade-offs between Single Large Or Several Small reserves
-4. **Habitat fragmentation**: Understanding biodiversity impacts of landscape modification
-
-### 1.4 Objectives
-
-This study aims to:
-1. Quantify the species-area relationship for island ecosystems
-2. Estimate the z-value and assess its statistical significance
-3. Derive conservation planning heuristics for reserve sizing
-4. Evaluate extinction risk under various habitat loss scenarios
+Understanding SARs is critical for conservation planning because:
+1. **Habitat loss prediction**: Quantifying expected species loss from area reduction
+2. **Reserve design**: Determining optimal size and configuration of protected areas
+3. **Minimum area requirements**: Establishing thresholds for viable populations
+4. **SLOSS debate**: Evaluating trade-offs between single large versus several small reserves
 
 ---
 
@@ -52,31 +39,42 @@ This study aims to:
 
 ### 2.1 Data Description
 
-The dataset comprises species richness and area measurements for 25 islands. Island areas range from 0.57 to 5.32 km² (mean = 3.06 km², SD = 1.39 km²), while species richness ranges from 11 to 43 species (mean = 18.5, SD = 6.5).
+The dataset comprises 25 islands with measurements of:
+- **Area** (km²): Island surface area
+- **Species richness**: Number of species recorded on each island
 
-### 2.2 Power Law Modeling
+Descriptive statistics reveal considerable variation in both variables:
+- Area ranges from 0.57 to 5.32 km² (mean: 3.06 ± 1.39 km²)
+- Species richness ranges from 11 to 43 species (mean: 18.5 ± 6.5 species)
 
-We fitted the power law model S = cA^z using non-linear least squares optimization. The parameters c (intercept) and z (slope) were estimated by minimizing the sum of squared residuals between observed and predicted species richness.
+### 2.2 Model Specification
 
-### 2.3 Log-Log Linear Regression
+We employed two complementary approaches to estimate the species-area relationship:
 
-For comparison and statistical inference, we performed linear regression on log-transformed data:
+**Model 1: Power Law (Non-linear Least Squares)**
+$$S_i = c \cdot A_i^z + \epsilon_i$$
 
-$$\log(S) = \log(c) + z \cdot \log(A)$$
+Fitted using non-linear least squares optimization to minimize residual sum of squares.
 
-This approach allows for direct estimation of the z-value and provides standard errors and p-values for hypothesis testing.
+**Model 2: Linear Regression on Log-Log Scale**
+$$\log(S_i) = \log(c) + z \cdot \log(A_i) + \epsilon_i$$
 
-### 2.4 Bootstrap Confidence Intervals
+This linearized form allows direct estimation via ordinary least squares and provides statistical inference on parameters.
 
-To assess parameter uncertainty, we performed 1,000 bootstrap resamples. For each iteration, we resampled the data with replacement, refitted the power law model, and calculated the 95% confidence intervals from the distribution of parameter estimates.
+### 2.3 Model Evaluation
 
-### 2.5 Conservation Scenario Analysis
+Models were evaluated using:
+- Coefficient of determination (R²)
+- Root mean square error (RMSE)
+- Residual analysis for diagnostic checking
+- Parameter significance testing
 
-We applied the fitted SAR model to evaluate:
+### 2.4 Conservation Scenarios
 
-1. **Habitat loss impacts**: Species remaining after various levels of area reduction
-2. **Reserve sizing**: Area requirements for target levels of species preservation
-3. **SLOSS analysis**: Trade-offs between single large versus multiple small reserves
+We simulated three conservation planning scenarios:
+1. **Habitat loss effects**: Predicting species loss under 50%, 75%, and 90% area reduction
+2. **Minimum area requirements**: Calculating area needed to maintain target species richness
+3. **SLOSS analysis**: Comparing species accumulation in single large versus multiple small reserves
 
 ---
 
@@ -84,103 +82,88 @@ We applied the fitted SAR model to evaluate:
 
 ### 3.1 Data Overview
 
-The dataset exhibits considerable variation in both island area and species richness (Figure 1). The correlation between area and richness on raw scales is moderate (r = 0.324), while the log-log relationship shows stronger correlation (r = 0.472), supporting the power law formulation.
+![Figure 1: Data Overview](images/figure1_data_overview.png)
 
-![Data Overview](images/figure1_data_overview.png)
+*Figure 1. Exploratory data analysis showing (A) distribution of island areas, (B) distribution of species richness, (C) species-area relationship on linear scale, and (D) species-area relationship on log-log scale. The log-log transformation reveals a roughly linear pattern consistent with power law dynamics.*
 
-**Figure 1.** Data overview showing (A) species-area relationship on raw scales, (B) log-log relationship, (C) distribution of island areas, and (D) distribution of species richness. The log-log transformation reveals a clearer linear relationship, supporting the power law model.
+The data exhibit right-skewed distributions for both area and species richness. The scatter plot on linear scale shows considerable scatter, while the log-log plot suggests a positive but noisy relationship between area and species richness.
 
 ### 3.2 Model Fitting Results
 
-#### 3.2.1 Power Law Parameters
+![Figure 2: Model Fits](images/figure2_model_fits.png)
 
-The non-linear least squares fit yielded:
-- **c** (intercept) = 15.17 ± 2.44
-- **z** (exponent) = 0.198 ± 0.133
-- **R²** = 0.105
-- **RMSE** = 6.06 species
+*Figure 2. Species-area relationship model fits. (A) Linear scale showing observed data (points) and fitted power law (solid red) and log-linear (dashed green) models. (B) Log-log scale with regression line (orange dotted) indicating the linear relationship on transformed axes. Both models yield similar z estimates (~0.20–0.22).*
 
-#### 3.2.2 Log-Log Linear Regression
+**Power Law Model (Non-linear Least Squares):**
+- Constant (*c*): 15.17 ± 2.44
+- Exponent (*z*): 0.198 ± 0.133
+- R²: 0.105
+- RMSE: 6.06 species
 
-The linear regression on log-transformed data produced:
-- **Intercept (log c)** = 1.156
-- **z** (slope) = 0.220 ± 0.086
-- **R²** = 0.223
-- **p-value** = 0.017 (statistically significant)
+**Linear Model (Log-Log Scale):**
+- Constant (*c*): 14.30
+- Exponent (*z*): 0.220
+- R²: 0.223
+- p-value: 0.017 (significant at α = 0.05)
+- RMSE: 6.09 species
 
-The z-value of 0.220 from log-log regression is consistent with the power law estimate and falls within the expected range for island biogeography.
+Both models converge on similar parameter estimates, with the log-linear approach providing better fit statistics and statistical significance. The *z* value of approximately 0.22 falls within the expected range for island biogeography (0.20–0.35).
 
-#### 3.2.3 Bootstrap Confidence Intervals
+### 3.3 Model Diagnostics
 
-Bootstrap analysis (n = 1,000) provided robust confidence intervals:
-- **z**: 0.198 [95% CI: 0.004 – 0.341]
-- **c**: 15.17 [95% CI: 12.86 – 19.64]
+![Figure 3: Residual Analysis](images/figure3_residual_analysis.png)
 
-The confidence interval for z includes values typical of both continental and oceanic islands, reflecting the uncertainty inherent in the dataset.
+*Figure 3. Residual diagnostic plots. (A) Residuals vs fitted values for power law model, (B) Q-Q plot for power law residuals, (C) residuals vs fitted for log-linear model, (D) Q-Q plot for log-linear residuals. Residuals show no strong patterns but deviate from normality, suggesting additional factors influence species richness beyond area alone.*
 
-![Model Fits](images/figure2_model_fits.png)
+Residual analysis reveals:
+- No obvious heteroscedasticity in either model
+- Some deviation from normality in Q-Q plots
+- One outlier (island with 43 species at ~3.5 km²) substantially influences the fit
 
-**Figure 2.** Model fitting results showing (A) power law fit on raw scales, (B) linear fit on log-log scales, (C) observed versus predicted species richness, and (D) residual analysis. The model captures the general trend but substantial variation remains unexplained (R² = 0.22).
-
-### 3.3 Model Validation
-
-The observed versus predicted plot (Figure 2C) shows reasonable agreement, with points generally clustering around the 1:1 line. However, the moderate R² value (0.22) indicates that factors beyond area alone influence species richness, including habitat heterogeneity, isolation, and historical factors. The residual plot (Figure 2D) shows no obvious patterns, suggesting the power law formulation is appropriate.
+The moderate R² values indicate that while area is a significant predictor, other factors (isolation, habitat heterogeneity, disturbance history) contribute substantially to variation in species richness.
 
 ### 3.4 Conservation Planning Implications
 
-#### 3.4.1 Species-Area Curve with Uncertainty
+#### 3.4.1 Habitat Loss Effects
 
-The species-area relationship with 95% confidence intervals (Figure 3A) provides a quantitative framework for conservation decisions. The relatively wide confidence intervals reflect uncertainty in the z-value estimate.
+Using the fitted power law model (*z* = 0.198), we predict species loss under different habitat reduction scenarios:
 
-![Conservation Analysis](images/figure3_conservation.png)
+| Original Area (km²) | 50% Loss | 75% Loss | 90% Loss |
+|---------------------|----------|----------|----------|
+| 5.0                 | 18.2     | 15.8     | 13.2     |
+| 3.0                 | 16.4     | 14.3     | 12.0     |
+| 1.0                 | 13.2     | 11.5     | 9.6      |
 
-**Figure 3.** Conservation planning analysis showing (A) species-area curve with 95% confidence intervals, (B) species loss under habitat destruction scenarios, (C) reserve size requirements for species preservation targets, and (D) comparison of estimated z-value with literature values.
+A 50% reduction in area results in approximately 15–20% species loss, while 90% reduction leads to 35–40% species loss. The non-linear relationship means that proportional species loss exceeds proportional area loss when *z* < 1.
 
-#### 3.4.2 Habitat Loss Scenarios
+#### 3.4.2 Minimum Area Requirements
 
-Using the fitted z-value (0.198), we calculated species loss under various habitat destruction scenarios:
+To maintain target species richness levels, the following minimum areas are required:
 
-| Habitat Loss (%) | Species Remaining (%) | Species Lost (%) |
-|-----------------|----------------------|------------------|
-| 10 | 97.9 | 2.1 |
-| 25 | 94.5 | 5.5 |
-| 50 | 87.2 | 12.8 |
-| 75 | 76.0 | 24.0 |
-| 90 | 63.4 | 36.6 |
+| Target Richness | Required Area (km²) |
+|-----------------|---------------------|
+| 10              | 0.12                |
+| 15              | 0.95                |
+| 20              | 4.05                |
+| 30              | 31.48               |
+| 40              | 134.82              |
 
-These results demonstrate the non-linear relationship between habitat loss and species extinction. A 50% reduction in habitat area results in approximately 13% species loss, while 90% habitat loss leads to 37% species extinction. This disproportionate impact underscores the importance of preserving large habitat patches.
+The exponential increase in required area for higher richness targets reflects the diminishing returns of area on species accumulation.
 
-#### 3.4.3 Reserve Sizing Guidelines
+#### 3.4.3 SLOSS Analysis
 
-To preserve specific proportions of the original species pool, the following reserve sizes are required:
+Given 10 km² of total conservation area, we compared species accumulation under different reserve configurations:
 
-| Target Species Preservation (%) | Required Area (% of original) |
-|--------------------------------|------------------------------|
-| 90 | 58.7 |
-| 80 | 32.4 |
-| 70 | 16.5 |
-| 50 | 3.0 |
-| 25 | 0.1 |
+| Configuration | Expected Species Richness |
+|---------------|---------------------------|
+| 1 × 10 km²    | 23.9                      |
+| 2 × 5 km²     | 41.7                      |
+| 5 × 2 km²     | 87.0                      |
+| 10 × 1 km²    | 151.7                     |
 
-These results provide practical guidance for reserve design. For example, to preserve 90% of species, a reserve must protect approximately 59% of the original habitat area. Conversely, protecting just 16.5% of the area can maintain 70% of species.
+*Note: These values assume no species overlap between reserves (upper bound). In reality, species overlap would reduce total richness.*
 
-#### 3.4.4 SLOSS Analysis
-
-The Single Large Or Several Small (SLOSS) debate addresses whether one large reserve or multiple small reserves better preserve biodiversity. Our analysis shows:
-
-| Number of Patches | Area per Patch | Total Species |
-|------------------|----------------|---------------|
-| 1 | 100.0 | 37.7 |
-| 2 | 50.0 | 35.2 |
-| 4 | 25.0 | 32.9 |
-| 10 | 10.0 | 30.1 |
-| 25 | 4.0 | 27.5 |
-
-The results favor a single large reserve, which supports 37.7 species compared to 27.5 species in 25 small patches of equivalent total area. However, this analysis assumes equal total area and does not account for potential benefits of spatial heterogeneity or reduced extinction risk through spatial distribution.
-
-#### 3.4.5 Comparison with Literature
-
-Our estimated z-value (0.198–0.220) falls within the lower range of reported values for island biogeography (Figure 3D). This suggests the study islands may have relatively high connectivity or represent a transitional zone between mainland and truly oceanic island communities.
+Under the power law model with *z* ≈ 0.20, several small reserves accumulate more species than a single large reserve of equivalent total area, assuming independent species composition. This supports the "Several Small" component of the SLOSS debate when species turnover is high.
 
 ---
 
@@ -188,86 +171,80 @@ Our estimated z-value (0.198–0.220) falls within the lower range of reported v
 
 ### 4.1 Interpretation of Results
 
-The estimated z-value of approximately 0.20 indicates that species richness increases moderately with island area. This value is consistent with theoretical expectations for island systems and suggests that these islands experience moderate isolation effects. The relatively low R² (0.22) indicates that while area is an important predictor, other factors significantly influence species richness.
+Our analysis reveals a significant but moderate species-area relationship with *z* ≈ 0.22, consistent with theoretical expectations for island systems. The relatively low R² (0.22) suggests that:
+
+1. **Area is necessary but not sufficient**: While area constrains species richness, other factors including isolation, habitat diversity, and historical factors play important roles.
+
+2. **Context-dependency**: The *z* value at the lower end of the island range (0.20–0.35) may reflect the relatively small size range of islands in this dataset (0.57–5.32 km²), where area effects may be weaker than across larger spatial scales.
+
+3. **Outlier influence**: One island with exceptionally high richness (43 species) relative to its area (~3.5 km²) suggests unique ecological conditions not captured by area alone.
 
 ### 4.2 Conservation Implications
 
-#### 4.2.1 Minimum Dynamic Area
+#### 4.2.1 Habitat Loss Mitigation
 
-Our analysis suggests that protecting approximately 60% of habitat is necessary to preserve 90% of species. This aligns with the concept of "minimum dynamic area" in conservation biology—the smallest area required to maintain viable populations of most species in a community.
+The non-linear species-area relationship implies that:
+- **Small habitat fragments are disproportionately important**: A 50% area reduction causes less than 50% species loss, preserving more species than linear expectations would predict.
+- **Critical thresholds exist**: As area decreases, the rate of species loss accelerates, emphasizing the importance of maintaining minimum viable areas.
 
-#### 4.2.2 Extinction Debt
+#### 4.2.2 Reserve Design
 
-The non-linear relationship between habitat loss and species loss has important implications for extinction debt—the delayed loss of species following habitat destruction. Even after habitat loss ceases, continued species extinctions may occur as communities equilibrate to smaller areas. Our z-value estimate allows quantitative prediction of this debt.
+Our SLOSS analysis suggests that when conservation goals prioritize species richness over population viability, several small reserves may outperform a single large reserve. However, this conclusion requires qualification:
 
-#### 4.2.3 Reserve Network Design
+- **Population viability**: Small reserves may not support viable populations of area-sensitive species
+- **Edge effects**: Multiple small reserves increase edge-to-area ratios, potentially reducing habitat quality
+- **Connectivity**: Isolated small reserves may not function as independent units
 
-The SLOSS analysis supports the general principle that larger reserves preserve more species per unit area than smaller ones. However, practical conservation must also consider:
-- **Connectivity**: Multiple reserves may be preferable if they maintain gene flow
-- **Heterogeneity**: Small reserves may capture different habitats not represented in large ones
-- **Risk spreading**: Multiple reserves reduce the impact of localized catastrophes
+#### 4.2.3 Minimum Area Standards
 
-### 4.3 Limitations and Uncertainties
+The exponential increase in required area for high richness targets suggests practical limits to conservation goals. For instance, maintaining 40 species requires >130 km²—far exceeding the size of islands in this dataset. This highlights the importance of:
+- **Meta-population management**: Coordinating conservation across multiple sites
+- **Habitat quality enhancement**: Complementing area-based strategies with habitat improvement
 
-Several limitations should be considered when interpreting these results:
+### 4.3 Limitations and Future Directions
 
-1. **Sample size**: With 25 islands, the confidence interval for z is relatively wide (0.004–0.341)
-2. **Unmeasured variables**: Habitat quality, isolation, and disturbance history likely influence species richness
-3. **Static snapshot**: The analysis does not capture dynamic processes of colonization and extinction
-4. **Taxonomic scope**: Results apply to the species groups measured and may not generalize to all taxa
+**Limitations:**
+1. Small sample size (n = 25) limits statistical power
+2. Narrow area range restricts estimation of *z* across scales
+3. Lack of isolation data prevents full application of island biogeography theory
+4. Single-timepoint data cannot assess turnover dynamics
 
-### 4.4 Future Directions
-
-Future research could:
-1. Incorporate island isolation distances to test the full Theory of Island Biogeography
-2. Include habitat heterogeneity metrics to explain residual variation
-3. Conduct temporal studies to measure colonization and extinction rates
-4. Extend analysis to multiple taxonomic groups
+**Future Research:**
+1. Incorporate isolation metrics to test the full MacArthur-Wilson model
+2. Include habitat heterogeneity measures to partition area effects
+3. Longitudinal studies to assess extinction debt and colonization credit
+4. Comparative analysis across archipelagos to test generality
 
 ---
 
 ## 5. Conclusions
 
-This study quantifies the species-area relationship for island ecosystems and derives practical conservation heuristics. Key findings include:
+This study quantifies the species-area relationship for a set of 25 islands, yielding a scaling exponent (*z* ≈ 0.22) consistent with island biogeography theory. While statistically significant, the moderate explanatory power (R² ≈ 0.22) underscores the importance of factors beyond area in structuring island communities.
 
-1. **The z-value of 0.20** falls within the expected range for island biogeography, indicating moderate sensitivity of species richness to area changes.
+For conservation planning, our results support:
+1. **Prioritizing large reserves** when population viability is the primary concern
+2. **Networks of smaller reserves** when maximizing species richness is the goal
+3. **Minimum area thresholds** of ~1 km² to maintain moderate species richness (~15 species)
+4. **Expectation management**: Habitat loss will cause non-linear species declines, with small fragments retaining disproportionate biodiversity value
 
-2. **Habitat loss has disproportionate impacts**: A 50% area reduction leads to ~13% species loss, while 90% loss leads to ~37% extinction.
-
-3. **Reserve sizing guidelines**: Protecting 60% of habitat preserves 90% of species, providing a quantitative target for conservation planning.
-
-4. **SLOSS considerations**: Single large reserves generally preserve more species than multiple small reserves of equivalent total area.
-
-These results provide quantitative support for the principle that "bigger is better" in reserve design, while acknowledging the practical constraints that often necessitate smaller, multiple reserves. The species-area relationship remains a powerful tool for conservation planning, offering evidence-based guidance for preserving biodiversity in an era of rapid habitat loss.
+The species-area relationship remains a foundational tool for conservation, but must be applied with awareness of its limitations and complementarity with other ecological principles.
 
 ---
 
 ## References
 
-Diamond, J. M. (1975). The island dilemma: lessons of modern biogeographic studies for the design of natural reserves. *Biological Conservation*, 7(2), 129-146.
+Arrhenius, O. (1921). Species and area. *Journal of Ecology*, 9(1), 95-99.
 
 MacArthur, R. H., & Wilson, E. O. (1967). *The Theory of Island Biogeography*. Princeton University Press.
 
 Rosenzweig, M. L. (1995). *Species Diversity in Space and Time*. Cambridge University Press.
 
-Wilson, E. O., & Willis, E. O. (1975). Applied biogeography. In M. L. Cody & J. M. Diamond (Eds.), *Ecology and Evolution of Communities* (pp. 522-534). Harvard University Press.
-
 ---
 
 ## Data Availability
 
-The analysis code and data are available in the project repository. All figures and results can be reproduced using the provided Python scripts.
+The analysis code and data are available in the project repository. All figures and supplementary outputs are stored in `report/images/` and `outputs/` directories respectively.
 
-## Appendix: Model Diagnostics
+## Author Contributions
 
-### A.1 Residual Analysis
-
-The residual standard error is 6.06 species, indicating that predictions are typically within ±6 species of observed values. Given the mean richness of 18.5 species, this represents approximately 33% relative error.
-
-### A.2 Sensitivity Analysis
-
-The bootstrap confidence intervals indicate substantial uncertainty in the z-value estimate. Conservation planning should consider the full range of plausible z-values (0.004–0.341) when making decisions. Using the upper bound (z = 0.34) would predict more severe species loss under habitat destruction, while the lower bound (z = 0.004) would predict minimal impact.
-
-### A.3 Alternative Models
-
-While the power law is the standard model for species-area relationships, alternative formulations (e.g., logarithmic, sigmoid) were not supported by the data. The log-log linearity provides strong evidence for the power law formulation in this system.
+This analysis was conducted as part of an autonomous research task. All methodology, analysis, and interpretation were performed programmatically with results validated through standard statistical diagnostics.

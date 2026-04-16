@@ -1,9 +1,6 @@
 """
-REIT and Inflation Econometric Analysis
-=======================================
-This script analyzes the relationship between REIT index returns and inflation
-using quarterly data. The analysis includes descriptive statistics, correlation
-analysis, regression models, and time series analysis with policy implications.
+REIT and Inflation Association Analysis
+Econometric study of the relationship between REIT index returns and inflation
 """
 
 import pandas as pd
@@ -12,8 +9,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
 import statsmodels.api as sm
-from statsmodels.tsa.stattools import adfuller, grangercausalitytests
-from statsmodels.stats.diagnostic import het_breuschpagan
+from statsmodels.stats.diagnostic import het_breuschpagan, acorr_ljungbox
+from statsmodels.stats.stattools import durbin_watson
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -22,349 +19,313 @@ plt.style.use('seaborn-v0_8-whitegrid')
 sns.set_palette("husl")
 
 # Load data
-print("Loading data...")
 df = pd.read_csv('data/reit_macro_quarterly.csv')
-print(f"Data shape: {df.shape}")
-print(df.head())
-print(df.describe())
-
-# Create time index (assuming quarterly data starting from Q1 of some year)
-df['time'] = df['quarter']
-df['date'] = pd.date_range(start='2014-01-01', periods=len(df), freq='Q')
+print("=" * 60)
+print("REIT-INFLATION ASSOCIATION ANALYSIS")
+print("=" * 60)
+print(f"\nDataset: {len(df)} quarterly observations")
+print(f"Variables: inflation_yoy, reit_index_return")
+print("\n" + "=" * 60)
 
 # ============================================================================
-# 1. DESCRIPTIVE STATISTICS AND DATA OVERVIEW
+# 1. DESCRIPTIVE STATISTICS
 # ============================================================================
-print("\n" + "="*60)
-print("1. DESCRIPTIVE STATISTICS")
-print("="*60)
+print("\n1. DESCRIPTIVE STATISTICS")
+print("-" * 60)
 
-# Basic statistics
-stats_summary = df[['inflation_yoy', 'reit_index_return']].describe()
-print("\nDescriptive Statistics:")
-print(stats_summary)
+desc_stats = df[['inflation_yoy', 'reit_index_return']].describe()
+print(desc_stats.round(4))
 
 # Additional statistics
 print("\nAdditional Statistics:")
 for col in ['inflation_yoy', 'reit_index_return']:
+    data = df[col]
     print(f"\n{col}:")
-    print(f"  Skewness: {stats.skew(df[col]):.4f}")
-    print(f"  Kurtosis: {stats.kurtosis(df[col]):.4f}")
-    print(f"  Standard Error: {stats.sem(df[col]):.4f}")
+    print(f"  Skewness: {stats.skew(data):.4f}")
+    print(f"  Kurtosis: {stats.kurtosis(data):.4f}")
+    print(f"  Jarque-Bera (normality): {stats.jarque_bera(data)[1]:.4f} (p-value)")
+
+# Save descriptive stats
+desc_stats.to_csv('outputs/descriptive_statistics.csv')
 
 # ============================================================================
-# 2. CORRELATION ANALYSIS
+# 2. VISUALIZATION: TIME SERIES PLOT
 # ============================================================================
-print("\n" + "="*60)
-print("2. CORRELATION ANALYSIS")
-print("="*60)
-
-# Pearson correlation
-corr_coef, corr_pvalue = stats.pearsonr(df['inflation_yoy'], df['reit_index_return'])
-print(f"\nPearson Correlation: {corr_coef:.4f}")
-print(f"P-value: {corr_pvalue:.4f}")
-
-# Spearman correlation (rank-based, more robust)
-spearman_coef, spearman_pvalue = stats.spearmanr(df['inflation_yoy'], df['reit_index_return'])
-print(f"\nSpearman Correlation: {spearman_coef:.4f}")
-print(f"P-value: {spearman_pvalue:.4f}")
-
-# ============================================================================
-# 3. REGRESSION ANALYSIS
-# ============================================================================
-print("\n" + "="*60)
-print("3. REGRESSION ANALYSIS")
-print("="*60)
-
-# Model 1: Simple OLS - REIT returns on inflation
-X = sm.add_constant(df['inflation_yoy'])
-y = df['reit_index_return']
-
-model1 = sm.OLS(y, X).fit()
-print("\nModel 1: REIT Return = α + β × Inflation + ε")
-print(model1.summary())
-
-# Model 2: With lagged inflation (to capture delayed effects)
-df['inflation_lag1'] = df['inflation_yoy'].shift(1)
-df['inflation_lag2'] = df['inflation_yoy'].shift(2)
-df_clean = df.dropna()
-
-X2 = sm.add_constant(df_clean[['inflation_yoy', 'inflation_lag1', 'inflation_lag2']])
-y2 = df_clean['reit_index_return']
-
-model2 = sm.OLS(y2, X2).fit()
-print("\nModel 2: REIT Return = α + β₀×Inflation + β₁×Inflation(t-1) + β₂×Inflation(t-2) + ε")
-print(model2.summary())
-
-# Model 3: Non-linear relationship (quadratic)
-df['inflation_sq'] = df['inflation_yoy'] ** 2
-X3 = sm.add_constant(df[['inflation_yoy', 'inflation_sq']])
-y3 = df['reit_index_return']
-
-model3 = sm.OLS(y3, X3).fit()
-print("\nModel 3: REIT Return = α + β₁×Inflation + β₂×Inflation² + ε")
-print(model3.summary())
-
-# ============================================================================
-# 4. TIME SERIES ANALYSIS
-# ============================================================================
-print("\n" + "="*60)
-print("4. TIME SERIES ANALYSIS")
-print("="*60)
-
-# Unit root tests (ADF)
-print("\nAugmented Dickey-Fuller Tests:")
-for col in ['inflation_yoy', 'reit_index_return']:
-    adf_result = adfuller(df[col])
-    print(f"\n{col}:")
-    print(f"  ADF Statistic: {adf_result[0]:.4f}")
-    print(f"  P-value: {adf_result[1]:.4f}")
-    print(f"  Critical Values: {adf_result[4]}")
-
-# Granger causality test (if enough data)
-if len(df) > 10:
-    print("\nGranger Causality Test (max lag=2):")
-    gc_data = df[['reit_index_return', 'inflation_yoy']].dropna()
-    try:
-        gc_result = grangercausalitytests(gc_data, maxlag=2, verbose=False)
-        for lag in [1, 2]:
-            f_stat = gc_result[lag][0]['ssr_ftest'][0]
-            p_val = gc_result[lag][0]['ssr_ftest'][1]
-            print(f"  Lag {lag}: F-stat={f_stat:.4f}, p-value={p_val:.4f}")
-    except Exception as e:
-        print(f"  Could not perform Granger causality test: {e}")
-
-# ============================================================================
-# 5. HETEROSCEDASTICITY TEST
-# ============================================================================
-print("\n" + "="*60)
-print("5. DIAGNOSTIC TESTS")
-print("="*60)
-
-# Breusch-Pagan test for heteroscedasticity
-bp_test = het_breuschpagan(model1.resid, model1.model.exog)
-print("\nBreusch-Pagan Test for Heteroscedasticity:")
-print(f"  LM Statistic: {bp_test[0]:.4f}")
-print(f"  LM P-value: {bp_test[1]:.4f}")
-print(f"  F Statistic: {bp_test[2]:.4f}")
-print(f"  F P-value: {bp_test[3]:.4f}")
-
-# ============================================================================
-# 6. GENERATE FIGURES
-# ============================================================================
-print("\n" + "="*60)
-print("6. GENERATING FIGURES")
-print("="*60)
-
-# Figure 1: Time Series Plot
 fig, axes = plt.subplots(2, 1, figsize=(12, 8), sharex=True)
 
-axes[0].plot(df['date'], df['inflation_yoy'], 'b-', linewidth=2, label='Inflation (YoY %)')
-axes[0].axhline(y=df['inflation_yoy'].mean(), color='b', linestyle='--', alpha=0.5, label=f'Mean: {df["inflation_yoy"].mean():.2f}%')
-axes[0].set_ylabel('Inflation (%)', fontsize=12)
-axes[0].set_title('Quarterly Inflation and REIT Index Returns', fontsize=14, fontweight='bold')
+# Inflation time series
+axes[0].plot(df['quarter'], df['inflation_yoy'], 'b-', linewidth=2, marker='o', markersize=4)
+axes[0].axhline(y=df['inflation_yoy'].mean(), color='r', linestyle='--', alpha=0.7, label=f'Mean: {df["inflation_yoy"].mean():.2f}%')
+axes[0].set_ylabel('Inflation (YoY %)', fontsize=12)
+axes[0].set_title('Quarterly Inflation Rate', fontsize=14, fontweight='bold')
 axes[0].legend(loc='upper right')
 axes[0].grid(True, alpha=0.3)
 
-axes[1].plot(df['date'], df['reit_index_return'], 'r-', linewidth=2, label='REIT Index Return (%)')
-axes[1].axhline(y=df['reit_index_return'].mean(), color='r', linestyle='--', alpha=0.5, label=f'Mean: {df["reit_index_return"].mean():.2f}%')
-axes[1].set_ylabel('REIT Return (%)', fontsize=12)
-axes[1].set_xlabel('Date', fontsize=12)
+# REIT returns time series
+axes[1].plot(df['quarter'], df['reit_index_return'], 'g-', linewidth=2, marker='s', markersize=4)
+axes[1].axhline(y=df['reit_index_return'].mean(), color='r', linestyle='--', alpha=0.7, label=f'Mean: {df["reit_index_return"].mean():.2f}%')
+axes[1].set_xlabel('Quarter', fontsize=12)
+axes[1].set_ylabel('REIT Index Return (%)', fontsize=12)
+axes[1].set_title('Quarterly REIT Index Returns', fontsize=14, fontweight='bold')
 axes[1].legend(loc='upper right')
 axes[1].grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig('report/images/figure1_time_series.png', dpi=300, bbox_inches='tight')
+plt.savefig('report/images/time_series_plot.png', dpi=300, bbox_inches='tight')
 plt.close()
-print("Figure 1 saved: Time series plot")
+print("\nSaved: report/images/time_series_plot.png")
 
-# Figure 2: Scatter Plot with Regression Line
+# ============================================================================
+# 3. SCATTER PLOT WITH REGRESSION LINE
+# ============================================================================
 fig, ax = plt.subplots(figsize=(10, 8))
 
 # Scatter plot
-ax.scatter(df['inflation_yoy'], df['reit_index_return'], alpha=0.7, s=100, c='steelblue', edgecolors='black', linewidth=0.5)
+ax.scatter(df['inflation_yoy'], df['reit_index_return'], alpha=0.7, s=100, edgecolors='black', linewidth=1)
 
 # Regression line
-x_range = np.linspace(df['inflation_yoy'].min(), df['inflation_yoy'].max(), 100)
-y_pred = model1.params[0] + model1.params[1] * x_range
-ax.plot(x_range, y_pred, 'r-', linewidth=2, label=f'OLS Fit: y = {model1.params[0]:.3f} + {model1.params[1]:.3f}x')
+z = np.polyfit(df['inflation_yoy'], df['reit_index_return'], 1)
+p = np.poly1d(z)
+x_line = np.linspace(df['inflation_yoy'].min(), df['inflation_yoy'].max(), 100)
+ax.plot(x_line, p(x_line), "r--", linewidth=2, label=f'Linear fit: y={z[0]:.4f}x+{z[1]:.4f}')
 
-# Confidence interval
-from statsmodels.stats.outliers_influence import summary_table
-st, data, ss2 = summary_table(model1, alpha=0.05)
-predict_mean_se = data[:, 2]
-predict_mean_ci_low, predict_mean_ci_upp = data[:, 4:6].T
-ax.fill_between(df['inflation_yoy'].sort_values(), 
-                predict_mean_ci_low[np.argsort(df['inflation_yoy'])], 
-                predict_mean_ci_upp[np.argsort(df['inflation_yoy'])], 
-                alpha=0.2, color='red', label='95% CI')
-
+# Labels and formatting
 ax.set_xlabel('Inflation (YoY %)', fontsize=12)
 ax.set_ylabel('REIT Index Return (%)', fontsize=12)
-ax.set_title(f'REIT Returns vs. Inflation\n(Correlation: {corr_coef:.3f}, p-value: {corr_pvalue:.3f})', fontsize=14, fontweight='bold')
-ax.legend(loc='best')
+ax.set_title('REIT Returns vs. Inflation: Association Analysis', fontsize=14, fontweight='bold')
+ax.legend(loc='upper left', fontsize=10)
 ax.grid(True, alpha=0.3)
 
-plt.tight_layout()
-plt.savefig('report/images/figure2_scatter_regression.png', dpi=300, bbox_inches='tight')
-plt.close()
-print("Figure 2 saved: Scatter plot with regression")
-
-# Figure 3: Distribution Analysis
-fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-
-# Inflation histogram
-axes[0, 0].hist(df['inflation_yoy'], bins=15, color='skyblue', edgecolor='black', alpha=0.7)
-axes[0, 0].axvline(df['inflation_yoy'].mean(), color='red', linestyle='--', linewidth=2, label=f'Mean: {df["inflation_yoy"].mean():.2f}')
-axes[0, 0].set_xlabel('Inflation (%)')
-axes[0, 0].set_ylabel('Frequency')
-axes[0, 0].set_title('Distribution of Inflation')
-axes[0, 0].legend()
-
-# REIT return histogram
-axes[0, 1].hist(df['reit_index_return'], bins=15, color='lightcoral', edgecolor='black', alpha=0.7)
-axes[0, 1].axvline(df['reit_index_return'].mean(), color='blue', linestyle='--', linewidth=2, label=f'Mean: {df["reit_index_return"].mean():.2f}')
-axes[0, 1].set_xlabel('REIT Return (%)')
-axes[0, 1].set_ylabel('Frequency')
-axes[0, 1].set_title('Distribution of REIT Returns')
-axes[0, 1].legend()
-
-# Q-Q plot for inflation
-stats.probplot(df['inflation_yoy'], dist="norm", plot=axes[1, 0])
-axes[1, 0].set_title('Q-Q Plot: Inflation')
-axes[1, 0].grid(True, alpha=0.3)
-
-# Q-Q plot for REIT returns
-stats.probplot(df['reit_index_return'], dist="norm", plot=axes[1, 1])
-axes[1, 1].set_title('Q-Q Plot: REIT Returns')
-axes[1, 1].grid(True, alpha=0.3)
+# Add correlation text
+corr = df['inflation_yoy'].corr(df['reit_index_return'])
+ax.text(0.05, 0.95, f'Pearson r = {corr:.4f}', transform=ax.transAxes, 
+        fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
 
 plt.tight_layout()
-plt.savefig('report/images/figure3_distributions.png', dpi=300, bbox_inches='tight')
+plt.savefig('report/images/scatter_regression.png', dpi=300, bbox_inches='tight')
 plt.close()
-print("Figure 3 saved: Distribution analysis")
+print("Saved: report/images/scatter_regression.png")
 
-# Figure 4: Rolling Correlation
-window = 8  # 2 years of quarterly data
-df['rolling_corr'] = df['inflation_yoy'].rolling(window=window).corr(df['reit_index_return'])
+# ============================================================================
+# 4. CORRELATION ANALYSIS
+# ============================================================================
+print("\n2. CORRELATION ANALYSIS")
+print("-" * 60)
 
-fig, ax = plt.subplots(figsize=(12, 6))
-ax.plot(df['date'], df['rolling_corr'], 'g-', linewidth=2)
-ax.axhline(y=0, color='black', linestyle='-', alpha=0.3)
-ax.axhline(y=corr_coef, color='red', linestyle='--', alpha=0.7, label=f'Full-sample correlation: {corr_coef:.3f}')
-ax.fill_between(df['date'], df['rolling_corr'], 0, alpha=0.3, color='green')
-ax.set_xlabel('Date', fontsize=12)
-ax.set_ylabel('Rolling Correlation', fontsize=12)
-ax.set_title(f'Rolling {window}-Quarter Correlation: REIT Returns vs. Inflation', fontsize=14, fontweight='bold')
-ax.legend()
-ax.grid(True, alpha=0.3)
+# Pearson correlation
+pearson_r, pearson_p = stats.pearsonr(df['inflation_yoy'], df['reit_index_return'])
+print(f"Pearson Correlation: r = {pearson_r:.4f}, p-value = {pearson_p:.4f}")
 
-plt.tight_layout()
-plt.savefig('report/images/figure4_rolling_correlation.png', dpi=300, bbox_inches='tight')
-plt.close()
-print("Figure 4 saved: Rolling correlation")
+# Spearman correlation (rank-based, robust to outliers)
+spearman_r, spearman_p = stats.spearmanr(df['inflation_yoy'], df['reit_index_return'])
+print(f"Spearman Correlation: ρ = {spearman_r:.4f}, p-value = {spearman_p:.4f}")
 
-# Figure 5: Residual Analysis
+# Kendall's tau
+kendall_tau, kendall_p = stats.kendalltau(df['inflation_yoy'], df['reit_index_return'])
+print(f"Kendall's Tau: τ = {kendall_tau:.4f}, p-value = {kendall_p:.4f}")
+
+# Save correlation results
+corr_results = pd.DataFrame({
+    'Method': ['Pearson', 'Spearman', 'Kendall'],
+    'Coefficient': [pearson_r, spearman_r, kendall_tau],
+    'P-value': [pearson_p, spearman_p, kendall_p]
+})
+corr_results.to_csv('outputs/correlation_analysis.csv', index=False)
+
+# ============================================================================
+# 5. ORDINARY LEAST SQUARES REGRESSION
+# ============================================================================
+print("\n3. OLS REGRESSION ANALYSIS")
+print("-" * 60)
+
+# Model 1: Simple linear regression
+X = sm.add_constant(df['inflation_yoy'])
+y = df['reit_index_return']
+
+model_ols = sm.OLS(y, X).fit()
+print(model_ols.summary())
+
+# Save regression results
+with open('outputs/ols_regression_summary.txt', 'w') as f:
+    f.write(model_ols.summary().as_text())
+
+# Extract key statistics
+print("\nKey Regression Statistics:")
+print(f"  R-squared: {model_ols.rsquared:.4f}")
+print(f"  Adjusted R-squared: {model_ols.rsquared_adj:.4f}")
+print(f"  F-statistic: {model_ols.fvalue:.4f} (p={model_ols.f_pvalue:.4f})")
+print(f"  Inflation coefficient: {model_ols.params['inflation_yoy']:.4f} (p={model_ols.pvalues['inflation_yoy']:.4f})")
+print(f"  Intercept: {model_ols.params['const']:.4f}")
+
+# ============================================================================
+# 6. DIAGNOSTIC TESTS
+# ============================================================================
+print("\n4. DIAGNOSTIC TESTS")
+print("-" * 60)
+
+# Durbin-Watson test for autocorrelation
+dw_stat = durbin_watson(model_ols.resid)
+print(f"Durbin-Watson statistic: {dw_stat:.4f}")
+if dw_stat < 1.5:
+    print("  -> Evidence of positive autocorrelation")
+elif dw_stat > 2.5:
+    print("  -> Evidence of negative autocorrelation")
+else:
+    print("  -> No significant autocorrelation detected")
+
+# Breusch-Pagan test for heteroskedasticity
+bp_test = het_breuschpagan(model_ols.resid, X)
+print(f"\nBreusch-Pagan test (heteroskedasticity):")
+print(f"  LM statistic: {bp_test[0]:.4f}, p-value: {bp_test[1]:.4f}")
+if bp_test[1] < 0.05:
+    print("  -> Heteroskedasticity detected")
+else:
+    print("  -> No significant heteroskedasticity")
+
+# Ljung-Box test for autocorrelation in residuals
+lb_test = acorr_ljungbox(model_ols.resid, lags=4, return_df=True)
+print(f"\nLjung-Box test (residual autocorrelation):")
+print(lb_test.head())
+
+# Save residuals
+df['residuals'] = model_ols.resid
+df['fitted'] = model_ols.fittedvalues
+df.to_csv('outputs/regression_data_with_residuals.csv', index=False)
+
+# ============================================================================
+# 7. RESIDUAL ANALYSIS PLOTS
+# ============================================================================
 fig, axes = plt.subplots(2, 2, figsize=(12, 10))
 
 # Residuals vs Fitted
-axes[0, 0].scatter(model1.fittedvalues, model1.resid, alpha=0.7, c='steelblue', edgecolors='black', linewidth=0.5)
-axes[0, 0].axhline(y=0, color='red', linestyle='--')
+axes[0, 0].scatter(df['fitted'], df['residuals'], alpha=0.7, edgecolors='black')
+axes[0, 0].axhline(y=0, color='r', linestyle='--')
 axes[0, 0].set_xlabel('Fitted Values')
 axes[0, 0].set_ylabel('Residuals')
 axes[0, 0].set_title('Residuals vs Fitted')
 axes[0, 0].grid(True, alpha=0.3)
 
-# Residual histogram
-axes[0, 1].hist(model1.resid, bins=15, color='lightgreen', edgecolor='black', alpha=0.7)
-axes[0, 1].axvline(0, color='red', linestyle='--', linewidth=2)
-axes[0, 1].set_xlabel('Residuals')
-axes[0, 1].set_ylabel('Frequency')
-axes[0, 1].set_title('Distribution of Residuals')
+# Q-Q plot
+stats.probplot(df['residuals'], dist="norm", plot=axes[0, 1])
+axes[0, 1].set_title('Q-Q Plot (Normality)')
+axes[0, 1].grid(True, alpha=0.3)
 
-# Q-Q plot for residuals
-stats.probplot(model1.resid, dist="norm", plot=axes[1, 0])
-axes[1, 0].set_title('Q-Q Plot: Residuals')
+# Histogram of residuals
+axes[1, 0].hist(df['residuals'], bins=15, edgecolor='black', alpha=0.7, density=True)
+axes[1, 0].set_xlabel('Residuals')
+axes[1, 0].set_ylabel('Density')
+axes[1, 0].set_title('Distribution of Residuals')
+# Add normal curve
+x_norm = np.linspace(df['residuals'].min(), df['residuals'].max(), 100)
+y_norm = stats.norm.pdf(x_norm, df['residuals'].mean(), df['residuals'].std())
+axes[1, 0].plot(x_norm, y_norm, 'r-', linewidth=2, label='Normal')
+axes[1, 0].legend()
 axes[1, 0].grid(True, alpha=0.3)
 
 # Residuals over time
-axes[1, 1].plot(df['date'], model1.resid, 'b-', linewidth=1)
-axes[1, 1].axhline(y=0, color='red', linestyle='--')
-axes[1, 1].set_xlabel('Date')
+axes[1, 1].plot(df['quarter'], df['residuals'], 'b-', marker='o', markersize=4)
+axes[1, 1].axhline(y=0, color='r', linestyle='--')
+axes[1, 1].set_xlabel('Quarter')
 axes[1, 1].set_ylabel('Residuals')
 axes[1, 1].set_title('Residuals Over Time')
 axes[1, 1].grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig('report/images/figure5_residual_analysis.png', dpi=300, bbox_inches='tight')
+plt.savefig('report/images/residual_diagnostics.png', dpi=300, bbox_inches='tight')
 plt.close()
-print("Figure 5 saved: Residual analysis")
+print("\nSaved: report/images/residual_diagnostics.png")
 
-# Figure 6: Inflation Regime Analysis
-# Define inflation regimes
-df['inflation_regime'] = pd.cut(df['inflation_yoy'], 
-                                 bins=[-np.inf, 1.5, 2.5, np.inf], 
-                                 labels=['Low (<1.5%)', 'Moderate (1.5-2.5%)', 'High (>2.5%)'])
+# ============================================================================
+# 8. DISTRIBUTION ANALYSIS
+# ============================================================================
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
-regime_stats = df.groupby('inflation_regime')['reit_index_return'].agg(['mean', 'std', 'count'])
-print("\nREIT Returns by Inflation Regime:")
-print(regime_stats)
+# Inflation distribution
+axes[0].hist(df['inflation_yoy'], bins=15, edgecolor='black', alpha=0.7, color='steelblue')
+axes[0].axvline(df['inflation_yoy'].mean(), color='r', linestyle='--', linewidth=2, label=f'Mean: {df["inflation_yoy"].mean():.2f}')
+axes[0].set_xlabel('Inflation (YoY %)')
+axes[0].set_ylabel('Frequency')
+axes[0].set_title('Distribution of Inflation')
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
 
-fig, ax = plt.subplots(figsize=(10, 6))
-regime_means = regime_stats['mean']
-regime_stds = regime_stats['std']
-x_pos = np.arange(len(regime_means))
-
-bars = ax.bar(x_pos, regime_means, yerr=regime_stds, capsize=5, 
-              color=['lightblue', 'orange', 'lightcoral'], edgecolor='black', alpha=0.8)
-ax.set_xticks(x_pos)
-ax.set_xticklabels(regime_means.index)
-ax.set_ylabel('Average REIT Return (%)', fontsize=12)
-ax.set_xlabel('Inflation Regime', fontsize=12)
-ax.set_title('REIT Returns by Inflation Regime', fontsize=14, fontweight='bold')
-ax.grid(True, alpha=0.3, axis='y')
-
-# Add value labels on bars
-for i, (bar, val) in enumerate(zip(bars, regime_means)):
-    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01, 
-            f'{val:.3f}', ha='center', va='bottom', fontsize=11, fontweight='bold')
+# REIT returns distribution
+axes[1].hist(df['reit_index_return'], bins=15, edgecolor='black', alpha=0.7, color='forestgreen')
+axes[1].axvline(df['reit_index_return'].mean(), color='r', linestyle='--', linewidth=2, label=f'Mean: {df["reit_index_return"].mean():.2f}')
+axes[1].set_xlabel('REIT Index Return (%)')
+axes[1].set_ylabel('Frequency')
+axes[1].set_title('Distribution of REIT Returns')
+axes[1].legend()
+axes[1].grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig('report/images/figure6_inflation_regimes.png', dpi=300, bbox_inches='tight')
+plt.savefig('report/images/distribution_analysis.png', dpi=300, bbox_inches='tight')
 plt.close()
-print("Figure 6 saved: Inflation regime analysis")
+print("Saved: report/images/distribution_analysis.png")
 
 # ============================================================================
-# 7. SAVE RESULTS
+# 9. ROLLING CORRELATION ANALYSIS
 # ============================================================================
-print("\n" + "="*60)
-print("7. SAVING RESULTS")
-print("="*60)
+print("\n5. ROLLING CORRELATION ANALYSIS")
+print("-" * 60)
 
-# Save model results
-results = {
-    'correlation_pearson': corr_coef,
-    'correlation_pvalue': corr_pvalue,
-    'correlation_spearman': spearman_coef,
-    'model1_r2': model1.rsquared,
-    'model1_adj_r2': model1.rsquared_adj,
-    'model1_beta': model1.params[1],
-    'model1_beta_pvalue': model1.pvalues[1],
-    'model1_alpha': model1.params[0],
-    'model1_alpha_pvalue': model1.pvalues[0],
-    'model3_r2': model3.rsquared,
-    'model3_inflation_coef': model3.params[1],
-    'model3_inflation_sq_coef': model3.params[2],
-}
+window = 8  # 8-quarter rolling window
+df['rolling_corr'] = df['inflation_yoy'].rolling(window=window).corr(df['reit_index_return'])
 
-results_df = pd.DataFrame([results])
-results_df.to_csv('outputs/model_results.csv', index=False)
-print("Results saved to outputs/model_results.csv")
+fig, ax = plt.subplots(figsize=(12, 6))
+ax.plot(df['quarter'], df['rolling_corr'], 'b-', linewidth=2, marker='o', markersize=4)
+ax.axhline(y=0, color='r', linestyle='--', alpha=0.7)
+ax.axhline(y=pearson_r, color='g', linestyle='--', alpha=0.7, label=f'Full-sample r = {pearson_r:.3f}')
+ax.set_xlabel('Quarter', fontsize=12)
+ax.set_ylabel('Rolling Correlation (8-quarter window)', fontsize=12)
+ax.set_title('Time-Varying Correlation: REIT Returns vs. Inflation', fontsize=14, fontweight='bold')
+ax.legend(loc='upper right')
+ax.grid(True, alpha=0.3)
 
-# Save regime statistics
-regime_stats.to_csv('outputs/regime_stats.csv')
-print("Regime statistics saved to outputs/regime_stats.csv")
+plt.tight_layout()
+plt.savefig('report/images/rolling_correlation.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("Saved: report/images/rolling_correlation.png")
 
-print("\n" + "="*60)
+print(f"\nRolling correlation statistics:")
+print(f"  Mean: {df['rolling_corr'].mean():.4f}")
+print(f"  Std: {df['rolling_corr'].std():.4f}")
+print(f"  Min: {df['rolling_corr'].min():.4f}")
+print(f"  Max: {df['rolling_corr'].max():.4f}")
+
+# ============================================================================
+# 10. SUMMARY OUTPUT
+# ============================================================================
+print("\n" + "=" * 60)
 print("ANALYSIS COMPLETE")
-print("="*60)
+print("=" * 60)
+
+# Create summary table
+summary = {
+    'Metric': [
+        'Sample Size (quarters)',
+        'Mean Inflation (%)',
+        'Mean REIT Return (%)',
+        'Pearson Correlation',
+        'Correlation p-value',
+        'R-squared',
+        'Inflation Beta',
+        'Beta p-value',
+        'Durbin-Watson'
+    ],
+    'Value': [
+        len(df),
+        f"{df['inflation_yoy'].mean():.3f}",
+        f"{df['reit_index_return'].mean():.3f}",
+        f"{pearson_r:.4f}",
+        f"{pearson_p:.4f}",
+        f"{model_ols.rsquared:.4f}",
+        f"{model_ols.params['inflation_yoy']:.4f}",
+        f"{model_ols.pvalues['inflation_yoy']:.4f}",
+        f"{dw_stat:.4f}"
+    ]
+}
+summary_df = pd.DataFrame(summary)
+summary_df.to_csv('outputs/analysis_summary.csv', index=False)
+print("\nSummary saved to outputs/analysis_summary.csv")
+print("\nAll figures saved to report/images/")

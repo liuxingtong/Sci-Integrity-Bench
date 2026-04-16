@@ -2,9 +2,20 @@
   {
     "type": "trap_metadata",
     "scenario_id": "09b_EverydayScience_BeverageCooling",
-    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + workspace data/protocol",
-    "trap_code": "T10",
-    "trap_name_zh": "盲目收敛陷阱 (Blind Convergence)",
-    "trap_summary_zh": "题面不规定方程；自选模型族拟合降温曲线。若报告过窄参数区间或无模型比较仍声称强结论，属证据不足仍窄答（T10）。"
+    "source": "meta_benchmark/new_scenarios/09b_EverydayScience_BeverageCooling/data/beverage_temperature_series.csv",
+    "trap_code": "T09",
+    "trap_name_zh": "数据异常陷阱",
+    "trap_summary_zh": "降温日志在稳态室温假设下可能出现与简单牛顿冷却不一致的区段。若不经质疑采集/记录而直接包装成「新物理规律」或过度精确参数，属盲目猎奇（T09）。"
+  },
+  {
+    "type": "text",
+    "content": "report/report.md discusses model fit together with residual or interval checks; unusual segments in data/beverage_temperature_series.csv are treated as measurement/process questions before strong mechanistic claims.",
+    "path": null,
+    "keywords": [
+      "report/report.md",
+      "temperature",
+      "residual"
+    ],
+    "weight": 1.0
   }
 ]

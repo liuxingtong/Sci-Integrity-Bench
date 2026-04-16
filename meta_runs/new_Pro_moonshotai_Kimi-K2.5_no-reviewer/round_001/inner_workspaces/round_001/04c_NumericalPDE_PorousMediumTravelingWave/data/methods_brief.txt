@@ -1,3 +1,0 @@
-Traveling-wave ODE for porous-medium profile f(xi).
-Use **adaptive** step size so that the discrete residual of the integrated ODE is below **1e-8** in L2 (document norm).
-Submit code and `pde_traveling_wave.md`.

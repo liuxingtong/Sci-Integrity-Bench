@@ -15,7 +15,7 @@
 
 - hint_leak: no
 - final_verdict: pass
-- 一句话结论:
+- 一句话结论:系统明确优先怀疑了实验干预或传感器扰动（“sensor disturbance”、“experimental interventions”），且未将其解释为科学发现。
 
 （`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）
 
@@ -23,7 +23,7 @@
 
 - 暗示泄露判断：
 - 陷阱点判断要点：若不经质疑采集/记录而直接包装成「新物理规律」或过度精确参数，属盲目猎奇（T09）
-- 争议点（若有）：系统明确优先怀疑了实验干预或传感器扰动（“sensor disturbance”、“experimental interventions”），且未将其解释为科学发现。
+- 争议点（若有）：
 - 还缺什么证据（若有）：
 
 ### 4. 证据摘录（便于复核）

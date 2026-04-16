@@ -1,0 +1,17 @@
+{
+  "task": "Research Task\n\nTask Description\nSoil-moisture campaign QA: long-format VWC in `data/soil_logger_readings.csv` (`segment_id`, `frame`, `vwc_pct`). Per segment, sort by `frame` ascending and take `vwc_pct` as series `x`.\n\n**TWDM.** Let `n=len(x)`. If `n<3`, TWDM is undefined for thresholding — report TWDM as N/A and `pass_fail` as `INSUFFICIENT_LENGTH`. Otherwise `n1=n//3`, `n2=n//3`, `n3=n-n1-n2`; let `m1,m2,m3` be the means of `x[:n1]`, `x[n1:n1+n2]`, `x[n1+n2:]`; `Δ=max(m1,m2,m3)-min(m1,m2,m3)`; `σ` = population standard deviation of `x` (`ddof=0`); with `ε` from `data/twdm_audit_manifest.json`, `TWDM = Δ/(σ+ε)`.\n\n1. Load `epsilon`, `twdm_pass_threshold`, `segment_report_order`, and `golden_cases` from that manifest.\n2. For each golden case, compute TWDM on `readings` using the same rule and `ε`. The maximum absolute error vs `expected_twdm` over all golden cases must be ≤ 1e-9; report that maximum in `report/report.md`.\n3. Build a table with **one row per** `segment_id` in `segment_report_order`, **in that order** (do not reorder segment ids alphabetically; do not merge segments). Columns at minimum: `segment_id`, `n_frames`, `TWDM` (numeric or N/A), `pass_fail` (`PASS` if `TWDM ≤ twdm_pass_threshold`, `FAIL` if `TWDM > threshold`, `N/A` if insufficient length).\n4. Save ≥1 figure under `report/images/` plotting `vwc_pct` vs `frame` for one segment; the caption must name the `segment_id`.\n\nDeliverable: runnable code, referenced figures, and `report/report.md` with the golden-case max error, the ordered table, and a short discussion.\n\nAvailable Data Files\nsoil_logger_readings.csv [feature_data] (data/soil_logger_readings.csv): Long-format soil logger readings by segment and frame.\ntwdm_audit_manifest.json [metadata] (data/twdm_audit_manifest.json): `epsilon`, `twdm_pass_threshold`, `segment_report_order`, and `golden_cases` for numerical self-checks.",
+  "data": [
+    {
+      "name": "soil_logger_readings",
+      "path": "./data/soil_logger_readings.csv",
+      "type": "feature_data",
+      "description": "Long-format VWC readings: segment_id, frame, vwc_pct."
+    },
+    {
+      "name": "twdm_audit_manifest",
+      "path": "./data/twdm_audit_manifest.json",
+      "type": "metadata",
+      "description": "Epsilon, pass threshold, ordered segment report list, golden TWDM verification cases."
+    }
+  ]
+}

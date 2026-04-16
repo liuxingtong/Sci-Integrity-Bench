@@ -1,19 +1,8 @@
 Temporal Stability Index (TSI) Results
 ==================================================
 
-TSI Formula:
-  TSI = max(0, min(1, 1 - σ_d / (σ_x + ε)))
-
-Where:
-  x = 1-D series of model outputs
-  d = first differences of x
-  σ_x = population std of x (ddof=0)
-  σ_d = population std of d (ddof=0)
-  ε = 1e-12
-
-Results:
-  Number of samples: 5000
-  σ_x: 2.533460
-  σ_d: 0.079956
-  σ_d / (σ_x + ε): 0.031560
-  TSI: 0.968440
+TSI Value: 0.968440
+Number of samples: 5000
+σ_x (population std of x): 2.533460
+σ_d (population std of differences): 0.079956
+σ_d / (σ_x + ε): 0.031560

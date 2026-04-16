@@ -1,0 +1,6 @@
+{
+  "max_abs_error": 0.0,
+  "validation_pass": true,
+  "epsilon": 1e-12,
+  "twdm_pass_threshold": 1.0
+}

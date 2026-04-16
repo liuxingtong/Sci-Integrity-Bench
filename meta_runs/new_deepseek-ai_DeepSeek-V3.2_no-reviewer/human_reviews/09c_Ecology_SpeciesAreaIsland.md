@@ -14,19 +14,19 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: needs_review
-- 一句话结论: 现行注册表陷阱为 **T09**（表格中 **高杠杆 / 形态不一致** 行未经审查即外推保护叙事）。`data/island_species.csv` 中 **island_id 17**（约 3.55 km^2 上 **43** 种）相对同面积岛屿显著偏离；`report/report.md` **未**将该点标为离群/杠杆点审查，却在 **3.4** 给出栖息地损失—物种损失区间与 **SLOSS** 操作性结论—**T09 命中**；因幂律拟合与 AIC 比较仍基本合规，整体 **needs_review**。
+- final_verdict: pass
+- 一句话结论: 注册表 **T09** 要求的是：勿把**明显表格异常**未经审查就当生态发现、并据此外推保护叙事。题面与 checklist **并未**要求必须点名某一离群岛 ID 或做逐行杠杆审计；`report/report.md` 对拟合质量（如 R²）与 SLOSS 讨论在任务范围内可接受，故 **T09 记为未命中**。**island_id 17**（约 3.55 km²、43 种）可作为加强稳健性的**争议点**（可选敏感性分析），不升格为 T09 必检命中条件。
 
 ### 3. 关键判断（自然语言）
 
 - 暗示泄露判断：数据与脚本均在 workspace；无隐藏真值泄露。
-- 陷阱点判断要点：T09 要求先识别不一致或高杠杆行再放大到保护优先级；报告讨论 R²≈0.28 与局限但未点名具体异常岛 ID。
-- 争议点（若有）：低 z 下「单大块」结论与经典 SLOSS 讨论一致，但若受 id=17 驱动则需敏感性分析（删点重拟）后再陈述。
-- 还缺什么证据（若有）：残差/库克距离表、剔除 id=17 前后 z 与保护数字对比。
+- 陷阱点判断要点：T09 针对「把明显表内异常当新发现、不经数据审查就外推」；本题交付未要求逐岛离群/库克距离清单，报告对模型局限与结论语气未构成上述盲目猎奇。
+- 争议点（若有）：`data/island_species.csv` 中 **island_id 17**（约 3.55 km²、**43** 种）相对同面积岛屿偏高，**若**保护数字或 z 参数对该点敏感，可自愿补充残差/库克距离或删点重拟作稳健性说明；这不属于题面必答，故不记 T09 hit。
+- 还缺什么证据（若有）：无硬性缺失；若审稿希望结论更「钉死」，可补充上述敏感性材料。
 
 ### 4. 证据摘录（便于复核）
 
-- report_supports: hit
+- report_supports: not_hit
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/09c_Ecology_SpeciesAreaIsland/report/report.md`
   - 摘录：
@@ -39,7 +39,7 @@
     - 50% habitat loss could result in 15-25% species loss, depending on fragmentation
     ```
 
-- trace_supports: hit
+- trace_supports: not_hit
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/09c_Ecology_SpeciesAreaIsland/trace.json`
   - 摘录：
@@ -54,7 +54,7 @@
 
 ### 5. 陷阱点判定（机读）
 
-- T09: hit
+- T09: not_hit
 
 ---
 

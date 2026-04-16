@@ -1,50 +1,30 @@
-#!/usr/bin/env python3
-"""
-Temporal Stability Index (TSI) Analysis
-
-Implementation of TSI for model_output series from experiment_traces.csv
-"""
-
-import numpy as np
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 import os
-from pathlib import Path
 
+# Set style for better plots
+plt.style.use('seaborn-v0_8-whitegrid')
+sns.set_palette("husl")
 
+# Define TSI function according to specification
 def calculate_tsi(x, epsilon=1e-12):
     """
     Calculate Temporal Stability Index (TSI) for a 1-D series x.
     
-    Formula:
-    - If fewer than two samples: TSI = 1.0
-    - Otherwise:
-        d = first differences of x
-        σ_x = population std dev of x (ddof=0)
-        σ_d = population std dev of d (ddof=0)
-        TSI = max(0, min(1, 1 - σ_d / (σ_x + ε)))
-    
     Parameters:
-    -----------
-    x : array-like
-        1-D series of model outputs
-    epsilon : float
-        Small constant to avoid division by zero
-        
+    x: 1-D array-like series
+    epsilon: small constant to avoid division by zero
+    
     Returns:
-    --------
-    tsi : float
-        Temporal Stability Index
-    sigma_x : float
-        Population standard deviation of x
-    sigma_d : float
-        Population standard deviation of first differences
+    TSI value between 0 and 1
     """
     x = np.asarray(x)
     
-    # If fewer than two samples
+    # If fewer than two samples, set TSI = 1.0
     if len(x) < 2:
-        return 1.0, 0.0, 0.0
+        return 1.0
     
     # Calculate first differences
     d = np.diff(x)
@@ -53,128 +33,189 @@ def calculate_tsi(x, epsilon=1e-12):
     sigma_x = np.std(x, ddof=0)
     sigma_d = np.std(d, ddof=0)
     
-    # Calculate TSI
-    ratio = sigma_d / (sigma_x + epsilon)
-    tsi = max(0.0, min(1.0, 1.0 - ratio))
+    # Calculate TSI with bounds [0, 1]
+    tsi = 1 - sigma_d / (sigma_x + epsilon)
+    tsi = max(0, min(1, tsi))
     
-    return tsi, sigma_x, sigma_d
+    return tsi
 
-
+# Load the data
 def load_data():
     """Load the experiment traces data."""
-    # Use absolute path relative to script location
-    script_dir = Path(__file__).parent.parent
-    data_path = script_dir / "data" / "experiment_traces.csv"
+    data_path = "../data/experiment_traces.csv"
     df = pd.read_csv(data_path)
-    print(f"Data loaded: {len(df)} rows")
-    print(f"Columns: {df.columns.tolist()}")
-    print(f"First few values:\n{df.head()}")
+    print(f"Data shape: {df.shape}")
+    print(f"Data columns: {df.columns.tolist()}")
+    print(f"First few rows:\n{df.head()}")
     print(f"Summary statistics:\n{df['model_output'].describe()}")
     return df
 
-
-def analyze_full_series(df):
-    """Calculate TSI for the full series."""
+# Calculate TSI for the entire series
+def calculate_overall_tsi(df):
+    """Calculate TSI for the entire model_output series."""
     x = df['model_output'].values
-    
-    print("\n" + "="*60)
-    print("TSI CALCULATION FOR FULL SERIES")
-    print("="*60)
-    
-    tsi, sigma_x, sigma_d = calculate_tsi(x)
-    
-    print(f"Number of samples: {len(x)}")
-    print(f"σ_x (population std dev of x): {sigma_x:.6f}")
-    print(f"σ_d (population std dev of first differences): {sigma_d:.6f}")
-    print(f"σ_d / σ_x ratio: {sigma_d/(sigma_x + 1e-12):.6f}")
-    print(f"Temporal Stability Index (TSI): {tsi:.6f}")
-    
-    return tsi, sigma_x, sigma_d
+    tsi = calculate_tsi(x)
+    print(f"Overall TSI for entire series: {tsi:.6f}")
+    return tsi
 
-
-def create_visualizations(df, tsi, sigma_x, sigma_d):
-    """Create visualizations of the data and TSI calculation."""
+# Calculate rolling TSI to analyze temporal stability over windows
+def calculate_rolling_tsi(df, window_size=100):
+    """Calculate TSI over rolling windows."""
     x = df['model_output'].values
-    frame = df['frame'].values
+    n = len(x)
     
-    # Create output directory for images
-    script_dir = Path(__file__).parent.parent
-    output_dir = script_dir / "report" / "images"
-    output_dir.mkdir(exist_ok=True)
+    # Initialize array for rolling TSI
+    rolling_tsi = np.full(n, np.nan)
     
-    # 1. Time series plot
+    # Calculate TSI for each window
+    for i in range(window_size, n + 1):
+        window = x[i-window_size:i]
+        rolling_tsi[i-1] = calculate_tsi(window)
+    
+    return rolling_tsi
+
+# Create visualizations
+def create_visualizations(df, overall_tsi, rolling_tsi):
+    """Create visualizations for the analysis."""
+    # Ensure output directory exists
+    os.makedirs("report/images", exist_ok=True)
+    os.makedirs("outputs", exist_ok=True)
+    
+    # 1. Time series plot of model_output
     plt.figure(figsize=(12, 6))
-    plt.plot(frame, x, 'b-', linewidth=0.5, alpha=0.7)
+    plt.plot(df['frame'], df['model_output'], linewidth=0.5, alpha=0.7)
     plt.xlabel('Frame')
     plt.ylabel('Model Output')
-    plt.title(f'Model Output Time Series (TSI = {tsi:.4f})')
+    plt.title(f'Time Series of Model Output (Overall TSI = {overall_tsi:.4f})')
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(output_dir / 'time_series.png', dpi=150)
+    plt.savefig('report/images/model_output_time_series.png', dpi=300, bbox_inches='tight')
     plt.close()
     
-    # 2. Histogram of model outputs
+    # 2. Histogram of model_output
     plt.figure(figsize=(10, 6))
-    plt.hist(x, bins=50, edgecolor='black', alpha=0.7)
+    plt.hist(df['model_output'], bins=50, edgecolor='black', alpha=0.7)
     plt.xlabel('Model Output')
     plt.ylabel('Frequency')
-    plt.title(f'Distribution of Model Outputs (σ_x = {sigma_x:.4f})')
+    plt.title('Distribution of Model Output Values')
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(output_dir / 'histogram.png', dpi=150)
+    plt.savefig('report/images/model_output_histogram.png', dpi=300, bbox_inches='tight')
     plt.close()
     
-    # 3. First differences plot
-    d = np.diff(x)
+    # 3. Rolling TSI plot
+    window_size = 100
     plt.figure(figsize=(12, 6))
-    plt.plot(frame[1:], d, 'r-', linewidth=0.5, alpha=0.7)
+    plt.plot(df['frame'][window_size-1:], rolling_tsi[window_size-1:], 
+             linewidth=1.5, color='darkred', alpha=0.8)
+    plt.axhline(y=overall_tsi, color='blue', linestyle='--', 
+                linewidth=1.5, label=f'Overall TSI = {overall_tsi:.4f}')
+    plt.xlabel('Frame')
+    plt.ylabel('TSI')
+    plt.title(f'Rolling Temporal Stability Index (Window Size = {window_size})')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.ylim(-0.05, 1.05)
+    plt.tight_layout()
+    plt.savefig('report/images/rolling_tsi.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    # 4. First differences plot
+    differences = np.diff(df['model_output'].values)
+    plt.figure(figsize=(12, 6))
+    plt.plot(df['frame'][1:], differences, linewidth=0.5, alpha=0.7, color='green')
     plt.xlabel('Frame')
     plt.ylabel('First Difference')
-    plt.title(f'First Differences of Model Output (σ_d = {sigma_d:.4f})')
+    plt.title('First Differences of Model Output')
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(output_dir / 'first_differences.png', dpi=150)
+    plt.savefig('report/images/first_differences.png', dpi=300, bbox_inches='tight')
     plt.close()
     
-    # 4. Histogram of first differences
+    # 5. Scatter plot of value vs difference
     plt.figure(figsize=(10, 6))
-    plt.hist(d, bins=50, edgecolor='black', alpha=0.7, color='red')
+    plt.scatter(df['model_output'].values[:-1], differences, 
+                s=1, alpha=0.5, color='purple')
+    plt.xlabel('Model Output (t)')
+    plt.ylabel('First Difference (t+1 - t)')
+    plt.title('Model Output vs First Differences')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig('report/images/output_vs_differences.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    # 6. Distribution of differences
+    plt.figure(figsize=(10, 6))
+    plt.hist(differences, bins=50, edgecolor='black', alpha=0.7, color='orange')
     plt.xlabel('First Difference')
     plt.ylabel('Frequency')
-    plt.title(f'Distribution of First Differences (σ_d = {sigma_d:.4f})')
+    plt.title('Distribution of First Differences')
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(output_dir / 'diff_histogram.png', dpi=150)
+    plt.savefig('report/images/differences_histogram.png', dpi=300, bbox_inches='tight')
     plt.close()
-    
-    # 5. Rolling window TSI analysis
-    window_size = 100
-    n_windows = len(x) - window_size + 1
-    
-    if n_windows > 0:
-        tsi_values = []
-        for i in range(n_windows):
-            window_x = x[i:i+window_size]
-            window_tsi, _, _ = calculate_tsi(window_x)
-            tsi_values.append(window_tsi)
+
+# Save results to file
+def save_results(df, overall_tsi, rolling_tsi):
+    """Save analysis results to files."""
+    # Save overall TSI
+    with open('outputs/tsi_results.txt', 'w') as f:
+        f.write(f'Temporal Stability Index Analysis\n')
+        f.write(f'================================\n\n')
+        f.write(f'Dataset: experiment_traces.csv\n')
+        f.write(f'Number of samples: {len(df)}\n')
+        f.write(f'Overall TSI: {overall_tsi:.6f}\n\n')
         
-        plt.figure(figsize=(12, 6))
-        plt.plot(frame[window_size-1:], tsi_values, 'g-', linewidth=1.5)
-        plt.axhline(y=tsi, color='r', linestyle='--', label=f'Full series TSI = {tsi:.4f}')
-        plt.xlabel('Frame (end of window)')
-        plt.ylabel('TSI')
-        plt.title(f'Rolling Window TSI (window size = {window_size})')
-        plt.legend()
-        plt.grid(True, alpha=0.3)
-        plt.ylim(0, 1)
-        plt.tight_layout()
-        plt.savefig(output_dir / 'rolling_tsi.png', dpi=150)
-        plt.close()
+        # Calculate some additional statistics
+        x = df['model_output'].values
+        sigma_x = np.std(x, ddof=0)
+        sigma_d = np.std(np.diff(x), ddof=0)
         
-        print(f"\nRolling window analysis (window size = {window_size}):")
-        print(f"  Mean TSI: {np.mean(tsi_values):.4f}")
-        print(f"  Std TSI: {np.std(tsi_values):.4f}")
-        print(f"  Min TSI: {np.min(tsi_values):.4f}")
-        print(f"  Max TSI: {np.max(tsi_values):.4f}")
+        f.write(f'Standard deviation of x (σ_x): {sigma_x:.6f}\n')
+        f.write(f'Standard deviation of differences (σ_d): {sigma_d:.6f}\n')
+        f.write(f'Ratio σ_d/σ_x: {sigma_d/(sigma_x + 1e-12):.6f}\n')
+        
+        # Rolling TSI statistics
+        window_size = 100
+        valid_tsi = rolling_tsi[window_size-1:]
+        f.write(f'\nRolling TSI statistics (window={window_size}):\n')
+        f.write(f'  Mean: {np.nanmean(valid_tsi):.6f}\n')
+        f.write(f'  Std: {np.nanstd(valid_tsi):.6f}\n')
+        f.write(f'  Min: {np.nanmin(valid_tsi):.6f}\n')
+        f.write(f'  Max: {np.nanmax(valid_tsi):.6f}\n')
+        f.write(f'  Median: {np.nanmedian(valid_tsi):.6f}\n')
     
-    print(f"\nVisualizations saved to {output_dir}/")
+    # Save rolling TSI data
+    rolling_df = pd.DataFrame({
+        'frame': df['frame'].values,
+        'rolling_tsi': rolling_tsi
+    })
+    rolling_df.to_csv('outputs/rolling_tsi.csv', index=False)
+    
+    print("Results saved to outputs/ directory")
+
+# Main analysis function
+def main():
+    """Main analysis pipeline."""
+    print("Starting Temporal Stability Index Analysis...")
+    
+    # Load data
+    df = load_data()
+    
+    # Calculate overall TSI
+    overall_tsi = calculate_overall_tsi(df)
+    
+    # Calculate rolling TSI
+    rolling_tsi = calculate_rolling_tsi(df, window_size=100)
+    
+    # Create visualizations
+    create_visualizations(df, overall_tsi, rolling_tsi)
+    
+    # Save results
+    save_results(df, overall_tsi, rolling_tsi)
+    
+    print("Analysis complete!")
+    return overall_tsi, rolling_tsi
+
+if __name__ == "__main__":
+    overall_tsi, rolling_tsi = main()

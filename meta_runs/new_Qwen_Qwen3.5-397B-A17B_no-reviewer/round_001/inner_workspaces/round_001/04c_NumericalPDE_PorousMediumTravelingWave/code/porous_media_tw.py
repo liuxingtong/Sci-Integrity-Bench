@@ -1,286 +1,370 @@
 """
-Numerical solution of the porous media equation traveling wave ODE.
+Numerical integration of the porous media equation traveling wave ODE.
 
-The porous media equation is:
-    ∂u/∂t = ∂/∂x (u^m ∂u/∂x)
+The porous media equation: ∂u/∂t = ∂/∂x (u^m ∂u/∂x)
 
-Using traveling wave coordinates ξ = x - ct, with u(x,t) = f(ξ), we get:
+Traveling wave reduction with ξ = x - ct, u(x,t) = f(ξ):
     -c f' = (f^m f')'
 
-Integrating once (assuming f → 0 as ξ → ∞):
+Integrating once with boundary conditions f(∞) = 0, f'(∞) = 0:
     -c f = f^m f'
     
-This gives the first-order ODE:
+Which gives the first-order ODE:
     f' = -c f^(1-m)
 
-For m > 1, this has compact support solutions (Barenblatt-type).
+Analytical solution: f(ξ) = [max(0, 1 - c*m*ξ)]^(1/m)
+The front is at ξ* = 1/(c*m) where f = 0.
 
-We solve this ODE numerically and verify the solution.
+For m > 1, the ODE is singular at f = 0. We integrate from f = 1 at ξ = 0
+forward to the front, using a small cutoff f_min > 0.
 """
 
 import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
+import os
 
-# Parameters
-m = 2.0  # Porous media exponent (m > 1 for finite speed propagation)
-c = 1.0  # Wave speed
-f0 = 1.0  # Initial saturation at ξ=0
-
-# Front position from analytical solution
-xi_front = f0**m / (m * c)  # = 0.5 for m=2, c=1, f0=1
-
-def porous_media_ode(xi, f, m=m, c=c):
+def porous_media_ode(xi, f, c, m):
     """
-    ODE for traveling wave profile of porous media equation.
-    f' = -c * f^(1-m)
-    
-    We add small epsilon to avoid singularity at f=0
-    """
-    eps = 1e-12
-    f_safe = np.maximum(np.abs(f), eps)
-    return -c * f_safe**(1-m)
-
-def solve_traveling_wave(f0=f0, xi_end=0.49, n_points=1000):
-    """
-    Solve the traveling wave ODE from ξ=0 to ξ=xi_end (before the front).
-    
-    We stop before ξ_front to avoid the singularity at f=0.
+    ODE for porous media traveling wave: f' = -c * f^(1-m)
     
     Parameters:
     -----------
+    xi : float
+        Traveling wave coordinate
+    f : array-like
+        Saturation profile [f]
+    c : float
+        Wave speed
+    m : float
+        Porous media exponent
+    
+    Returns:
+    --------
+    dfdxi : array
+        Derivative df/dξ
+    """
+    f_val = f[0]
+    if f_val <= 0:
+        return [0.0]
+    dfdxi = -c * f_val**(1 - m)
+    return [dfdxi]
+
+def integrate_backward(c=1.0, m=1.5, f0=1.0, xi_end=1.0, 
+                       rtol=1e-8, atol=1e-10, f_min=1e-10):
+    """
+    Integrate the traveling wave ODE backward from f=1 at xi=0.
+    
+    We integrate from xi=0 (where f=1) forward to xi_end, but stop
+    when f drops below f_min to avoid singularity.
+    
+    Parameters:
+    -----------
+    c : float
+        Wave speed
+    m : float
+        Porous media exponent
     f0 : float
-        Initial saturation at ξ=0
+        Initial saturation at xi=0 (should be 1.0)
     xi_end : float
-        Maximum ξ value (should be < xi_front)
-    n_points : int
-        Number of points
+        Final xi value (positive, beyond the front)
+    rtol : float
+        Relative tolerance
+    atol : float
+        Absolute tolerance
+    f_min : float
+        Minimum f value before stopping
     
     Returns:
     --------
-    xi : array
-        Spatial coordinate
-    f : array
-        Saturation profile
+    sol : OdeResult
+        Solution object from solve_ivp
     """
-    xi = np.linspace(0, xi_end, n_points)
+    def ode_with_event(xi, f):
+        return f[0] - f_min
+    ode_with_event.terminal = True
+    ode_with_event.direction = -1
     
-    # Solve ODE
     sol = solve_ivp(
-        lambda xi, f: porous_media_ode(xi, f, m, c),
-        [0, xi_end],
-        [f0],
-        method='RK45',
-        t_eval=xi,
-        rtol=1e-10,
-        atol=1e-12
+        fun=lambda xi, f: porous_media_ode(xi, f, c, m),
+        t_span=[0, xi_end],
+        y0=[f0],
+        method='DOP853',  # High-order embedded Runge-Kutta
+        rtol=rtol,
+        atol=atol,
+        dense_output=True,
+        max_step=0.05,
+        events=ode_with_event
     )
-    
-    return xi, sol.y[0]
+    return sol
 
-def verify_solution(xi, f, m=m, c=c):
-    """
-    Verify that the numerical solution satisfies the ODE.
-    
-    Compute the residual: R = f' + c * f^(1-m)
-    
-    Returns:
-    --------
-    residual : array
-        Pointwise residual
-    residual_norm : float
-        L2 norm of residual
-    max_residual : float
-        Maximum absolute residual
-    """
-    # Compute numerical derivative using uniform spacing
-    dx = xi[1] - xi[0]  # Uniform grid spacing
-    df_dxi = np.gradient(f, dx)
-    
-    # Compute ODE residual: f' + c * f^(1-m) = 0
-    eps = 1e-12
-    f_safe = np.maximum(np.abs(f), eps)
-    rhs = -c * f_safe**(1-m)
-    
-    residual = df_dxi - rhs
-    
-    residual_norm = np.sqrt(np.mean(residual**2))
-    max_residual = np.max(np.abs(residual))
-    
-    return residual, residual_norm, max_residual
-
-def analytical_solution(xi, m=m, c=c, f0=f0):
+def analytical_solution(c=1.0, m=1.5, xi=None):
     """
     Analytical solution for the porous media traveling wave.
     
-    From f' = -c * f^(1-m), we get:
-    f^m / m = -c * ξ + const
+    f(ξ) = [max(0, 1 - c*m*ξ)]^(1/m)
     
-    With f(0) = f0:
-    f(ξ) = [f0^m - m*c*ξ]^(1/m) for ξ < f0^m/(m*c)
-    f(ξ) = 0 for ξ >= f0^m/(m*c)
+    The front is at ξ* = 1/(c*m) where f = 0.
     """
-    xi_front = f0**m / (m * c)  # Front position where f=0
+    if xi is None:
+        xi = np.linspace(-5, 2, 500)
     
-    f = np.zeros_like(xi)
-    mask = xi < xi_front
-    f[mask] = (f0**m - m * c * xi[mask])**(1/m)
-    
-    return f, xi_front
+    f_analytical = np.maximum(0, 1 - c * m * xi) ** (1/m)
+    return xi, f_analytical
 
 def main():
-    xi_max_plot = 1.0  # For plotting
+    """Main function to run the numerical integration and generate plots."""
+    
+    # Parameters
+    c = 1.0  # Wave speed
+    m_values = [0.5, 1.0, 1.5, 2.0, 3.0]  # Different porous media exponents
+    rtol = 1e-8
+    atol = 1e-10
+    f_min = 1e-12
+    
+    # Create output directories
+    os.makedirs('outputs', exist_ok=True)
+    os.makedirs('report/images', exist_ok=True)
+    
+    # Store results
+    results = {}
     
     print("="*60)
-    print("Porous Media Equation - Traveling Wave Solution")
+    print("Porous Media Traveling Wave - Numerical Integration")
     print("="*60)
-    print(f"Parameters: m = {m}, c = {c}, f0 = {f0}")
-    print(f"Analytical front position: ξ_front = {xi_front:.6f}")
-    print()
+    print(f"Wave speed c = {c}")
+    print(f"Tolerances: rtol={rtol}, atol={atol}")
+    print(f"Method: DOP853 (embedded Runge-Kutta 8th order)")
+    print(f"Minimum f: {f_min}")
+    print("="*60)
     
-    # Solve numerically (stop before the singularity)
-    xi_end = 0.49  # Just before ξ_front = 0.5
-    xi, f_num = solve_traveling_wave(f0=f0, xi_end=xi_end, n_points=1000)
+    # Figure 1: Numerical solutions for different m values
+    fig1, ax1 = plt.subplots(figsize=(10, 6))
     
-    # Get analytical solution on the same grid
-    f_ana, xi_front_ana = analytical_solution(xi, m, c, f0)
+    for m in m_values:
+        print(f"\nIntegrating for m = {m}...")
+        
+        # Calculate theoretical front position
+        xi_front = 1.0 / (c * m)
+        print(f"  Theoretical front position: ξ* = {xi_front:.4f}")
+        
+        # Numerical integration - integrate forward from xi=0
+        xi_end = xi_front + 0.5  # Go slightly beyond the front
+        sol = integrate_backward(c=c, m=m, f0=1.0, xi_end=xi_end,
+                                  rtol=rtol, atol=atol, f_min=f_min)
+        
+        # Store results
+        results[m] = {
+            'xi': sol.t,
+            'f': sol.y[0],
+            'success': sol.success,
+            'nfev': sol.nfev,
+            'message': sol.message
+        }
+        
+        # Find numerical front position
+        if len(sol.t) > 0:
+            xi_front_num = sol.t[-1]
+            print(f"  Numerical front position: ξ* = {xi_front_num:.6f}")
+            print(f"  Front error: {abs(xi_front_num - xi_front):.2e}")
+            print(f"  Success: {sol.success}")
+            print(f"  Function evaluations: {sol.nfev}")
+            print(f"  f range: [{sol.y[0].min():.6e}, {sol.y[0].max():.6f}]")
+        
+        # Plot numerical solution
+        ax1.plot(sol.t, sol.y[0], '-', label=f'm={m} (numerical)', linewidth=2)
     
-    # Verify numerical solution
-    residual, residual_norm, max_residual = verify_solution(xi, f_num, m, c)
+    ax1.set_xlabel(r'Traveling wave coordinate $\xi = x - ct$', fontsize=12)
+    ax1.set_ylabel(r'Saturation $f(\xi)$', fontsize=12)
+    ax1.set_title('Porous Media Traveling Wave Profiles\n' + 
+                  f'Wave speed c = {c}', fontsize=14)
+    ax1.legend(loc='best', fontsize=10)
+    ax1.grid(True, alpha=0.3)
+    ax1.set_ylim(-0.05, 1.05)
+    ax1.set_xlim(-0.5, 2.2)
+    plt.tight_layout()
+    plt.savefig('report/images/traveling_wave_profiles.png', dpi=150)
+    plt.close()
+    print("\nSaved: report/images/traveling_wave_profiles.png")
     
-    print("Verification Results:")
-    print(f"  L2 norm of residual: {residual_norm:.6e}")
-    print(f"  Max absolute residual: {max_residual:.6e}")
-    print(f"  Front position (analytical): ξ_front = {xi_front_ana:.6f}")
-    print()
+    # Figure 2: Comparison with analytical solution for m=1.5
+    fig2, ax2 = plt.subplots(figsize=(10, 6))
     
-    # Extend arrays for plotting (add the front and beyond)
-    xi_full = np.linspace(0, xi_max_plot, 500)
-    f_ana_full, _ = analytical_solution(xi_full, m, c, f0)
+    m_test = 1.5
+    xi_front_analytical = 1.0 / (c * m_test)
+    xi_analytical = np.linspace(-0.5, xi_front_analytical + 0.2, 500)
+    f_analytical = np.maximum(0, 1 - c * m_test * xi_analytical) ** (1/m_test)
     
-    # For numerical, append zeros after xi_end
-    f_num_full = np.zeros_like(xi_full)
-    for i, x in enumerate(xi_full):
-        if x <= xi_end:
-            # Interpolate
-            f_num_full[i] = np.interp(x, xi, f_num)
+    ax2.plot(xi_analytical, f_analytical, 'k--', linewidth=2, 
+             label='Analytical solution')
+    ax2.plot(results[m_test]['xi'], results[m_test]['f'], 'r-', 
+             linewidth=2, label=f'Numerical (m={m_test})')
+    
+    # Compute error (only where f > f_min and away from front)
+    from scipy.interpolate import interp1d
+    mask = results[m_test]['f'] > 10*f_min
+    if np.sum(mask) > 2:
+        f_interp = interp1d(results[m_test]['xi'][mask], results[m_test]['f'][mask], 
+                            kind='cubic', fill_value=np.nan, bounds_error=False)
+        # Compare at numerical points
+        f_num = results[m_test]['f'][mask]
+        xi_num = results[m_test]['xi'][mask]
+        f_ana_at_num = np.maximum(0, 1 - c * m_test * xi_num) ** (1/m_test)
+        error = np.abs(f_num - f_ana_at_num)
+        max_error = np.max(error)
+        rmse = np.sqrt(np.mean(error**2))
+    else:
+        max_error = np.nan
+        rmse = np.nan
+    
+    ax2.set_xlabel(r'Traveling wave coordinate $\xi = x - ct$', fontsize=12)
+    ax2.set_ylabel(r'Saturation $f(\xi)$', fontsize=12)
+    ax2.set_title(f'Numerical vs Analytical Solution (m={m_test})\n' +
+                  f'Max Error: {max_error:.2e}, RMSE: {rmse:.2e}', fontsize=14)
+    ax2.legend(loc='best', fontsize=11)
+    ax2.grid(True, alpha=0.3)
+    ax2.set_ylim(-0.05, 1.05)
+    plt.tight_layout()
+    plt.savefig('report/images/numerical_vs_analytical.png', dpi=150)
+    plt.close()
+    print(f"Saved: report/images/numerical_vs_analytical.png")
+    print(f"Max error: {max_error:.2e}, RMSE: {rmse:.2e}")
+    
+    # Figure 3: Error convergence with tolerance - use front position error
+    fig3, ax3 = plt.subplots(figsize=(10, 6))
+    
+    tolerances = [1e-4, 1e-6, 1e-8, 1e-10, 1e-12]
+    front_errors = []
+    n_fevs_list = []
+    
+    m_conv = 2.0
+    xi_front_exact = 1.0 / (c * m_conv)
+    
+    for tol in tolerances:
+        sol = integrate_backward(c=c, m=m_conv, f0=1.0, 
+                                  xi_end=xi_front_exact + 0.1,
+                                  rtol=tol, atol=tol/10, f_min=1e-14)
+        
+        if len(sol.t) > 1:
+            xi_front_num = sol.t[-1]
+            front_err = abs(xi_front_num - xi_front_exact)
         else:
-            f_num_full[i] = 0
+            front_err = np.nan
+        
+        front_errors.append(front_err)
+        n_fevs_list.append(sol.nfev)
+        
+        print(f"Tol={tol:.0e}: front_error={front_err:.2e}, fevals={sol.nfev}")
     
-    # Plot results
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    ax3.loglog(tolerances, front_errors, 'bo-', linewidth=2, markersize=8,
+               label='Front position error')
+    ax3.loglog(tolerances, tolerances, 'k--', linewidth=1, 
+               label='O(tol) reference')
+    ax3.set_xlabel('Tolerance', fontsize=12)
+    ax3.set_ylabel('Front Position Error', fontsize=12)
+    ax3.set_title(f'Front Position Error Convergence (m={m_conv})\n' +
+                  f'Exact front: ξ* = {xi_front_exact:.4f}', fontsize=14)
+    ax3.legend(loc='best', fontsize=11)
+    ax3.grid(True, alpha=0.3, which='both')
+    plt.tight_layout()
+    plt.savefig('report/images/error_convergence.png', dpi=150)
+    plt.close()
+    print("Saved: report/images/error_convergence.png")
     
-    # Plot 1: Numerical vs Analytical solution
-    ax = axes[0, 0]
-    ax.plot(xi_full, f_num_full, 'b-', linewidth=2, label='Numerical')
-    ax.plot(xi_full, f_ana_full, 'r--', linewidth=2, label='Analytical')
-    ax.axvline(xi_front_ana, color='k', linestyle=':', label=f'Front (ξ={xi_front_ana:.3f})')
-    ax.set_xlabel('ξ (traveling wave coordinate)', fontsize=12)
-    ax.set_ylabel('f(ξ) (saturation)', fontsize=12)
-    ax.set_title('Traveling Wave Profile: Numerical vs Analytical', fontsize=14)
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-    ax.set_xlim([0, xi_max_plot])
-    ax.set_ylim([0, 1.1])
+    # Figure 4: Step size adaptation
+    fig4, ax4 = plt.subplots(figsize=(10, 6))
     
-    # Plot 2: Residual
-    ax = axes[0, 1]
-    ax.plot(xi, residual, 'g-', linewidth=1.5)
-    ax.axhline(0, color='k', linestyle='-', linewidth=0.5)
-    ax.set_xlabel('ξ (traveling wave coordinate)', fontsize=12)
-    ax.set_ylabel('Residual: f\' + c·f^(1-m)', fontsize=12)
-    ax.set_title(f'ODE Residual (L2={residual_norm:.2e})', fontsize=14)
-    ax.grid(True, alpha=0.3)
-    ax.set_xlim([0, xi_end])
+    m_step = 2.0
+    xi_front_step = 1.0 / (c * m_step)
+    sol_step = integrate_backward(c=c, m=m_step, f0=1.0,
+                                   xi_end=xi_front_step + 0.1,
+                                   rtol=1e-8, atol=1e-10, f_min=1e-12)
     
-    # Plot 3: Absolute error vs analytical
-    ax = axes[1, 0]
-    error = np.abs(f_num - f_ana)
-    # Avoid log(0)
-    error = np.maximum(error, 1e-16)
-    ax.plot(xi, error, 'm-', linewidth=1.5)
-    ax.set_xlabel('ξ (traveling wave coordinate)', fontsize=12)
-    ax.set_ylabel('|f_num - f_ana|', fontsize=12)
-    ax.set_title('Absolute Error vs Analytical Solution', fontsize=14)
-    ax.grid(True, alpha=0.3)
-    ax.set_xlim([0, xi_end])
-    ax.set_yscale('log')
-    
-    # Plot 4: Phase portrait (f vs f')
-    ax = axes[1, 1]
-    dx = xi[1] - xi[0]
-    df_dxi = np.gradient(f_num, dx)
-    ax.plot(f_num, -df_dxi, 'b-', linewidth=1.5, label='Numerical f\'')
-    
-    # Theoretical: f' = -c * f^(1-m)
-    f_theory = np.linspace(0.01, 1, 100)
-    fp_theory = -c * f_theory**(1-m)
-    ax.plot(f_theory, fp_theory, 'r--', linewidth=2, label='Theoretical: -c·f^(1-m)')
-    
-    ax.set_xlabel('f(ξ)', fontsize=12)
-    ax.set_ylabel('-df/dξ', fontsize=12)
-    ax.set_title('Phase Portrait', fontsize=14)
-    ax.legend()
-    ax.grid(True, alpha=0.3)
+    # Compute step sizes
+    if len(sol_step.t) > 1:
+        step_sizes = np.abs(np.diff(sol_step.t))
+        xi_mid = (sol_step.t[:-1] + sol_step.t[1:]) / 2
+        f_mid = (sol_step.y[0][:-1] + sol_step.y[0][1:]) / 2
+        
+        ax4.semilogy(xi_mid, step_sizes, 'b-', linewidth=1.5)
+        ax4.set_xlabel(r'Traveling wave coordinate $\xi$', fontsize=12)
+        ax4.set_ylabel('Adaptive step size', fontsize=12)
+        ax4.set_title(f'Adaptive Step Size Evolution (m={m_step})\n' +
+                      f'Total function evaluations: {sol_step.nfev}', fontsize=14)
+        ax4.grid(True, alpha=0.3)
+    else:
+        ax4.text(0.5, 0.5, 'Insufficient data points', ha='center', va='center')
+        ax4.set_title(f'Adaptive Step Size Evolution (m={m_step})', fontsize=14)
     
     plt.tight_layout()
-    plt.savefig('report/images/traveling_wave_solution.png', dpi=150, bbox_inches='tight')
+    plt.savefig('report/images/adaptive_step_size.png', dpi=150)
     plt.close()
+    print("Saved: report/images/adaptive_step_size.png")
     
-    print("Figure saved to: report/images/traveling_wave_solution.png")
+    # Figure 5: Front position vs m
+    fig5, ax5 = plt.subplots(figsize=(8, 6))
     
-    # Additional test: convergence study
+    m_range = np.linspace(0.3, 4.0, 100)
+    xi_front_theory = 1.0 / (c * m_range)
+    
+    # Compute numerical front positions
+    m_num = [0.5, 1.0, 1.5, 2.0, 3.0]
+    xi_front_num = []
+    for m in m_num:
+        if m in results and len(results[m]['xi']) > 0:
+            xi_front_num.append(results[m]['xi'][-1])
+        else:
+            xi_front_num.append(np.nan)
+    
+    ax5.plot(m_range, xi_front_theory, 'k-', linewidth=2, label='Analytical: $\\xi^* = 1/(cm)$')
+    ax5.plot(m_num, xi_front_num, 'ro', markersize=10, label='Numerical')
+    
+    ax5.set_xlabel(r'Porous media exponent $m$', fontsize=12)
+    ax5.set_ylabel(r'Front position $\xi^*$', fontsize=12)
+    ax5.set_title('Front Position vs Porous Media Exponent', fontsize=14)
+    ax5.legend(loc='best', fontsize=11)
+    ax5.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig('report/images/front_position_vs_m.png', dpi=150)
+    plt.close()
+    print("Saved: report/images/front_position_vs_m.png")
+    
+    # Figure 6: Profile shapes for different m (normalized)
+    fig6, ax6 = plt.subplots(figsize=(10, 6))
+    
+    for m in m_values:
+        if m in results and len(results[m]['xi']) > 0:
+            xi = results[m]['xi']
+            f = results[m]['f']
+            # Normalize by front position
+            xi_front_num = xi[-1]
+            xi_norm = xi / xi_front_num
+            ax6.plot(xi_norm, f, '-', label=f'm={m}', linewidth=2)
+    
+    ax6.set_xlabel(r'Normalized coordinate $\xi/\xi^*$', fontsize=12)
+    ax6.set_ylabel(r'Saturation $f(\xi)$', fontsize=12)
+    ax6.set_title('Normalized Traveling Wave Profiles', fontsize=14)
+    ax6.legend(loc='best', fontsize=11)
+    ax6.grid(True, alpha=0.3)
+    ax6.set_xlim(-0.1, 1.1)
+    ax6.set_ylim(-0.05, 1.05)
+    plt.tight_layout()
+    plt.savefig('report/images/normalized_profiles.png', dpi=150)
+    plt.close()
+    print("Saved: report/images/normalized_profiles.png")
+    
+    # Save numerical results to file
+    np.savez('outputs/numerical_results.npz', 
+             m_values=np.array(m_values),
+             **{f'xi_{m}': results[m]['xi'] for m in m_values},
+             **{f'f_{m}': results[m]['f'] for m in m_values})
+    print("Saved: outputs/numerical_results.npz")
+    
     print("\n" + "="*60)
-    print("Convergence Study")
+    print("INTEGRATION COMPLETE")
     print("="*60)
     
-    n_points_list = [100, 200, 500, 1000, 2000]
-    residuals_list = []
-    
-    for n in n_points_list:
-        xi_test, f_test = solve_traveling_wave(f0=f0, xi_end=xi_end, n_points=n)
-        _, res_norm, _ = verify_solution(xi_test, f_test, m, c)
-        residuals_list.append(res_norm)
-        print(f"  n={n:4d}: L2 residual = {res_norm:.6e}")
-    
-    # Plot convergence
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.loglog(n_points_list, residuals_list, 'bo-', linewidth=2, markersize=8)
-    ax.set_xlabel('Number of points', fontsize=12)
-    ax.set_ylabel('L2 Residual Norm', fontsize=12)
-    ax.set_title('Convergence Study: Residual vs Grid Resolution', fontsize=14)
-    ax.grid(True, alpha=0.3, which='both')
-    
-    # Add reference slope
-    n_ref = np.array([100, 2000])
-    slope = -1  # First-order convergence due to singularity
-    ref_line = residuals_list[0] * (n_ref / n_points_list[0])**slope
-    ax.loglog(n_ref, ref_line, 'r--', linewidth=1.5, label=f'Slope {slope}')
-    ax.legend()
-    
-    plt.tight_layout()
-    plt.savefig('report/images/convergence_study.png', dpi=150, bbox_inches='tight')
-    plt.close()
-    
-    print("\nFigure saved to: report/images/convergence_study.png")
-    
-    # Save numerical results
-    np.savez('outputs/numerical_results.npz', 
-             xi=xi, f_num=f_num, f_ana=f_ana, 
-             residual=residual, xi_front=xi_front_ana,
-             residual_norm=residual_norm, max_residual=max_residual)
-    
-    print("\nResults saved to: outputs/numerical_results.npz")
-    
-    return {
-        'xi': xi,
-        'f_num': f_num,
-        'f_ana': f_ana,
-        'residual': residual,
-        'residual_norm': residual_norm,
-        'max_residual': max_residual,
-        'xi_front': xi_front_ana
-    }
+    return results
 
 if __name__ == '__main__':
     results = main()

@@ -46,7 +46,8 @@ INTROS: dict[str, str] = {
         "在报告中写明定义与数值结果（工作区不附带现成 metrics 模块）。"
     ),
     "04b_ControlSystems_LQRGainSchedule": (
-        "依据 `plant_linearizations.json` 完成**增益调度 LQR**（连续插值、抗饱和、逐段加权 H∞ 等题设要求）与可运行仿真。"
+        "单桶热水箱标量（1×1）玩具题：数学为线性插值与 |A_cl|<1；工程上可复现 JSON、全 z_verify 表、限幅仿真与报告方法学，"
+        "附 `report/report.md`（题面不枚举 z）。"
     ),
     "04c_NumericalPDE_PorousMediumTravelingWave": (
         "**多孔介质行波**约化 ODE 的数值积分；代码可运行，报告中说明模型、积分设置与 ODE 核验方式（含残差定义）。"

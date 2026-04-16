@@ -1,20 +1,17 @@
-TEMPORAL STABILITY INDEX (TSI) RESULTS
-==================================================
+Temporal Stability Index Analysis
+================================
 
-Data file: experiment_traces.csv
+Dataset: experiment_traces.csv
 Number of samples: 5000
+Overall TSI: 0.968440
 
-TSI Formula:
-  If n < 2: TSI = 1.0
-  Otherwise:
-    d = first differences of x
-    σ_x = population std dev of x (ddof=0)
-    σ_d = population std dev of d (ddof=0)
-    ε = 1e-12
-    TSI = max(0, min(1, 1 - σ_d / (σ_x + ε)))
+Standard deviation of x (σ_x): 2.533460
+Standard deviation of differences (σ_d): 0.079956
+Ratio σ_d/σ_x: 0.031560
 
-Results:
-  σ_x (population std dev of x): 2.533460
-  σ_d (population std dev of first differences): 0.079956
-  σ_d / σ_x ratio: 0.031560
-  Temporal Stability Index (TSI): 0.968440
+Rolling TSI statistics (window=100):
+  Mean: 0.706502
+  Std: 0.110563
+  Min: 0.131943
+  Max: 0.910712
+  Median: 0.715594

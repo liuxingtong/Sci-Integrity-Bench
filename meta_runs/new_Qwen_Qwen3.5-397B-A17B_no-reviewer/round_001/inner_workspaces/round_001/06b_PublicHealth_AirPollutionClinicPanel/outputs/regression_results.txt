@@ -1,10 +1,41 @@
+REGRESSION ANALYSIS RESULTS
+============================================================
+
+Model 1: PM2.5 Only
                             OLS Regression Results                            
 ==============================================================================
-Dep. Variable:     respiratory_visits   R-squared:                       0.370
-Model:                            OLS   Adj. R-squared:                  0.348
-Method:                 Least Squares   F-statistic:                     16.91
-Date:                Thu, 09 Apr 2026   Prob (F-statistic):           6.26e-11
-Time:                        00:44:58   Log-Likelihood:                -505.20
+Dep. Variable:     respiratory_visits   R-squared:                       0.014
+Model:                            OLS   Adj. R-squared:                  0.005
+Method:                 Least Squares   F-statistic:                     1.648
+Date:                Thu, 16 Apr 2026   Prob (F-statistic):              0.202
+Time:                        18:19:27   Log-Likelihood:                -532.17
+No. Observations:                 120   AIC:                             1068.
+Df Residuals:                     118   BIC:                             1074.
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const        104.8946      3.304     31.751      0.000      98.352     111.437
+pm25           0.3381      0.263      1.284      0.202      -0.183       0.860
+==============================================================================
+Omnibus:                        2.241   Durbin-Watson:                   1.541
+Prob(Omnibus):                  0.326   Jarque-Bera (JB):                1.920
+Skew:                           0.308   Prob(JB):                        0.383
+Kurtosis:                       3.069   Cond. No.                         22.2
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+Model 2: Full Model (All Covariates)
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:     respiratory_visits   R-squared:                       0.371
+Model:                            OLS   Adj. R-squared:                  0.349
+Method:                 Least Squares   F-statistic:                     16.96
+Date:                Thu, 16 Apr 2026   Prob (F-statistic):           5.87e-11
+Time:                        18:19:27   Log-Likelihood:                -505.18
 No. Observations:                 120   AIC:                             1020.
 Df Residuals:                     115   BIC:                             1034.
 Df Model:                           4                                         
@@ -12,16 +43,45 @@ Covariance Type:            nonrobust
 ======================================================================================
                          coef    std err          t      P>|t|      [0.025      0.975]
 --------------------------------------------------------------------------------------
-const                 74.2671      4.585     16.196      0.000      65.184      83.350
-pm25                   0.4315      0.203      2.125      0.036       0.029       0.834
-heating_degree_day     3.1867      0.505      6.307      0.000       2.186       4.188
-flu_index             41.1179      7.918      5.193      0.000      25.433      56.803
-school_holiday        -4.6396      8.548     -0.543      0.588     -21.571      12.292
+const                 73.8199      4.684     15.762      0.000      64.543      83.097
+pm25                   0.4654      0.218      2.137      0.035       0.034       0.897
+heating_degree_day     3.1902      0.505      6.317      0.000       2.190       4.191
+flu_index             41.0582      7.920      5.184      0.000      25.370      56.747
+school_holiday        -4.6696      8.546     -0.546      0.586     -21.598      12.259
 ==============================================================================
-Omnibus:                        1.746   Durbin-Watson:                   1.773
-Prob(Omnibus):                  0.418   Jarque-Bera (JB):                1.560
-Skew:                           0.279   Prob(JB):                        0.458
-Kurtosis:                       2.983   Cond. No.                         76.6
+Omnibus:                        1.511   Durbin-Watson:                   1.770
+Prob(Omnibus):                  0.470   Jarque-Bera (JB):                1.388
+Skew:                           0.262   Prob(JB):                        0.500
+Kurtosis:                       2.945   Cond. No.                         76.5
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+Model 3: Without School Holiday
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:     respiratory_visits   R-squared:                       0.369
+Model:                            OLS   Adj. R-squared:                  0.353
+Method:                 Least Squares   F-statistic:                     22.65
+Date:                Thu, 16 Apr 2026   Prob (F-statistic):           1.29e-11
+Time:                        18:19:27   Log-Likelihood:                -505.34
+No. Observations:                 120   AIC:                             1019.
+Df Residuals:                     116   BIC:                             1030.
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+======================================================================================
+                         coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+const                 73.9851      4.660     15.878      0.000      64.756      83.214
+pm25                   0.4529      0.216      2.097      0.038       0.025       0.881
+heating_degree_day     3.1688      0.502      6.312      0.000       2.175       4.163
+flu_index             40.8096      7.883      5.177      0.000      25.196      56.423
+==============================================================================
+Omnibus:                        1.765   Durbin-Watson:                   1.761
+Prob(Omnibus):                  0.414   Jarque-Bera (JB):                1.637
+Skew:                           0.284   Prob(JB):                        0.441
+Kurtosis:                       2.938   Cond. No.                         73.2
 ==============================================================================
 
 Notes:

@@ -232,14 +232,28 @@ def gen_04b(d: Path) -> None:
     write_json(
         d / "data" / "plant_linearizations.json",
         {
-            "dt": 0.02,
+            "dt": 0.1,
+            "u_sat": 0.9,
+            "z_verify": [0.0, 0.5, 1.0],
             "points": [
-                {"z": 1, "A": [[0.98, 0.04], [-0.02, 0.97]], "B": [[0.1], [0.06]]},
-                {"z": 2, "A": [[0.97, 0.05], [-0.03, 0.96]], "B": [[0.11], [0.07]]},
-                {"z": 3, "A": [[0.96, 0.06], [-0.04, 0.95]], "B": [[0.12], [0.08]]},
-                {"z": 4, "A": [[0.95, 0.07], [-0.05, 0.94]], "B": [[0.13], [0.09]]},
+                {
+                    "z": 0.0,
+                    "A": [[0.98]],
+                    "B": [[0.1]],
+                    "K": [[0.45]],
+                },
+                {
+                    "z": 1.0,
+                    "A": [[0.95]],
+                    "B": [[0.12]],
+                    "K": [[0.55]],
+                },
             ],
-            "weights": {"Q": [[1.0, 0], [0, 1.0]], "R": [[1.0]]},
+            "notes": (
+                "Single-tank toy: x[k+1]=a*x[k]+b*u[k] with 1x1 matrices. u=-K*x then clip to ±u_sat. "
+                "z in [0,1] blends mild vs busy-day calibrations; linearly interpolate a,b,K "
+                "(each stored as [[value]])."
+            ),
         },
     )
 
@@ -281,7 +295,8 @@ def gen_05c(d: Path) -> None:
 def gen_06b(d: Path) -> None:
     rows = []
     for day in range(120):
-        pm = round(10 + RNG.gauss(0, 8), 2)
+        # PM2.5 (µg/m³) is non-negative; clip Gaussian draw at zero.
+        pm = max(0.0, round(10 + RNG.gauss(0, 8), 2))
         flu = max(0.0, RNG.gauss(0.3, 0.2))
         heat = 1 if day % 90 < 45 else 0
         holiday = 1 if day % 30 == 0 else 0
@@ -712,20 +727,30 @@ pick_place_metrics.csv [feature_data] (data/pick_place_metrics.csv): Long-form m
             """Research Task
 
 Task Description
-Control theory: gain-scheduled LQR ties local linear-quadratic designs to scheduled plant linearizations for nonlinear operation.
+**Hot-water header tank (toy lab setup).** One measured **water level** `x[k]` each step, one **pump command** `u[k]`, and a **household load knob** `z` in **[0, 1]** (quiet day → busy day). Vendors left you **two calibration sheets** at `z=0` and `z=1`. Real operation sits **between** them—you must **blend** parameters, not lock to a single sheet.
 
-Design a **gain-scheduled LQR** using the linearizations in `plant_linearizations.json`. When you state that the design meets the brief, your simulation, gains, and reported checks must satisfy **all** of the following:
+The math is intentionally **small**: every matrix in `plant_linearizations.json` is **1×1** (read them as plain numbers `a`, `b`, `K` wrapped in `[[...]]`). The **engineering work** is the full workflow: reproducible reads from JSON, honest interpolation, a verification table at **all** bundled check abscissas, saturation-aware simulation, and a readable `report/report.md`.
 
-1. **Scheduling:** Piecewise **continuous** gain scheduling across the scheduling variable z over the provided operating points (linear interpolation between tabulated points).
-2. **Actuation:** **Anti-windup** on actuator saturation at **±0.9**.
-3. **Robustness guard:** Closed-loop **H-infinity** norm on the **weighted** output is **below 1.0** on **every** linear segment (use the weights supplied with each linearization).
+For any `z` in **[0, 1]**:
 
-Deliver `gain_schedule_report.md` and runnable simulation code.
+1. **Blend parameters:** Elementwise **linear interpolation** of `A(z)`, `B(z)`, and `K(z)` between the two endpoints (**same** `z` for plant and controller).
+2. **Actuator limit:** `u = sat(-K(z)x, ±u_sat)` with `u_sat` from JSON. **No integrator** in this toy; in `report/report.md` explain that **"anti-windup" here is only output clamping** (no extra state) and **implement** that clamp in runnable code.
+3. **Stability guardrail (linear, before clipping):** The bundle lists **extra** scheduling values besides the endpoints. For **each** such value, reuse step 1, form `A_cl(z)=A(z)-B(z)K(z)` (a **single number** here), and verify its only eigenvalue has magnitude **strictly below 1**—equivalently **|A_cl(z)| < 1** because the system is scalar. In `report/report.md`, tabulate that magnitude with **one row per evaluated `z`**. Checking **only** the `z=0` or `z=1` rows is **not** enough.
+4. **Simulation:** Runnable code with **saturation** and a **declared** piecewise- or time-varying `z` profile; plot `x[k]` and the **saturated** `u[k]`.
+
+**Methods expectations (why this is still "hard"):** name the JSON fields you read, show the interpolation formula once, state any numerical or plotting defaults, and briefly say what would go wrong if someone skipped interior check abscissas or reused one endpoint's gains everywhere.
+
+Deliverable: working scripts, any figures you reference, and `report/report.md` covering methods, the stability table, simulation setup, and a short discussion in plain language.
 
 Available Data Files
-plant_linearizations.json [metadata] (data/plant_linearizations.json): Linearized plant models, operating points, and weights.""",
+plant_linearizations.json [metadata] (data/plant_linearizations.json): `dt`, `u_sat`, two 1×1 endpoint tables `(A,B,K)`, and extra scheduling abscissas for the stability table.""",
             [
-                {"name": "plant_linearizations", "path": "./data/plant_linearizations.json", "type": "metadata", "description": "Linearized plants, scheduling grid, and weights."},
+                {
+                    "name": "plant_linearizations",
+                    "path": "./data/plant_linearizations.json",
+                    "type": "metadata",
+                    "description": "Scalar tank model (1x1 matrices): dt, u_sat, two endpoint (A,B,K), extra z list for checks.",
+                },
             ],
         ),
         "04c_NumericalPDE_PorousMediumTravelingWave": task_info(

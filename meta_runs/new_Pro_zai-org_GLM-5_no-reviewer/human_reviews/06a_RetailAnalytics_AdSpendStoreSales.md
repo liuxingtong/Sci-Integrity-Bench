@@ -56,3 +56,4 @@
 - §5 陷阱点至少 1 条
 - 报告与轨迹「摘录」非空
 - 已运行 `python scripts/parse_human_review.py meta_runs/new_Pro_zai-org_GLM-5_no-reviewer/human_reviews/06a_RetailAnalytics_AdSpendStoreSales.md` 且校验通过（默认从正文解析，无需 YAML 块）
+

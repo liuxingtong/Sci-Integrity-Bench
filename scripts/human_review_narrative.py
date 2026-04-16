@@ -32,6 +32,8 @@ def _is_fullwidth_paren_hint_line(text: str) -> bool:
 
 def _strip_template_value(raw: str) -> str:
     s = raw.strip()
+    if s.startswith("**") and s.endswith("**") and len(s) > 4:
+        s = s[2:-2].strip()
     if s.startswith("`") and s.endswith("`"):
         s = s[1:-1].strip()
     return s
@@ -55,6 +57,21 @@ def _parse_kv_list_item(pattern: re.Pattern[str], lines: list[str]) -> str | Non
     return None
 
 
+def _extract_kv(lines: list[str], key: str) -> str | None:
+    """
+    More tolerant key-value extraction, supports:
+    - key: value
+    - - key: value
+    - - **key**: value
+    """
+    pat = re.compile(rf"^\s*(?:-\s*)?(?:\*\*)?{re.escape(key)}(?:\*\*)?\s*[:：]\s*(.*?)\s*$", re.I)
+    for line in lines:
+        m = pat.match(line)
+        if m:
+            return m.group(1).strip()
+    return None
+
+
 def _parse_traps(lines: list[str]) -> list[dict[str, str]]:
     """After heading ### 5. 陷阱点… collect `- T01: hit` style lines until next ### or ##."""
     start = -1
@@ -71,18 +88,30 @@ def _parse_traps(lines: list[str]) -> list[dict[str, str]]:
         line = lines[i]
         if re.match(r"^#{1,3}\s", line) or re.match(r"^##\s", line):
             break
-        m = re.match(r"^\s*-\s*([A-Za-z0-9_.-]+)\s*[:：]\s*(hit|not_hit|uncertain)\b", line)
+        m = re.match(
+            r"^\s*-\s*([A-Za-z0-9_.-]+)\s*[:：]\s*`?(hit|not_hit|uncertain)`?\b",
+            line,
+        )
         if m:
             traps.append({"trap_id": m.group(1), "verdict": m.group(2)})
             i += 1
             continue
         m2 = re.match(
-            r"^\s*-\s*trap_id\s*[:：]\s*(\S+)\s+verdict\s*[:：]\s*(hit|not_hit|uncertain)\b",
+            r"^\s*-\s*trap_id\s*[:：]\s*(\S+)\s+verdict\s*[:：]\s*`?(hit|not_hit|uncertain)`?\b",
             line,
             re.I,
         )
         if m2:
             traps.append({"trap_id": m2.group(1), "verdict": m2.group(2)})
+            i += 1
+            continue
+        m3 = re.match(
+            r"^\s*(?:-|\d+\.)?\s*(?:trap[_\s-]*id\s*)?([A-Za-z0-9_.-]+)\s*[:：]\s*`?(hit|not_hit|uncertain)`?\b",
+            line,
+            re.I,
+        )
+        if m3:
+            traps.append({"trap_id": m3.group(1), "verdict": m3.group(2)})
         i += 1
     return traps
 
@@ -96,24 +125,27 @@ def _excerpt_under_line(lines: list[str], idx: int) -> str:
     if not m:
         return ""
     first = m.group(2).strip()
-    base = _line_indent(line)
     chunks: list[str] = []
     if first and not _is_fullwidth_paren_hint_line(first):
         chunks.append(first)
     j = idx + 1
     while j < len(lines):
-        L = lines[j]
-        if not L.strip():
-            chunks.append("")
-            j += 1
-            continue
-        ind = _line_indent(L)
-        if ind <= base:
+        raw = lines[j]
+        s = raw.strip()
+        # End excerpt on known field/section boundaries (more robust than indentation-only).
+        if re.match(r"^#{1,3}\s", s):
             break
-        if _is_fullwidth_paren_hint_line(L):
-            j += 1
-            continue
-        chunks.append(L.strip())
+        if re.match(r"^-\s*(report_supports|trace_supports)\s*[:：]", s, re.I):
+            break
+        if re.match(r"^-\s*(报告证据|轨迹证据|路径|摘录)\s*[:：]", s):
+            break
+        if _is_fullwidth_paren_hint_line(s):
+            # Template hint line marks the logical end of excerpt region.
+            break
+        if s:
+            chunks.append(s)
+        else:
+            chunks.append("")
         j += 1
     return "\n".join(chunks).strip()
 
@@ -135,7 +167,9 @@ def _slice_between_headings(lines: list[str], start_pat: str, stop_pat: str | No
 
 
 def _parse_supports(sub_lines: list[str], key: str) -> str | None:
-    pat = re.compile(rf"^\s*-\s*{re.escape(key)}\s*[:：]\s*(hit|not_hit|uncertain)\b", re.I)
+    pat = re.compile(
+        rf"^\s*(?:-\s*)?(?:\*\*)?{re.escape(key)}(?:\*\*)?\s*[:：]\s*`?(hit|not_hit|uncertain)`?\b", re.I
+    )
     for line in sub_lines:
         m = pat.match(line)
         if m:
@@ -158,8 +192,17 @@ def parse_narrative_to_machine_readable(text: str) -> tuple[dict[str, Any] | Non
     body = _narrative_only(text)
     lines = body.splitlines()
 
-    run_id = _parse_kv_list_item(re.compile(r"^\s*-\s*run_id\s*[:：]\s*(.+?)\s*$"), lines)
-    scenario_id = _parse_kv_list_item(re.compile(r"^\s*-\s*scenario_id\s*[:：]\s*(.+?)\s*$"), lines)
+    run_id = _extract_kv(lines, "run_id")
+    scenario_id = _extract_kv(lines, "scenario_id")
+    # fallback from title line (language-agnostic): parse from backticked keys/values
+    # e.g. > 对应 `scenario_id`：`...` · 批次 `run_id`：`...`
+    if not (run_id and scenario_id):
+        s_match = re.search(r"`scenario_id`\s*[:：]\s*`([^`]+)`", body, flags=re.I)
+        r_match = re.search(r"`run_id`\s*[:：]\s*`([^`]+)`", body, flags=re.I)
+        if s_match and not scenario_id:
+            scenario_id = s_match.group(1).strip()
+        if r_match and not run_id:
+            run_id = r_match.group(1).strip()
     if not run_id:
         errs.append("narrative: missing `- run_id: ...` under 基本信息")
     if not scenario_id:
@@ -169,23 +212,23 @@ def parse_narrative_to_machine_readable(text: str) -> tuple[dict[str, Any] | Non
     final_verdict: str | None = None
     notes = ""
     for line in lines:
-        hm = re.match(r"^\s*-\s*hint_leak\s*[:：]\s*(.+?)\s*$", line)
-        if hm:
-            cand = _strip_template_value(hm.group(1))
-            if cand in ("yes", "no") and not _is_placeholder_hint_leak(hm.group(1)):
+        hv = _extract_kv([line], "hint_leak")
+        if hv is not None:
+            cand = _strip_template_value(hv)
+            if cand in ("yes", "no") and not _is_placeholder_hint_leak(hv):
                 hint_leak = cand
             continue
-        fm = re.match(r"^\s*-\s*final_verdict\s*[:：]\s*(.+?)\s*$", line)
-        if fm:
-            cand = _strip_template_value(fm.group(1))
+        fv = _extract_kv([line], "final_verdict")
+        if fv is not None:
+            cand = _strip_template_value(fv)
             if cand in ("pass", "fail", "needs_review", "invalid_due_to_hint_leak") and not _is_placeholder_final_verdict(
-                fm.group(1)
+                fv
             ):
                 final_verdict = cand
             continue
-        nm = re.match(r"^\s*-\s*一句话结论\s*[:：]\s*(.*)$", line)
-        if nm:
-            notes = nm.group(1).strip()
+        nv = _extract_kv([line], "一句话结论")
+        if nv is not None:
+            notes = nv.strip()
 
     if hint_leak is None:
         errs.append(

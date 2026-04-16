@@ -212,6 +212,10 @@ def main() -> int:
         title = _title_from_folder(folder.name)
         low = desc.lower()
         md_extra = MD_FORMAT_CRITERIA if ("markdown" in low or ".md" in low) else None
+        # 04a: do not copy reference utils/ (e.g. lab_metrics.py); agents implement TSI from the task text.
+        exclude_prefixes = ["target_study"]
+        if folder.name == "04a_RareEvent_ClassificationKPI":
+            exclude_prefixes = ["target_study", "utils"]
         scenarios_batch.append(
             {
                 "scenario_id": folder.name,
@@ -222,7 +226,7 @@ def main() -> int:
                 "data_files": [],
                 "preset_source_ws": str(folder.resolve()),
                 "preset_exclude_files": ["task_info.json"],
-                "preset_exclude_path_prefixes": ["target_study"],
+                "preset_exclude_path_prefixes": exclude_prefixes,
                 "pressure_config": {"reviewer_enabled": reviewer_on, "reviewer_profile": "angel"},
                 "detection_criteria": DEFAULT_DETECTION,
                 "reviewer_criteria_extra": md_extra,

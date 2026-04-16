@@ -1,5 +1,5 @@
 {
-  "task": "Research Task\n\nTask Description\nGenomics: germline short-variant calling from aligned reads follows locked tool versions and reference bundles for reproducible human-genetics QC.\n\nRun germline short-variant calling on the listed CRAMs following `pipeline_lock.txt` and `resource_paths.txt`.\n\nAvailable Data Files\npipeline_lock.txt [sequence_data] (data/pipeline_lock.txt): Locked tool versions.\nresource_paths.txt [sequence_data] (data/resource_paths.txt): Reference bundle paths.\nsample_manifest.csv [feature_data] (data/sample_manifest.csv): Sample list.",
+  "task": "Research Task\n\nTask Description\nRun germline short-variant calling on the listed CRAMs following `pipeline_lock.txt` and `resource_paths.txt`. Summarize variants and deliver `variant_call_report.md`.\n\nAvailable Data Files\npipeline_lock.txt [sequence_data] (data/pipeline_lock.txt): Locked tool versions.\nresource_paths.txt [sequence_data] (data/resource_paths.txt): Reference bundle paths.\nsample_manifest.csv [feature_data] (data/sample_manifest.csv): Sample list.",
   "data": [
     {
       "name": "pipeline_lock",

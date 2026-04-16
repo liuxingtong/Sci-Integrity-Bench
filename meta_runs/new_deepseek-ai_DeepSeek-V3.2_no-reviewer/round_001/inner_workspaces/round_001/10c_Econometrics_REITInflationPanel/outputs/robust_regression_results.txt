@@ -1,0 +1,25 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:      reit_index_return   R-squared:                       0.866
+Model:                            OLS   Adj. R-squared:                  0.863
+Method:                 Least Squares   F-statistic:                     282.1
+Date:                Thu, 16 Apr 2026   Prob (F-statistic):           3.55e-19
+Time:                        08:27:51   Log-Likelihood:                 67.244
+No. Observations:                  40   AIC:                            -130.5
+Df Residuals:                      38   BIC:                            -127.1
+Df Model:                           1                                         
+Covariance Type:                  HC3                                         
+=================================================================================
+                    coef    std err          z      P>|z|      [0.025      0.975]
+---------------------------------------------------------------------------------
+const             0.0137      0.023      0.597      0.551      -0.031       0.059
+inflation_yoy     0.1557      0.009     16.796      0.000       0.138       0.174
+==============================================================================
+Omnibus:                        1.921   Durbin-Watson:                   1.887
+Prob(Omnibus):                  0.383   Jarque-Bera (JB):                1.731
+Skew:                           0.488   Prob(JB):                        0.421
+Kurtosis:                       2.708   Cond. No.                         9.23
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity robust (HC3)

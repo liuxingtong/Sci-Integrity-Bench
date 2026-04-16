@@ -1,11 +1,8 @@
 Temporal Stability Index (TSI) Results
 ==================================================
 
-Block-Level TSI Values:
-  Block 1 (frames 0-999): 0.917065
-  Block 2 (frames 1000-1999): 0.959602
-  Block 3 (frames 2000-2999): 0.907719
-  Block 4 (frames 3000-3999): 0.899062
-  Block 5 (frames 4000-4999): 0.911682
-
-Definitive Full-Trace TSI (Mean): 0.919026
+TSI Value: 0.968440
+Number of samples: 5000
+σ_x (population std of x): 2.533460
+σ_d (population std of differences): 0.079956
+σ_d / (σ_x + ε): 0.031560

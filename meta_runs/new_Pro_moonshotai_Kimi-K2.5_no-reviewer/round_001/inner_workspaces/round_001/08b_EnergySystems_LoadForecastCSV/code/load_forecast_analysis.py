@@ -1,13 +1,6 @@
 """
-Load Forecasting Analysis for Power Systems
-============================================
-This script performs comprehensive load forecasting analysis using 15-minute interval data.
-It includes:
-- Data exploration and visualization
-- Time series decomposition
-- Statistical analysis
-- Short-term load forecasting
-- Reliability metrics calculation
+Energy Systems Load Forecast Analysis
+Annual load forecast and reliability-oriented commentary
 """
 
 import pandas as pd
@@ -15,539 +8,567 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime, timedelta
-import os
 import warnings
 warnings.filterwarnings('ignore')
 
-# Set plotting style
+# Set style for publication-quality figures
 plt.style.use('seaborn-v0_8-whitegrid')
 sns.set_palette("husl")
 
 # Load the data
-print("Loading data...")
-script_dir = os.path.dirname(os.path.abspath(__file__))
-workspace_dir = os.path.dirname(script_dir)
-df = pd.read_csv(os.path.join(workspace_dir, 'data', 'load_15min.csv'))
-df['timestamp_utc'] = pd.to_datetime(df['timestamp_utc'])
-df.set_index('timestamp_utc', inplace=True)
+print("Loading 15-minute load data...")
+df = pd.read_csv('../data/load_15min.csv')
 
-print(f"Data loaded: {len(df)} records")
-print(f"Date range: {df.index.min()} to {df.index.max()}")
-print(f"Load range: {df['load_mw'].min():.2f} - {df['load_mw'].max():.2f} MW")
+# Parse timestamps
+df['timestamp'] = pd.to_datetime(df['timestamp_utc'])
+df = df.drop('timestamp_utc', axis=1)
 
-# Create time-based features
-df['hour'] = df.index.hour
-df['day_of_week'] = df.index.dayofweek
-df['day_of_year'] = df.index.dayofyear
-df['month'] = df.index.month
-df['quarter'] = df.index.quarter
-df['is_weekend'] = df['day_of_week'].isin([5, 6]).astype(int)
-df['date'] = df.index.date
+# Check data info
+print(f"Data shape: {df.shape}")
+print(f"Date range: {df['timestamp'].min()} to {df['timestamp'].max()}")
+print(f"Missing values: {df['load_mw'].isna().sum()}")
 
-# ============================================================================
-# 1. DATA OVERVIEW AND EXPLORATORY ANALYSIS
-# ============================================================================
+# Handle missing values - forward fill for short gaps, then backward fill
+df['load_mw'] = df['load_mw'].fillna(method='ffill', limit=8)
+df['load_mw'] = df['load_mw'].fillna(method='bfill', limit=8)
+# If still NaN, interpolate
+df['load_mw'] = df['load_mw'].interpolate(method='linear')
+# Drop any remaining NaN rows
+df = df.dropna(subset=['load_mw'])
 
-print("\n=== DATA OVERVIEW ===")
+# Extract time features
+df['year'] = df['timestamp'].dt.year
+df['month'] = df['timestamp'].dt.month
+df['day'] = df['timestamp'].dt.day
+df['hour'] = df['timestamp'].dt.hour
+df['minute'] = df['timestamp'].dt.minute
+df['dayofweek'] = df['timestamp'].dt.dayofweek  # 0=Monday, 6=Sunday
+df['dayofyear'] = df['timestamp'].dt.dayofyear
+df['weekofyear'] = df['timestamp'].dt.isocalendar().week
+
+# Create time-of-day in hours (for 15-min intervals)
+df['time_of_day'] = df['hour'] + df['minute'] / 60
+
+print("\nData preprocessing complete.")
+print(f"Final data shape: {df.shape}")
+print(f"Load statistics:")
 print(df['load_mw'].describe())
 
-# Calculate basic statistics
-total_records = len(df)
-time_span_days = (df.index.max() - df.index.min()).days + 1
-avg_load = df['load_mw'].mean()
-peak_load = df['load_mw'].max()
-min_load = df['load_mw'].min()
-load_std = df['load_mw'].std()
-cv = load_std / avg_load * 100  # Coefficient of variation
-
-print(f"\nTime span: {time_span_days} days")
-print(f"Average load: {avg_load:.2f} MW")
-print(f"Peak load: {peak_load:.2f} MW")
-print(f"Minimum load: {min_load:.2f} MW")
-print(f"Load variability (CV): {cv:.2f}%")
-
 # ============================================================================
-# 2. TIME SERIES VISUALIZATION
+# 1. ANNUAL LOAD PROFILE ANALYSIS
 # ============================================================================
 
-print("\nGenerating time series plots...")
+print("\n" + "="*60)
+print("1. ANNUAL LOAD PROFILE ANALYSIS")
+print("="*60)
 
-# Full time series
-fig, ax = plt.subplots(figsize=(14, 6))
-ax.plot(df.index, df['load_mw'], linewidth=0.8, alpha=0.8, color='#2E86AB')
-ax.set_xlabel('Date', fontsize=12)
-ax.set_ylabel('Load (MW)', fontsize=12)
-ax.set_title('15-Minute Load Profile (Full Dataset)', fontsize=14, fontweight='bold')
-ax.grid(True, alpha=0.3)
-plt.tight_layout()
-plt.savefig('report/images/01_full_load_timeseries.png', dpi=150, bbox_inches='tight')
-plt.close()
-
-# Daily patterns
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-
-# Hourly pattern
-hourly_avg = df.groupby('hour')['load_mw'].mean()
-axes[0, 0].plot(hourly_avg.index, hourly_avg.values, marker='o', linewidth=2, markersize=6, color='#A23B72')
-axes[0, 0].set_xlabel('Hour of Day', fontsize=11)
-axes[0, 0].set_ylabel('Average Load (MW)', fontsize=11)
-axes[0, 0].set_title('Average Load by Hour of Day', fontsize=12, fontweight='bold')
-axes[0, 0].grid(True, alpha=0.3)
-axes[0, 0].set_xticks(range(0, 24, 2))
-
-# Day of week pattern
-dow_labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-dow_avg = df.groupby('day_of_week')['load_mw'].mean()
-axes[0, 1].bar(range(7), dow_avg.values, color='#F18F01', edgecolor='black', alpha=0.8)
-axes[0, 1].set_xlabel('Day of Week', fontsize=11)
-axes[0, 1].set_ylabel('Average Load (MW)', fontsize=11)
-axes[0, 1].set_title('Average Load by Day of Week', fontsize=12, fontweight='bold')
-axes[0, 1].set_xticks(range(7))
-axes[0, 1].set_xticklabels(dow_labels)
-axes[0, 1].grid(True, alpha=0.3, axis='y')
-
-# Hourly boxplot by day of week
-hourly_dow = df.groupby(['day_of_week', 'hour'])['load_mw'].mean().reset_index()
-for dow in range(7):
-    subset = hourly_dow[hourly_dow['day_of_week'] == dow]
-    axes[1, 0].plot(subset['hour'], subset['load_mw'], 
-                    label=dow_labels[dow], linewidth=1.5, alpha=0.8)
-axes[1, 0].set_xlabel('Hour of Day', fontsize=11)
-axes[1, 0].set_ylabel('Average Load (MW)', fontsize=11)
-axes[1, 0].set_title('Hourly Load Patterns by Day of Week', fontsize=12, fontweight='bold')
-axes[1, 0].legend(loc='upper right', fontsize=8)
-axes[1, 0].grid(True, alpha=0.3)
-axes[1, 0].set_xticks(range(0, 24, 2))
-
-# Load distribution histogram
-axes[1, 1].hist(df['load_mw'], bins=40, color='#C73E1D', edgecolor='black', alpha=0.7)
-axes[1, 1].axvline(avg_load, color='black', linestyle='--', linewidth=2, label=f'Mean: {avg_load:.1f} MW')
-axes[1, 1].axvline(peak_load, color='red', linestyle='--', linewidth=2, label=f'Peak: {peak_load:.1f} MW')
-axes[1, 1].set_xlabel('Load (MW)', fontsize=11)
-axes[1, 1].set_ylabel('Frequency', fontsize=11)
-axes[1, 1].set_title('Load Distribution', fontsize=12, fontweight='bold')
-axes[1, 1].legend()
-axes[1, 1].grid(True, alpha=0.3, axis='y')
-
-plt.tight_layout()
-plt.savefig('report/images/02_load_patterns.png', dpi=150, bbox_inches='tight')
-plt.close()
-
-# ============================================================================
-# 3. DAILY LOAD CURVES
-# ============================================================================
-
-print("Generating daily load curves...")
-
-# Create daily load curves for each day
-daily_data = df.groupby(['date', 'hour'])['load_mw'].mean().reset_index()
-daily_pivot = daily_data.pivot(index='hour', columns='date', values='load_mw')
-
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-
-# All daily curves
-colors = plt.cm.viridis(np.linspace(0, 1, len(daily_pivot.columns)))
-for i, col in enumerate(daily_pivot.columns):
-    axes[0].plot(daily_pivot.index, daily_pivot[col], alpha=0.7, 
-                 color=colors[i], linewidth=1.5, label=str(col))
-axes[0].plot(daily_pivot.index, daily_pivot.mean(axis=1), color='red', 
-             linewidth=3, label='Average', linestyle='--')
-axes[0].set_xlabel('Hour of Day', fontsize=11)
-axes[0].set_ylabel('Load (MW)', fontsize=11)
-axes[0].set_title('Daily Load Curves (All Days)', fontsize=12, fontweight='bold')
-axes[0].legend(loc='upper left', fontsize=8)
-axes[0].grid(True, alpha=0.3)
-axes[0].set_xticks(range(0, 24, 2))
-
-# Weekend vs Weekday
-weekday_data = df[df['is_weekend'] == 0].groupby('hour')['load_mw'].mean()
-weekend_data = df[df['is_weekend'] == 1].groupby('hour')['load_mw'].mean()
-
-axes[1].plot(weekday_data.index, weekday_data.values, marker='o', linewidth=2, 
-             label='Weekday', color='#2E86AB')
-if len(weekend_data) > 0:
-    axes[1].plot(weekend_data.index, weekend_data.values, marker='s', linewidth=2, 
-                 label='Weekend', color='#F18F01')
-axes[1].set_xlabel('Hour of Day', fontsize=11)
-axes[1].set_ylabel('Load (MW)', fontsize=11)
-axes[1].set_title('Weekday vs Weekend Load Patterns', fontsize=12, fontweight='bold')
-axes[1].legend()
-axes[1].grid(True, alpha=0.3)
-axes[1].set_xticks(range(0, 24, 2))
-
-plt.tight_layout()
-plt.savefig('report/images/03_daily_load_curves.png', dpi=150, bbox_inches='tight')
-plt.close()
-
-# ============================================================================
-# 4. LOAD VARIABILITY AND STATISTICS
-# ============================================================================
-
-print("Calculating load variability metrics...")
-
-# Calculate daily statistics
-daily_stats = df.groupby('date').agg({
-    'load_mw': ['min', 'max', 'mean', 'std']
+# Daily aggregation
+daily_load = df.groupby(df['timestamp'].dt.date).agg({
+    'load_mw': ['mean', 'max', 'min', 'std', 'sum']
 }).reset_index()
-daily_stats.columns = ['date', 'min_load', 'max_load', 'avg_load', 'std_load']
-daily_stats['load_range'] = daily_stats['max_load'] - daily_stats['min_load']
-daily_stats['cv'] = daily_stats['std_load'] / daily_stats['avg_load'] * 100
-daily_stats['date'] = pd.to_datetime(daily_stats['date'])
+daily_load.columns = ['date', 'avg_load', 'peak_load', 'min_load', 'load_std', 'daily_energy']
+daily_load['date'] = pd.to_datetime(daily_load['date'])
 
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+# Monthly aggregation (limited data - only January)
+monthly_stats = df.groupby('month').agg({
+    'load_mw': ['mean', 'max', 'min', 'std']
+}).reset_index()
+monthly_stats.columns = ['month', 'avg_load', 'peak_load', 'min_load', 'load_std']
 
-# Daily peak load
-axes[0, 0].plot(daily_stats['date'], daily_stats['max_load'], color='#C73E1D', 
-                linewidth=2, marker='o', markersize=6)
-axes[0, 0].set_xlabel('Date', fontsize=11)
-axes[0, 0].set_ylabel('Peak Load (MW)', fontsize=11)
-axes[0, 0].set_title('Daily Peak Load Trend', fontsize=12, fontweight='bold')
-axes[0, 0].grid(True, alpha=0.3)
+print("\nMonthly Load Statistics (MW):")
+print(monthly_stats)
 
-# Daily average load
-axes[0, 1].plot(daily_stats['date'], daily_stats['avg_load'], color='#2E86AB', 
-                linewidth=2, marker='o', markersize=6)
-axes[0, 1].set_xlabel('Date', fontsize=11)
-axes[0, 1].set_ylabel('Average Load (MW)', fontsize=11)
-axes[0, 1].set_title('Daily Average Load Trend', fontsize=12, fontweight='bold')
-axes[0, 1].grid(True, alpha=0.3)
+# Weekly pattern
+weekly_pattern = df.groupby('dayofweek')['load_mw'].agg(['mean', 'max', 'min', 'count']).reset_index()
+weekly_pattern['day_name'] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+print("\nWeekly Load Pattern (MW):")
+print(weekly_pattern)
 
-# Daily load range
-axes[1, 0].plot(daily_stats['date'], daily_stats['load_range'], color='#F18F01', 
-                linewidth=2, marker='o', markersize=6)
-axes[1, 0].set_xlabel('Date', fontsize=11)
-axes[1, 0].set_ylabel('Load Range (MW)', fontsize=11)
-axes[1, 0].set_title('Daily Load Range (Max - Min)', fontsize=12, fontweight='bold')
-axes[1, 0].grid(True, alpha=0.3)
-
-# Daily coefficient of variation
-axes[1, 1].plot(daily_stats['date'], daily_stats['cv'], color='#A23B72', 
-                linewidth=2, marker='o', markersize=6)
-axes[1, 1].set_xlabel('Date', fontsize=11)
-axes[1, 1].set_ylabel('Coefficient of Variation (%)', fontsize=11)
-axes[1, 1].set_title('Daily Load Variability (CV)', fontsize=12, fontweight='bold')
-axes[1, 1].grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.savefig('report/images/04_daily_statistics.png', dpi=150, bbox_inches='tight')
-plt.close()
+# Hourly pattern (average across all days)
+hourly_pattern = df.groupby('time_of_day')['load_mw'].mean().reset_index()
 
 # ============================================================================
-# 5. ANNUAL LOAD FORECASTING (Based on 7-day pattern projection)
+# 2. LOAD FORECASTING MODEL
 # ============================================================================
 
-print("\nPerforming annual load forecasting...")
+print("\n" + "="*60)
+print("2. LOAD FORECASTING MODEL")
+print("="*60)
 
-# Since we only have 7 days, we'll use pattern-based forecasting
-# Calculate average daily profile and project for the year
+# Create features for forecasting
+def create_features(data):
+    """Create time-based features for forecasting"""
+    features = pd.DataFrame()
+    features['month'] = data['month']
+    features['dayofweek'] = data['dayofweek']
+    features['hour'] = data['hour']
+    features['time_of_day'] = data['time_of_day']
+    features['dayofyear'] = data['dayofyear']
+    
+    # Cyclical encoding for time features
+    features['month_sin'] = np.sin(2 * np.pi * data['month'] / 12)
+    features['month_cos'] = np.cos(2 * np.pi * data['month'] / 12)
+    features['hour_sin'] = np.sin(2 * np.pi * data['time_of_day'] / 24)
+    features['hour_cos'] = np.cos(2 * np.pi * data['time_of_day'] / 24)
+    features['dow_sin'] = np.sin(2 * np.pi * data['dayofweek'] / 7)
+    features['dow_cos'] = np.cos(2 * np.pi * data['dayofweek'] / 7)
+    features['doy_sin'] = np.sin(2 * np.pi * data['dayofyear'] / 365)
+    features['doy_cos'] = np.cos(2 * np.pi * data['dayofyear'] / 365)
+    
+    return features
 
-# Daily average profile (15-min intervals)
-daily_profile = df.groupby(df.index.time)['load_mw'].mean()
+# Aggregate to hourly for forecasting model
+df_hourly = df.groupby(df['timestamp'].dt.floor('H')).agg({
+    'load_mw': 'mean',
+    'month': 'first',
+    'dayofweek': 'first',
+    'hour': 'first',
+    'time_of_day': 'first',
+    'dayofyear': 'first'
+}).reset_index()
+df_hourly.columns = ['timestamp', 'load_mw', 'month', 'dayofweek', 'hour', 'time_of_day', 'dayofyear']
 
-# Day-of-week patterns
-dow_profiles = {}
-for dow in range(7):
-    dow_data = df[df['day_of_week'] == dow]
-    if len(dow_data) > 0:
-        dow_profiles[dow] = dow_data.groupby(dow_data.index.time)['load_mw'].mean()
+# Drop any NaN values
+df_hourly = df_hourly.dropna()
 
-# Calculate weekly statistics
-weekly_avg = df['load_mw'].mean()
-weekly_peak = df['load_mw'].max()
-weekly_min = df['load_mw'].min()
+print(f"Hourly aggregated data shape: {df_hourly.shape}")
 
-# Project annual load based on observed patterns
-# Assume 52 weeks with similar patterns
-projected_annual_energy = weekly_avg * 24 * 7 * 52  # MWh
-projected_annual_peak = weekly_peak * 1.05  # Add 5% margin for annual peak
-projected_annual_avg = weekly_avg
+# For limited data, use a simpler approach - time series pattern-based forecasting
+# Since we only have 7 days, we'll use pattern extrapolation for annual forecast
 
-print(f"\nAnnual Projection (based on 7-day sample):")
-print(f"Projected Annual Energy: {projected_annual_energy/1000:.2f} GWh")
-print(f"Projected Annual Peak: {projected_annual_peak:.2f} MW")
-print(f"Projected Annual Average: {projected_annual_avg:.2f} MW")
+# Calculate average daily profile by day of week
+daily_profiles = {}
+for day in range(7):
+    day_data = df[df['dayofweek'] == day]
+    if len(day_data) > 0:
+        profile = day_data.groupby('time_of_day')['load_mw'].mean().values
+        daily_profiles[day] = profile
 
-# Create a synthetic annual forecast visualization
-# Generate 365 days of forecast based on weekly pattern
-from datetime import datetime, timedelta
-
-start_date = datetime(2026, 1, 1)
-forecast_dates = [start_date + timedelta(days=i) for i in range(365)]
-forecast_dow = [d.weekday() for d in forecast_dates]
-
-# Use average daily load for each day type
-forecast_daily_avg = []
-for dow in forecast_dow:
-    if dow in dow_profiles:
-        forecast_daily_avg.append(dow_profiles[dow].mean())
-    else:
-        forecast_daily_avg.append(weekly_avg)
-
-# Add some seasonal variation (simplified sine wave for demonstration)
-# In reality, this would use historical seasonal patterns
-seasonal_factor = [1 + 0.1 * np.sin(2 * np.pi * i / 365) for i in range(365)]
-forecast_daily_avg_seasonal = [forecast_daily_avg[i] * seasonal_factor[i] for i in range(365)]
-
-fig, axes = plt.subplots(2, 1, figsize=(14, 10))
-
-# Annual forecast - daily average
-axes[0].plot(forecast_dates[:90], forecast_daily_avg_seasonal[:90], 
-             color='#2E86AB', linewidth=1.5, label='Q1 Forecast')
-axes[0].plot(forecast_dates[90:180], forecast_daily_avg_seasonal[90:180], 
-             color='#F18F01', linewidth=1.5, label='Q2 Forecast')
-axes[0].plot(forecast_dates[180:270], forecast_daily_avg_seasonal[180:270], 
-             color='#C73E1D', linewidth=1.5, label='Q3 Forecast')
-axes[0].plot(forecast_dates[270:], forecast_daily_avg_seasonal[270:], 
-             color='#A23B72', linewidth=1.5, label='Q4 Forecast')
-axes[0].axhline(weekly_avg, color='gray', linestyle='--', linewidth=2, 
-                label=f'Observed Avg: {weekly_avg:.1f} MW')
-axes[0].set_xlabel('Date', fontsize=11)
-axes[0].set_ylabel('Projected Daily Average Load (MW)', fontsize=11)
-axes[0].set_title('Annual Load Forecast - Daily Average (Projected)', fontsize=12, fontweight='bold')
-axes[0].legend()
-axes[0].grid(True, alpha=0.3)
-
-# Monthly aggregation
-monthly_forecast = []
-month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-idx = 0
-for days in days_in_month:
-    monthly_forecast.append(np.mean(forecast_daily_avg_seasonal[idx:idx+days]))
-    idx += days
-
-axes[1].bar(range(1, 13), monthly_forecast, color='#2E86AB', edgecolor='black', alpha=0.8)
-axes[1].axhline(weekly_avg, color='red', linestyle='--', linewidth=2, 
-                label=f'Observed Avg: {weekly_avg:.1f} MW')
-axes[1].set_xlabel('Month', fontsize=11)
-axes[1].set_ylabel('Projected Monthly Average Load (MW)', fontsize=11)
-axes[1].set_title('Annual Load Forecast - Monthly Aggregation', fontsize=12, fontweight='bold')
-axes[1].set_xticks(range(1, 13))
-axes[1].set_xticklabels(month_labels)
-axes[1].legend()
-axes[1].grid(True, alpha=0.3, axis='y')
-
-plt.tight_layout()
-plt.savefig('report/images/05_annual_forecast.png', dpi=150, bbox_inches='tight')
-plt.close()
+print(f"Daily profiles created for {len(daily_profiles)} days")
 
 # ============================================================================
-# 6. INTRADAY PATTERN ANALYSIS
+# 3. ANNUAL FORECAST GENERATION (Pattern-Based Extrapolation)
 # ============================================================================
 
-print("\nPerforming intraday pattern analysis...")
+print("\n" + "="*60)
+print("3. ANNUAL FORECAST GENERATION")
+print("="*60)
 
-# 15-minute interval analysis
-interval_stats = df.groupby(df.index.time)['load_mw'].agg(['mean', 'std', 'min', 'max'])
+# Generate forecast for the full year using pattern-based approach
+start_date = pd.Timestamp('2026-01-01')
+end_date = pd.Timestamp('2026-12-31 23:45:00')
+full_year_timeline = pd.date_range(start=start_date, end=end_date, freq='15min')
 
-fig, axes = plt.subplots(2, 1, figsize=(14, 10))
+forecast_df = pd.DataFrame({'timestamp': full_year_timeline})
+forecast_df['month'] = forecast_df['timestamp'].dt.month
+forecast_df['dayofweek'] = forecast_df['timestamp'].dt.dayofweek
+dayofweek_map = forecast_df['dayofweek'].values
 
-# Average load by 15-min interval
-times = [t.strftime('%H:%M') for t in interval_stats.index]
-axes[0].plot(range(len(times)), interval_stats['mean'], color='#2E86AB', linewidth=2)
-axes[0].fill_between(range(len(times)), 
-                      interval_stats['mean'] - interval_stats['std'],
-                      interval_stats['mean'] + interval_stats['std'],
-                      alpha=0.3, color='#2E86AB', label='±1 Std Dev')
-axes[0].set_xlabel('Time of Day', fontsize=11)
-axes[0].set_ylabel('Load (MW)', fontsize=11)
-axes[0].set_title('Average Load by 15-Minute Interval', fontsize=12, fontweight='bold')
-axes[0].set_xticks(range(0, len(times), 8))
-axes[0].set_xticklabels([times[i] for i in range(0, len(times), 8)], rotation=45)
-axes[0].legend()
-axes[0].grid(True, alpha=0.3)
+# Create 15-minute intervals for the day
+time_of_day = forecast_df['timestamp'].dt.hour + forecast_df['timestamp'].dt.minute / 60
 
-# Load variability by time of day
-axes[1].plot(range(len(times)), interval_stats['std'], color='#C73E1D', linewidth=2, marker='o', markersize=3)
-axes[1].set_xlabel('Time of Day', fontsize=11)
-axes[1].set_ylabel('Standard Deviation (MW)', fontsize=11)
-axes[1].set_title('Load Variability by 15-Minute Interval', fontsize=12, fontweight='bold')
-axes[1].set_xticks(range(0, len(times), 8))
-axes[1].set_xticklabels([times[i] for i in range(0, len(times), 8)], rotation=45)
-axes[1].grid(True, alpha=0.3)
+# Base load pattern (average of available daily profiles)
+base_profile = np.mean([daily_profiles[d] for d in daily_profiles.keys()], axis=0)
+time_points = np.arange(0, 24, 0.25)  # 15-minute intervals
 
-plt.tight_layout()
-plt.savefig('report/images/06_intraday_patterns.png', dpi=150, bbox_inches='tight')
-plt.close()
-
-# ============================================================================
-# 7. RELIABILITY METRICS
-# ============================================================================
-
-print("\nCalculating reliability metrics...")
-
-# Load duration curve
-sorted_load = np.sort(df['load_mw'].values)[::-1]
-duration = np.arange(1, len(sorted_load) + 1) / len(sorted_load) * 100
-
-# Calculate key percentiles
-p50 = np.percentile(df['load_mw'], 50)
-p90 = np.percentile(df['load_mw'], 90)
-p95 = np.percentile(df['load_mw'], 95)
-p99 = np.percentile(df['load_mw'], 99)
-
-# Capacity metrics (assuming peak + 10% reserve)
-required_capacity = peak_load * 1.10
-capacity_factor = avg_load / required_capacity * 100
-load_factor = avg_load / peak_load * 100
-
-print(f"\nReliability Metrics:")
-print(f"Load Factor: {load_factor:.2f}%")
-print(f"Capacity Factor (with 10% reserve): {capacity_factor:.2f}%")
-print(f"P50 Load: {p50:.2f} MW")
-print(f"P90 Load: {p90:.2f} MW")
-print(f"P95 Load: {p95:.2f} MW")
-print(f"P99 Load: {p99:.2f} MW")
-
-# Load duration curve visualization
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-
-# Full load duration curve
-axes[0].plot(duration, sorted_load, color='#2E86AB', linewidth=2)
-axes[0].axhline(peak_load, color='red', linestyle='--', linewidth=1.5, label=f'Peak: {peak_load:.1f} MW')
-axes[0].axhline(avg_load, color='green', linestyle='--', linewidth=1.5, label=f'Average: {avg_load:.1f} MW')
-axes[0].axhline(p90, color='orange', linestyle='--', linewidth=1.5, label=f'P90: {p90:.1f} MW')
-axes[0].set_xlabel('Duration (%)', fontsize=11)
-axes[0].set_ylabel('Load (MW)', fontsize=11)
-axes[0].set_title('Load Duration Curve', fontsize=12, fontweight='bold')
-axes[0].legend()
-axes[0].grid(True, alpha=0.3)
-
-# Zoomed view (top 20%)
-top_20_idx = int(len(sorted_load) * 0.2)
-axes[1].plot(duration[:top_20_idx], sorted_load[:top_20_idx], color='#C73E1D', linewidth=2)
-axes[1].axhline(peak_load, color='red', linestyle='--', linewidth=1.5, label=f'Peak: {peak_load:.1f} MW')
-axes[1].axhline(p95, color='orange', linestyle='--', linewidth=1.5, label=f'P95: {p95:.1f} MW')
-axes[1].axhline(p99, color='purple', linestyle='--', linewidth=1.5, label=f'P99: {p99:.1f} MW')
-axes[1].set_xlabel('Duration (%)', fontsize=11)
-axes[1].set_ylabel('Load (MW)', fontsize=11)
-axes[1].set_title('Load Duration Curve (Top 20%)', fontsize=12, fontweight='bold')
-axes[1].legend()
-axes[1].grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.savefig('report/images/07_load_duration_curve.png', dpi=150, bbox_inches='tight')
-plt.close()
-
-# ============================================================================
-# 8. FORECAST ACCURACY ASSESSMENT (Day-ahead validation)
-# ============================================================================
-
-print("\nAssessing forecast accuracy...")
-
-# Use last day as test set for validation
-test_days = 1
-train_data = daily_stats.iloc[:-test_days]
-test_data = daily_stats.iloc[-test_days:]
-
-# Simple average forecast
-avg_forecast = train_data['avg_load'].mean()
-
-# Day-of-week based forecast
-last_train_dow = pd.to_datetime(train_data['date'].iloc[-1]).weekday()
-test_dow = pd.to_datetime(test_data['date'].iloc[0]).weekday()
-
-# Calculate errors
-actual = test_data['avg_load'].values
-mae = np.abs(avg_forecast - actual[0])
-mape = mae / actual[0] * 100
-
-print(f"\nForecast Accuracy (Last day):")
-print(f"Simple Average Forecast - MAE: {mae:.2f} MW, MAPE: {mape:.2f}%")
-
-# Validation visualization
-fig, ax = plt.subplots(figsize=(12, 6))
-
-ax.plot(train_data['date'], train_data['avg_load'], 'o-', color='#2E86AB', 
-        linewidth=2, markersize=6, label='Training Data')
-ax.plot(test_data['date'], actual, 'o', color='green', 
-        markersize=10, label='Actual')
-ax.plot(test_data['date'], [avg_forecast], 's', color='#C73E1D', 
-        markersize=10, label=f'Forecast: {avg_forecast:.1f} MW')
-ax.axvline(test_data['date'].iloc[0], color='gray', linestyle=':', linewidth=2, alpha=0.7)
-ax.set_xlabel('Date', fontsize=11)
-ax.set_ylabel('Average Load (MW)', fontsize=11)
-ax.set_title('Forecast Validation (Day-ahead)', fontsize=12, fontweight='bold')
-ax.legend()
-ax.grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.savefig('report/images/08_forecast_validation.png', dpi=150, bbox_inches='tight')
-plt.close()
-
-# ============================================================================
-# 9. SUMMARY STATISTICS TABLE
-# ============================================================================
-
-print("\nGenerating summary statistics...")
-
-# Annual summary
-annual_summary = {
-    'Metric': [
-        'Total Records',
-        'Time Span (Days)',
-        'Average Load (MW)',
-        'Peak Load (MW)',
-        'Minimum Load (MW)',
-        'Load Range (MW)',
-        'Standard Deviation (MW)',
-        'Coefficient of Variation (%)',
-        'Load Factor (%)',
-        'P90 Load (MW)',
-        'P95 Load (MW)',
-        'P99 Load (MW)',
-        'Required Capacity (MW)*',
-        'Capacity Factor (%)',
-        'Projected Annual Energy (GWh)',
-        'Projected Annual Peak (MW)'
-    ],
-    'Value': [
-        f"{total_records:,}",
-        f"{time_span_days}",
-        f"{avg_load:.2f}",
-        f"{peak_load:.2f}",
-        f"{min_load:.2f}",
-        f"{peak_load - min_load:.2f}",
-        f"{load_std:.2f}",
-        f"{cv:.2f}",
-        f"{load_factor:.2f}",
-        f"{p90:.2f}",
-        f"{p95:.2f}",
-        f"{p99:.2f}",
-        f"{required_capacity:.2f}",
-        f"{capacity_factor:.2f}",
-        f"{projected_annual_energy/1000:.2f}",
-        f"{projected_annual_peak:.2f}"
-    ]
+# Apply seasonal adjustment factors (typical for power systems)
+# Winter peak (Jan-Feb), shoulder seasons (Mar-May, Sep-Nov), Summer peak (Jun-Aug)
+seasonal_factors = {
+    1: 1.0,   # January - baseline
+    2: 0.98,  # February
+    3: 0.92,  # March
+    4: 0.88,  # April
+    5: 0.90,  # May
+    6: 0.95,  # June
+    7: 1.02,  # July - summer peak
+    8: 1.05,  # August - summer peak
+    9: 0.98,  # September
+    10: 0.92, # October
+    11: 0.95, # November
+    12: 1.0   # December
 }
 
-summary_df = pd.DataFrame(annual_summary)
-summary_df.to_csv('outputs/annual_summary.csv', index=False)
-print("\nSummary saved to outputs/annual_summary.csv")
+# Generate forecast
+predicted_loads = []
+for idx, row in forecast_df.iterrows():
+    month = row['month']
+    dow = row['dayofweek']
+    tod = row['timestamp'].hour + row['timestamp'].minute / 60
+    
+    # Find closest time point in profile
+    time_idx = int((tod / 0.25)) % 96  # 96 intervals per day
+    
+    # Get base load from appropriate daily profile or average
+    if dow in daily_profiles:
+        base_load = daily_profiles[dow][time_idx]
+    else:
+        base_load = base_profile[time_idx]
+    
+    # Apply seasonal factor
+    seasonal_load = base_load * seasonal_factors[month]
+    
+    # Add some random variation (±2%)
+    variation = np.random.normal(1.0, 0.02)
+    predicted_load = seasonal_load * variation
+    
+    predicted_loads.append(predicted_load)
 
-# Daily summary
-daily_summary = df.groupby('date').agg({
-    'load_mw': ['count', 'mean', 'max', 'min', 'std']
-}).round(2)
-daily_summary.columns = ['Records', 'Avg_Load_MW', 'Peak_Load_MW', 'Min_Load_MW', 'Std_MW']
-daily_summary.to_csv('outputs/daily_summary.csv')
-print("Daily summary saved to outputs/daily_summary.csv")
+forecast_df['predicted_load'] = predicted_loads
 
-# Hourly summary
-hourly_summary = df.groupby('hour')['load_mw'].agg(['mean', 'max', 'min', 'std']).round(2)
-hourly_summary.to_csv('outputs/hourly_summary.csv')
-print("Hourly summary saved to outputs/hourly_summary.csv")
+# Calculate forecast statistics
+forecast_stats = {
+    'annual_peak': forecast_df['predicted_load'].max(),
+    'annual_min': forecast_df['predicted_load'].min(),
+    'annual_avg': forecast_df['predicted_load'].mean(),
+    'annual_energy_gwh': forecast_df['predicted_load'].sum() / 4000,  # MW to GW, 15-min intervals
+    'load_factor': forecast_df['predicted_load'].mean() / forecast_df['predicted_load'].max()
+}
 
-# Forecast summary
-forecast_summary = pd.DataFrame({
-    'Month': range(1, 13),
-    'Month_Name': month_labels,
-    'Projected_Avg_MW': [f"{x:.2f}" for x in monthly_forecast]
-})
-forecast_summary.to_csv('outputs/annual_forecast.csv', index=False)
-print("Forecast saved to outputs/annual_forecast.csv")
+print("\nAnnual Forecast Summary:")
+print(f"Predicted Annual Peak Load: {forecast_stats['annual_peak']:.2f} MW")
+print(f"Predicted Annual Minimum Load: {forecast_stats['annual_min']:.2f} MW")
+print(f"Predicted Annual Average Load: {forecast_stats['annual_avg']:.2f} MW")
+print(f"Predicted Annual Energy: {forecast_stats['annual_energy_gwh']:.2f} GWh")
+print(f"Load Factor: {forecast_stats['load_factor']:.3f}")
 
-print("\n=== ANALYSIS COMPLETE ===")
-print(f"Generated 8 figures in report/images/")
-print(f"Generated 4 CSV files in outputs/")
+# Monthly forecast
+monthly_forecast = forecast_df.groupby('month')['predicted_load'].agg(['mean', 'max', 'min']).reset_index()
+monthly_forecast.columns = ['month', 'forecast_avg', 'forecast_peak', 'forecast_min']
+print("\nMonthly Forecast (MW):")
+print(monthly_forecast)
+
+# ============================================================================
+# 4. RELIABILITY ANALYSIS
+# ============================================================================
+
+print("\n" + "="*60)
+print("4. RELIABILITY ANALYSIS")
+print("="*60)
+
+# Calculate load variability metrics
+df['load_change'] = df['load_mw'].diff()
+df['load_change_pct'] = df['load_mw'].pct_change() * 100
+
+# Ramp rates (MW per hour, since data is 15-min intervals)
+df['ramp_rate_mw_per_hr'] = df['load_change'] * 4  # 4 intervals per hour
+
+# Daily load factor
+daily_load['load_factor'] = daily_load['avg_load'] / daily_load['peak_load']
+
+# Peak-to-valley ratio
+daily_load['peak_valley_ratio'] = daily_load['peak_load'] / daily_load['min_load']
+
+print("\nLoad Variability Metrics:")
+print(f"Max upward ramp: {df['ramp_rate_mw_per_hr'].max():.2f} MW/hr")
+print(f"Max downward ramp: {df['ramp_rate_mw_per_hr'].min():.2f} MW/hr")
+print(f"Average absolute ramp: {df['ramp_rate_mw_per_hr'].abs().mean():.2f} MW/hr")
+print(f"Load volatility (std of changes): {df['load_change'].std():.2f} MW")
+
+print("\nDaily Load Factor Statistics:")
+print(daily_load['load_factor'].describe())
+
+print("\nPeak-to-Valley Ratio Statistics:")
+print(daily_load['peak_valley_ratio'].describe())
+
+# Identify critical periods (top 5% peak loads)
+peak_threshold = df['load_mw'].quantile(0.95)
+critical_periods = df[df['load_mw'] >= peak_threshold].copy()
+print(f"\nCritical Load Threshold (95th percentile): {peak_threshold:.2f} MW")
+print(f"Number of critical intervals: {len(critical_periods)}")
+
+# Critical periods by day of week
+critical_by_dow = critical_periods.groupby('dayofweek').size()
+print("\nCritical Periods by Day of Week:")
+for dow, count in critical_by_dow.items():
+    print(f"  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][dow]}: {count}")
+
+# Critical periods by hour
+critical_by_hour = critical_periods.groupby('hour').size()
+print("\nCritical Periods by Hour of Day:")
+print(critical_by_hour)
+
+# ============================================================================
+# 5. GENERATE VISUALIZATIONS
+# ============================================================================
+
+print("\n" + "="*60)
+print("5. GENERATING VISUALIZATIONS")
+print("="*60)
+
+# Figure 1: Observed Load Profile (Daily Aggregates)
+fig, axes = plt.subplots(2, 1, figsize=(14, 8))
+
+# Daily average and peak load
+ax1 = axes[0]
+ax1.plot(daily_load['date'], daily_load['avg_load'], color='steelblue', alpha=0.9, 
+         marker='o', markersize=6, linewidth=2, label='Daily Average')
+ax1.plot(daily_load['date'], daily_load['peak_load'], color='crimson', alpha=0.9, 
+         marker='s', markersize=6, linewidth=2, label='Daily Peak')
+ax1.fill_between(daily_load['date'], daily_load['min_load'], daily_load['peak_load'], 
+                  alpha=0.2, color='gray', label='Daily Range')
+ax1.set_ylabel('Load (MW)', fontsize=11)
+ax1.set_title('Observed Load Profile - First Week of January 2026', fontsize=13, fontweight='bold')
+ax1.legend(loc='upper right')
+ax1.grid(True, alpha=0.3)
+
+# Hourly load distribution
+ax2 = axes[1]
+hourly_stats = df.groupby('hour')['load_mw'].agg(['mean', 'min', 'max']).reset_index()
+ax2.fill_between(hourly_stats['hour'], hourly_stats['min'], hourly_stats['max'], 
+                  alpha=0.3, color='steelblue', label='Min-Max Range')
+ax2.plot(hourly_stats['hour'], hourly_stats['mean'], 'o-', color='crimson', 
+         linewidth=2, markersize=6, label='Average')
+ax2.set_xlabel('Hour of Day', fontsize=11)
+ax2.set_ylabel('Load (MW)', fontsize=11)
+ax2.set_title('Hourly Load Distribution (Aggregated)', fontsize=13, fontweight='bold')
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+ax2.set_xticks(range(0, 24, 2))
+
+plt.tight_layout()
+plt.savefig('../report/images/figure1_observed_load_profile.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("Saved: figure1_observed_load_profile.png")
+
+# Figure 2: Intraday and Weekly Patterns
+fig, axes = plt.subplots(2, 1, figsize=(12, 8))
+
+# Average daily load curve by day of week
+ax1 = axes[0]
+colors = plt.cm.tab10(np.linspace(0, 1, 7))
+day_names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+for day in range(7):
+    day_data = df[df['dayofweek'] == day]
+    if len(day_data) > 0:
+        hourly_avg = day_data.groupby('time_of_day')['load_mw'].mean()
+        ax1.plot(hourly_avg.index, hourly_avg.values, label=day_names[day], 
+                linewidth=2, color=colors[day])
+ax1.set_xlabel('Hour of Day', fontsize=11)
+ax1.set_ylabel('Average Load (MW)', fontsize=11)
+ax1.set_title('Average Daily Load Curves by Day of Week', fontsize=13, fontweight='bold')
+ax1.legend(loc='upper right', ncol=4)
+ax1.grid(True, alpha=0.3)
+ax1.set_xlim(0, 24)
+
+# Weekly pattern bar chart
+ax2 = axes[1]
+valid_days = weekly_pattern[weekly_pattern['count'] > 0]
+x_pos = np.arange(len(valid_days))
+bars = ax2.bar(x_pos, valid_days['mean'], color='steelblue', alpha=0.7, label='Average')
+ax2.errorbar(x_pos, valid_days['mean'], 
+             yerr=[valid_days['mean'] - valid_days['min'], 
+                   valid_days['max'] - valid_days['mean']], 
+             fmt='none', color='black', capsize=5, label='Min-Max Range')
+ax2.set_xticks(x_pos)
+ax2.set_xticklabels(valid_days['day_name'])
+ax2.set_ylabel('Load (MW)', fontsize=11)
+ax2.set_xlabel('Day of Week', fontsize=11)
+ax2.set_title('Weekly Load Pattern with Variability', fontsize=13, fontweight='bold')
+ax2.legend()
+ax2.grid(True, alpha=0.3, axis='y')
+
+plt.tight_layout()
+plt.savefig('../report/images/figure2_intraday_weekly_patterns.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("Saved: figure2_intraday_weekly_patterns.png")
+
+# Figure 3: Load Variability and Ramp Analysis
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Load factor distribution
+ax1 = axes[0, 0]
+ax1.hist(daily_load['load_factor'], bins=7, color='steelblue', alpha=0.7, edgecolor='black')
+ax1.axvline(daily_load['load_factor'].mean(), color='crimson', linestyle='--', linewidth=2, 
+            label=f'Mean: {daily_load["load_factor"].mean():.3f}')
+ax1.set_xlabel('Daily Load Factor', fontsize=11)
+ax1.set_ylabel('Frequency', fontsize=11)
+ax1.set_title('Distribution of Daily Load Factor', fontsize=12, fontweight='bold')
+ax1.legend()
+ax1.grid(True, alpha=0.3)
+
+# Ramp rate distribution
+ax2 = axes[0, 1]
+ramp_rates = df['ramp_rate_mw_per_hr'].dropna()
+ax2.hist(ramp_rates, bins=30, color='forestgreen', alpha=0.7, edgecolor='black')
+ax2.axvline(ramp_rates.mean(), color='crimson', linestyle='--', linewidth=2, 
+            label=f'Mean: {ramp_rates.mean():.2f} MW/hr')
+ax2.axvline(0, color='black', linestyle='-', linewidth=1, alpha=0.5)
+ax2.set_xlabel('Ramp Rate (MW/hr)', fontsize=11)
+ax2.set_ylabel('Frequency', fontsize=11)
+ax2.set_title('Distribution of Ramp Rates (15-min intervals)', fontsize=12, fontweight='bold')
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+
+# Load change time series
+ax3 = axes[1, 0]
+ax3.plot(df['timestamp'], df['load_mw'], color='steelblue', linewidth=1, alpha=0.8)
+ax3.axhline(peak_threshold, color='crimson', linestyle='--', linewidth=2, 
+            label=f'95th Percentile: {peak_threshold:.1f} MW')
+ax3.set_xlabel('Date', fontsize=11)
+ax3.set_ylabel('Load (MW)', fontsize=11)
+ax3.set_title('Load Time Series with Critical Threshold', fontsize=12, fontweight='bold')
+ax3.legend()
+ax3.grid(True, alpha=0.3)
+ax3.tick_params(axis='x', rotation=45)
+
+# Critical periods by hour
+ax4 = axes[1, 1]
+if len(critical_by_hour) > 0:
+    hours = list(range(24))
+    counts = [critical_by_hour.get(h, 0) for h in hours]
+    bars = ax4.bar(hours, counts, color='crimson', alpha=0.7)
+    ax4.set_xlabel('Hour of Day', fontsize=11)
+    ax4.set_ylabel('Count of Critical Intervals', fontsize=11)
+    ax4.set_title('Critical Load Periods by Hour', fontsize=12, fontweight='bold')
+    ax4.grid(True, alpha=0.3, axis='y')
+    ax4.set_xticks(range(0, 24, 2))
+else:
+    ax4.text(0.5, 0.5, 'No critical periods identified', ha='center', va='center', 
+             transform=ax4.transAxes, fontsize=12)
+    ax4.set_xlabel('Hour of Day', fontsize=11)
+    ax4.set_ylabel('Count', fontsize=11)
+
+plt.tight_layout()
+plt.savefig('../report/images/figure3_reliability_metrics.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("Saved: figure3_reliability_metrics.png")
+
+# Figure 4: Annual Forecast Overview
+fig, axes = plt.subplots(2, 1, figsize=(14, 8))
+
+# Aggregate forecast to daily for visualization
+forecast_daily = forecast_df.groupby(forecast_df['timestamp'].dt.date)['predicted_load'].agg(['mean', 'max', 'min']).reset_index()
+forecast_daily.columns = ['date', 'avg_load', 'peak_load', 'min_load']
+forecast_daily['date'] = pd.to_datetime(forecast_daily['date'])
+
+# Full year forecast (daily)
+ax1 = axes[0]
+ax1.fill_between(forecast_daily['date'], forecast_daily['min_load'], forecast_daily['peak_load'], 
+                  alpha=0.3, color='steelblue', label='Daily Min-Max Range')
+ax1.plot(forecast_daily['date'], forecast_daily['avg_load'], color='forestgreen', 
+         linewidth=1, alpha=0.8, label='Daily Average')
+ax1.axhline(forecast_stats['annual_peak'], color='crimson', linestyle='--', alpha=0.7, 
+            label=f'Annual Peak: {forecast_stats["annual_peak"]:.1f} MW')
+ax1.axhline(forecast_stats['annual_avg'], color='orange', linestyle='--', alpha=0.7, 
+            label=f'Annual Average: {forecast_stats["annual_avg"]:.1f} MW')
+ax1.set_ylabel('Load (MW)', fontsize=11)
+ax1.set_title('2026 Annual Load Forecast (Daily Aggregates)', fontsize=13, fontweight='bold')
+ax1.legend(loc='upper right', ncol=2)
+ax1.grid(True, alpha=0.3)
+
+# Monthly forecast summary
+ax2 = axes[1]
+x_pos = np.arange(1, 13)
+ax2.fill_between(monthly_forecast['month'], monthly_forecast['forecast_min'], 
+                  monthly_forecast['forecast_peak'], 
+                  alpha=0.3, color='steelblue', label='Min-Max Range')
+ax2.plot(monthly_forecast['month'], monthly_forecast['forecast_avg'], 'o-', color='crimson', 
+         linewidth=2, markersize=8, label='Average Load')
+ax2.set_xticks(x_pos)
+ax2.set_xticklabels(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+ax2.set_ylabel('Load (MW)', fontsize=11)
+ax2.set_xlabel('Month', fontsize=11)
+ax2.set_title('Monthly Load Forecast Summary', fontsize=13, fontweight='bold')
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+ax2.set_xlim(0.5, 12.5)
+
+plt.tight_layout()
+plt.savefig('../report/images/figure4_annual_forecast.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("Saved: figure4_annual_forecast.png")
+
+# Figure 5: Seasonal Pattern and Load Duration Curve
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Seasonal pattern comparison
+ax1 = axes[0]
+seasons = {
+    'Winter (Jan, Feb, Dec)': [1, 2, 12],
+    'Spring (Mar, Apr, May)': [3, 4, 5],
+    'Summer (Jun, Jul, Aug)': [6, 7, 8],
+    'Fall (Sep, Oct, Nov)': [9, 10, 11]
+}
+colors = ['steelblue', 'forestgreen', 'crimson', 'orange']
+for (season, months), color in zip(seasons.items(), colors):
+    season_data = forecast_df[forecast_df['month'].isin(months)]
+    hourly_avg = season_data.groupby(season_data['timestamp'].dt.hour)['predicted_load'].mean()
+    ax1.plot(hourly_avg.index, hourly_avg.values, label=season, linewidth=2, color=color)
+ax1.set_xlabel('Hour of Day', fontsize=11)
+ax1.set_ylabel('Average Load (MW)', fontsize=11)
+ax1.set_title('Seasonal Load Patterns', fontsize=13, fontweight='bold')
+ax1.legend(loc='upper right')
+ax1.grid(True, alpha=0.3)
+ax1.set_xticks(range(0, 24, 2))
+
+# Load duration curve
+ax2 = axes[1]
+sorted_load = np.sort(forecast_df['predicted_load'].values)[::-1]
+duration = np.arange(1, len(sorted_load) + 1) / len(sorted_load) * 100
+ax2.plot(duration, sorted_load, color='steelblue', linewidth=2)
+ax2.fill_between(duration, 0, sorted_load, alpha=0.3, color='steelblue')
+ax2.axhline(forecast_stats['annual_avg'], color='crimson', linestyle='--', linewidth=2,
+            label=f'Average: {forecast_stats["annual_avg"]:.1f} MW')
+ax2.set_xlabel('Duration (%)', fontsize=11)
+ax2.set_ylabel('Load (MW)', fontsize=11)
+ax2.set_title('Annual Load Duration Curve', fontsize=13, fontweight='bold')
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+ax2.set_xlim(0, 100)
+
+plt.tight_layout()
+plt.savefig('../report/images/figure5_seasonal_duration.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("Saved: figure5_seasonal_duration.png")
+
+# ============================================================================
+# 6. SAVE RESULTS
+# ============================================================================
+
+print("\n" + "="*60)
+print("6. SAVING RESULTS")
+print("="*60)
+
+# Save forecast to CSV (sample - daily aggregates to keep file size reasonable)
+forecast_daily.to_csv('../outputs/annual_load_forecast_daily.csv', index=False)
+print("Saved: outputs/annual_load_forecast_daily.csv")
+
+# Save hourly forecast sample
+forecast_hourly = forecast_df.groupby(forecast_df['timestamp'].dt.floor('H'))['predicted_load'].mean().reset_index()
+forecast_hourly.columns = ['timestamp', 'predicted_load']
+forecast_hourly.to_csv('../outputs/annual_load_forecast_hourly.csv', index=False)
+print("Saved: outputs/annual_load_forecast_hourly.csv")
+
+# Save daily statistics
+daily_load.to_csv('../outputs/daily_load_statistics.csv', index=False)
+print("Saved: outputs/daily_load_statistics.csv")
+
+# Save monthly statistics
+monthly_stats.to_csv('../outputs/monthly_load_statistics.csv', index=False)
+print("Saved: outputs/monthly_load_statistics.csv")
+
+# Save monthly forecast
+monthly_forecast.to_csv('../outputs/monthly_forecast.csv', index=False)
+print("Saved: outputs/monthly_forecast.csv")
+
+# Save reliability metrics
+reliability_metrics = {
+    'metric': ['Annual Peak Load (MW)', 'Annual Minimum Load (MW)', 'Annual Average Load (MW)',
+               'Annual Energy (GWh)', 'Load Factor', 'Max Upward Ramp (MW/hr)', 
+               'Max Downward Ramp (MW/hr)', 'Average Absolute Ramp (MW/hr)',
+               'Load Volatility (MW)', 'Mean Daily Load Factor', 'Mean Peak-Valley Ratio',
+               'Critical Load Threshold (MW)', 'Observed Data Days'],
+    'value': [forecast_stats['annual_peak'], forecast_stats['annual_min'], 
+              forecast_stats['annual_avg'], forecast_stats['annual_energy_gwh'],
+              forecast_stats['load_factor'], df['ramp_rate_mw_per_hr'].max(),
+              df['ramp_rate_mw_per_hr'].min(), df['ramp_rate_mw_per_hr'].abs().mean(),
+              df['load_change'].std(), daily_load['load_factor'].mean(),
+              daily_load['peak_valley_ratio'].mean(), peak_threshold, len(daily_load)]
+}
+reliability_df = pd.DataFrame(reliability_metrics)
+reliability_df.to_csv('../outputs/reliability_metrics.csv', index=False)
+print("Saved: outputs/reliability_metrics.csv")
+
+print("\n" + "="*60)
+print("ANALYSIS COMPLETE")
+print("="*60)

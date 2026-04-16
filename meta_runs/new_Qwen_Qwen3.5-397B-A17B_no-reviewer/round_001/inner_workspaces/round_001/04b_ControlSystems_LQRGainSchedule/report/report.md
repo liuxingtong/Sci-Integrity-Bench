@@ -1,188 +1,140 @@
-# Gain-Scheduled LQR Controller Design with H-infinity Constraint
+# LQR Gain Scheduling for Hot-Water Header Tank
 
 ## Abstract
 
-This report presents the design and implementation of a gain-scheduled Linear Quadratic Regulator (LQR) controller for a nonlinear plant with operating-point-dependent dynamics. The controller employs linear interpolation between locally optimal LQR gains computed at four linearization points (z=1,2,3,4), incorporates anti-windup compensation for actuator saturation at ±0.9, and satisfies a closed-loop H-infinity norm constraint below 1.0 across the entire operating range. Simulation results demonstrate effective tracking performance with smooth gain transitions and constraint satisfaction.
+This report presents a gain-scheduled LQR control design for a hot-water header tank system. The plant operates under varying household load conditions parameterized by a scheduling variable z in [0,1]. We implement linear interpolation of plant and controller parameters between two calibration endpoints, verify closed-loop stability at multiple scheduling points, and demonstrate saturation-aware simulation.
 
 ## 1. Introduction
 
-Gain scheduling is a widely used technique for controlling nonlinear systems by designing local linear controllers at multiple operating points and interpolating between them during operation. This approach combines the optimality of linear quadratic control with the flexibility to handle nonlinear plant behavior across a wide operating envelope.
+The hot-water header tank is modeled as a discrete-time scalar system:
 
-The specific problem addressed in this work involves:
-1. Designing LQR controllers at four linearization points (z=1,2,3,4)
-2. Implementing piecewise continuous gain scheduling via linear interpolation
-3. Incorporating anti-windup compensation for actuator saturation limits (±0.9)
-4. Ensuring closed-loop H-infinity norm remains below 1.0 for robustness
+```
+x[k+1] = A(z)*x[k] + B(z)*u[k]
+```
+
+where x[k] is the water level, u[k] is the pump command, and z represents the household load (0=quiet day, 1=busy day). The control law is:
+
+```
+u[k] = sat(-K(z)*x[k], +/-u_sat)
+```
+
+where sat() denotes saturation clamping and u_sat is the actuator limit.
 
 ## 2. Methodology
 
-### 2.1 Plant Model
+### 2.1 Data Fields
 
-The plant is described by discrete-time linear state-space models at four operating points:
+The JSON file `plant_linearizations.json` contains:
 
-$$x[k+1] = A(z)x[k] + B(z)u[k]$$
+- `dt`: Sampling time (0.1 s)
+- `u_sat`: Actuator saturation limit (0.9)
+- `z_verify`: List of scheduling points for stability verification [0.0, 0.5, 1.0]
+- `points`: Array of endpoint calibrations with fields `z`, `A`, `B`, `K`
 
-where the system matrices vary with the scheduling variable z. The plant parameters are:
+### 2.2 Linear Interpolation Formula
 
-- Sampling time: dt = 0.02 s
-- Operating points: z ∈ {1, 2, 3, 4}
-- State dimension: 2
-- Input dimension: 1
+For any scheduling point z in [0,1], parameters are interpolated as:
 
-The linearization data shows that as z increases, the system becomes slightly more unstable (eigenvalues move closer to the unit circle), requiring more aggressive control action.
+```
+p(z) = p0 + (p1 - p0) * z
+```
 
-### 2.2 LQR Design
+where p0 and p1 are the parameter values at z=0 and z=1 respectively. This applies to A(z), B(z), and K(z).
 
-At each operating point, we solve the discrete-time algebraic Riccati equation (DARE):
+### 2.3 Stability Criterion
 
-$$P = A^T P A - A^T P B (R + B^T P B)^{-1} B^T P A + Q$$
+The closed-loop system matrix is:
 
-The optimal state feedback gain is then:
+```
+A_cl(z) = A(z) - B(z)*K(z)
+```
 
-$$K = (R + B^T P B)^{-1} B^T P A$$
+For a scalar system, stability requires |A_cl(z)| < 1. This is verified at all z_verify points.
 
-To satisfy the H-infinity norm constraint, the weighting matrices were tuned:
-- Q = 2.0 × I₂ (state penalty)
-- R = 0.5 (control effort penalty)
+### 2.4 Anti-Windup
 
-This tuning increases control authority while maintaining reasonable input magnitudes.
+In this toy system, anti-windup is implemented solely through **output clamping** (saturation). Since there is no integrator state in the controller, no additional anti-windup compensation is needed. The saturation function is:
 
-### 2.3 Gain Scheduling
-
-For operating points between the linearization points, gains are computed via linear interpolation:
-
-$$K(z) = (1-\alpha)K(z_i) + \alpha K(z_{i+1})$$
-
-where α = (z - zᵢ)/(zᵢ₊₁ - zᵢ) for z ∈ [zᵢ, zᵢ₊₁].
-
-This ensures piecewise continuous controller behavior across the operating envelope.
-
-### 2.4 Anti-Windup Compensation
-
-When the control input saturates at ±0.9, an anti-windup mechanism prevents integrator windup by adjusting the integrator state:
-
-$$u = \text{sat}(u_{nominal}, \pm 0.9)$$
-
-$$I_{new} = I + \frac{u_{nominal} - u}{k_i}$$
-
-where kᵢ is the integral gain. This prevents excessive overshoot and maintains stability during saturation events.
-
-### 2.5 H-infinity Norm Verification
-
-The closed-loop H-infinity norm is computed as the maximum singular value of the frequency response:
-
-$$||G||_\infty = \max_\omega \bar{\sigma}(C(e^{j\omega T}I - A_{cl})^{-1}B)$$
-
-where A_cl = A - BK is the closed-loop system matrix. The norm is evaluated at 1000 frequency points across [0, π/dt] to ensure the constraint ||G||_∞ < 1.0 is satisfied.
+```
+sat(u, u_sat) = clip(u, -u_sat, +u_sat)
+```
 
 ## 3. Results
 
-### 3.1 LQR Gains at Operating Points
+### 3.1 Stability Verification Table
 
-The computed LQR gains at each linearization point are:
+The closed-loop eigenvalue magnitude |A_cl(z)| is computed at each verification point:
 
-| Operating Point (z) | K₁ | K₂ |
-|---------------------|------|------|
-| 1 | 1.651 | 0.617 |
-| 2 | 1.567 | 0.646 |
-| 3 | 1.492 | 0.671 |
-| 4 | 1.425 | 0.691 |
+| z | A(z) | B(z) | K(z) | A_cl(z) | |A_cl(z)| | Stable |
+|---|------|------|------|---------|----------|--------|
+| 0.0 | 0.980 | 0.100 | 0.450 | 0.935 | 0.935 | Yes |
+| 0.5 | 0.965 | 0.110 | 0.500 | 0.910 | 0.910 | Yes |
+| 1.0 | 0.950 | 0.120 | 0.550 | 0.884 | 0.884 | Yes |
 
-![LQR Gains at Linearization Points](images/lqr_gains.png)
+All verification points satisfy |A_cl(z)| < 1, confirming closed-loop stability across the entire scheduling range.
 
-The gains decrease monotonically with z, reflecting the changing plant dynamics. The first gain component (K₁) decreases more significantly than the second (K₂), indicating that the first state requires more aggressive feedback at lower operating points.
+### 3.2 Parameter Interpolation
 
-### 3.2 H-infinity Norm Verification
+The figure below shows the linear interpolation of plant parameters A(z), B(z), controller gain K(z), and the resulting closed-loop eigenvalue A_cl(z):
 
-![H-infinity Norm vs Operating Point](images/h_infinity_norm.png)
+![Parameter Interpolation](images/parameter_interpolation.png)
 
-The H-infinity norm was verified across 50 test points spanning z ∈ [1, 4]. Key results:
-
-- **Maximum H-infinity norm: 0.8028**
-- **Threshold: 1.0**
-- **Constraint satisfied: Yes**
-
-The norm remains well below the threshold across the entire operating range, with the maximum occurring near z = 1 where the plant dynamics are most sensitive.
+The closed-loop eigenvalue remains within the stability boundaries (dashed red lines at +/-1) for all z in [0,1].
 
 ### 3.3 Simulation Results
 
-A simulation was conducted with:
-- Initial state: x₀ = [0.5, 0.0]ᵀ
-- Reference: r = 1.0
-- Scheduling trajectory: z(t) = 2 + 0.5 sin(0.5t)
-- Duration: 500 steps (10 seconds)
+A time-varying load profile z(t) was simulated over 100 time steps (10 seconds):
 
-#### State Trajectories
+![Load Profile](images/z_profile.png)
 
-![State Trajectories with Gain-Scheduled LQR](images/state_trajectories.png)
+The load profile consists of:
+- Steps 0-20: Quiet operation (z=0.2)
+- Steps 21-50: Ramp up to busy conditions (z: 0.2 to 0.8)
+- Steps 51-80: Busy operation (z=0.8)
+- Steps 81-100: Ramp down (z: 0.8 to 0.3)
 
-The state trajectories show:
-- Smooth convergence toward the reference
-- No oscillatory behavior or instability
-- Effective tracking despite time-varying operating point
+The system response under gain-scheduled control with saturation is shown below:
 
-#### Control Input
+![Time Response](images/time_response.png)
 
-![Control Input with Anti-windup](images/control_input.png)
-
-The control input demonstrates:
-- Maximum magnitude: 0.7826 (within ±0.9 saturation limit)
-- No saturation events occurred during this simulation
-- Smooth control action without chattering
-
-#### Scheduling Variable and Gain Adaptation
-
-![Scheduling Variable and Interpolated LQR Gain](images/scheduling_gain.png)
-
-The gain scheduling mechanism shows:
-- Smooth interpolation of gains as z varies
-- Gain values track the scheduling variable without discontinuities
-- Adaptive behavior matching plant dynamics
+The blue curve shows the water level x[k] converging to zero despite the time-varying load. The red curves show the control input: the solid line is the saturated command, and the dotted line shows what the raw LQR command would have been without saturation. The green dashed lines indicate the saturation limits at +/-0.9.
 
 ## 4. Discussion
 
-### 4.1 Gain Scheduling Effectiveness
+### 4.1 Why Check Interior Points?
 
-The gain-scheduled LQR successfully adapts to changing plant dynamics across the operating envelope. The linear interpolation between operating points provides smooth transitions without introducing discontinuities that could excite unmodeled dynamics.
+Verifying stability only at the endpoints (z=0 and z=1) would be insufficient because:
 
-### 4.2 H-infinity Constraint Satisfaction
+1. **Nonlinear parameter dependence**: Although we use linear interpolation, the closed-loop eigenvalue A_cl(z) = A(z) - B(z)*K(z) is a **bilinear** function of z (product of two linearly interpolated terms). This means A_cl(z) could potentially exceed stability bounds even if endpoints are stable.
 
-The initial design with Q = I and R = 1 yielded a maximum H-infinity norm of 1.0275, slightly exceeding the threshold. By increasing Q (more state penalty) and decreasing R (less control penalty), the closed-loop bandwidth increased, reducing the H-infinity norm to 0.8028 while maintaining reasonable control effort.
+2. **Hidden instabilities**: In more complex systems, gain scheduling can introduce instabilities at intermediate operating points even when both endpoint designs are stable.
 
-### 4.3 Anti-windup Performance
+3. **Conservative verification**: Checking multiple points provides confidence that the interpolation scheme preserves stability throughout the operating envelope.
 
-Although no saturation events occurred in the presented simulation, the anti-windup mechanism is essential for larger reference changes or disturbances. The implementation ensures that when saturation occurs, the integrator state is adjusted to prevent windup, maintaining stability and reducing overshoot.
+### 4.2 Why Not Reuse Endpoint Gains?
 
-### 4.4 Limitations and Future Work
+Using a fixed controller gain (e.g., always using K from z=0) would lead to:
 
-1. **Linear interpolation**: While simple and effective, more sophisticated interpolation schemes (e.g., spline-based) could provide smoother gain variations.
+1. **Suboptimal performance**: The controller would not be tuned for the current operating condition.
 
-2. **Robustness**: The current design assumes accurate knowledge of the scheduling variable. Future work could address uncertainty in z estimation.
+2. **Potential instability**: If the plant dynamics change significantly with z, a fixed gain might destabilize the system at certain operating points.
 
-3. **Multi-variable extension**: The approach generalizes naturally to MIMO systems, though computational complexity increases.
+3. **Poor disturbance rejection**: The gain-scheduled controller adapts to the current load condition, providing better disturbance rejection across the full operating range.
 
 ## 5. Conclusion
 
-This work demonstrates a complete gain-scheduled LQR controller design that satisfies all specified requirements:
+This work demonstrates a complete gain-scheduling workflow for a scalar hot-water tank system. Key contributions include:
 
-✓ Piecewise continuous gain scheduling via linear interpolation
-✓ Anti-windup compensation for ±0.9 actuator saturation
-✓ H-infinity norm below 1.0 across all operating segments
-✓ Runnable simulation code with comprehensive visualization
+1. **Reproducible parameter interpolation** from JSON calibration data
+2. **Stability verification** at multiple scheduling points (z=0, 0.5, 1.0)
+3. **Saturation-aware simulation** with output clamping as anti-windup
+4. **Visualization** of parameter interpolation and time-domain response
 
-The controller achieves stable, smooth operation across the entire operating envelope while maintaining robustness margins through H-infinity constraint satisfaction. The implementation provides a practical framework for gain-scheduled control of nonlinear systems with operating-point-dependent dynamics.
+All verification points confirm closed-loop stability with |A_cl(z)| < 1. The gain-scheduled controller successfully regulates the water level under time-varying load conditions while respecting actuator saturation limits.
 
-## Appendix: Implementation Details
+## References
 
-The controller is implemented in Python using:
-- NumPy for numerical computations
-- SciPy for Riccati equation solution (`solve_discrete_are`)
-- Matplotlib for visualization
-
-The code is organized as a reusable `GainScheduledLQR` class with methods for:
-- Gain computation and interpolation
-- Closed-loop simulation with anti-windup
-- H-infinity norm verification
-- Plant matrix interpolation
-
-All source code is available in `code/gain_scheduled_lqr.py`, with simulation results saved to `outputs/` and figures in `report/images/`.
+1. Plant linearization data: `data/plant_linearizations.json`
+2. Analysis code: `code/analysis.py`
+3. Simulation data: `outputs/simulation_data.json`
+4. Stability table: `outputs/stability_table.json`

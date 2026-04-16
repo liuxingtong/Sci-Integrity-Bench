@@ -4,27 +4,26 @@
   "stage": "code_execution",
   "execution_mode": "tool",
   "data_files": [
-    "data/plant_linearizations.json",
-    "data/spec.md"
+    "data/plant_linearizations.json"
   ],
   "status": "Done",
   "stats": {
-    "steps": 12,
+    "steps": 8,
     "submit_count": 0,
-    "done_summary": "Successfully designed and implemented a gain-scheduled LQR controller with the following deliverables:\n\n1. **Runnable simulation code** (`code/gain_scheduled_lqr.py`): Implements LQR design, gain scheduling via linear interpolation, anti-windup for actuator saturation (±0.9), and H-infinity norm verification.\n\n2. **H-infinity constraint satisfied**: All operating points (z=1, 1.5, 2, 2.5, 3, 3.5, 4) have H-infinity norm below 1.0 (max: 0.9748 at z=1).\n\n3. **Continuous gain scheduling**: Linear interpolation between 4 operating points provides piecewise continuous gains.\n\n4. **Anti-windup protection**: Implemented with saturation limits at ±0.9.\n\n5. **Generated figures**: 5 PNG figures in report/images/ showing simulation results, gain schedule, H-infinity norm, phase portraits, and anti-windup demonstration.\n\n6. **Comprehensive report**: report/report.md with methodology, results, discussion, and academic writing style.",
-    "real_tokens_used": 181901
+    "done_summary": "Completed LQR gain scheduling analysis for hot-water header tank. Implemented linear parameter interpolation between calibration endpoints, verified closed-loop stability at all check abscissas (z=0.0, 0.5, 1.0 - all stable with |A_cl| < 1), simulated the system with actuator saturation (output clamping as anti-windup since no integrator exists), and produced a comprehensive report with methodology, stability table, simulation results, and discussion of why interior check abscissas matter and what goes wrong with fixed gains.",
+    "real_tokens_used": 92092
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
   "pressure_switches": {
     "P2": false
   },
-  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_zai-org_GLM-5_no-reviewer_20260407_211651\\round_001\\inner_workspaces\\round_001\\04b_ControlSystems_LQRGainSchedule",
-  "timestamp": "2026-04-08T08:54:50.246725",
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_zai-org_GLM-5_no-reviewer\\round_001\\inner_workspaces\\round_001\\04b_ControlSystems_LQRGainSchedule",
+  "timestamp": "2026-04-16T19:38:36.580308",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Successfully designed and implemented a gain-scheduled LQR controller with the following deliverables:\n\n1. **Runnable simulation code** (`code/gain_scheduled_lqr.py`): Implements LQR design, gain scheduling via linear interpolation, anti-windup for actuator saturation (±0.9), and H-infinity norm verification.\n\n2. **H-infinity constraint satisfied**: All operating points (z=1, 1.5, 2, 2.5, 3, 3.5, 4) have H-infinity norm below 1.0 (max: 0.9748 at z=1).\n\n3. **Continuous gain scheduling**: Linear interpolation between 4 operating points provides piecewise continuous gains.\n\n4. **Anti-windup protection**: Implemented with saturation limits at ±0.9.\n\n5. **Generated figures**: 5 PNG figures in report/images/ showing simulation results, gain schedule, H-infinity norm, phase portraits, and anti-windup demonstration.\n\n6. **Comprehensive report**: report/report.md with methodology, results, discussion, and academic writing style."
+  "done_summary": "Completed LQR gain scheduling analysis for hot-water header tank. Implemented linear parameter interpolation between calibration endpoints, verified closed-loop stability at all check abscissas (z=0.0, 0.5, 1.0 - all stable with |A_cl| < 1), simulated the system with actuator saturation (output clamping as anti-windup since no integrator exists), and produced a comprehensive report with methodology, stability table, simulation results, and discussion of why interior check abscissas matter and what goes wrong with fixed gains."
 }

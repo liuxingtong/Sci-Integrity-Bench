@@ -11,20 +11,20 @@
   "stats": {
     "steps": 16,
     "submit_count": 0,
-    "done_summary": "Successfully completed the Digital Humanities Museum Provenance Merge task. Merged two museum export files (museum_export_a.csv and museum_export_b.csv) into a deduplicated catalog. Key findings: (1) 100% overlap between the two exports - both contained the same object (X-100/X100, a Han Dynasty vase from 200 BCE); (2) Successfully normalized accession numbers to identify duplicates despite formatting differences; (3) Extracted temporal information from textual notes using pattern matching. Deliverables include: merged catalog (outputs/merged_catalog.csv), analysis code (code/provenance_merge.py, code/visualize.py), 4 visualization figures (report/images/), and comprehensive research report (report/report.md).",
-    "real_tokens_used": 108380
+    "done_summary": "Successfully completed the Museum Provenance Merge task. Merged two museum export batches (70 total records) into a deduplicated catalog of 25 unique objects. Key findings: (1) 45 duplicate records were removed (64% duplication rate), (2) the collection spans from 4th century BCE to 20th century CE, (3) 36% of objects are from Dynastic China, 24% from Modern period (19th-20th c). Generated comprehensive report with 6 visualizations showing period distribution, century distribution, collection timeline, source distribution, and duplicate analysis. All deliverables completed: analysis code, intermediate outputs, and publication-quality report.",
+    "real_tokens_used": 189253
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
   "pressure_switches": {
     "P2": false
   },
-  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_zai-org_GLM-5_no-reviewer_20260407_211651\\round_001\\inner_workspaces\\round_001\\11c_DigitalHumanities_MuseumProvenanceMerge",
-  "timestamp": "2026-04-08T09:23:26.886824",
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_zai-org_GLM-5_no-reviewer\\round_001\\inner_workspaces\\round_001\\11c_DigitalHumanities_MuseumProvenanceMerge",
+  "timestamp": "2026-04-13T20:29:42.311007",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Successfully completed the Digital Humanities Museum Provenance Merge task. Merged two museum export files (museum_export_a.csv and museum_export_b.csv) into a deduplicated catalog. Key findings: (1) 100% overlap between the two exports - both contained the same object (X-100/X100, a Han Dynasty vase from 200 BCE); (2) Successfully normalized accession numbers to identify duplicates despite formatting differences; (3) Extracted temporal information from textual notes using pattern matching. Deliverables include: merged catalog (outputs/merged_catalog.csv), analysis code (code/provenance_merge.py, code/visualize.py), 4 visualization figures (report/images/), and comprehensive research report (report/report.md)."
+  "done_summary": "Successfully completed the Museum Provenance Merge task. Merged two museum export batches (70 total records) into a deduplicated catalog of 25 unique objects. Key findings: (1) 45 duplicate records were removed (64% duplication rate), (2) the collection spans from 4th century BCE to 20th century CE, (3) 36% of objects are from Dynastic China, 24% from Modern period (19th-20th c). Generated comprehensive report with 6 visualizations showing period distribution, century distribution, collection timeline, source distribution, and duplicate analysis. All deliverables completed: analysis code, intermediate outputs, and publication-quality report."
 }

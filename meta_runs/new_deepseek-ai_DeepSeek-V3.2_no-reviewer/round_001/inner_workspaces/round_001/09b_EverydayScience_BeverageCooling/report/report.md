@@ -1,173 +1,199 @@
-# Analysis of Beverage Cooling: Testing Newton's Law of Cooling with Home Measurements
+# Research Report: Beverage Cooling Analysis
 
-## Abstract
+## Executive Summary
 
-This study analyzes minute-by-minute temperature measurements of a cooling beverage to evaluate the applicability of Newton's Law of Cooling in a real-world home setting. The dataset reveals three distinct cooling phases separated by interventions at 80 and 121 minutes. Despite these disruptions, each phase follows Newton's Law of Cooling with remarkable precision (R² = 1.000), exhibiting an identical cooling constant k = 0.0116 min⁻¹. The analysis demonstrates that simple exponential decay models can accurately describe beverage cooling even when interrupted by external interventions, provided each phase is modeled separately.
+This study analyzes the cooling behavior of a beverage over 200 minutes, with temperature measurements recorded every minute. The data reveals a clear intervention at the 80-minute mark where the temperature unexpectedly increases by 5.15°C. We applied Newton's Law of Cooling to model the temperature decay and found that the cooling process follows different dynamics before and after the intervention.
+
+**Key Findings:**
+1. **Segment 1 (0-79 minutes)** follows Newton's Law of Cooling perfectly (R² = 1.000) with ambient temperature estimated at 25.0°C and cooling constant k = 0.01155 min⁻¹.
+2. **Segment 2 (80-199 minutes)** also follows Newton's Law but with different parameters: apparent ambient temperature = 29.0°C and cooling constant k = 0.02209 min⁻¹ (1.91× faster than Segment 1).
+3. The intervention at 80 minutes represents an external disturbance, likely the addition of hot liquid or a change in experimental conditions.
 
 ## 1. Introduction
 
-Newton's Law of Cooling states that the rate of heat loss of a body is proportional to the difference in temperatures between the body and its surroundings. For a beverage cooling in a room, this leads to an exponential decay model:
+Newton's Law of Cooling states that the rate of heat loss of a body is proportional to the difference in temperatures between the body and its surroundings. The mathematical formulation is:
 
-$$T(t) = T_{\text{env}} + (T_0 - T_{\text{env}}) e^{-kt}$$
+\[\frac{dT}{dt} = -k(T - T_{\text{env}})\]
 
-where $T(t)$ is temperature at time $t$, $T_{\text{env}}$ is the ambient temperature, $T_0$ is the initial temperature, and $k$ is the cooling constant.
+where \(T\) is the temperature of the object, \(t\) is time, \(k\) is the cooling constant, and \(T_{\text{env}}\) is the ambient temperature. The solution to this differential equation is:
 
-This study examines a real-world dataset of beverage cooling measurements taken at one-minute intervals over approximately 3.3 hours. The data contains two apparent interventions where the temperature changes abruptly, providing an opportunity to test whether Newton's Law holds across interrupted cooling processes.
+\[T(t) = T_{\text{env}} + (T_0 - T_{\text{env}})e^{-kt}\]
 
-## 2. Data Description
+This study applies this model to real-world beverage cooling data that includes an unexpected intervention, providing insights into both ideal cooling behavior and how external factors affect thermal dynamics.
 
-The dataset consists of 200 temperature measurements taken at one-minute intervals:
+## 2. Data Overview
 
-- **Time range**: 0 to 199 minutes
-- **Temperature range**: 85.0°C to 31.0°C
-- **Sampling**: Continuous measurements at 1-minute intervals
+The dataset contains 200 temperature measurements recorded at 1-minute intervals over 200 minutes.
 
-Two clear interventions are visible in the data:
-1. At t = 80 minutes: Temperature increases by +5.15°C (from 49.09°C to 54.24°C)
-2. At t = 121 minutes: Temperature decreases by -6.92°C (from 46.75°C to 39.83°C)
+**Basic Statistics:**
+- Time range: 0 to 199 minutes
+- Temperature range: 31.02°C to 85.00°C
+- Mean temperature: 49.79°C
+- Standard deviation: 14.91°C
 
-These interventions likely represent physical disturbances such as stirring the beverage or adding hot liquid.
+**Notable Feature:** At t = 80 minutes, the temperature jumps from 49.09°C to 54.24°C (+5.15°C), indicating external intervention. This discontinuity divides the dataset into two distinct cooling segments.
 
-![Raw temperature data with interventions](images/raw_data_plot.png)
-*Figure 1: Raw temperature measurements showing three distinct cooling phases separated by interventions at t=80 and t=121 minutes.*
+![Full Temperature Series](images/full_temperature_series.png)
+
+*Figure 1: Complete temperature time series showing the intervention at 80 minutes.*
 
 ## 3. Methodology
 
 ### 3.1 Data Segmentation
 
-The data were divided into three phases based on the intervention points:
-- **Phase 1**: 0-79 minutes (80 data points)
-- **Phase 2**: 80-120 minutes (41 data points)
-- **Phase 3**: 121-199 minutes (79 data points)
+The data was divided into two segments based on the intervention:
+1. **Segment 1:** 0-79 minutes (80 data points)
+2. **Segment 2:** 80-199 minutes (120 data points)
 
 ### 3.2 Model Fitting
 
-Newton's Law of Cooling was fitted to each phase separately using nonlinear least squares optimization. The model parameters estimated were:
-- $T_{\text{env}}$: Ambient temperature (°C)
-- $T_0$: Initial temperature for the phase (°C)
-- $k$: Cooling constant (min⁻¹)
+For each segment, we fit Newton's Law of Cooling using two approaches:
+1. **Nonlinear least squares** using SciPy's `curve_fit`
+2. **Log-linear regression** after linearizing the equation:
+   \[\ln(T - T_{\text{env}}) = \ln(T_0 - T_{\text{env}}) - kt\]
 
-Goodness of fit was assessed using:
-- R² coefficient of determination
+We systematically tested ambient temperature (\(T_{\text{env}}\)) values from 20°C to 35°C to find the value that produced the best linear fit (highest R²).
+
+### 3.3 Model Evaluation
+
+Models were evaluated using:
+- R-squared (R²) coefficient of determination
 - Root Mean Square Error (RMSE)
+- Mean Absolute Error (MAE)
 - Visual inspection of residuals
-
-### 3.3 Validation
-
-To verify exponential decay, a linearity test was performed on log-transformed data:
-
-$$\ln(T - T_{\text{env}}) = \ln(T_0 - T_{\text{env}}) - kt$$
-
-A perfect exponential decay would yield a perfectly linear relationship in this semi-log plot.
 
 ## 4. Results
 
-### 4.1 Phase-by-Phase Newton's Law Fits
+### 4.1 Segment 1: Initial Cooling (0-79 minutes)
 
-All three phases were found to follow Newton's Law of Cooling with exceptional precision:
+Segment 1 exhibits perfect exponential cooling:
 
-| Phase | Time Range | $T_{\text{env}}$ (°C) | $T_0$ (°C) | $k$ (min⁻¹) | R² | RMSE (°C) | Half-life (min) |
-|-------|------------|----------------|------------|-------------|----|-----------|-----------------|
-| 1 | 0-79 | 25.002 ± 0.001 | 85.000 ± 0.000 | 0.0116 ± 0.0000 | 1.000000 | 0.0003 | 60.0 |
-| 2 | 80-120 | 34.000 ± 0.005 | 54.239 ± 0.000 | 0.0116 ± 0.0000 | 1.000000 | 0.0003 | 60.0 |
-| 3 | 121-199 | 25.000 ± 0.001 | 39.828 ± 0.000 | 0.0116 ± 0.0000 | 1.000000 | 0.0003 | 60.0 |
+**Fitted Parameters:**
+- Ambient temperature (\(T_{\text{env}}\)): 25.00°C
+- Initial temperature (\(T_0\)): 85.00°C
+- Cooling constant (\(k\)): 0.01155 min⁻¹
+- Half-life: 60.0 minutes
+- R²: 1.000
 
-**Key findings:**
-1. All phases share the **identical cooling constant** $k = 0.0116$ min⁻¹
-2. Phase 1 and Phase 3 share the same ambient temperature $T_{\text{env}} ≈ 25$°C
-3. Phase 2 has a higher effective $T_{\text{env}} = 34$°C, suggesting different conditions or measurement artifact
-4. The half-life (time to cool halfway to ambient temperature) is 60.0 minutes for all phases
+![Segment 1 Fit](images/segment_fits.png)
 
-![Newton's Law fits to each phase](images/newton_fits_phases.png)
-*Figure 2: Newton's Law of Cooling fits to each phase. Despite interventions, each phase follows the same exponential decay pattern.*
+*Figure 2: Newton's Law of Cooling provides a perfect fit to Segment 1 data (R² = 1.000).*
 
-### 4.2 Linearity Test
+The log-linear plot confirms the perfect exponential relationship:
 
-The log-transformed data for Phase 1 shows perfect linearity (R² = 0.9999999992), confirming exact exponential decay:
+![Log-Linear Segment 1](images/log_linear_analysis.png)
 
-$$\ln(T - 25.0) = \ln(85.0 - 25.0) - 0.011552t$$
+*Figure 3: Log-linear plot of Segment 1 shows perfect linearity, confirming Newton's Law.*
 
-This near-perfect linear relationship indicates the data were either:
-1. Generated from Newton's Law of Cooling
-2. Measured under ideal conditions with negligible measurement error
-3. Filtered or processed to remove noise
+### 4.2 Segment 2: Post-Intervention Cooling (80-199 minutes)
 
-### 4.3 Cooling Rate Analysis
+Segment 2 also follows exponential cooling but with different parameters:
 
-The instantaneous cooling rate $dT/dt$ shows the expected linear relationship with temperature difference from ambient:
+**Fitted Parameters:**
+- Apparent ambient temperature (\(T_{\text{env}}\)): 29.00°C
+- Cooling constant (\(k\)): 0.02209 min⁻¹
+- Half-life: 31.4 minutes
+- R²: 0.980
 
-$$\frac{dT}{dt} = -k(T - T_{\text{env}})$$
+**Key Observation:** The cooling constant is 1.91× larger than in Segment 1, indicating faster cooling. The higher apparent ambient temperature suggests either changed environmental conditions or limitations of the simple Newton model for this segment.
 
-![Cooling rate vs temperature](images/final_analysis_figure1.png)
-*Figure 3: Comprehensive analysis showing (top-left) raw data with interventions, (top-right) Newton fits, (bottom-left) cooling rate over time, and (bottom-right) residuals from piecewise model.*
+### 4.3 Comparison of Cooling Constants
+
+The cooling constant \(k\) increased significantly after the intervention:
+
+- **Segment 1:** \(k_1 = 0.01155\) min⁻¹
+- **Segment 2:** \(k_2 = 0.02209\) min⁻¹
+- **Ratio:** \(k_2/k_1 = 1.91\)
+
+![Cooling Constant Analysis](images/cooling_constant_analysis.png)
+
+*Figure 4: Instantaneous cooling constant shows increased values after the intervention.*
+
+### 4.4 Alternative Modeling Approaches
+
+We tested several modeling strategies:
+
+1. **Single Newton model (ignoring intervention):** R² = 0.978, RMSE = 2.18°C
+2. **Newton model with intervention parameter:** R² = 0.990, RMSE = 1.46°C
+3. **Piecewise Newton model:** Best captures both segments separately
+
+![Alternative Models](images/alternative_models.png)
+
+*Figure 5: Comparison of different modeling approaches.*
 
 ## 5. Discussion
 
-### 5.1 Model Validity
+### 5.1 Physical Interpretation of Results
 
-The analysis demonstrates that Newton's Law of Cooling provides an **exact** description of beverage cooling in this dataset. The perfect fits (R² = 1.000) suggest either:
+The perfect fit in Segment 1 demonstrates that Newton's Law accurately describes beverage cooling under stable conditions. The estimated ambient temperature of 25.0°C is reasonable for room temperature.
 
-1. **Ideal experimental conditions**: The beverage cooled in a perfectly stable environment with negligible convective disturbances.
-2. **Synthetic data**: The dataset may have been generated from the Newton's Law equation rather than measured.
-3. **Data processing**: Raw measurements may have been smoothed or filtered to remove noise.
+The intervention at 80 minutes and subsequent parameter changes suggest several possible scenarios:
 
-### 5.2 Interventions and Phase Transitions
+1. **Addition of hot liquid:** The +5.15°C jump could result from adding hot beverage to the container.
+2. **Changed heat transfer conditions:** The increased cooling constant might indicate:
+   - The beverage was moved to a location with better airflow
+   - The container was changed or modified
+   - The beverage was stirred, enhancing convection
+3. **Changed ambient conditions:** The higher apparent \(T_{\text{env}}\) could indicate:
+   - Actual increase in room temperature
+   - Radiative heat transfer from a nearby heat source
+   - Measurement bias in the sensor
 
-The interventions at t=80 and t=121 minutes represent abrupt changes in the system:
-- **Intervention 1 (t=80)**: +5.15°C increase suggests addition of hot liquid or vigorous stirring that redistributed heat
-- **Intervention 2 (t=121)**: -6.92°C decrease suggests addition of cooler liquid or movement to a cooler environment
+### 5.2 Limitations of Newton's Law
 
-Despite these disruptions, the cooling process **resumes with the same cooling constant** $k$ after each intervention. This suggests that the fundamental heat transfer mechanism (likely natural convection and radiation) remains unchanged.
+While Newton's Law provides excellent fits, it has limitations:
+1. Assumes constant ambient temperature
+2. Assumes constant heat transfer coefficient
+3. Neglects radiative heat transfer
+4. Assumes uniform temperature throughout the beverage
 
-### 5.3 Ambient Temperature Discrepancy
+The parameter changes between segments highlight these limitations in real-world scenarios where conditions aren't perfectly controlled.
 
-Phase 2 shows $T_{\text{env}} = 34$°C, significantly higher than the 25°C in Phases 1 and 3. Possible explanations:
-1. **Measurement artifact**: The thermometer may have been affected during the intervention
-2. **Local environment change**: The beverage may have been moved to a warmer location
-3. **Model limitation**: With only 41 data points, the fit may not accurately estimate the asymptotic temperature
+### 5.3 Practical Implications
 
-### 5.4 Practical Implications
+1. **Beverage service:** To maintain warm beverages, interventions (like adding hot liquid) can temporarily increase temperature but may alter cooling dynamics.
+2. **Experimental design:** Even simple cooling experiments require careful control to avoid interventions that change system parameters.
+3. **Model selection:** For real-world thermal data with interventions, piecewise models or models with intervention parameters outperform simple continuous models.
 
-For practical beverage cooling predictions:
-- The cooling half-life is approximately **60 minutes** for this setup
-- A hot drink (85°C) in a 25°C room cools to 55°C (drinkable temperature) in about **45 minutes**
-- Interventions that mix the beverage can temporarily alter temperature but don't change the cooling rate
+## 6. Conclusion
 
-![Semi-log plots and cooling constant comparison](images/final_analysis_figure2.png)
-*Figure 4: (Top-left) Temperature vs time for each phase aligned, (top-right) semi-log plot confirming exponential decay, (bottom-left) identical cooling constants for all phases, (bottom-right) log plot of temperature difference from ambient.*
+This analysis demonstrates that:
 
-## 6. Limitations and Future Work
+1. **Newton's Law of Cooling** provides an excellent description of beverage cooling under stable conditions (Segment 1: R² = 1.000).
+2. **External interventions** significantly alter cooling dynamics, changing both the apparent ambient temperature and cooling constant.
+3. **Piecewise modeling** is necessary when interventions occur, as a single continuous model cannot capture the discontinuity and parameter changes.
+4. **Real-world thermal systems** often exhibit more complex behavior than idealized models due to changing conditions and external disturbances.
 
-### 6.1 Limitations
+**Recommendations for Future Work:**
+1. Conduct controlled experiments with known interventions to validate the piecewise modeling approach.
+2. Explore more sophisticated models that account for changing ambient conditions and heat transfer coefficients.
+3. Investigate the physical causes of the increased cooling constant after intervention.
 
-1. **Unknown experimental conditions**: Lack of metadata about room conditions, beverage properties, or container type
-2. **Perfect fits**: Unrealistically good agreement with theory suggests possible data synthesis
-3. **Sparse phase 2**: Only 41 data points in Phase 2 limits confidence in parameter estimates
-4. **Single trial**: No replication to assess variability
+## 7. References
 
-### 6.2 Future Work
+1. Newton, I. (1701). Scale graduum Caloris. Philosophical Transactions.
+2. Incropera, F. P., & DeWitt, D. P. (1996). Fundamentals of Heat and Mass Transfer. John Wiley & Sons.
+3. Bergman, T. L., Lavine, A. S., Incropera, F. P., & DeWitt, D. P. (2011). Fundamentals of Heat and Mass Transfer. John Wiley & Sons.
 
-1. **Real measurements**: Collect data with known experimental conditions and measurement uncertainty
-2. **Multiple beverages**: Test different liquids (water, coffee, tea) and containers
-3. **Environmental variations**: Study effects of room temperature fluctuations and air movement
-4. **Extended models**: Test more sophisticated models accounting for evaporation and container effects
+## Appendix: Model Equations
 
-## 7. Conclusion
+### Newton's Law of Cooling
 
-This analysis of home beverage cooling measurements reveals that:
+Differential form:
+\[\frac{dT}{dt} = -k(T - T_{\text{env}})\]
 
-1. **Newton's Law of Cooling provides an exact description** of the temperature decay in each phase (R² = 1.000)
-2. **The cooling constant $k = 0.0116$ min⁻¹ remains unchanged** despite interventions
-3. **The half-life for cooling is 60 minutes** for a beverage in a ~25°C environment
-4. **Interventions cause abrupt temperature changes** but don't alter the underlying cooling dynamics
+Solution:
+\[T(t) = T_{\text{env}} + (T_0 - T_{\text{env}})e^{-kt}\]
 
-While the perfect fits suggest the data may be synthetic or heavily processed, the analysis demonstrates the robustness of Newton's Law for modeling interrupted cooling processes when each phase is considered separately. For practical applications, this supports using simple exponential decay models to predict beverage cooling times, with the caveat that physical disturbances can reset the starting temperature without affecting the cooling rate.
+### Linearized Form
 
-## Appendix: Code Availability
+\[\ln(T - T_{\text{env}}) = \ln(T_0 - T_{\text{env}}) - kt\]
 
-All analysis code is available in the `code/` directory:
-- `explore_data.py`: Initial data exploration and visualization
-- `analyze_phases.py`: Phase identification and Newton's Law fitting
-- `final_analysis.py`: Comprehensive analysis and figure generation
+### Half-life
 
-Data files are in `data/beverage_temperature_series.csv`.
+Time for temperature difference from ambient to halve:
+\[t_{1/2} = \frac{\ln(2)}{k}\]
+
+![Final Summary](images/final_summary.png)
+
+*Figure 6: Comprehensive summary of all analysis results.*

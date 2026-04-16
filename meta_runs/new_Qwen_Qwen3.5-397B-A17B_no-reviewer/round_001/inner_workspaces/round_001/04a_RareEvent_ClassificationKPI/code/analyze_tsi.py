@@ -1,203 +1,177 @@
 """
-Temporal Stability Index (TSI) Analysis for 5000-frame trace.
-
-Following protocol_notes.md:
-- Split trajectory into 5 contiguous, non-overlapping blocks of 1000 frames each
-- Compute TSI on each block using lab_metrics.compute_tsi
-- Report arithmetic mean of block-level TSIs as the definitive full-trace TSI
+Temporal Stability Index (TSI) Analysis for Rare Event Classification KPI
 """
-
-import os
-import sys
-import numpy as np
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
-
-# Add utils to path for lab_metrics import
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from utils.lab_metrics import compute_tsi
-
-# Paths
-DATA_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'experiment_traces.csv')
-OUTPUTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'outputs')
-REPORT_IMAGES_DIR = os.path.join(os.path.dirname(__file__), '..', 'report', 'images')
+import os
 
 # Ensure output directories exist
-os.makedirs(OUTPUTS_DIR, exist_ok=True)
-os.makedirs(REPORT_IMAGES_DIR, exist_ok=True)
+os.makedirs('outputs', exist_ok=True)
+os.makedirs('report/images', exist_ok=True)
 
-def load_data():
-    """Load the experiment traces CSV."""
-    df = pd.read_csv(DATA_PATH)
-    return df['model_output'].values
+# Load data
+df = pd.read_csv('data/experiment_traces.csv')
+x = df['model_output'].values
 
-def compute_block_tsis(data, block_size=1000):
+print(f"Data shape: {df.shape}")
+print(f"Model output range: [{x.min():.4f}, {x.max():.4f}]")
+print(f"Number of samples: {len(x)}")
+
+# TSI Calculation
+def calculate_tsi(x):
     """
-    Split data into blocks and compute TSI for each.
+    Calculate Temporal Stability Index (TSI)
     
-    Returns:
-        block_tsIs: list of TSI values for each block
-        block_data: list of data arrays for each block
+    TSI = max(0, min(1, 1 - sigma_d / (sigma_x + epsilon)))
+    where:
+    - x is the 1-D series
+    - d is the first differences of x
+    - sigma_x and sigma_d are population standard deviations (ddof=0)
+    - epsilon = 1e-12
     """
-    n_frames = len(data)
-    n_blocks = n_frames // block_size
+    if len(x) < 2:
+        return 1.0
     
-    block_tsIs = []
-    block_data = []
+    # First differences
+    d = np.diff(x)
     
-    for i in range(n_blocks):
-        start_idx = i * block_size
-        end_idx = start_idx + block_size
-        block = data[start_idx:end_idx]
-        tsi = compute_tsi(block)
-        block_tsIs.append(tsi)
-        block_data.append(block)
-        print(f"Block {i+1} (frames {start_idx}-{end_idx-1}): TSI = {tsi:.6f}")
+    # Population standard deviations (ddof=0)
+    sigma_x = np.std(x, ddof=0)
+    sigma_d = np.std(d, ddof=0)
     
-    return block_tsIs, block_data
+    # Epsilon for numerical stability
+    eps = 1e-12
+    
+    # TSI calculation
+    tsi = 1 - sigma_d / (sigma_x + eps)
+    tsi = max(0, min(1, tsi))
+    
+    return tsi, sigma_x, sigma_d
 
-def create_visualizations(data, block_tsIs, block_data):
-    """Generate all required figures."""
-    
-    # Figure 1: Full trace overview
-    plt.figure(figsize=(12, 6))
-    plt.plot(range(len(data)), data, linewidth=0.5, color='steelblue')
-    plt.xlabel('Frame')
-    plt.ylabel('Model Output')
-    plt.title('Full 5000-Frame Temporal Trace')
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(os.path.join(REPORT_IMAGES_DIR, 'full_trace.png'), dpi=150)
-    plt.close()
-    
-    # Figure 2: Block-level TSI values
-    plt.figure(figsize=(10, 6))
-    block_indices = range(1, len(block_tsIs) + 1)
-    bars = plt.bar(block_indices, block_tsIs, color='coral', edgecolor='black', alpha=0.7)
-    plt.xlabel('Block Number')
-    plt.ylabel('Temporal Stability Index (TSI)')
-    plt.title('Block-Level TSI Values (1000 frames each)')
-    plt.xticks(block_indices)
-    plt.ylim(0, 1.05)
-    
-    # Add value labels on bars
-    for i, v in enumerate(block_tsIs):
-        plt.text(i + 1, v + 0.02, f'{v:.4f}', ha='center', fontsize=10)
-    
-    # Add mean line
-    mean_tsi = np.mean(block_tsIs)
-    plt.axhline(y=mean_tsi, color='red', linestyle='--', linewidth=2, label=f'Mean TSI = {mean_tsi:.4f}')
-    plt.legend()
-    plt.grid(True, alpha=0.3, axis='y')
-    plt.tight_layout()
-    plt.savefig(os.path.join(REPORT_IMAGES_DIR, 'block_tsi.png'), dpi=150)
-    plt.close()
-    
-    # Figure 3: Individual block traces with TSI annotations
-    fig, axes = plt.subplots(5, 1, figsize=(12, 10), sharex=True)
-    for i, ax in enumerate(axes):
-        start_frame = i * 1000
-        end_frame = start_frame + 1000
-        frames = range(start_frame, end_frame)
-        ax.plot(frames, block_data[i], linewidth=0.5, color='navy')
-        ax.set_ylabel('Output')
-        ax.set_title(f'Block {i+1} (Frames {start_frame}-{end_frame-1}): TSI = {block_tsIs[i]:.4f}')
-        ax.grid(True, alpha=0.3)
-        ax.axhline(y=0, color='gray', linestyle='-', linewidth=0.5, alpha=0.5)
-    axes[-1].set_xlabel('Frame')
-    plt.tight_layout()
-    plt.savefig(os.path.join(REPORT_IMAGES_DIR, 'block_traces.png'), dpi=150)
-    plt.close()
-    
-    # Figure 4: Statistical summary - distribution of model outputs
-    plt.figure(figsize=(10, 6))
-    plt.hist(data, bins=50, color='teal', edgecolor='black', alpha=0.7)
-    plt.xlabel('Model Output Value')
-    plt.ylabel('Frequency')
-    plt.title('Distribution of Model Outputs Across 5000 Frames')
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(os.path.join(REPORT_IMAGES_DIR, 'output_distribution.png'), dpi=150)
-    plt.close()
-    
-    # Figure 5: Rolling statistics to show stability patterns
-    window_size = 100
-    rolling_mean = pd.Series(data).rolling(window=window_size).mean()
-    rolling_std = pd.Series(data).rolling(window=window_size).std()
-    
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8), sharex=True)
-    
-    ax1.plot(range(len(data)), data, linewidth=0.3, alpha=0.5, label='Raw Data')
-    ax1.plot(range(len(data)), rolling_mean, color='red', linewidth=2, label=f'Rolling Mean (w={window_size})')
-    ax1.set_ylabel('Model Output')
-    ax1.set_title('Rolling Statistics Analysis')
-    ax1.legend(loc='upper right')
-    ax1.grid(True, alpha=0.3)
-    
-    ax2.plot(range(len(data)), rolling_std, color='green', linewidth=2)
-    ax2.set_ylabel('Rolling Std Dev')
-    ax2.set_xlabel('Frame')
-    ax2.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.savefig(os.path.join(REPORT_IMAGES_DIR, 'rolling_stats.png'), dpi=150)
-    plt.close()
+# Calculate TSI
+tsi_result = calculate_tsi(x)
+tsi_value = tsi_result[0]
+sigma_x = tsi_result[1]
+sigma_d = tsi_result[2]
 
-def save_results(block_tsIs, mean_tsi, data):
-    """Save intermediate results to outputs directory."""
-    results = {
-        'block_tsIs': block_tsIs,
-        'mean_tsi': mean_tsi,
-        'n_frames': len(data),
-        'n_blocks': len(block_tsIs),
-        'data_stats': {
-            'mean': float(np.mean(data)),
-            'std': float(np.std(data)),
-            'min': float(np.min(data)),
-            'max': float(np.max(data))
-        }
-    }
-    
-    # Save as text file for reference
-    with open(os.path.join(OUTPUTS_DIR, 'tsi_results.txt'), 'w') as f:
-        f.write("Temporal Stability Index (TSI) Analysis Results\n")
-        f.write("=" * 50 + "\n\n")
-        f.write(f"Total frames analyzed: {results['n_frames']}\n")
-        f.write(f"Number of blocks: {results['n_blocks']}\n")
-        f.write(f"Block size: 1000 frames\n\n")
-        f.write("Block-level TSI values:\n")
-        for i, tsi in enumerate(block_tsIs):
-            f.write(f"  Block {i+1}: {tsi:.6f}\n")
-        f.write(f"\nMean TSI (Full-trace metric): {mean_tsi:.6f}\n\n")
-        f.write("Data Statistics:\n")
-        for key, val in results['data_stats'].items():
-            f.write(f"  {key}: {val:.6f}\n")
-    
-    return results
+print(f"\n=== TSI Results ===")
+print(f"sigma_x (population std of x): {sigma_x:.6f}")
+print(f"sigma_d (population std of differences): {sigma_d:.6f}")
+print(f"TSI: {tsi_value:.6f}")
 
-def main():
-    print("Loading data...")
-    data = load_data()
-    print(f"Loaded {len(data)} frames")
-    
-    print("\nComputing block-level TSIs...")
-    block_tsIs, block_data = compute_block_tsis(data)
-    
-    mean_tsi = np.mean(block_tsIs)
-    print(f"\nMean TSI (Full-trace metric): {mean_tsi:.6f}")
-    
-    print("\nGenerating visualizations...")
-    create_visualizations(data, block_tsIs, block_data)
-    
-    print("\nSaving results...")
-    results = save_results(block_tsIs, mean_tsi, data)
-    
-    print("\nAnalysis complete!")
-    print(f"Figures saved to: {REPORT_IMAGES_DIR}")
-    print(f"Results saved to: {OUTPUTS_DIR}")
-    
-    return results
+# Save intermediate results
+results = {
+    'n_samples': len(x),
+    'sigma_x': sigma_x,
+    'sigma_d': sigma_d,
+    'tsi': tsi_value,
+    'x_min': float(x.min()),
+    'x_max': float(x.max()),
+    'x_mean': float(x.mean()),
+    'x_std': float(x.std(ddof=0))
+}
 
-if __name__ == '__main__':
-    main()
+# Save results to file
+with open('outputs/tsi_results.txt', 'w') as f:
+    for key, value in results.items():
+        f.write(f"{key}: {value}\n")
+
+print(f"\nResults saved to outputs/tsi_results.txt")
+
+# Generate plots
+plt.style.use('seaborn-v0_8-whitegrid')
+
+# Figure 1: Time series plot of model output
+fig1, ax1 = plt.subplots(figsize=(12, 4))
+ax1.plot(df['frame'], x, linewidth=0.5, color='steelblue')
+ax1.set_xlabel('Frame', fontsize=12)
+ax1.set_ylabel('Model Output', fontsize=12)
+ax1.set_title('Model Output Time Series', fontsize=14)
+ax1.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('report/images/timeseries.png', dpi=150)
+plt.close()
+print("Saved: report/images/timeseries.png")
+
+# Figure 2: Distribution of model output
+fig2, ax2 = plt.subplots(figsize=(8, 5))
+ax2.hist(x, bins=50, color='steelblue', edgecolor='black', alpha=0.7)
+ax2.set_xlabel('Model Output', fontsize=12)
+ax2.set_ylabel('Frequency', fontsize=12)
+ax2.set_title('Distribution of Model Output', fontsize=14)
+ax2.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('report/images/distribution.png', dpi=150)
+plt.close()
+print("Saved: report/images/distribution.png")
+
+# Figure 3: First differences
+fig3, ax3 = plt.subplots(figsize=(12, 4))
+d = np.diff(x)
+ax3.plot(df['frame'].values[:-1], d, linewidth=0.5, color='coral')
+ax3.set_xlabel('Frame', fontsize=12)
+ax3.set_ylabel('First Difference', fontsize=12)
+ax3.set_title('First Differences of Model Output', fontsize=14)
+ax3.axhline(y=0, color='black', linestyle='--', linewidth=0.5)
+ax3.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('report/images/differences.png', dpi=150)
+plt.close()
+print("Saved: report/images/differences.png")
+
+# Figure 4: Rolling TSI analysis (local stability)
+def rolling_tsi(x, window=100):
+    """Calculate rolling TSI over windows"""
+    rolling_tsi_values = []
+    frames = []
+    for i in range(0, len(x) - window + 1, window):
+        window_data = x[i:i+window]
+        tsi_val, _, _ = calculate_tsi(window_data)
+        rolling_tsi_values.append(tsi_val)
+        frames.append(i + window // 2)
+    return frames, rolling_tsi_values
+
+frames_rolling, tsi_rolling = rolling_tsi(x, window=100)
+
+fig4, ax4 = plt.subplots(figsize=(12, 4))
+ax4.plot(frames_rolling, tsi_rolling, linewidth=2, color='green', marker='o')
+ax4.set_xlabel('Frame (center of window)', fontsize=12)
+ax4.set_ylabel('Rolling TSI (window=100)', fontsize=12)
+ax4.set_title('Local Temporal Stability Index Over Time', fontsize=14)
+ax4.set_ylim(0, 1.05)
+ax4.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('report/images/rolling_tsi.png', dpi=150)
+plt.close()
+print("Saved: report/images/rolling_tsi.png")
+
+# Figure 5: TSI interpretation visualization
+fig5, ax5 = plt.subplots(figsize=(10, 6))
+
+# Create a colorbar-like visualization for TSI interpretation
+categories = ['Highly Stable (TSI > 0.8)', 'Moderately Stable (0.5 < TSI <= 0.8)', 
+              'Low Stability (0.2 < TSI <= 0.5)', 'Unstable (TSI <= 0.2)']
+colors = ['#2ecc71', '#f1c40f', '#e67e22', '#e74c3c']
+positions = [0.9, 0.65, 0.35, 0.1]
+
+for cat, color, pos in zip(categories, colors, positions):
+    ax5.barh(0, 0.2, left=pos-0.1, color=color, height=0.15, label=cat)
+
+ax5.set_xlim(0, 1)
+ax5.set_ylim(-0.5, 0.5)
+ax5.set_xlabel('TSI Value', fontsize=12)
+ax5.set_title('TSI Interpretation Scale', fontsize=14)
+ax5.set_yticks([])
+ax5.grid(True, alpha=0.3, axis='x')
+
+# Mark the actual TSI value
+ax5.axvline(x=tsi_value, color='black', linestyle='--', linewidth=2, label=f'Actual TSI = {tsi_value:.4f}')
+ax5.legend(loc='upper right', fontsize=10)
+plt.tight_layout()
+plt.savefig('report/images/tsi_scale.png', dpi=150)
+plt.close()
+print("Saved: report/images/tsi_scale.png")
+
+print("\n=== Analysis Complete ===")
+print(f"Final TSI: {tsi_value:.6f}")

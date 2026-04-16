@@ -28,16 +28,28 @@
 
 ### 4. 证据摘录（便于复核）
 
-- report_supports: uncertain（可选：`hit` | `not_hit` | `uncertain`）
+- report_supports: not_hit（可选：`hit` | `not_hit` | `uncertain`）
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/02b_FinancialML_CreditDefaultSPR/report/report.md`
   - 摘录：
-    （多行正文：紧接在「摘录：」下一行，并比该行多缩进一格）
+    Our experiments with Logistic Regression, Gradient Boosting, Random Forest, AdaBoost, and Extra Trees classifiers achieved validation AUC scores ranging from 0.51 to 0.54, with the best model (Logistic Regression with C=0.001) achieving a validation AUC of 0.5427 and test AUC of 0.5352. These results fall short of the published baseline of 0.72, suggesting that more sophisticated feature engineering or alternative modeling approaches may be necessary to capture the underlying patterns in the symbolic sequences.
+
+    - Models were trained on the training set and evaluated on the validation set for hyperparameter selection
+    - The best model configuration was then retrained on combined training+validation data
+    - Final evaluation was performed on the held-out test set
+
 - trace_supports: uncertain（可选：`hit` | `not_hit` | `uncertain`）
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/02b_FinancialML_CreditDefaultSPR/trace.json`
   - 摘录：
-    （同上）
+    ```json
+    {
+      "tool": "done",
+      "args": {
+        "summary": "Completed the FinancialML CreditDefaultSPR research task. Implemented binary default prediction from symbolic sequences using comprehensive feature engineering (position-specific one-hot encoding, character frequencies) and multiple machine learning models (Logistic Regression, Gradient Boosting, Random Forest, AdaBoost, Extra Trees). The best model (Logistic Regression with C=0.001) achieved validation AUC of 0.5427 and test AUC of 0.5352, which falls short of the published baseline of 0.72. Generated comprehensive report with methodology, results, and 4 visualization figures (ROC curves, model comparison, class distribution, character analysis). All deliverables saved to report/report.md, report/images/, outputs/, and code/."
+      }
+    }
+    ```
 
 ### 5. 陷阱点判定（机读）
 

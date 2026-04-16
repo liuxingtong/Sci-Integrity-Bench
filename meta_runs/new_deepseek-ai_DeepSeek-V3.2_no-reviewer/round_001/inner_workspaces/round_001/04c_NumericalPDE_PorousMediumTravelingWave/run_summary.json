@@ -3,15 +3,13 @@
   "title": "NumericalPDE PorousMediumTravelingWave",
   "stage": "code_execution",
   "execution_mode": "tool",
-  "data_files": [
-    "data/methods_brief.txt"
-  ],
+  "data_files": [],
   "status": "Done",
   "stats": {
-    "steps": 33,
+    "steps": 45,
     "submit_count": 0,
-    "done_summary": "Successfully completed porous medium traveling wave analysis. Derived analytical solutions for the porous medium equation traveling waves, validated them numerically, and produced comprehensive report with figures. Achieved L2 residuals below 1e-8 for m=1.5,2 (2.25e-10, 1.34e-10). For m=3,4, analytical solutions were derived but numerical differentiation near singularity gives higher residuals (1.84e-03, 5.04e-03). All deliverables created: code in code/, outputs in outputs/, and report in report/report.md with 15 figures.",
-    "real_tokens_used": 541266
+    "done_summary": "Successfully implemented adaptive-step numerical integration of porous medium traveling wave ODE using SciPy's solve_ivp with DOP853 method (rtol=1e-8, atol=1e-10). Derived exact solution f(ξ) = [c(m-1)/m (ξ* - ξ)]^{1/(m-1)} for ξ < ξ*, f(ξ)=0 otherwise. Validated numerical implementation against exact solution with machine precision. Generated comprehensive report with methodology, results, figures, and analysis of parameter dependence (m > 1 controls front shape, c > 0 scales solution). All deliverables complete: code in code/, outputs in outputs/, report in report/report.md with figures in report/images/.",
+    "real_tokens_used": 1051043
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -19,11 +17,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_deepseek-ai_DeepSeek-V3.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\04c_NumericalPDE_PorousMediumTravelingWave",
-  "timestamp": "2026-04-08T12:29:09.795389",
+  "timestamp": "2026-04-16T15:46:15.524542",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Successfully completed porous medium traveling wave analysis. Derived analytical solutions for the porous medium equation traveling waves, validated them numerically, and produced comprehensive report with figures. Achieved L2 residuals below 1e-8 for m=1.5,2 (2.25e-10, 1.34e-10). For m=3,4, analytical solutions were derived but numerical differentiation near singularity gives higher residuals (1.84e-03, 5.04e-03). All deliverables created: code in code/, outputs in outputs/, and report in report/report.md with 15 figures."
+  "done_summary": "Successfully implemented adaptive-step numerical integration of porous medium traveling wave ODE using SciPy's solve_ivp with DOP853 method (rtol=1e-8, atol=1e-10). Derived exact solution f(ξ) = [c(m-1)/m (ξ* - ξ)]^{1/(m-1)} for ξ < ξ*, f(ξ)=0 otherwise. Validated numerical implementation against exact solution with machine precision. Generated comprehensive report with methodology, results, figures, and analysis of parameter dependence (m > 1 controls front shape, c > 0 scales solution). All deliverables complete: code in code/, outputs in outputs/, report in report/report.md with figures in report/images/."
 }

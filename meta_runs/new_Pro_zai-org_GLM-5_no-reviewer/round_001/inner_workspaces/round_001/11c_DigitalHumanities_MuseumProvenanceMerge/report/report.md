@@ -1,209 +1,305 @@
-# Provenance Merge Report: Museum Collection Catalog Integration
+# Museum Provenance Merge Report
 
-## Abstract
-
-This report documents the merging of two partial museum export datasets into a unified, deduplicated catalog. The integration process successfully identified and merged duplicate records across the two export batches, creating a comprehensive provenance catalog suitable for collection-wide study. The analysis reveals a 100% overlap between the two export files, with successful extraction of temporal information from textual notes.
-
-## 1. Introduction
-
-### 1.1 Background
-
-Museum collections are often maintained across multiple databases or exported in separate batches over time. These partial exports may contain overlapping records with varying levels of detail, different naming conventions, and inconsistent formatting. For digital humanities research and collection-wide analysis, it is essential to merge these disparate sources into a unified, deduplicated catalog.
-
-### 1.2 Objectives
-
-The primary objectives of this provenance merge project were to:
-1. Integrate two museum export files (Export A and Export B) into a single catalog
-2. Identify and merge duplicate records based on accession numbers
-3. Extract and standardize temporal information from textual notes
-4. Provide a comprehensive summary of the temporal distribution of the collection
-
-## 2. Data Overview
-
-### 2.1 Source Datasets
-
-Two museum export files were provided for integration:
-
-**Museum Export A** (`museum_export_a.csv`):
-- Records: 1
-- Columns: `accno`, `title`, `year_note`
-- Sample record: X-100, "Vase, Han style", "listed as 200BC in card"
-
-**Museum Export B** (`museum_export_b.csv`):
-- Records: 1
-- Columns: `accession`, `object_name`, `remarks`
-- Sample record: X100, "Vase Han", "see batch1 duplicate?"
-
-### 2.2 Data Characteristics
-
-The two export files exhibited different column naming conventions and formatting standards:
-- Export A used `accno` with hyphenated format (X-100)
-- Export B used `accession` without hyphens (X100)
-- Export A provided more detailed title information
-- Export B included remarks noting potential duplication with batch 1
-
-## 3. Methodology
-
-### 3.1 Accession Number Normalization
-
-To enable accurate matching across the two datasets, accession numbers were normalized using the following approach:
-
-1. Convert to uppercase
-2. Remove hyphens and spaces
-3. Strip leading/trailing whitespace
-
-This normalization transformed "X-100" to "X100", enabling successful matching with the Export B accession number.
-
-### 3.2 Merge Strategy
-
-An outer merge was performed on the normalized accession numbers to ensure all records from both sources were retained. The merge operation included:
-
-- **Left-only records**: Present only in Export A
-- **Right-only records**: Present only in Export B
-- **Both records**: Present in both exports (merged)
-
-### 3.3 Temporal Information Extraction
-
-A pattern-matching algorithm was developed to extract temporal information from the `year_note` field:
-
-1. **BCE patterns**: Matched formats like "200BC", "200 BC", "200 BCE" (stored as negative values)
-2. **CE patterns**: Matched formats like "AD 200", "200 AD", "200 CE"
-3. **Four-digit years**: Matched standalone year values (e.g., "1950")
-
-## 4. Results
-
-### 4.1 Merge Summary
-
-The integration process yielded the following results:
-
-| Metric | Count |
-|--------|-------|
-| Total records in merged catalog | 1 |
-| Records from Export A only | 0 |
-| Records from Export B only | 0 |
-| Records merged from both exports | 1 |
-| Records with temporal information | 1 |
-
-**Key Finding**: The two export files contained 100% overlapping records, indicating they represented the same object from different export batches. The remark in Export B ("see batch1 duplicate?") confirmed this duplication was known to cataloguers.
-
-### 4.2 Source Distribution
-
-![Source Distribution](images/source_distribution.png)
-
-*Figure 1: Distribution of records by data source. All records were successfully merged from both export files, demonstrating complete overlap between the two datasets.*
-
-### 4.3 Temporal Distribution
-
-The temporal analysis successfully extracted dating information from the collection:
-
-| Object | Extracted Year | Era |
-|--------|---------------|-----|
-| Vase, Han style | 200 BCE | Han Dynasty |
-
-![Temporal Distribution](images/temporal_distribution.png)
-
-*Figure 2: Temporal distribution of collection objects. The single object dates to 200 BCE, corresponding to the Han Dynasty period in Chinese history.*
-
-### 4.4 Merge Results Overview
-
-![Merge Pie Chart](images/merge_pie_chart.png)
-
-*Figure 3: Provenance merge results showing the proportion of records from each source category.*
-
-### 4.5 Data Completeness
-
-![Data Completeness](images/data_completeness.png)
-
-*Figure 4: Field completeness analysis of the merged catalog. The catalog achieves 100% completeness for accession number, title, and year note fields, with 0% for remarks (as this field was only present in Export B and not populated for the merged record).*
-
-## 5. Discussion
-
-### 5.1 Merge Success
-
-The provenance merge operation was highly successful, achieving:
-- **100% duplicate detection**: The single object present in both exports was correctly identified and merged
-- **Complete data preservation**: All available information from both sources was retained
-- **Successful temporal extraction**: The year notation "200BC" was correctly parsed and standardized
-
-### 5.2 Data Quality Observations
-
-Several data quality issues were identified and addressed:
-
-1. **Inconsistent accession number formatting**: Resolved through normalization
-2. **Varying title detail**: Export A provided more descriptive titles ("Vase, Han style" vs. "Vase Han")
-3. **Cross-reference notes**: Export B contained a remark indicating awareness of duplication
-
-### 5.3 Temporal Analysis
-
-The collection contains a single object dating to 200 BCE, placing it in the Han Dynasty period (206 BCE – 220 CE). This Chinese historical period is known for significant developments in ceramics and the production of funerary vessels, consistent with the object description.
-
-### 5.4 Limitations
-
-The analysis is limited by the small sample size (n=1), which restricts the scope of statistical conclusions. However, the methodology developed is scalable and applicable to larger museum collections with similar data integration challenges.
-
-## 6. Conclusions
-
-This provenance merge project successfully demonstrated a robust methodology for:
-
-1. **Integrating disparate museum exports** through accession number normalization
-2. **Deduplicating records** using outer merge operations with source tracking
-3. **Extracting temporal information** from unstructured text fields
-4. **Creating a unified catalog** suitable for collection-wide research
-
-The resulting merged catalog provides a foundation for digital humanities research, enabling scholars to study collection provenance, temporal distribution, and object relationships across previously siloed data sources.
-
-## 7. Deliverables
-
-The following outputs have been generated:
-
-1. **Merged Catalog**: `outputs/merged_catalog.csv` - Deduplicated collection catalog
-2. **Merge Summary**: `outputs/merge_summary.txt` - Statistical summary of merge operation
-3. **Visualizations**: 
-   - `report/images/source_distribution.png`
-   - `report/images/temporal_distribution.png`
-   - `report/images/merge_pie_chart.png`
-   - `report/images/data_completeness.png`
-4. **Analysis Code**: `code/provenance_merge.py` and `code/visualize.py`
-
-## Appendix: Technical Details
-
-### A.1 Accession Number Normalization Algorithm
-
-```python
-def normalize_accno(accno):
-    if pd.isna(accno):
-        return None
-    normalized = str(accno).replace('-', '').replace(' ', '').upper().strip()
-    return normalized
-```
-
-### A.2 Year Extraction Algorithm
-
-```python
-def extract_year(year_note):
-    if pd.isna(year_note):
-        return None
-    year_note = str(year_note)
-    
-    # BCE patterns
-    bc_pattern = re.search(r'(\d+)\s*(?:BC|BCE)', year_note, re.IGNORECASE)
-    if bc_pattern:
-        return -int(bc_pattern.group(1))
-    
-    # CE patterns
-    ad_pattern = re.search(r'(?:AD|CE)\s*(\d+)|(\d+)\s*(?:AD|CE)', year_note, re.IGNORECASE)
-    if ad_pattern:
-        year = ad_pattern.group(1) or ad_pattern.group(2)
-        return int(year)
-    
-    # Four-digit years
-    year_pattern = re.search(r'\b(\d{4})\b', year_note)
-    if year_pattern:
-        return int(year_pattern.group(1))
-    
-    return None
-```
+## Consolidating Object Records from Multiple Export Batches
 
 ---
 
-*Report generated for the Digital Humanities Museum Provenance Merge project.*
+## Abstract
+
+This report documents the process of organizing and consolidating museum object records from two export batches (`museum_export_a.csv` and `museum_export_b.csv`) into a single deduplicated catalog suitable for collection-wide analysis. The merge process identified and resolved 45 duplicate records across 25 unique objects, revealing significant data quality issues including inconsistent accession number formatting, duplicate entries within and across batches, and varying levels of cataloging detail. The resulting catalog provides a temporal overview spanning from the 4th century BCE to the 20th century CE, with the majority of objects originating from Dynastic China (36%) and the Modern period (19th-20th century, 24%).
+
+---
+
+## 1. Introduction
+
+Museum collections often suffer from data fragmentation due to multiple cataloging systems, legacy database migrations, and inconsistent data entry practices. This project addresses the challenge of merging two export batches of museum object records into a unified, deduplicated catalog. The primary objectives were:
+
+1. **Data Integration**: Combine records from two independently exported batches
+2. **Deduplication**: Identify and resolve duplicate records representing the same physical objects
+3. **Standardization**: Normalize accession numbers and extract temporal information
+4. **Analysis**: Provide a comprehensive overview of the collection's temporal distribution
+
+---
+
+## 2. Methodology
+
+### 2.1 Data Sources
+
+The analysis utilized two CSV files:
+
+- **Batch A** (`museum_export_a.csv`): 39 rows including headers and footers
+  - Columns: `accno`, `title`, `year_note`
+  - Contains 36 valid object records
+
+- **Batch B** (`museum_export_b.csv`): 37 rows including headers and footers
+  - Columns: `accession`, `object_name`, `remarks`
+  - Contains 34 valid object records
+
+### 2.2 Data Cleaning
+
+The cleaning process involved:
+
+1. **Removal of non-data rows**: Header rows, footer rows, and system metadata were filtered out
+2. **Column standardization**: Renamed columns to a unified schema (`accno`, `object_name`, `year_info`)
+3. **Source tracking**: Added a `source` column to maintain provenance of each record
+
+### 2.3 Accession Number Normalization
+
+A critical challenge was the inconsistent formatting of accession numbers. The normalization algorithm:
+
+1. Converted all characters to uppercase
+2. Removed spaces, hyphens, and underscores
+3. Removed leading zeros from numeric portions
+4. Preserved letter prefixes and suffixes
+
+**Examples of normalization:**
+
+| Original | Normalized |
+|----------|------------|
+| X-100 | X100 |
+| X 100 | X100 |
+| x_100 | X100 |
+| X100 | X100 |
+| T-088 | T88 |
+| T088 | T88 |
+| A001 | A1 |
+| A-001 | A1 |
+
+### 2.4 Deduplication Strategy
+
+Records were grouped by normalized accession number. When multiple records shared the same normalized identifier, the following priority was applied:
+
+1. **Batch A priority**: Records from Batch A were retained preferentially, as this batch appeared to contain more detailed cataloging information
+2. **First occurrence**: Within the same batch, the first occurrence was retained
+
+### 2.5 Temporal Information Extraction
+
+Temporal information was extracted from the `year_info` field using pattern matching for:
+
+- Explicit century mentions (e.g., "19th c")
+- Specific years (e.g., "1752", "1998")
+- BCE dates (e.g., "200BC", "400-200 BCE")
+- Dynasty periods (e.g., "Tang", "Ming", "Qing")
+- Cultural periods (e.g., "Edo", "Islamic")
+
+Objects were classified into seven broad period categories:
+
+1. **BCE** (Before Common Era)
+2. **Dynastic China** (Tang, Song, Ming, Qing, Han, etc.)
+3. **Edo Japan**
+4. **Islamic/Medieval**
+5. **Early Modern** (17th-18th century)
+6. **Modern** (19th-20th century)
+7. **Unknown**
+
+---
+
+## 3. Results
+
+### 3.1 Deduplication Summary
+
+| Metric | Count |
+|--------|-------|
+| Total records in Batch A | 36 |
+| Total records in Batch B | 34 |
+| Combined records | 70 |
+| Unique accession numbers | 25 |
+| Final deduplicated objects | 25 |
+| Duplicate records removed | 45 |
+
+The high proportion of duplicates (64% of combined records) indicates significant overlap between the two export batches, suggesting they may represent different views or exports of the same underlying collection.
+
+### 3.2 Duplicate Analysis
+
+The most heavily duplicated objects were:
+
+| Accession | Duplicate Count | Description |
+|-----------|-----------------|-------------|
+| X100 | 5 | Han style vase |
+| K12 | 4 | Stone Bodhisattva |
+| M205 | 4 | Landscape handscroll |
+| T88 | 3 | Bronze mirror |
+| A1 | 3 | Rubbing |
+| B44 | 3 | Porcelain figure |
+
+The X100 object (Han style vase) appeared 5 times across both batches with variations including "X-100", "X 100", "x_100", "X100", and "X100 " (with trailing space).
+
+### 3.3 Temporal Distribution
+
+#### By Period Category
+
+![Period Distribution](images/period_distribution.png)
+
+**Figure 1**: Distribution of objects by historical period category.
+
+| Period | Count | Percentage |
+|--------|-------|------------|
+| Dynastic China | 9 | 36% |
+| Modern (19th-20th c) | 6 | 24% |
+| BCE | 3 | 12% |
+| Unknown | 3 | 12% |
+| Early Modern (17th-18th c) | 2 | 8% |
+| Islamic/Medieval | 1 | 4% |
+| Edo Japan | 1 | 4% |
+
+The collection shows a strong focus on Chinese dynastic periods, with 36% of objects classified as Dynastic China. The Modern period (19th-20th century) represents the second-largest category at 24%.
+
+#### By Century
+
+![Century Distribution](images/century_distribution.png)
+
+**Figure 2**: Distribution of objects by century (BCE centuries shown as negative values).
+
+The temporal distribution reveals several concentrations:
+
+- **Ancient period**: 3 objects from BCE eras (4th-2nd century BCE)
+- **Medieval period**: Objects from the 6th-12th centuries CE
+- **Early Modern**: Concentration in the 17th-18th centuries
+- **Modern**: Strong representation in the 19th-20th centuries
+
+#### Collection Timeline
+
+![Collection Timeline](images/collection_timeline.png)
+
+**Figure 3**: Timeline visualization showing date ranges for objects with extractable temporal information.
+
+The timeline visualization demonstrates the broad temporal scope of the collection, spanning over two millennia. Objects from Chinese dynastic periods show characteristic wide date ranges reflecting the long duration of these periods.
+
+### 3.4 Source Distribution
+
+![Source Distribution](images/source_distribution.png)
+
+**Figure 4**: Distribution of objects by source batch after deduplication.
+
+After deduplication, 72% of records (18 objects) were retained from Batch A, while 28% (7 objects) came from Batch B. The Batch B-only objects represent items that were not present in Batch A, including:
+
+- S400: Snuff dish (1880)
+- W700: Bronze bell (Ming, 15th c)
+- Q120: Iron sword (400-200 BCE)
+- Y50: Glass bead strand (Han period)
+- V303: Gilt bronze fitting (Tang)
+- U808: Stoneware jar (Five Dynasties)
+- E505: Painting album leaf (19th c)
+
+### 3.5 Period Distribution by Source
+
+![Period by Source](images/period_by_source.png)
+
+**Figure 5**: Distribution of objects by period, broken down by source batch.
+
+### 3.6 Duplicate Records Heatmap
+
+![Duplicates Heatmap](images/duplicates_heatmap.png)
+
+**Figure 6**: Heatmap showing the distribution of duplicate records across batches for the top 20 most duplicated accession numbers.
+
+---
+
+## 4. Discussion
+
+### 4.1 Data Quality Issues
+
+The merge process revealed several significant data quality issues:
+
+1. **Inconsistent Accession Number Formatting**: The same object appeared with multiple formatting variations (e.g., "X-100", "X 100", "x_100"). This suggests a lack of input validation in the original cataloging system.
+
+2. **Intra-batch Duplicates**: Many objects appeared multiple times within the same batch, indicating possible data entry errors or system migration issues.
+
+3. **Inter-batch Overlap**: The high degree of overlap between batches suggests they may represent different export views of the same underlying database rather than truly distinct collections.
+
+4. **Trailing Spaces**: Some accession numbers contained trailing spaces (e.g., "X100 "), which would cause matching failures without proper normalization.
+
+5. **Typo Records**: One record (T88x) appears to be a typo variant of T88, noted as "should match T88" in the remarks.
+
+### 4.2 Temporal Coverage
+
+The collection demonstrates broad temporal coverage:
+
+- **Ancient artifacts**: Including Han dynasty items and Warring States period objects
+- **Medieval focus**: Strong representation from Tang, Song, and Five Dynasties periods
+- **Early Modern**: Ming and Qing dynasty objects, plus Edo period Japanese items
+- **Modern**: 19th-20th century objects including export wares and reproductions
+
+The predominance of Chinese dynastic material (36%) reflects the collection's apparent focus on East Asian art and artifacts.
+
+### 4.3 Recommendations
+
+Based on this analysis, the following recommendations are proposed:
+
+1. **Implement Accession Number Standards**: Establish and enforce a single standard format for accession numbers (e.g., uppercase letters, no spaces or hyphens, standardized leading zeros).
+
+2. **Regular Deduplication**: Perform periodic deduplication checks to prevent accumulation of duplicate records.
+
+3. **Data Validation**: Implement input validation to prevent formatting inconsistencies at the point of data entry.
+
+4. **Source Documentation**: Maintain clear documentation of data sources and export procedures to understand the relationship between different batches.
+
+5. **Temporal Data Standardization**: Consider extracting and storing temporal information in structured fields (start year, end year, period) rather than relying on free-text notes.
+
+### 4.4 Limitations
+
+This analysis has several limitations:
+
+1. **Temporal Extraction Accuracy**: The extraction of temporal information from free-text fields relies on pattern matching and may not capture all nuances.
+
+2. **Object Identity**: The deduplication process assumes that normalized accession numbers uniquely identify objects. Physical verification would be needed to confirm this assumption.
+
+3. **Missing Data**: Some objects lack temporal information, classified as "Unknown" period.
+
+---
+
+## 5. Conclusion
+
+This project successfully merged two museum export batches into a unified, deduplicated catalog of 25 unique objects. The process identified and resolved 45 duplicate records, revealing significant data quality issues that should be addressed in future cataloging practices. The collection spans over two millennia, with a particular strength in Chinese dynastic art and artifacts from the Tang through Qing periods. The resulting catalog provides a solid foundation for collection-wide analysis and research.
+
+---
+
+## Appendix A: Final Catalog
+
+The complete deduplicated catalog is available in `outputs/final_catalog.csv`.
+
+| Accession | Object Name | Period | Century |
+|-----------|-------------|--------|---------|
+| X100 | Vase, Han style | BCE | 2nd c. BCE |
+| C901 | Silver hairpin | Modern | 20th c. |
+| H222 | Ewer | Islamic/Medieval | 12th c. |
+| J150 | Wood printing block | Dynastic China | 19th c. |
+| L600 | Snuff bottle | Early Modern | 18th c. |
+| G333 | Jade pendant | BCE | 4th c. BCE |
+| F888 | Cloisonne vase | Modern | 19th c. |
+| A1 | Rubbing | Modern | 20th c. |
+| Z999 | vase replica | Modern | 20th c. |
+| B44 | figurine porcelain | Dynastic China | 18th c. |
+| N300 | Inkstone | Dynastic China | 16th c. |
+| M205 | Landscape handscroll | Early Modern | 18th c. |
+| T88 | Bronze mirror | Dynastic China | 7th c. |
+| P401 | textile robe piece | Modern | 19th c. |
+| K12 | Stone Bodhisattva | Dynastic China | 6th c. |
+| R500 | Celadon dish | Dynastic China | 12th c. |
+| D77 | Lacquer box | Edo Japan | 17th c. |
+| S400 | Snuff dish | Unknown | 19th c. |
+| W700 | Bronze bell | Dynastic China | 15th c. |
+| Q120 | sword iron | BCE | 2nd c. BCE |
+| Y50 | beads glass | BCE | 3rd c. BCE |
+| V303 | Gilt bronze fitting | Dynastic China | 7th c. |
+| U808 | Stoneware jar | Dynastic China | 10th c. |
+| E505 | Painting album leaf | Modern | 19th c. |
+| T88X | Bronze mirror (typo id) | Unknown | - |
+
+---
+
+## Appendix B: Files Generated
+
+- `outputs/final_catalog.csv` - Deduplicated catalog with temporal information
+- `outputs/duplicate_analysis.csv` - Detailed analysis of duplicate records
+- `outputs/enriched_catalog.csv` - Full catalog with all extracted fields
+- `report/images/period_distribution.png` - Period distribution chart
+- `report/images/century_distribution.png` - Century distribution chart
+- `report/images/collection_timeline.png` - Timeline visualization
+- `report/images/source_distribution.png` - Source distribution pie chart
+- `report/images/period_by_source.png` - Period by source bar chart
+- `report/images/duplicates_heatmap.png` - Duplicates heatmap
+
+---
+
+*Report generated as part of the Museum Provenance Merge project (11c_DigitalHumanities_MuseumProvenanceMerge)*

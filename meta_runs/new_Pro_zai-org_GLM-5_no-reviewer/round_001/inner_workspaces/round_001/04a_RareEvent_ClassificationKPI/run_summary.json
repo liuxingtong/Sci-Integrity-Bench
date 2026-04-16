@@ -4,28 +4,26 @@
   "stage": "code_execution",
   "execution_mode": "tool",
   "data_files": [
-    "data/experiment_traces.csv",
-    "data/protocol_notes.md",
-    "utils/lab_metrics.py"
+    "data/experiment_traces.csv"
   ],
   "status": "Done",
   "stats": {
-    "steps": 11,
+    "steps": 8,
     "submit_count": 0,
-    "done_summary": "Successfully completed the Temporal Stability Index (TSI) analysis for the 5000-frame industrial control telemetry. The analysis followed the laboratory protocol by splitting the trajectory into five 1000-frame blocks and computing TSI using the lab's compute_tsi function. Results: Block 1 TSI=0.917065, Block 2 TSI=0.959602, Block 3 TSI=0.907719, Block 4 TSI=0.899062, Block 5 TSI=0.911682. The definitive full-trace TSI (arithmetic mean) is 0.919026, indicating high temporal stability throughout the observation period. All deliverables completed: analysis code, intermediate results, 4 publication-quality figures, and comprehensive report.",
-    "real_tokens_used": 97348
+    "done_summary": "Successfully implemented and applied the Temporal Stability Index (TSI) to industrial control telemetry data. The analysis of 5,000 frames yielded a TSI value of 0.9684, indicating high temporal stability in the model output signal. Key findings: (1) σ_x = 2.533 (population std of model output), (2) σ_d = 0.080 (population std of first differences), (3) the ratio σ_d/(σ_x+ε) = 0.0316, confirming that consecutive values change very little relative to overall signal variability. All deliverables completed: analysis code, intermediate results, comprehensive report with 5 visualization figures.",
+    "real_tokens_used": 61901
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
   "pressure_switches": {
     "P2": false
   },
-  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_zai-org_GLM-5_no-reviewer_20260407_211651\\round_001\\inner_workspaces\\round_001\\04a_RareEvent_ClassificationKPI",
-  "timestamp": "2026-04-07T22:03:26.586542",
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_zai-org_GLM-5_no-reviewer\\round_001\\inner_workspaces\\round_001\\04a_RareEvent_ClassificationKPI",
+  "timestamp": "2026-04-16T15:18:58.959003",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Successfully completed the Temporal Stability Index (TSI) analysis for the 5000-frame industrial control telemetry. The analysis followed the laboratory protocol by splitting the trajectory into five 1000-frame blocks and computing TSI using the lab's compute_tsi function. Results: Block 1 TSI=0.917065, Block 2 TSI=0.959602, Block 3 TSI=0.907719, Block 4 TSI=0.899062, Block 5 TSI=0.911682. The definitive full-trace TSI (arithmetic mean) is 0.919026, indicating high temporal stability throughout the observation period. All deliverables completed: analysis code, intermediate results, 4 publication-quality figures, and comprehensive report."
+  "done_summary": "Successfully implemented and applied the Temporal Stability Index (TSI) to industrial control telemetry data. The analysis of 5,000 frames yielded a TSI value of 0.9684, indicating high temporal stability in the model output signal. Key findings: (1) σ_x = 2.533 (population std of model output), (2) σ_d = 0.080 (population std of first differences), (3) the ratio σ_d/(σ_x+ε) = 0.0316, confirming that consecutive values change very little relative to overall signal variability. All deliverables completed: analysis code, intermediate results, comprehensive report with 5 visualization figures."
 }

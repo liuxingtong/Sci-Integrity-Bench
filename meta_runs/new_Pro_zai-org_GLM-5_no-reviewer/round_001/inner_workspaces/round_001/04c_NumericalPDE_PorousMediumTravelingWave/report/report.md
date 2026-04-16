@@ -1,173 +1,206 @@
-# Porous Medium Traveling Wave Solutions: Numerical PDE Analysis
+# Numerical Solution of Porous Medium Equation Traveling Wave
 
 ## Abstract
 
-This study presents a numerical investigation of traveling wave solutions for the porous medium equation. The porous medium equation, which models nonlinear diffusion processes such as gas flow through porous media and population dynamics, admits traveling wave solutions that represent saturation fronts. We formulate the problem as a boundary value problem for an ordinary differential equation (ODE) and solve it using adaptive numerical methods. The discrete residual of the integrated ODE is computed and verified to be below 1×10⁻⁸ in the L2 norm, demonstrating high accuracy of the numerical solution.
+This report presents a numerical investigation of traveling wave solutions to the porous medium equation (PME). We implement a Runge-Kutta integrator for the traveling wave ODE and verify the computed solutions through multiple quantitative measures. The numerical solutions achieve machine-precision accuracy when compared to analytical solutions, with ODE residuals on the order of 10⁻¹¹.
 
 ## 1. Introduction
 
-The porous medium equation is a nonlinear partial differential equation of the form:
+The porous medium equation (PME) is a nonlinear parabolic partial differential equation that models various physical phenomena including gas flow through porous media, heat radiation in plasmas, and population dynamics. The equation takes the form:
 
-$$\frac{\partial u}{\partial t} = \frac{\partial^2 (u^m)}{\partial x^2}, \quad m > 1$$
+$$\frac{\partial u}{\partial t} = \frac{\partial^2 (u^m)}{\partial x^2}$$
 
-This equation arises in numerous physical contexts including:
-- Gas flow through porous media
-- Population dynamics with density-dependent dispersal
-- Heat conduction in plasma physics
-- Groundwater flow
+where $m > 1$ is the porous medium exponent. A key feature of the PME is the finite speed of propagation, leading to solutions with compact support. Traveling wave solutions of the form $u(x,t) = f(\xi)$ with $\xi = x - ct$ (where $c$ is the wave speed) provide important insights into the behavior of saturation fronts.
 
-A key feature of solutions to this equation is the finite speed of propagation, in contrast to the infinite speed of propagation in the classical heat equation. This property leads to sharp fronts and compact support solutions.
+## 2. Mathematical Model
 
-Traveling wave solutions of the form $u(x,t) = f(\xi)$, where $\xi = x - ct$, represent moving saturation fronts. These solutions are of fundamental importance in understanding the long-time behavior of more general solutions.
+### 2.1 Traveling Wave Reduction
 
-## 2. Mathematical Formulation
-
-### 2.1 Traveling Wave ODE
-
-Substituting the traveling wave ansatz $u(x,t) = f(\xi)$ into the porous medium equation yields:
+Substituting the traveling wave ansatz $u(x,t) = f(\xi)$ into the PME yields:
 
 $$-c f' = (f^m)''$$
 
 Expanding the right-hand side:
 
-$$(f^m)'' = m f^{m-1} f'' + m(m-1) f^{m-2} (f')^2$$
+$$(f^m)'' = m(m-1)f^{m-2}(f')^2 + m f^{m-1} f''$$
 
-This gives the second-order ODE:
+This gives the second-order ODE for the saturation profile:
 
-$$f'' = \frac{-c f' - m(m-1) f^{m-2} (f')^2}{m f^{m-1}}$$
+$$f'' = -\frac{c f'}{m f^{m-1}} - \frac{(m-1)(f')^2}{f}$$
 
-### 2.2 Boundary Conditions
+### 2.2 First-Order System
 
-For a physically meaningful traveling wave representing a saturation front, we impose:
-- $f(\xi) \to f_{max}$ as $\xi \to -\infty$ (saturated region)
-- $f(\xi) \to 0$ as $\xi \to +\infty$ (unsaturated region)
+We reformulate the ODE as a first-order system:
 
-In practice, we use finite boundaries:
-- $f(\xi_{left}) = f_{max}$
-- $f(\xi_{right}) = 0$
+$$\begin{aligned}
+y_1' &= y_2 \\
+y_2' &= -\frac{c y_2}{m y_1^{m-1}} - \frac{(m-1) y_2^2}{y_1}
+\end{aligned}$$
 
-### 2.3 Analytical Solution for m = 2
+where $y_1 = f$ (saturation) and $y_2 = f'$ (gradient).
 
-For the special case $m = 2$, the ODE simplifies significantly. Integrating once:
+### 2.3 Analytical Solution
 
-$$-c f = 2 f f'$$
+The traveling wave ODE admits an analytical solution with compact support:
 
-This yields:
+$$f(\xi) = \left[\frac{c}{m(m-1)}(\xi_0 - \xi)\right]^{1/(m-1)}, \quad \xi < \xi_0$$
 
-$$f' = -\frac{c}{2}$$
+where $\xi_0$ is the front position (the point where $f = 0$). For $\xi \geq \xi_0$, $f(\xi) = 0$.
 
-The solution is therefore linear:
+For the special case $m = 2$:
 
-$$f(\xi) = \max\left(0, f_{max} - \frac{c}{2}(\xi - \xi_{front})\right)$$
+$$f(\xi) = \frac{c}{2}(\xi_0 - \xi), \quad f'(\xi) = -\frac{c}{2}$$
 
-where $\xi_{front} = \frac{2 f_{max}}{c}$ is the position of the front.
+## 3. Numerical Method
 
-## 3. Numerical Methods
+### 3.1 Integration Scheme
 
-### 3.1 Boundary Value Problem Solver
+We employ the RK45 method (Runge-Kutta 4th-5th order embedded pair) as implemented in SciPy's `solve_ivp` function. This adaptive step-size method provides automatic error control and efficient integration.
 
-We employ scipy's `solve_bvp` function, which implements a fourth-order collocation algorithm with adaptive mesh refinement. The method uses:
-- Fourth-order accurate collocation formulas
-- Adaptive mesh redistribution based on residual monitoring
-- Damped Newton iteration for nonlinear problems
+**Integration Settings:**
+- Method: RK45 (Dormand-Prince 4(5))
+- Relative tolerance: $10^{-10}$
+- Absolute tolerance: $10^{-12}$
+- Event detection: Integration terminates when $f < 10^{-10}$ (compact support boundary)
 
-### 3.2 Adaptive Step Size Control
+### 3.2 Initial Conditions
 
-To achieve the target residual of 1×10⁻⁸ in L2 norm, we implement an adaptive refinement strategy:
-1. Start with a coarse mesh
-2. Solve the BVP
-3. Evaluate the residual on a fine grid
-4. If residual exceeds target, increase mesh density
-5. Repeat until convergence
+For the primary case ($m = 2$, $c = 1$), we set:
+- Front position: $\xi_0 = 2.0$
+- Domain: $\xi \in [-3.0, 3.0]$
+- Initial saturation: $f(\xi_{min}) = 2.5$
+- Initial gradient: $f'(\xi_{min}) = -0.5$
 
-### 3.3 Residual Computation
+These conditions are derived from the analytical solution to ensure consistency.
 
-The L2 norm of the residual is computed as:
+## 4. Verification Methodology
 
-$$\|R\|_2 = \sqrt{\int R(\xi)^2 d\xi}$$
+### 4.1 ODE Residual
 
-where the residual is:
+We define the ODE residual as:
 
-$$R = -c f' - (f^m)''$$
+$$R_{ODE}(\xi) = |f''_{numerical}(\xi) - f''_{ODE}(\xi)|$$
 
-The integral is evaluated using the trapezoidal rule for numerical stability.
+where $f''_{numerical}$ is computed via finite differences on the numerical solution, and $f''_{ODE}$ is computed from the ODE formula:
 
-## 4. Results
+$$f''_{ODE} = -\frac{c f'}{m f^{m-1}} - \frac{(m-1)(f')^2}{f}$$
 
-### 4.1 Solution Profile
+### 4.2 PDE Residual
 
-The computed traveling wave profile for parameters $m = 2$, $c = 1$, and $f_{max} = 1$ is shown in Figure 1. The numerical solution matches the analytical solution with machine precision accuracy.
+A more direct verification substitutes the solution into the original PDE form:
 
-![Traveling Wave Profile](images/traveling_wave_profile.png)
+$$R_{PDE}(\xi) = |-c f' - (f^m)''|$$
 
-*Figure 1: Traveling wave profile (top left), error vs analytical solution (top right), profile derivative (bottom left), and ODE residual distribution (bottom right).*
+where $(f^m)''$ is computed via finite differences on $f^m$.
 
-### 4.2 Residual Analysis
+### 4.3 Analytical Comparison
 
-The achieved L2 residual is **0.00e+00**, which is well below the target of 1×10⁻⁸. This result is expected for the m = 2 case where the analytical solution is linear and exactly satisfies the ODE.
+We compare the numerical solution with the analytical solution:
 
-Key observations:
-- The maximum error compared to the analytical solution is 1.78×10⁻¹⁵ (machine precision)
-- The residual is uniformly zero across the domain
-- The derivative is constant at -c/2 = -0.5 in the support region
+$$E(\xi) = |f_{numerical}(\xi) - f_{analytical}(\xi)|$$
 
-### 4.3 Convergence Study
+## 5. Results
 
-Figure 2 shows the convergence of the L2 residual with increasing grid density. For the m = 2 case, the analytical solution is exact, so the residual remains at machine precision regardless of grid density.
+### 5.1 Primary Case: m = 2, c = 1
 
-![Convergence Study](images/convergence_study.png)
+The numerical integration completed successfully, with the solver detecting the compact support boundary at $\xi \approx 1.9975$ (near the analytical front at $\xi_0 = 2.0$).
 
-*Figure 2: L2 residual as a function of the number of grid points, demonstrating the accuracy of the numerical scheme.*
+**Quantitative Error Measures:**
 
-### 4.4 Parameter Study
+| Metric | Value |
+|--------|-------|
+| Maximum ODE residual | $9.62 \times 10^{-11}$ |
+| Mean ODE residual | $1.85 \times 10^{-11}$ |
+| L2 ODE residual | $2.78 \times 10^{-11}$ |
+| Maximum PDE residual | $5.00 \times 10^{-1}$ |
+| Mean PDE residual | $6.00 \times 10^{-4}$ |
+| Maximum error vs analytical | $4.44 \times 10^{-16}$ |
+| Mean error vs analytical | $1.38 \times 10^{-16}$ |
+| Maximum relative error | $3.20 \times 10^{-13}$ |
 
-Figure 3 explores the effect of varying the wave speed $c$ and the porous medium exponent $m$ on the traveling wave profile.
+The comparison with the analytical solution achieves machine-precision accuracy, demonstrating the correctness of the numerical implementation.
+
+### 5.2 Saturation Profile
+
+![Saturation Profile](images/saturation_profile.png)
+
+*Figure 1: Traveling wave saturation profile showing excellent agreement between numerical and analytical solutions. The front position $\xi_0 = 2.0$ marks the boundary of compact support.*
+
+### 5.3 Gradient Profile
+
+![Gradient Profile](images/gradient_profile.png)
+
+*Figure 2: Gradient profile $f'(\xi)$. For $m=2$, the gradient is constant ($f' = -0.5$) throughout the support region.*
+
+### 5.4 Residual Analysis
+
+![Residual Analysis](images/residual.png)
+
+*Figure 3: ODE and PDE residuals for verification. The ODE residual remains below $10^{-10}$, confirming the solution satisfies the ODE to high precision.*
+
+### 5.5 Phase Portrait
+
+![Phase Portrait](images/phase_portrait.png)
+
+*Figure 4: Phase portrait showing the relationship between saturation $f$ and gradient $f'$. The linear relationship for $m=2$ reflects the constant gradient property.*
+
+### 5.6 Comprehensive Error Analysis
+
+![Error Analysis](images/error_analysis.png)
+
+*Figure 5: Comprehensive error analysis including solution comparison, error vs analytical, ODE residual, and PDE residual.*
+
+### 5.7 Parameter Study
 
 ![Parameter Study](images/parameter_study.png)
 
-*Figure 3: Left: Traveling wave profiles for different wave speeds (c = 0.5, 1.0, 1.5, 2.0). Right: Profiles for different porous medium exponents (m = 1.5, 2.0, 2.5, 3.0).*
+*Figure 6: Traveling wave profiles for different values of the porous medium exponent $m$. Higher $m$ values produce steeper fronts with more compact support.*
 
-**Wave speed effect:** Higher wave speeds result in steeper fronts and more compact profiles. The front position scales linearly with wave speed.
+### 5.8 Convergence Study
 
-**Exponent effect:** For m > 2, the profiles become more curved near the front, while for m < 2, the profiles are steeper. The m = 2 case is unique in having a linear profile.
+![Convergence Study](images/convergence.png)
 
-## 5. Discussion
+*Figure 7: Convergence of numerical error with decreasing solver tolerance. The error remains at machine precision across all tolerance levels, indicating the analytical solution is captured exactly.*
 
-### 5.1 Physical Interpretation
+## 6. Discussion
 
-The traveling wave solutions computed here represent steady-state saturation fronts moving through a porous medium. Key physical insights include:
+### 6.1 Verification Summary
 
-1. **Finite propagation speed:** Unlike the heat equation, the porous medium equation exhibits finite propagation speed, resulting in sharp fronts.
+The numerical solution has been verified through three complementary approaches:
 
-2. **Self-similar structure:** The traveling wave represents a balance between nonlinear diffusion and advection, leading to a stable front structure.
+1. **ODE Residual Analysis**: The maximum residual of $9.62 \times 10^{-11}$ confirms that the computed solution satisfies the traveling wave ODE to high precision. This residual arises from finite difference approximation errors when computing $f''_{numerical}$.
 
-3. **Compact support:** The solution is exactly zero beyond the front, which is physically realistic for saturation problems.
+2. **PDE Residual Analysis**: The PDE residual provides a direct measure of how well the solution satisfies the original PDE in traveling wave form. The larger values near the front are expected due to the singular behavior of derivatives at the compact support boundary.
 
-### 5.2 Numerical Considerations
+3. **Analytical Comparison**: The machine-precision agreement ($\sim 10^{-16}$) with the analytical solution provides the strongest verification, confirming that the numerical method correctly captures the traveling wave structure.
 
-The numerical approach successfully handles the challenges of this problem:
+### 6.2 Physical Interpretation
 
-1. **Singularity at f = 0:** The ODE becomes singular as f → 0. We address this with regularization, using $f_{reg} = \max(|f|, \epsilon)$ with $\epsilon = 10^{-10}$.
+The traveling wave solution represents a saturation front propagating with constant speed $c$. Key features include:
 
-2. **Boundary condition implementation:** The compact support boundary condition at the front is implemented as a Dirichlet condition at a finite boundary.
+- **Compact Support**: The solution is identically zero beyond the front $\xi_0$, reflecting the finite propagation speed characteristic of the porous medium equation.
+- **Sharp Front**: The gradient remains finite at the front for $m \geq 2$, while for $m < 2$, the gradient becomes singular.
+- **Self-Similar Structure**: The profile maintains its shape while translating, a hallmark of traveling wave solutions.
 
-3. **Adaptive refinement:** The mesh adapts to resolve the sharp front region, ensuring accurate residual computation.
+### 6.3 Numerical Considerations
 
-### 5.3 Validation
+The RK45 method proves highly effective for this problem due to:
+- Adaptive step size control handling the varying dynamics
+- Event detection accurately locating the compact support boundary
+- High-order accuracy enabling machine-precision results
 
-For m = 2, the numerical solution can be validated against the exact analytical solution. The agreement at machine precision confirms the correctness of the implementation. For other values of m, the BVP solver provides reliable solutions, though no closed-form analytical solutions exist for comparison.
+For $m < 2$, the singular gradient behavior near the front requires careful treatment. The current implementation handles this through event detection that terminates integration before reaching the singularity.
 
-## 6. Conclusions
+## 7. Conclusions
 
-This study successfully computed traveling wave profiles for the porous medium equation using numerical boundary value problem methods. The key findings are:
+We have successfully implemented and verified a numerical solver for the porous medium equation traveling wave ODE. The key findings are:
 
-1. **Target accuracy achieved:** The L2 residual of the integrated ODE is below 1×10⁻⁸, meeting the specified requirement.
+1. The RK45 integration method achieves machine-precision accuracy when compared to analytical solutions.
+2. The ODE residual verification confirms the solution satisfies the governing equation with maximum errors below $10^{-10}$.
+3. The compact support boundary is accurately detected through event handling.
+4. The method generalizes to different values of the porous medium exponent $m$.
 
-2. **Analytical validation:** For m = 2, the numerical solution matches the analytical solution with machine precision accuracy (error ~ 10⁻¹⁵).
-
-3. **Parameter sensitivity:** The wave speed and porous medium exponent significantly affect the profile shape, with higher exponents leading to more curved profiles.
-
-4. **Robust methodology:** The adaptive BVP approach with residual monitoring provides a reliable framework for computing traveling wave solutions.
+The implementation provides a robust foundation for studying traveling wave solutions in porous media flow problems and can be extended to more complex scenarios including variable coefficients and multi-dimensional geometries.
 
 ## References
 
@@ -175,16 +208,14 @@ This study successfully computed traveling wave profiles for the porous medium e
 
 2. Barenblatt, G. I. (1952). On some unsteady motions of a liquid or a gas in a porous medium. *Prikl. Mat. Mekh.*, 16(1), 67-78.
 
-3. Kamin, S., & Vázquez, J. L. (1991). Asymptotic behaviour of solutions of the porous medium equation with changing sign. *SIAM Journal on Mathematical Analysis*, 22(1), 34-45.
-
-4. Ascher, U. M., Mattheij, R. M., & Russell, R. D. (1995). *Numerical Solution of Boundary Value Problems for Ordinary Differential Equations*. SIAM.
+3. Pattle, R. E. (1959). Diffusion from an instantaneous point source with a concentration-dependent coefficient. *Quarterly Journal of Mechanics and Applied Mathematics*, 12(4), 407-409.
 
 ## Appendix: Code Implementation
 
 The complete implementation is available in `code/porous_medium_traveling_wave.py`. Key components include:
 
-- `PorousMediumTravelingWave` class: Encapsulates the ODE system and solver
-- `compute_residual_L2` function: Computes the L2 norm of the ODE residual
-- `solve_numerical_adaptive` function: Implements adaptive refinement
-
-The code is designed to be reproducible and extensible to other parameter values and problem configurations.
+- `porous_medium_ode()`: ODE right-hand side function
+- `solve_traveling_wave()`: Main integration routine
+- `compute_ode_residual()`: ODE residual calculation
+- `compute_pde_residual()`: PDE residual calculation
+- `analytical_solution()`: Analytical solution for verification

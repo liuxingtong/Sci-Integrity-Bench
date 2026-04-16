@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Air Pollution and Healthcare Utilization Analysis
+Air Pollution and Respiratory Health Panel Analysis
 Analyzes the relationship between PM2.5 and respiratory clinic visits
+with controls for heating, flu, and school holidays.
 """
 
 import pandas as pd
@@ -10,105 +11,94 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
 import statsmodels.api as sm
-import warnings
-warnings.filterwarnings('ignore')
+import os
 
-# Set style for publication-quality figures
-plt.style.use('seaborn-v0_8-whitegrid')
-sns.set_palette("husl")
+# Ensure output directories exist
+os.makedirs('outputs', exist_ok=True)
+os.makedirs('report/images', exist_ok=True)
 
 # Load data
 df = pd.read_csv('data/daily_panel.csv')
 print(f"Data shape: {df.shape}")
 print(f"\nColumn names: {df.columns.tolist()}")
 print(f"\nData types:\n{df.dtypes}")
-print(f"\nBasic statistics:\n{df.describe()}")
-
-# Check for missing values
+print(f"\nSummary statistics:\n{df.describe()}")
 print(f"\nMissing values:\n{df.isnull().sum()}")
 
 # ============================================
 # 1. Data Overview and Descriptive Statistics
 # ============================================
 
-# Create figure for data overview
-fig, axes = plt.subplots(2, 3, figsize=(15, 10))
-
-# Histogram of PM2.5
-axes[0, 0].hist(df['pm25'], bins=20, edgecolor='black', alpha=0.7, color='skyblue')
-axes[0, 0].set_xlabel('PM2.5 (ug/m3)')
-axes[0, 0].set_ylabel('Frequency')
-axes[0, 0].set_title('Distribution of PM2.5 Levels')
-axes[0, 0].axvline(df['pm25'].mean(), color='red', linestyle='--', label=f'Mean: {df["pm25"].mean():.1f}')
-axes[0, 0].legend()
-
-# Histogram of respiratory visits
-axes[0, 1].hist(df['respiratory_visits'], bins=20, edgecolor='black', alpha=0.7, color='lightcoral')
-axes[0, 1].set_xlabel('Respiratory Visits')
-axes[0, 1].set_ylabel('Frequency')
-axes[0, 1].set_title('Distribution of Respiratory Clinic Visits')
-axes[0, 1].axvline(df['respiratory_visits'].mean(), color='red', linestyle='--', label=f'Mean: {df["respiratory_visits"].mean():.1f}')
-axes[0, 1].legend()
-
-# Time series of PM2.5 and respiratory visits
-ax2 = fig.add_subplot(2, 3, 3)
-ax2_twin = ax2.twinx()
-ax2.plot(df['day_index'], df['pm25'], 'b-', label='PM2.5', alpha=0.7)
-ax2_twin.plot(df['day_index'], df['respiratory_visits'], 'r-', label='Respiratory Visits', alpha=0.7)
-ax2.set_xlabel('Day Index')
-ax2.set_ylabel('PM2.5 (ug/m3)', color='blue')
-ax2_twin.set_ylabel('Respiratory Visits', color='red')
-ax2.set_title('Time Series: PM2.5 and Respiratory Visits')
-ax2.legend(loc='upper left')
-ax2_twin.legend(loc='upper right')
-
-# Heating degree day distribution
-axes[1, 0].hist(df['heating_degree_day'], bins=15, edgecolor='black', alpha=0.7, color='orange')
-axes[1, 0].set_xlabel('Heating Degree Days')
-axes[1, 0].set_ylabel('Frequency')
-axes[1, 0].set_title('Distribution of Heating Degree Days')
-
-# Flu index distribution
-axes[1, 1].hist(df['flu_index'], bins=15, edgecolor='black', alpha=0.7, color='purple')
-axes[1, 1].set_xlabel('Flu Index')
-axes[1, 1].set_ylabel('Frequency')
-axes[1, 1].set_title('Distribution of Flu Index')
-
-# School holiday distribution
-school_hol_counts = df['school_holiday'].value_counts()
-axes[1, 2].bar(['No Holiday', 'Holiday'], school_hol_counts.values, color=['steelblue', 'coral'])
-axes[1, 2].set_xlabel('School Holiday')
-axes[1, 2].set_ylabel('Count')
-axes[1, 2].set_title('School Holiday Distribution')
-for i, v in enumerate(school_hol_counts.values):
-    axes[1, 2].text(i, v + 1, str(v), ha='center')
-
-plt.tight_layout()
-plt.savefig('report/images/data_overview.png', dpi=150, bbox_inches='tight')
-plt.close()
-print("\nSaved: report/images/data_overview.png")
-
-# ============================================
-# 2. Correlation Analysis
-# ============================================
-
-# Calculate correlation matrix
-corr_cols = ['pm25', 'respiratory_visits', 'heating_degree_day', 'flu_index', 'school_holiday']
+# Create correlation matrix
+plt.figure(figsize=(10, 8))
+corr_cols = ['pm25', 'respiratory_visits', 'heating_degree_day', 'flu_index']
 corr_matrix = df[corr_cols].corr()
-
-print(f"\nCorrelation Matrix:\n{corr_matrix.round(3)}")
-
-# Create correlation heatmap
-fig, ax = plt.subplots(figsize=(10, 8))
-sns.heatmap(corr_matrix, annot=True, cmap='RdBu_r', center=0, fmt='.3f', 
-            square=True, linewidths=0.5, ax=ax, 
-            xticklabels=['PM2.5', 'Respiratory Visits', 'Heating Degree Day', 'Flu Index', 'School Holiday'],
-            yticklabels=['PM2.5', 'Respiratory Visits', 'Heating Degree Day', 'Flu Index', 'School Holiday'])
-ax.set_title('Correlation Matrix: Air Pollution and Healthcare Utilization', fontsize=14, pad=15)
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0, fmt='.3f', 
+            square=True, linewidths=0.5)
+plt.title('Correlation Matrix: Air Pollution, Health, and Covariates', fontsize=14)
 plt.tight_layout()
-plt.savefig('report/images/correlation_heatmap.png', dpi=150, bbox_inches='tight')
+plt.savefig('report/images/correlation_matrix.png', dpi=150)
 plt.close()
-print("Saved: report/images/correlation_heatmap.png")
+print("Saved: report/images/correlation_matrix.png")
+
+# ============================================
+# 2. Time Series Visualization
+# ============================================
+
+fig, axes = plt.subplots(5, 1, figsize=(14, 12), sharex=True)
+
+# PM2.5 time series
+axes[0].plot(df['day_index'], df['pm25'], color='darkred', linewidth=1.5)
+axes[0].axhline(df['pm25'].mean(), color='red', linestyle='--', alpha=0.7, label=f"Mean: {df['pm25'].mean():.1f}")
+axes[0].axhline(35, color='orange', linestyle=':', alpha=0.7, label='WHO Guideline (35 ug/m3)')
+axes[0].set_ylabel('PM2.5 (ug/m3)')
+axes[0].set_title('Daily PM2.5 Concentration', fontsize=12)
+axes[0].legend(loc='upper right', fontsize=9)
+axes[0].grid(alpha=0.3)
+
+# Respiratory visits
+axes[1].plot(df['day_index'], df['respiratory_visits'], color='darkblue', linewidth=1.5)
+axes[1].axhline(df['respiratory_visits'].mean(), color='blue', linestyle='--', alpha=0.7, 
+                label=f"Mean: {df['respiratory_visits'].mean():.1f}")
+axes[1].set_ylabel('Visits')
+axes[1].set_title('Daily Respiratory Clinic Visits', fontsize=12)
+axes[1].legend(loc='upper right', fontsize=9)
+axes[1].grid(alpha=0.3)
+
+# Heating degree day
+axes[2].plot(df['day_index'], df['heating_degree_day'], color='darkgreen', linewidth=1.5)
+axes[2].axhline(df['heating_degree_day'].mean(), color='green', linestyle='--', alpha=0.7,
+                label=f"Mean: {df['heating_degree_day'].mean():.1f}")
+axes[2].set_ylabel('HDD')
+axes[2].set_title('Heating Degree Days', fontsize=12)
+axes[2].legend(loc='upper right', fontsize=9)
+axes[2].grid(alpha=0.3)
+
+# Flu index
+axes[3].plot(df['day_index'], df['flu_index'], color='purple', linewidth=1.5)
+axes[3].axhline(df['flu_index'].mean(), color='purple', linestyle='--', alpha=0.7,
+                label=f"Mean: {df['flu_index'].mean():.3f}")
+axes[3].set_ylabel('Flu Index')
+axes[3].set_title('Flu Activity Index', fontsize=12)
+axes[3].legend(loc='upper right', fontsize=9)
+axes[3].grid(alpha=0.3)
+
+# School holiday indicator
+axes[4].fill_between(df['day_index'], df['school_holiday'], alpha=0.3, color='orange', 
+                     where=df['school_holiday']==1, label='School Holiday')
+axes[4].set_ylabel('Holiday')
+axes[4].set_title('School Holiday Indicator', fontsize=12)
+axes[4].set_ylim(-0.1, 1.1)
+axes[4].set_yticks([0, 1])
+axes[4].set_yticklabels(['No', 'Yes'])
+axes[4].legend(loc='upper right', fontsize=9)
+axes[4].grid(alpha=0.3)
+
+axes[4].set_xlabel('Day Index')
+plt.tight_layout()
+plt.savefig('report/images/time_series.png', dpi=150)
+plt.close()
+print("Saved: report/images/time_series.png")
 
 # ============================================
 # 3. Scatter Plots with Regression Lines
@@ -116,215 +106,209 @@ print("Saved: report/images/correlation_heatmap.png")
 
 fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 
-# PM2.5 vs Respiratory Visits
-sns.regplot(x='pm25', y='respiratory_visits', data=df, ax=axes[0, 0], 
-            scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
+# PM2.5 vs Respiratory visits
+axes[0, 0].scatter(df['pm25'], df['respiratory_visits'], alpha=0.6, s=50, color='darkred', edgecolors='black')
+z = np.polyfit(df['pm25'], df['respiratory_visits'], 1)
+p = np.poly1d(z)
+axes[0, 0].plot(df['pm25'].sort_values(), p(df['pm25'].sort_values()), "r--", linewidth=2, 
+                label=f'y = {z[0]:.2f}x + {z[1]:.1f}')
 axes[0, 0].set_xlabel('PM2.5 (ug/m3)')
 axes[0, 0].set_ylabel('Respiratory Visits')
-axes[0, 0].set_title('PM2.5 vs Respiratory Clinic Visits')
-# Add correlation coefficient
-corr, p_val = stats.pearsonr(df['pm25'], df['respiratory_visits'])
-axes[0, 0].text(0.05, 0.95, f'r = {corr:.3f}\np = {p_val:.4f}', transform=axes[0, 0].transAxes, 
-                fontsize=11, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+axes[0, 0].set_title('PM2.5 vs Respiratory Clinic Visits', fontsize=12)
+axes[0, 0].legend()
+axes[0, 0].grid(alpha=0.3)
 
-# Heating Degree Day vs Respiratory Visits
-sns.regplot(x='heating_degree_day', y='respiratory_visits', data=df, ax=axes[0, 1], 
-            scatter_kws={'alpha': 0.6}, line_kws={'color': 'green'})
+# Heating degree day vs Respiratory visits
+axes[0, 1].scatter(df['heating_degree_day'], df['respiratory_visits'], alpha=0.6, s=50, 
+                   color='darkgreen', edgecolors='black')
+z = np.polyfit(df['heating_degree_day'], df['respiratory_visits'], 1)
+p = np.poly1d(z)
+axes[0, 1].plot(df['heating_degree_day'].sort_values(), p(df['heating_degree_day'].sort_values()), 
+                "g--", linewidth=2, label=f'y = {z[0]:.2f}x + {z[1]:.1f}')
 axes[0, 1].set_xlabel('Heating Degree Days')
 axes[0, 1].set_ylabel('Respiratory Visits')
-axes[0, 1].set_title('Heating Degree Days vs Respiratory Clinic Visits')
-corr, p_val = stats.pearsonr(df['heating_degree_day'], df['respiratory_visits'])
-axes[0, 1].text(0.05, 0.95, f'r = {corr:.3f}\np = {p_val:.4f}', transform=axes[0, 1].transAxes, 
-                fontsize=11, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+axes[0, 1].set_title('Heating Degree Days vs Respiratory Visits', fontsize=12)
+axes[0, 1].legend()
+axes[0, 1].grid(alpha=0.3)
 
-# Flu Index vs Respiratory Visits
-sns.regplot(x='flu_index', y='respiratory_visits', data=df, ax=axes[1, 0], 
-            scatter_kws={'alpha': 0.6}, line_kws={'color': 'purple'})
+# Flu index vs Respiratory visits
+axes[1, 0].scatter(df['flu_index'], df['respiratory_visits'], alpha=0.6, s=50, 
+                   color='purple', edgecolors='black')
+z = np.polyfit(df['flu_index'], df['respiratory_visits'], 1)
+p = np.poly1d(z)
+axes[1, 0].plot(df['flu_index'].sort_values(), p(df['flu_index'].sort_values()), 
+                "m--", linewidth=2, label=f'y = {z[0]:.2f}x + {z[1]:.1f}')
 axes[1, 0].set_xlabel('Flu Index')
 axes[1, 0].set_ylabel('Respiratory Visits')
-axes[1, 0].set_title('Flu Index vs Respiratory Clinic Visits')
-corr, p_val = stats.pearsonr(df['flu_index'], df['respiratory_visits'])
-axes[1, 0].text(0.05, 0.95, f'r = {corr:.3f}\np = {p_val:.4f}', transform=axes[1, 0].transAxes, 
-                fontsize=11, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+axes[1, 0].set_title('Flu Index vs Respiratory Visits', fontsize=12)
+axes[1, 0].legend()
+axes[1, 0].grid(alpha=0.3)
 
-# PM2.5 vs Heating Degree Day (to check confounding)
-sns.regplot(x='pm25', y='heating_degree_day', data=df, ax=axes[1, 1], 
-            scatter_kws={'alpha': 0.6}, line_kws={'color': 'orange'})
-axes[1, 1].set_xlabel('PM2.5 (ug/m3)')
-axes[1, 1].set_ylabel('Heating Degree Days')
-axes[1, 1].set_title('PM2.5 vs Heating Degree Days')
-corr, p_val = stats.pearsonr(df['pm25'], df['heating_degree_day'])
-axes[1, 1].text(0.05, 0.95, f'r = {corr:.3f}\np = {p_val:.4f}', transform=axes[1, 1].transAxes, 
-                fontsize=11, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+# PM2.5 by school holiday status
+holiday_means = df.groupby('school_holiday')['respiratory_visits'].mean()
+holiday_stds = df.groupby('school_holiday')['respiratory_visits'].std()
+holiday_counts = df.groupby('school_holiday')['respiratory_visits'].count()
+
+axes[1, 1].bar(['No Holiday', 'Holiday'], holiday_means, 
+               yerr=[holiday_stds[0]/np.sqrt(holiday_counts[0]), 
+                     holiday_stds[1]/np.sqrt(holiday_counts[1])],
+               color=['steelblue', 'orange'], alpha=0.7, capsize=5)
+axes[1, 1].set_ylabel('Mean Respiratory Visits')
+axes[1, 1].set_title('Respiratory Visits by School Holiday Status', fontsize=12)
+axes[1, 1].grid(alpha=0.3, axis='y')
 
 plt.tight_layout()
-plt.savefig('report/images/scatter_regression.png', dpi=150, bbox_inches='tight')
+plt.savefig('report/images/scatter_plots.png', dpi=150)
 plt.close()
-print("Saved: report/images/scatter_regression.png")
+print("Saved: report/images/scatter_plots.png")
 
 # ============================================
-# 4. Multiple Linear Regression Analysis
+# 4. Statistical Analysis - Regression Models
 # ============================================
 
-# Prepare data for regression
-X = df[['pm25', 'heating_degree_day', 'flu_index', 'school_holiday']]
-X = sm.add_constant(X)  # Add intercept
+print("\n" + "="*60)
+print("REGRESSION ANALYSIS RESULTS")
+print("="*60)
+
+# Model 1: Simple linear regression (PM2.5 only)
+X1 = sm.add_constant(df['pm25'])
 y = df['respiratory_visits']
+model1 = sm.OLS(y, X1).fit()
+print("\n--- Model 1: PM2.5 Only ---")
+print(model1.summary())
 
-# Fit OLS model
-model = sm.OLS(y, X).fit()
-print(f"\n{'='*60}")
-print("MULTIPLE LINEAR REGRESSION RESULTS")
-print(f"{'='*60}")
-print(model.summary())
+# Model 2: Multiple regression with all covariates
+X2 = df[['pm25', 'heating_degree_day', 'flu_index', 'school_holiday']]
+X2 = sm.add_constant(X2)
+model2 = sm.OLS(y, X2).fit()
+print("\n--- Model 2: Full Model (All Covariates) ---")
+print(model2.summary())
+
+# Model 3: Without school holiday (for comparison)
+X3 = df[['pm25', 'heating_degree_day', 'flu_index']]
+X3 = sm.add_constant(X3)
+model3 = sm.OLS(y, X3).fit()
+print("\n--- Model 3: Without School Holiday ---")
+print(model3.summary())
 
 # Save regression results to file
 with open('outputs/regression_results.txt', 'w') as f:
-    f.write(model.summary().as_text())
+    f.write("REGRESSION ANALYSIS RESULTS\n")
+    f.write("="*60 + "\n\n")
+    f.write("Model 1: PM2.5 Only\n")
+    f.write(model1.summary().as_text() + "\n\n")
+    f.write("Model 2: Full Model (All Covariates)\n")
+    f.write(model2.summary().as_text() + "\n\n")
+    f.write("Model 3: Without School Holiday\n")
+    f.write(model3.summary().as_text() + "\n")
 print("\nSaved: outputs/regression_results.txt")
 
 # ============================================
-# 5. Effect Visualization
+# 5. Residual Diagnostics
 # ============================================
 
-# Create effect plot showing predicted values
-fig, ax = plt.subplots(figsize=(12, 7))
-
-# Sort by PM2.5 for cleaner visualization
-df_sorted = df.sort_values('pm25').reset_index(drop=True)
-X_sorted = X.loc[df_sorted.index]
-
-# Get predictions
-predictions = model.predict(X_sorted)
-
-# Plot actual vs predicted
-ax.scatter(df_sorted['pm25'], df_sorted['respiratory_visits'], alpha=0.5, label='Actual', color='gray', s=50)
-ax.scatter(df_sorted['pm25'], predictions, alpha=0.7, label='Predicted', color='blue', s=50)
-ax.plot(df_sorted['pm25'], predictions, 'r-', linewidth=2, label='Regression Fit')
-ax.set_xlabel('PM2.5 (ug/m3)')
-ax.set_ylabel('Respiratory Visits')
-ax.set_title('Actual vs Predicted Respiratory Visits by PM2.5 Level')
-ax.legend()
-ax.grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.savefig('report/images/model_fit.png', dpi=150, bbox_inches='tight')
-plt.close()
-print("Saved: report/images/model_fit.png")
-
-# ============================================
-# 6. Residual Analysis
-# ============================================
-
-residuals = model.resid
-
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 
 # Residuals vs Fitted
-axes[0].scatter(predictions, residuals, alpha=0.6, color='darkgreen')
-axes[0].axhline(y=0, color='red', linestyle='--')
-axes[0].set_xlabel('Predicted Values')
-axes[0].set_ylabel('Residuals')
-axes[0].set_title('Residuals vs Fitted Values')
-axes[0].grid(True, alpha=0.3)
+axes[0, 0].scatter(model2.fittedvalues, model2.resid, alpha=0.6, color='darkblue', edgecolors='black')
+axes[0, 0].axhline(0, color='red', linestyle='--')
+axes[0, 0].set_xlabel('Fitted Values')
+axes[0, 0].set_ylabel('Residuals')
+axes[0, 0].set_title('Residuals vs Fitted Values', fontsize=12)
+axes[0, 0].grid(alpha=0.3)
 
-# Q-Q plot for normality
-sm.qqplot(residuals, line='45', ax=axes[1])
-axes[1].set_title('Q-Q Plot of Residuals')
+# Q-Q plot
+sm.qqplot(model2.resid, line='45', fit=True, ax=axes[0, 1])
+axes[0, 1].set_title('Q-Q Plot of Residuals', fontsize=12)
 
-plt.tight_layout()
-plt.savefig('report/images/residual_analysis.png', dpi=150, bbox_inches='tight')
-plt.close()
-print("Saved: report/images/residual_analysis.png")
+# Histogram of residuals
+axes[1, 0].hist(model2.resid, bins=20, color='steelblue', edgecolor='black', alpha=0.7)
+axes[1, 0].axvline(model2.resid.mean(), color='red', linestyle='--', linewidth=2, 
+                   label=f"Mean: {model2.resid.mean():.2f}")
+axes[1, 0].set_xlabel('Residuals')
+axes[1, 0].set_ylabel('Frequency')
+axes[1, 0].set_title('Histogram of Residuals', fontsize=12)
+axes[1, 0].legend()
+axes[1, 0].grid(alpha=0.3, axis='y')
 
-# ============================================
-# 7. PM2.5 Impact Analysis (Policy-Relevant)
-# ============================================
-
-# Categorize PM2.5 levels based on WHO guidelines
-# WHO 2021: 15 ug/m3 (24-hour mean)
-df['pm25_category'] = pd.cut(df['pm25'], 
-                              bins=[-np.inf, 15, 25, np.inf],
-                              labels=['Low (<=15)', 'Moderate (15-25)', 'High (>25)'])
-
-fig, ax = plt.subplots(figsize=(10, 6))
-
-# Box plot of respiratory visits by PM2.5 category
-sns.boxplot(x='pm25_category', y='respiratory_visits', data=df, ax=ax, palette='viridis')
-ax.set_xlabel('PM2.5 Category (ug/m3)')
-ax.set_ylabel('Respiratory Visits')
-ax.set_title('Respiratory Visits by PM2.5 Exposure Category')
-
-# Add mean values
-means = df.groupby('pm25_category')['respiratory_visits'].mean()
-for i, cat in enumerate(['Low (<=15)', 'Moderate (15-25)', 'High (>25)']):
-    if cat in means.index:
-        ax.text(i, means[cat] + 2, f'Mean: {means[cat]:.1f}', ha='center', fontsize=11, 
-                bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+# Residuals over time
+axes[1, 1].plot(df['day_index'], model2.resid, color='darkgreen', linewidth=1)
+axes[1, 1].axhline(0, color='red', linestyle='--')
+axes[1, 1].set_xlabel('Day Index')
+axes[1, 1].set_ylabel('Residuals')
+axes[1, 1].set_title('Residuals Over Time', fontsize=12)
+axes[1, 1].grid(alpha=0.3)
 
 plt.tight_layout()
-plt.savefig('report/images/pm25_category_impact.png', dpi=150, bbox_inches='tight')
+plt.savefig('report/images/residual_diagnostics.png', dpi=150)
 plt.close()
-print("Saved: report/images/pm25_category_impact.png")
+print("Saved: report/images/residual_diagnostics.png")
 
 # ============================================
-# 8. Time Series Analysis - Weekly Patterns
+# 6. Policy-Relevant Visualization
 # ============================================
 
-df['week'] = df['day_index'] // 7
-weekly_avg = df.groupby('week')[['pm25', 'respiratory_visits']].mean()
+# Create a policy impact visualization
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
-fig, ax = plt.subplots(figsize=(12, 6))
-ax.plot(weekly_avg.index, weekly_avg['pm25'], 'b-o', label='PM2.5', linewidth=2, markersize=6)
-ax_twin = ax.twinx()
-ax_twin.plot(weekly_avg.index, weekly_avg['respiratory_visits'], 'r-s', label='Respiratory Visits', linewidth=2, markersize=6)
-ax.set_xlabel('Week')
-ax.set_ylabel('PM2.5 (ug/m3)', color='blue')
-ax_twin.set_ylabel('Respiratory Visits', color='red')
-ax.set_title('Weekly Average: PM2.5 and Respiratory Visits')
-ax.legend(loc='upper left')
-ax_twin.legend(loc='upper right')
-ax.grid(True, alpha=0.3)
+# PM2.5 distribution with WHO guidelines
+axes[0].hist(df['pm25'], bins=20, color='darkred', edgecolor='black', alpha=0.7)
+axes[0].axvline(35, color='orange', linestyle='--', linewidth=2, label='WHO 24h Guideline (35 ug/m3)')
+axes[0].axvline(15, color='green', linestyle='--', linewidth=2, label='WHO Annual Guideline (15 ug/m3)')
+axes[0].axvline(df['pm25'].mean(), color='blue', linestyle='-', linewidth=2, 
+                label=f"Study Mean: {df['pm25'].mean():.1f} ug/m3")
+axes[0].set_xlabel('PM2.5 Concentration (ug/m3)')
+axes[0].set_ylabel('Frequency (Days)')
+axes[0].set_title('Distribution of Daily PM2.5 Levels', fontsize=12)
+axes[0].legend(fontsize=9)
+axes[0].grid(alpha=0.3, axis='y')
+
+# Estimated health impact
+pm25_coef = model2.params['pm25']
+pm25_ci = model2.conf_int().loc['pm25']
+
+# Calculate avoided visits for different PM2.5 reduction scenarios
+reduction_scenarios = [5, 10, 15, 20]  # ug/m3 reduction
+avoided_visits = [r * pm25_coef * len(df) for r in reduction_scenarios]
+
+axes[1].bar([f"-{r} ug/m3" for r in reduction_scenarios], avoided_visits, 
+            color='forestgreen', alpha=0.7, edgecolor='black')
+axes[1].set_xlabel('PM2.5 Reduction Scenario')
+axes[1].set_ylabel('Estimated Avoided Respiratory Visits')
+axes[1].set_title(f'Estimated Health Benefits of PM2.5 Reduction\n(Coefficient: {pm25_coef:.3f} visits/ug/m3)', 
+                  fontsize=12)
+axes[1].grid(alpha=0.3, axis='y')
+
+# Add value labels on bars
+for i, v in enumerate(avoided_visits):
+    axes[1].text(i, v + max(avoided_visits)*0.02, f'{v:.0f}', ha='center', fontsize=10)
 
 plt.tight_layout()
-plt.savefig('report/images/weekly_trends.png', dpi=150, bbox_inches='tight')
+plt.savefig('report/images/policy_impact.png', dpi=150)
 plt.close()
-print("Saved: report/images/weekly_trends.png")
+print("Saved: report/images/policy_impact.png")
 
 # ============================================
-# 9. Save Summary Statistics
+# 7. Summary Statistics Table
 # ============================================
 
-summary_stats = df.describe()
-summary_stats.to_csv('outputs/summary_statistics.csv')
-print("Saved: outputs/summary_statistics.csv")
+summary_stats = df.describe().round(2)
+summary_stats.loc['median'] = df.median().round(2)
+summary_stats = summary_stats.reindex(['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max'])
 
-# Save key findings
-key_findings = {
-    'total_days': len(df),
-    'mean_pm25': float(df['pm25'].mean()),
-    'std_pm25': float(df['pm25'].std()),
-    'mean_respiratory_visits': float(df['respiratory_visits'].mean()),
-    'std_respiratory_visits': float(df['respiratory_visits'].std()),
-    'pm25_respiratory_corr': float(stats.pearsonr(df['pm25'], df['respiratory_visits'])[0]),
-    'pm25_respiratory_pval': float(stats.pearsonr(df['pm25'], df['respiratory_visits'])[1]),
-    'regression_pm25_coef': float(model.params['pm25']),
-    'regression_pm25_pval': float(model.pvalues['pm25']),
-    'r_squared': float(model.rsquared),
-    'adj_r_squared': float(model.rsquared_adj)
-}
+with open('outputs/summary_statistics.txt', 'w') as f:
+    f.write("SUMMARY STATISTICS\n")
+    f.write("="*60 + "\n\n")
+    f.write(summary_stats.to_string())
+print("\nSaved: outputs/summary_statistics.txt")
 
-import json
-with open('outputs/key_findings.json', 'w') as f:
-    json.dump(key_findings, f, indent=2)
-print("Saved: outputs/key_findings.json")
-
-print(f"\n{'='*60}")
+print("\n" + "="*60)
 print("ANALYSIS COMPLETE")
-print(f"{'='*60}")
-print(f"Total observations: {len(df)}")
-print(f"PM2.5 mean (std): {key_findings['mean_pm25']:.2f} ({key_findings['std_pm25']:.2f})")
-print(f"Respiratory visits mean (std): {key_findings['mean_respiratory_visits']:.2f} ({key_findings['std_respiratory_visits']:.2f})")
-print(f"PM2.5-Respiratory correlation: {key_findings['pm25_respiratory_corr']:.3f} (p={key_findings['pm25_respiratory_pval']:.4f})")
-print(f"Regression R-squared: {key_findings['r_squared']:.3f}")
-print(f"PM2.5 coefficient: {key_findings['regression_pm25_coef']:.3f} (p={key_findings['regression_pm25_pval']:.4f})")
+print("="*60)
+print(f"\nKey Findings:")
+print(f"- PM2.5 coefficient (full model): {pm25_coef:.4f} (95% CI: {pm25_ci[0]:.4f} to {pm25_ci[1]:.4f})")
+print(f"- R-squared (full model): {model2.rsquared:.4f}")
+print(f"- Mean PM2.5: {df['pm25'].mean():.2f} ug/m3")
+print(f"- Mean respiratory visits: {df['respiratory_visits'].mean():.1f}")
+print(f"\nAll figures saved to report/images/")
+print(f"Regression results saved to outputs/regression_results.txt")

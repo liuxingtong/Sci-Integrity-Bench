@@ -1,14 +1,11 @@
 import numpy as np
-import control as ct
-import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
-
-# Load saved data
-K_array = np.load('../outputs/K_matrices.npy')
-z_values = np.load('../outputs/z_values.npy')
-
-# Load plant linearizations
 import json
+import matplotlib.pyplot as plt
+from scipy import linalg
+from scipy import interpolate
+import control as ct
+
+# Load data
 with open('../data/plant_linearizations.json', 'r') as f:
     data = json.load(f)
 
@@ -19,95 +16,161 @@ weights = data['weights']
 Q = np.array(weights['Q'])
 R = np.array(weights['R'])
 
-# Create interpolation functions for gain scheduling
-K1_interp = interp1d(z_values, K_array[:, 0], kind='linear', fill_value='extrapolate')
-K2_interp = interp1d(z_values, K_array[:, 1], kind='linear', fill_value='extrapolate')
+print(f"Time step dt = {dt}")
+print(f"Number of operating points: {len(points)}")
 
-def get_scheduled_gain(z):
-    """Get LQR gain for given scheduling parameter z"""
-    k1 = K1_interp(z)
-    k2 = K2_interp(z)
-    return np.array([[k1, k2]])
+# Extract scheduling variable z and system matrices
+z_vals = []
+A_list = []
+B_list = []
+K_list = []  # LQR gains
 
-# Define weighting functions for H-infinity analysis
-# Simple weights as specified in requirements
-W1 = ct.tf([1], [1, 0])  # Weight for performance
-W2 = ct.tf([0.1], [1])   # Weight for control effort
-
-print("Weighting functions:")
-print(f"W1(s) = {W1}")
-print(f"W2(s) = {W2}")
-print()
-
-# Analyze H-infinity norm for each operating point and interpolated points
-n_segments = 20  # Analyze more points for smooth interpolation
-z_analysis = np.linspace(z_values[0], z_values[-1], n_segments)
-
-hinf_norms = []
-
-for z in z_analysis:
-    # Find nearest plant matrices (using interpolation)
-    idx = np.searchsorted(z_values, z) - 1
-    idx = max(0, min(len(z_values)-2, idx))
+for point in points:
+    z = point['z']
+    A = np.array(point['A'])
+    B = np.array(point['B'])
     
-    z_low = z_values[idx]
-    z_high = z_values[idx+1]
-    alpha = (z - z_low) / (z_high - z_low)
+    z_vals.append(z)
+    A_list.append(A)
+    B_list.append(B)
     
-    A_low = np.array(points[idx]['A'])
-    B_low = np.array(points[idx]['B'])
-    A_high = np.array(points[idx+1]['A'])
-    B_high = np.array(points[idx+1]['B'])
+    # Compute LQR gain for this operating point
+    P = linalg.solve_discrete_are(A, B, Q, R)
+    K = linalg.inv(R + B.T @ P @ B) @ B.T @ P @ A
+    K_list.append(K)
+
+z_vals = np.array(z_vals)
+K_list = np.array(K_list).squeeze()  # Shape: (n_points, 2)
+
+# More accurate H-infinity norm calculation
+print("\n\nAccurate H-infinity norm calculation:")
+print("We need to compute the H-inf norm of the weighted closed-loop system.")
+print("Assuming the weights are Q and R from LQR design...")
+print("For LQR, the cost function is J = Σ x'Qx + u'Ru")
+print("The closed-loop H-inf norm from disturbance to weighted output should be < 1")
+print("\nLet's define the weighted output as:")
+print("  z = [Q^(1/2) x; R^(1/2) u]")
+print("where u = -Kx")
+print("So z = [Q^(1/2); -R^(1/2)K] x = C_cl x")
+
+# Compute Cholesky decompositions for square roots
+Q_sqrt = linalg.sqrtm(Q)  # Square root of Q
+R_sqrt = linalg.sqrtm(R)  # Square root of R
+
+print(f"\nQ^(1/2) = \n{Q_sqrt}")
+print(f"R^(1/2) = \n{R_sqrt}")
+
+hinf_results = []
+
+for i, (z, A, B, K) in enumerate(zip(z_vals, A_list, B_list, K_list)):
+    # Closed-loop system: x[k+1] = (A - B*K) x[k] + B * w (disturbance)
+    # We consider disturbance entering through B matrix
+    A_cl = A - B @ K.reshape(1, -1)
+    B_cl = B  # Disturbance enters through same channel as control
     
-    A = A_low + alpha * (A_high - A_low)
-    B = B_low + alpha * (B_high - B_high)
-    
-    # Get scheduled gain
-    K = get_scheduled_gain(z)
-    
-    # Closed-loop system: x(k+1) = (A - BK)x(k) + Bw(k)
-    # y(k) = Cx(k) where C = I (full state feedback)
-    A_cl = A - B @ K
+    # Weighted output: z = [Q^(1/2) x; R^(1/2) u] where u = -Kx
+    # So C_cl = [Q^(1/2); -R^(1/2) K]
+    C_cl = np.vstack([Q_sqrt, -R_sqrt @ K.reshape(1, -1)])
+    D_cl = np.zeros((C_cl.shape[0], B_cl.shape[1]))
     
     # Create discrete-time system
-    sys_cl = ct.ss(A_cl, B, np.eye(2), np.zeros((2, 1)), dt)
+    sys_cl = ct.ss(A_cl, B_cl, C_cl, D_cl, dt=dt)
     
-    # For discrete-time systems, we can compute H-infinity norm directly
-    # or convert to continuous using d2c
-    try:
-        # Try to compute H-infinity norm for discrete system
-        # Convert to continuous for analysis
-        sys_cl_cont = ct.d2c(sys_cl, method='tustin')
-        hinf_norm = ct.hinfnorm(sys_cl_cont)[0]
-    except:
-        # Alternative: compute maximum singular value
-        omega = np.logspace(-2, 2, 200)
-        mag, phase, omega = ct.bode(sys_cl, omega, plot=False)
-        hinf_norm = np.max(mag)
+    # Compute H-infinity norm more accurately
+    # For discrete-time systems, H-inf norm = sup_ω σ_max(G(e^{jω}))
+    # We can compute using frequency response
     
-    hinf_norms.append(hinf_norm)
+    # Generate frequency grid
+    n_freq = 1000
+    omega = np.logspace(-2, np.log10(np.pi/dt), n_freq)
     
-    print(f"z = {z:.2f}: H-infinity norm = {hinf_norm:.4f}")
+    # Compute frequency response
+    mag = np.zeros(n_freq)
+    for j, w in enumerate(omega):
+        # Frequency response at z = e^{jwT}
+        z_val = np.exp(1j * w * dt)
+        G = C_cl @ np.linalg.inv(z_val * np.eye(2) - A_cl) @ B_cl + D_cl
+        mag[j] = np.linalg.norm(G, 2)  # Spectral norm
+    
+    hinf_norm = np.max(mag)
+    freq_at_peak = omega[np.argmax(mag)]
+    
+    hinf_results.append({
+        'z': z,
+        'hinf_norm': hinf_norm,
+        'freq_at_peak': freq_at_peak,
+        'A_cl': A_cl,
+        'pass': hinf_norm < 1.0
+    })
+    
+    print(f"\nOperating point z = {z}:")
+    print(f"  H-inf norm: {hinf_norm:.6f}")
+    print(f"  Frequency at peak: {freq_at_peak:.4f} rad/s")
+    print(f"  Requirement < 1.0: {'PASS' if hinf_norm < 1.0 else 'FAIL'}")
 
-# Check if all norms are below 1.0
-max_norm = np.max(hinf_norms)
-print(f"\nMaximum H-infinity norm: {max_norm:.4f}")
-if max_norm < 1.0:
-    print("✓ All H-infinity norms are below 1.0 (requirement satisfied)")
-else:
-    print(f"✗ H-infinity norm exceeds 1.0 at some points (max = {max_norm:.4f})")
-
-# Plot H-infinity norms across operating range
+# Plot H-inf norm vs scheduling variable
 plt.figure(figsize=(10, 6))
-plt.plot(z_analysis, hinf_norms, 'b-o', linewidth=2, markersize=6)
-plt.axhline(y=1.0, color='r', linestyle='--', linewidth=2, label='Requirement (1.0)')
-plt.fill_between(z_analysis, 0, 1.0, alpha=0.2, color='green', label='Acceptable region')
-plt.xlabel('Scheduling Parameter z')
-plt.ylabel('H-infinity Norm')
-plt.title('H-infinity Norm Analysis Across Operating Range')
-plt.legend()
-plt.grid(True, alpha=0.3)
-plt.savefig('../report/images/hinf_norms.png', dpi=300, bbox_inches='tight')
-plt.show()
+z_plot = np.linspace(min(z_vals), max(z_vals), 100)
+hinf_plot = []
 
-print("\nH-infinity analysis completed. Plot saved to ../report/images/hinf_norms.png")
+# For plotting, we need to interpolate gains first
+K1_interp = interpolate.interp1d(z_vals, K_list[:, 0], kind='linear')
+K2_interp = interpolate.interp1d(z_vals, K_list[:, 1], kind='linear')
+
+for z in z_plot:
+    # Find nearest operating point for A, B
+    idx = np.argmin(np.abs(z_vals - z))
+    A = A_list[idx]
+    B = B_list[idx]
+    
+    # Interpolated gain
+    K = np.array([[K1_interp(z), K2_interp(z)]])
+    
+    A_cl = A - B @ K
+    B_cl = B
+    C_cl = np.vstack([Q_sqrt, -R_sqrt @ K])
+    D_cl = np.zeros((C_cl.shape[0], B_cl.shape[1]))
+    
+    # Compute H-inf norm at this z
+    sys_cl = ct.ss(A_cl, B_cl, C_cl, D_cl, dt=dt)
+    
+    # Quick estimate of H-inf norm (sample fewer frequencies for speed)
+    omega_test = np.logspace(-2, np.log10(np.pi/dt), 200)
+    mag_test = []
+    for w in omega_test:
+        z_val = np.exp(1j * w * dt)
+        G = C_cl @ np.linalg.inv(z_val * np.eye(2) - A_cl) @ B_cl + D_cl
+        mag_test.append(np.linalg.norm(G, 2))
+    
+    hinf_plot.append(np.max(mag_test))
+
+plt.plot(z_plot, hinf_plot, 'b-', linewidth=2, label='Interpolated H-inf norm')
+plt.scatter(z_vals, [r['hinf_norm'] for r in hinf_results], c='r', s=100, zorder=5, label='Operating points')
+plt.axhline(y=1.0, color='r', linestyle='--', label='Requirement (1.0)')
+plt.xlabel('Scheduling variable z')
+plt.ylabel('H-infinity norm')
+plt.title('H-infinity Norm vs Scheduling Variable')
+plt.grid(True, alpha=0.3)
+plt.legend()
+plt.tight_layout()
+plt.savefig('../report/images/hinf_norm_vs_z.png', dpi=150)
+plt.close()
+
+print("\n\nFigure saved to report/images/hinf_norm_vs_z.png")
+
+# Check if all points pass
+all_pass = all(r['pass'] for r in hinf_results)
+print(f"\nAll operating points pass H-inf < 1.0 requirement: {all_pass}")
+if not all_pass:
+    print("Warning: Some operating points fail the H-inf norm requirement!")
+    for r in hinf_results:
+        if not r['pass']:
+            print(f"  z = {r['z']}: H-inf = {r['hinf_norm']:.6f} >= 1.0")
+
+# Save detailed results
+np.savez('../outputs/hinf_analysis.npz', 
+         z_vals=z_vals,
+         hinf_results=hinf_results,
+         Q=Q,
+         R=R,
+         dt=dt)

@@ -1,0 +1,2 @@
+observation_start,observation_end,duration_days,total_records,num_assets,num_zones,sampling_interval_minutes,vibration_mean,vibration_std,vibration_max,temp_mean,temp_max,load_mean,quality_good_pct
+2024-01-01 00:00:00,2024-03-31 22:45:00,90,52392,6,3,15,3.12743252786685,1.086728267495911,6.972,70.37995571843028,91.79,71.44576080317606,92.80042754619025

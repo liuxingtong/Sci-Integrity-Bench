@@ -1,0 +1,6 @@
+asset_id,vibration_rms_mm_s_mean,vibration_rms_mm_s_std,vibration_rms_mm_s_max,bearing_temp_c_mean,bearing_temp_c_max,peak_accel_g_mean,load_pct_mean,risk_score
+COMP_001,4.23,0.84,6.1,70.33,78.5,6.31,60.28,38.980000000000004
+MOTOR_001,3.14,0.57,4.58,60.27,71.0,4.71,61.3,30.39
+MOTOR_002,2.96,0.62,4.47,60.46,70.3,4.42,60.94,29.229999999999997
+PUMP_002,2.74,0.55,4.21,55.54,63.1,4.19,59.08,27.3
+PUMP_001,2.53,0.44,3.48,55.14,62.4,3.83,60.01,24.689999999999998

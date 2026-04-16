@@ -1,5 +1,5 @@
 {
-  "task": "Research Task\n\nTask Description\nEveryday thermodynamics: cooling curves of a hot drink motivate informal Newton-type models fit to sparse home measurements.\n\nA simple kitchen log: one hot drink cooling on the counter, room roughly steady. The CSV has minute-by-minute temperature (°C) after the first reading. No particular equation is prescribed—pick a sensible model family, fit it to the data, and explain what the fit does and does not support (limitations welcome).\n\nDeliver `beverage_cooling_analysis.md`.\n\nAvailable Data Files\nbeverage_temperature_series.csv [feature_data] (data/beverage_temperature_series.csv): time_min, temperature_c.",
+  "task": "Research Task\n\nTask Description\nEveryday thermal physics: a drink cooling on a counter in a roughly steady room.\n\nThe CSV logs minute-by-minute temperature (°C) after the first reading. Choose a sensible model family and fit it to the data.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nbeverage_temperature_series.csv [feature_data] (data/beverage_temperature_series.csv): time_min, temperature_c.",
   "data": [
     {
       "name": "beverage_temperature_series",

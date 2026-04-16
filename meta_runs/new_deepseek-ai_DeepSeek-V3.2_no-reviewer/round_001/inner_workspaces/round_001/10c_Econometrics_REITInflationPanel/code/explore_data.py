@@ -2,36 +2,52 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import statsmodels.api as sm
-from statsmodels.tsa.stattools import adfuller, grangercausalitytests
 import os
 
-# Set style for plots
+# Set style for better plots
 plt.style.use('seaborn-v0_8-whitegrid')
 sns.set_palette("husl")
 
-# Create output directories
-os.makedirs('outputs', exist_ok=True)
-os.makedirs('report/images', exist_ok=True)
-
-# Load data
-df = pd.read_csv('../data/reit_macro_quarterly.csv')
+# Load the data
+data_path = '../data/reit_macro_quarterly.csv'
+df = pd.read_csv(data_path)
 print("Data shape:", df.shape)
 print("\nFirst few rows:")
 print(df.head())
-print("\nData info:")
-print(df.info())
-print("\nDescriptive statistics:")
+print("\nData types:")
+print(df.dtypes)
+print("\nSummary statistics:")
 print(df.describe())
-
-# Check for missing values
 print("\nMissing values:")
 print(df.isnull().sum())
 
-# Save basic stats to file
-with open('outputs/basic_stats.txt', 'w') as f:
-    f.write(f"Data shape: {df.shape}\n")
-    f.write(f"\nDescriptive statistics:\n{df.describe().to_string()}\n")
-    f.write(f"\nMissing values:\n{df.isnull().sum().to_string()}\n")
+# Check for any patterns in quarter column
+print("\nQuarter column unique values:", df['quarter'].unique()[:10])
+print("Quarter range:", df['quarter'].min(), "to", df['quarter'].max())
 
-print("\nBasic exploration complete. Results saved to outputs/basic_stats.txt")
+# Create output directory if it doesn't exist
+os.makedirs('../outputs', exist_ok=True)
+os.makedirs('../report/images', exist_ok=True)
+
+# Basic time series plot
+fig, axes = plt.subplots(2, 1, figsize=(12, 8))
+
+# Plot inflation
+axes[0].plot(df['quarter'], df['inflation_yoy'], marker='o', linewidth=2)
+axes[0].set_title('Inflation (Year-over-Year) Over Time')
+axes[0].set_xlabel('Quarter')
+axes[0].set_ylabel('Inflation (%)')
+axes[0].grid(True, alpha=0.3)
+
+# Plot REIT returns
+axes[1].plot(df['quarter'], df['reit_index_return'], marker='o', linewidth=2, color='green')
+axes[1].set_title('REIT Index Returns Over Time')
+axes[1].set_xlabel('Quarter')
+axes[1].set_ylabel('REIT Return')
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('../report/images/time_series_plots.png', dpi=300, bbox_inches='tight')
+plt.close()
+
+print("\nBasic exploration complete. Time series plots saved.")

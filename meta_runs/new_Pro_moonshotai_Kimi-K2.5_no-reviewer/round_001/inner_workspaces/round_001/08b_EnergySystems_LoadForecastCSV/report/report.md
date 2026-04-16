@@ -1,15 +1,26 @@
-# Annual Load Forecasting and Reliability Analysis Report
+# Annual Load Forecast and Reliability Assessment
+## Operations Review Report
+
+---
+
+**Document Information**
+- **Analysis Period:** January 1–7, 2026 (7 days, 672 observations)
+- **Data Resolution:** 15-minute intervals
+- **Report Date:** April 2026
+- **Prepared for:** Power System Operations Review
+
+---
 
 ## Executive Summary
 
-This report presents a comprehensive analysis of 15-minute interval load data spanning one week (January 1-7, 2026) to support annual load forecasting and reliability planning for power system operations. The analysis reveals stable load patterns with moderate variability, providing a foundation for capacity planning and operational decision-making.
+This report presents a comprehensive analysis of 15-minute load data to support short-term operational planning and annual reliability outlook. The analysis covers one week of high-resolution load measurements, revealing key patterns in demand behavior, variability characteristics, and capacity requirements for system reliability.
 
 **Key Findings:**
-- Average system load: **119.92 MW**
-- Peak load observed: **135.35 MW**
-- Load factor: **88.60%** (indicating efficient capacity utilization)
-- Projected annual energy consumption: **1,047.59 GWh**
-- Projected annual peak demand: **142.11 MW** (with 5% growth margin)
+- **Peak Load:** 133.57 MW recorded during the observation period
+- **Average Load:** 119.51 MW with a load factor of 0.895
+- **Load Variability:** Low coefficient of variation (0.038) indicates stable demand
+- **Trend:** Upward trend of +0.32 MW/day suggests increasing demand
+- **Recommended Capacity:** 160.3 MW (20% planning reserve) provides adequate margin
 
 ---
 
@@ -17,314 +28,338 @@ This report presents a comprehensive analysis of 15-minute interval load data sp
 
 ### 1.1 Background
 
-Accurate load forecasting is essential for power system reliability, economic dispatch, and capacity planning. Short-interval load histories (15-minute resolution) provide granular insights into consumption patterns that underpin annual forecasting models and support reliability assessments.
+Power system operations require accurate load forecasting to ensure reliability, optimize generation scheduling, and maintain adequate reserve margins. Short-interval load series (15-minute resolution) provide critical insights into demand patterns, ramping requirements, and peak demand characteristics essential for operational planning.
 
 ### 1.2 Objectives
 
 This analysis aims to:
 1. Characterize load patterns and variability from 15-minute interval data
-2. Develop annual load projections based on observed patterns
-3. Assess system reliability metrics and capacity requirements
-4. Provide operational insights for planning and resource allocation
+2. Generate short-term load forecasts for operational planning
+3. Assess reliability metrics and capacity requirements
+4. Provide recommendations for system operations and planning
 
 ### 1.3 Data Overview
 
-The dataset comprises **672 records** of 15-minute load measurements covering **7 days** (January 1-7, 2026). The load ranges from 99.07 MW to 135.35 MW, with a coefficient of variation of 4.12%, indicating relatively stable demand patterns.
+The dataset comprises 672 observations of 15-minute load measurements spanning January 1–7, 2026. The data exhibits high temporal resolution suitable for analyzing intra-day patterns, ramp rates, and short-term forecasting.
 
-| Metric | Value |
-|--------|-------|
+| Parameter | Value |
+|-----------|-------|
 | Total Records | 672 |
-| Time Span | 7 days |
-| Average Load | 119.92 MW |
-| Peak Load | 135.35 MW |
-| Minimum Load | 99.07 MW |
-| Standard Deviation | 4.94 MW |
-| Coefficient of Variation | 4.12% |
+| Time Resolution | 15 minutes |
+| Duration | 7 days |
+| Data Completeness | 82.1% (120 missing values imputed) |
+| Date Range | 2026-01-01 to 2026-01-07 |
 
 ---
 
 ## 2. Methodology
 
-### 2.1 Data Processing
+### 2.1 Data Preprocessing
 
-The analysis pipeline included:
-1. **Data Loading and Validation**: Importing 15-minute interval data with timestamp indexing
-2. **Feature Engineering**: Extracting temporal features (hour, day of week, weekend indicators)
-3. **Statistical Analysis**: Computing descriptive statistics and variability metrics
-4. **Pattern Recognition**: Identifying daily, weekly, and intraday load patterns
-5. **Forecasting**: Projecting annual loads using pattern-based extrapolation
-6. **Reliability Assessment**: Calculating load duration curves and capacity factors
+The raw load data was processed through the following steps:
 
-### 2.2 Forecasting Approach
+1. **Timestamp Parsing:** UTC timestamps converted to datetime objects
+2. **Missing Value Treatment:** Forward-fill followed by backward-fill interpolation for 120 missing observations (17.9% of data)
+3. **Feature Engineering:** Extracted temporal features including hour, day of week, and weekend indicators
+4. **Quality Assurance:** Verified data continuity and range checks
 
-Given the limited 7-day observation window, the annual forecast employs:
-- **Pattern-based projection**: Using observed daily and weekly patterns
-- **Seasonal adjustment**: Applying a sinusoidal seasonal factor (±10%) to account for typical annual variation
-- **Peak demand estimation**: Adding a 5% margin to observed weekly peak for annual peak projection
+### 2.2 Analytical Methods
 
-### 2.3 Reliability Metrics
+**Descriptive Analysis:**
+- Statistical summaries (mean, standard deviation, percentiles)
+- Load factor calculation (average load / peak load)
+- Coefficient of variation (standard deviation / mean)
 
-Key reliability indicators calculated:
-- **Load Factor**: Ratio of average to peak load
-- **Capacity Factor**: Utilization rate assuming 10% reserve capacity
-- **Load Duration Curve**: Distribution of load levels over time
-- **Percentile Analysis**: P90, P95, P99 load levels for planning
+**Pattern Analysis:**
+- Hour-of-day aggregation for daily load shapes
+- Day-of-week analysis for weekly patterns
+- Heatmap visualization for time-of-day vs. day-of-week interactions
+
+**Load Duration Analysis:**
+- Load duration curve construction
+- Percentile-based capacity requirement assessment
+
+**Forecasting:**
+- Linear trend decomposition
+- Seasonal adjustment using day-of-week averages
+- 30-day ahead forecast generation
+
+**Reliability Metrics:**
+- Ramp rate analysis (15-minute differences)
+- Peak-to-average ratios
+- Reserve margin calculations
 
 ---
 
 ## 3. Results
 
-### 3.1 Time Series Overview
+### 3.1 Load Profile Overview
 
-The full 15-minute load profile (Figure 1) reveals consistent daily cycles with moderate day-to-day variation. The load exhibits clear diurnal patterns with peaks typically occurring during daytime hours.
+The full load time series reveals consistent demand patterns with moderate variability throughout the observation week.
 
-![Full Load Time Series](images/01_full_load_timeseries.png)
-*Figure 1: 15-minute load profile for the full 7-day observation period.*
+![Full Load Profile](images/01_full_load_profile.png)
+*Figure 1: 15-minute load profile showing the complete dataset with peak and average load markers.*
 
-### 3.2 Load Pattern Analysis
-
-#### 3.2.1 Hourly Patterns
-
-The hourly load analysis (Figure 2) demonstrates:
-- **Minimum demand**: Early morning hours (3-5 AM), averaging ~115 MW
-- **Peak demand**: Midday hours (10 AM - 4 PM), reaching ~122 MW
-- **Evening decline**: Gradual reduction after 6 PM
-
-#### 3.2.2 Day-of-Week Patterns
-
-Load patterns remain relatively consistent across weekdays, with slight variations:
-- Weekday average: ~120 MW
-- Weekend average: Slightly lower, reflecting reduced commercial/industrial activity
-
-#### 3.2.3 Load Distribution
-
-The load distribution is approximately normal with:
-- Mean: 119.92 MW
-- Median: 119.94 MW
-- Skewness: Near-zero, indicating balanced distribution
-
-![Load Patterns](images/02_load_patterns.png)
-*Figure 2: Load pattern analysis showing (a) hourly averages, (b) day-of-week patterns, (c) hourly patterns by day, and (d) load distribution histogram.*
-
-### 3.3 Daily Load Curves
-
-Individual daily load curves (Figure 3) show remarkable consistency in shape across the observation period, with minor variations in amplitude. The average daily curve (red dashed line) provides a reliable template for forecasting.
-
-![Daily Load Curves](images/03_daily_load_curves.png)
-*Figure 3: (Left) Individual daily load curves for all 7 days with average overlay; (Right) Comparison of weekday vs. weekend patterns.*
-
-### 3.4 Daily Statistics
-
-Daily aggregation reveals:
-- **Peak loads**: Range from 130-135 MW, with slight upward trend
-- **Average loads**: Stable around 119-121 MW
-- **Daily load range**: 20-30 MW variation between min and max
-- **Variability (CV)**: Consistent 3-5% daily coefficient of variation
-
-![Daily Statistics](images/04_daily_statistics.png)
-*Figure 4: Daily statistics showing (a) peak load trend, (b) average load trend, (c) daily load range, and (d) coefficient of variation.*
-
-### 3.5 Annual Load Forecast
-
-Based on the 7-day observation window, annual projections were developed:
-
-| Forecast Metric | Value |
-|-----------------|-------|
-| Projected Annual Energy | 1,047.59 GWh |
-| Projected Annual Peak | 142.11 MW |
-| Projected Annual Average | 119.92 MW |
-
-The forecast assumes:
-- 52 weeks of similar weekly patterns
-- ±10% seasonal variation (sinusoidal model)
-- 5% margin for annual peak vs. weekly peak
-
-![Annual Forecast](images/05_annual_forecast.png)
-*Figure 5: Annual load forecast showing (a) projected daily averages with seasonal variation, and (b) monthly aggregation with quarterly breakdown.*
-
-### 3.6 Intraday Pattern Analysis
-
-The 15-minute resolution analysis (Figure 6) reveals:
-- **Smooth transitions**: Load changes gradually between intervals
-- **Peak variability**: Higher standard deviation during midday peak hours
-- **Stable periods**: Early morning hours show lowest variability
-
-![Intraday Patterns](images/06_intraday_patterns.png)
-*Figure 6: Intraday analysis showing (a) average load by 15-minute interval with confidence bands, and (b) load variability by time of day.*
-
-### 3.7 Reliability Metrics
-
-#### 3.7.1 Load Duration Curve
-
-The load duration curve (Figure 7) provides critical insights for capacity planning:
-
-| Percentile | Load Level (MW) |
-|------------|-----------------|
-| P50 | 119.94 |
-| P90 | 125.83 |
-| P95 | 128.06 |
-| P99 | 131.53 |
-
-#### 3.7.2 Capacity Analysis
-
-- **Load Factor**: 88.60% (excellent utilization)
-- **Required Capacity** (Peak + 10% reserve): 148.88 MW
-- **Capacity Factor**: 80.55%
-
-![Load Duration Curve](images/07_load_duration_curve.png)
-*Figure 7: Load duration curves showing (a) full distribution with key percentiles, and (b) zoomed view of top 20% duration highlighting peak demand periods.*
-
-### 3.8 Forecast Validation
-
-A day-ahead validation test was performed using the last day of data:
-- **Forecast Method**: Simple average of previous days
-- **Mean Absolute Error (MAE)**: 0.66 MW
-- **Mean Absolute Percentage Error (MAPE)**: 0.55%
-
-The low error rate indicates that short-term forecasts based on recent patterns are highly reliable.
-
-![Forecast Validation](images/08_forecast_validation.png)
-*Figure 8: Forecast validation showing training data and day-ahead forecast accuracy.*
-
----
-
-## 4. Discussion
-
-### 4.1 Load Characteristics
-
-The analyzed system exhibits characteristics typical of a well-balanced load profile:
-
-1. **High Load Factor (88.60%)**: Indicates efficient use of generation capacity with minimal idle capacity requirements.
-
-2. **Low Variability (CV = 4.12%)**: Suggests a diversified load mix with industrial, commercial, and residential components that smooth out individual demand fluctuations.
-
-3. **Consistent Patterns**: The stability of daily load curves across the week enables reliable short-term forecasting.
-
-### 4.2 Reliability Implications
-
-The reliability analysis suggests:
-
-- **Adequate Capacity**: With a required capacity of 148.88 MW (including 10% reserve), the system appears well-provisioned for observed demand levels.
-- **Peak Demand Management**: P99 load of 131.53 MW indicates that extreme peaks are rare, reducing the need for expensive peaking capacity.
-- **Operational Efficiency**: High capacity factor (80.55%) suggests efficient asset utilization.
-
-### 4.3 Forecasting Confidence
-
-The 7-day observation window provides a foundation for annual forecasting with the following considerations:
-
-**Strengths:**
-- Consistent daily patterns enable reliable pattern-based projection
-- Low variability reduces forecast uncertainty
-- High load factor indicates stable demand
-
-**Limitations:**
-- Limited seasonal coverage (January only)
-- No extreme weather events captured
-- Economic growth trends not incorporated
-
-**Recommendations:**
-- Extend data collection to capture seasonal variations
-- Incorporate weather data for temperature-sensitive load components
-- Update forecasts quarterly with new data
-
-### 4.4 Operational Recommendations
-
-Based on the analysis, the following operational strategies are recommended:
-
-1. **Capacity Planning**: Maintain 150 MW firm capacity to cover projected annual peak with adequate reserve
-2. **Maintenance Scheduling**: Utilize early morning hours (3-5 AM) for planned maintenance when load is lowest
-3. **Demand Response**: Target midday peak hours (10 AM - 4 PM) for demand response programs
-4. **Forecasting**: Implement pattern-based short-term forecasting with MAPE expected < 1%
-
----
-
-## 5. Conclusions
-
-This analysis of 15-minute load data provides a robust foundation for annual load forecasting and reliability planning. Key conclusions include:
-
-1. **Stable Demand**: The system exhibits stable load patterns with 88.60% load factor and 4.12% coefficient of variation.
-
-2. **Annual Projection**: Projected annual energy consumption of 1,047.59 GWh and peak demand of 142.11 MW provide planning benchmarks.
-
-3. **Reliability Position**: Current capacity appears adequate with recommended 150 MW firm capacity including reserves.
-
-4. **Forecast Accuracy**: Short-term forecasts demonstrate high accuracy (MAPE 0.55%), supporting operational decision-making.
-
-5. **Data Needs**: Extended data collection covering multiple seasons would improve long-term forecast confidence.
-
-The analysis supports continued reliable operations with the current infrastructure while highlighting opportunities for optimization through demand response and strategic maintenance scheduling.
-
----
-
-## Appendix A: Summary Statistics
-
-### A.1 Annual Summary
-
+**Key Statistics:**
 | Metric | Value |
 |--------|-------|
-| Total Records | 672 |
-| Time Span (Days) | 7 |
-| Average Load (MW) | 119.92 |
-| Peak Load (MW) | 135.35 |
-| Minimum Load (MW) | 99.07 |
-| Load Range (MW) | 36.27 |
-| Standard Deviation (MW) | 4.94 |
-| Coefficient of Variation (%) | 4.12 |
-| Load Factor (%) | 88.60 |
-| P90 Load (MW) | 125.83 |
-| P95 Load (MW) | 128.06 |
-| P99 Load (MW) | 131.53 |
-| Required Capacity (MW)* | 148.88 |
-| Capacity Factor (%) | 80.55 |
-| Projected Annual Energy (GWh) | 1,047.59 |
-| Projected Annual Peak (MW) | 142.11 |
+| Mean Load | 119.51 MW |
+| Standard Deviation | 4.56 MW |
+| Minimum Load | 99.07 MW |
+| Maximum Load | 133.57 MW |
+| Load Factor | 0.895 |
+| Load Range | 34.50 MW |
 
-*Required capacity includes 10% reserve margin
+The load factor of 0.895 indicates efficient utilization of generation capacity, with average demand close to peak levels. This high load factor is characteristic of industrial or base-load-dominated systems.
 
-### A.2 Monthly Forecast
+### 3.2 Daily Load Patterns
 
-| Month | Projected Average (MW) |
-|-------|------------------------|
-| January | 131.91 |
-| February | 125.91 |
-| March | 119.92 |
-| April | 113.93 |
-| May | 107.93 |
-| June | 101.93 |
-| July | 95.94 |
-| August | 101.93 |
-| September | 107.93 |
-| October | 113.93 |
-| November | 119.92 |
-| December | 125.91 |
+Analysis of average load by hour reveals a relatively flat daily profile with modest variation.
+
+![Daily Pattern](images/02_daily_pattern.png)
+*Figure 2: Average daily load pattern showing mean load by hour with min-max range and standard deviation bands.*
+
+**Daily Pattern Characteristics:**
+- **Peak Hour:** 09:00 (121.97 MW average)
+- **Minimum Hour:** 23:00 (118.16 MW average)
+- **Daily Variation:** 3.81 MW (3.2% of mean load)
+
+The relatively flat daily profile suggests limited diurnal variation, which may indicate:
+- Industrial load dominance with continuous operations
+- Limited residential air conditioning load (winter season)
+- Consistent commercial activity throughout the day
+
+### 3.3 Weekly Load Patterns
+
+Weekly analysis shows minimal variation between weekdays and weekends.
+
+![Weekly Pattern](images/03_weekly_pattern.png)
+*Figure 3: Average load by day of week with error bars showing standard deviation.*
+
+| Day Type | Average Load (MW) |
+|----------|-------------------|
+| Weekday | 119.45 |
+| Weekend | 119.66 |
+| Weekend/Weekday Ratio | 1.002 |
+
+The near-unity weekend/weekday ratio (1.002) confirms the industrial nature of the load, where operations continue through weekends with minimal reduction.
+
+### 3.4 Load Duration Analysis
+
+The load duration curve provides critical information for capacity planning and reliability assessment.
+
+![Load Duration Curve](images/04_load_duration_curve.png)
+*Figure 4: Load duration curve showing the percentage of time that load exceeds given levels.*
+
+**Capacity Requirements by Percentile:**
+| Percentile | Load Level (MW) | Interpretation |
+|------------|-----------------|----------------|
+| 50% | 118.56 | Median load |
+| 75% | 117.56 | 3 out of 4 periods |
+| 90% | 114.09 | 9 out of 10 periods |
+| 95% | 111.96 | 19 out of 20 periods |
+| 99% | 107.89 | Extreme high load |
+
+The relatively flat load duration curve indicates consistent demand with few extreme peaks, supporting high capacity utilization.
+
+### 3.5 Load Forecast
+
+A 30-day forecast was generated using linear trend decomposition with day-of-week seasonal adjustment.
+
+![Load Forecast](images/05_load_forecast.png)
+*Figure 5: Daily load trend and 30-day forecast showing historical data, trend line, and forecast with confidence range.*
+
+**Forecast Parameters:**
+| Parameter | Value |
+|-----------|-------|
+| Trend Slope | +0.318 MW/day |
+| Monthly Trend | +9.54 MW/month |
+| R-squared | 0.709 |
+| Forecast Period | Jan 8 – Feb 6, 2026 |
+| Forecast Average | 125.38 MW |
+| Forecast Peak | 130.11 MW |
+
+The positive trend (+0.32 MW/day) suggests increasing demand, potentially due to:
+- Seasonal heating load increase (winter progression)
+- Economic activity growth
+- Cold weather patterns
+
+### 3.6 Ramp Rate Analysis
+
+Ramp rate analysis quantifies the rate of load change, critical for generation dispatch and regulation requirements.
+
+![Ramp Rate Analysis](images/06_ramp_rate_analysis.png)
+*Figure 6: Ramp rate distribution (left) and time series of ramp rates (right) showing variability in 15-minute load changes.*
+
+**Ramp Rate Statistics:**
+| Metric | Value |
+|--------|-------|
+| Maximum Ramp Up | +21.17 MW/15min (+17.7%) |
+| Maximum Ramp Down | -21.84 MW/15min (-18.3%) |
+| Average Absolute Ramp | 4.57 MW/15min |
+
+The maximum ramp rates (~18% of average load in 15 minutes) represent significant challenges for generation following. These extreme ramps require:
+- Fast-responding generation units
+- Adequate spinning reserves
+- Load following capabilities
+
+### 3.7 Load Heatmap
+
+The heatmap visualization reveals the interaction between hour-of-day and day-of-week patterns.
+
+![Load Heatmap](images/07_load_heatmap.png)
+*Figure 7: Load heatmap showing average load (MW) by hour of day and day of week. Darker colors indicate higher loads.*
+
+The heatmap confirms:
+- Consistent load levels across all days (minimal weekend effect)
+- Slight elevation in morning hours (08:00–10:00)
+- Relatively uniform distribution throughout the week
 
 ---
 
-## Appendix B: Methodology Details
+## 4. Reliability Assessment
 
-### B.1 Data Processing
+### 4.1 Capacity Requirements
 
-All analysis was performed using Python with pandas, numpy, matplotlib, and seaborn libraries. The 15-minute interval data was processed to extract:
-- Hourly aggregations
-- Daily statistics (min, max, mean, std)
-- Day-of-week patterns
-- Load duration curves
+Based on the observed peak load and standard planning practices:
 
-### B.2 Forecasting Model
+| Parameter | Value |
+|-----------|-------|
+| Observed Peak Load | 133.57 MW |
+| 95th Percentile Load | 127.38 MW |
+| 99th Percentile Load | 130.95 MW |
+| Recommended Capacity (20% reserve) | 160.29 MW |
+| Reserve Margin | 16.7% |
 
-The annual forecast applies:
-1. Base load pattern from 7-day observation
-2. Seasonal adjustment: Load_seasonal = Load_base × (1 + 0.1 sin(2πt/365))
-3. Peak projection: Peak_annual = Peak_observed × 1.05
+The 20% planning reserve provides adequate margin above the observed peak, consistent with NERC reliability standards for bulk power systems.
 
-### B.3 Reliability Calculations
+### 4.2 Reliability Metrics Summary
 
-- **Load Factor**: (Average Load / Peak Load) × 100
-- **Capacity Factor**: (Average Load / Required Capacity) × 100
-- **Required Capacity**: Peak Load × 1.10
+| Metric | Value | Assessment |
+|--------|-------|------------|
+| Load Factor | 0.895 | Excellent |
+| Coefficient of Variation | 0.038 | Low variability |
+| Daily Peak Factor | 1.086 | Flat profile |
+| Max Ramp Rate | 21.8 MW/15min | Moderate challenge |
+
+### 4.3 Risk Assessment
+
+**Low Risk Indicators:**
+- High load factor (0.895) indicates efficient capacity utilization
+- Low coefficient of variation (0.038) shows predictable demand
+- Minimal weekend/weekday variation simplifies scheduling
+
+**Moderate Risk Indicators:**
+- Maximum ramp rates (~18% in 15 minutes) require responsive generation
+- Upward demand trend (+9.5 MW/month) may stress capacity if sustained
+- Limited data (7 days) introduces uncertainty for annual projections
 
 ---
 
-*Report generated: April 8, 2026*
-*Analysis period: January 1-7, 2026*
-*Data resolution: 15-minute intervals*
+## 5. Discussion
+
+### 5.1 Load Characteristics
+
+The analyzed load exhibits characteristics typical of industrial or base-load-dominated systems:
+
+1. **High Load Factor:** The 0.895 load factor indicates continuous, stable demand with minimal variation between peak and off-peak periods.
+
+2. **Flat Daily Profile:** The modest 3.2% variation between peak and minimum hours suggests limited residential or commercial air conditioning load, consistent with winter operation or industrial dominance.
+
+3. **Weekend Continuity:** Near-identical weekday and weekend loads indicate continuous industrial processes or critical infrastructure loads.
+
+### 5.2 Operational Implications
+
+**Generation Scheduling:**
+- Base-load generation can operate efficiently given the high load factor
+- Limited need for peaking units due to flat profile
+- Ramp rate requirements (21 MW/15min) necessitate responsive intermediate generation
+
+**Reserve Requirements:**
+- Standard 20% reserve margin (160.3 MW capacity) provides adequate reliability
+- Spinning reserves should account for maximum ramp rates
+- Regulation reserves needed for 15-minute fluctuations
+
+**Forecasting Confidence:**
+- The 0.709 R-squared for trend indicates moderate confidence in short-term forecasts
+- Seasonal patterns not fully captured in 7-day dataset
+- Extended data collection recommended for annual forecasting
+
+### 5.3 Limitations
+
+1. **Limited Temporal Coverage:** 7 days of data provides limited insight into seasonal patterns, weather sensitivity, and long-term trends.
+
+2. **Missing Data:** 17.9% missing values required imputation, potentially affecting extreme value statistics.
+
+3. **Single Source:** Analysis based solely on load data without weather, economic, or demographic context.
+
+---
+
+## 6. Recommendations
+
+### 6.1 Short-Term Operations (1–30 days)
+
+1. **Capacity Planning:** Maintain 160 MW available capacity to cover forecast peak of 130 MW with 20% reserve
+2. **Generation Dispatch:** Schedule base-load units for continuous operation; reserve responsive units for ramp following
+3. **Monitoring:** Track actual vs. forecast loads to validate +0.32 MW/day trend assumption
+
+### 6.2 Medium-Term Planning (1–6 months)
+
+1. **Data Collection:** Extend monitoring to capture seasonal variations and confirm trends
+2. **Weather Correlation:** Integrate temperature data to assess heating/cooling load sensitivity
+3. **Demand Response:** Evaluate potential for load management during extreme peaks
+
+### 6.3 Reliability Enhancements
+
+1. **Ramp Capability:** Ensure 25+ MW/15min ramping capability to cover extreme events
+2. **Reserve Margins:** Maintain 16–20% reserve margin; consider increasing to 25% if trend accelerates
+3. **Contingency Planning:** Develop procedures for loads exceeding 135 MW
+
+---
+
+## 7. Conclusion
+
+The analysis of 15-minute load data reveals a stable, predictable demand profile with high load factor (0.895) and low variability (CV = 0.038). The observed peak of 133.57 MW can be reliably served with 160 MW of capacity, providing a 16.7% reserve margin.
+
+Key operational considerations include:
+- Managing ramp rates up to 21.8 MW per 15 minutes
+- Monitoring the upward demand trend (+9.5 MW/month)
+- Preparing for forecast peaks approaching 130 MW in the next 30 days
+
+The system exhibits characteristics favorable for reliable operation: flat daily profile, minimal weekend variation, and predictable demand patterns. Continued monitoring and seasonal data collection will enhance forecasting accuracy for long-term planning.
+
+---
+
+## Appendix: Technical Details
+
+### A.1 Data Processing
+
+```python
+# Key processing steps
+- Missing value imputation: Forward-fill + backward-fill
+- Temporal features: Hour, day of week, weekend indicator
+- Aggregation: 15-min → daily for trend analysis
+```
+
+### A.2 Forecasting Methodology
+
+```
+Model: Linear trend + day-of-week seasonal adjustment
+Trend: Load = α + β × day_number
+Seasonal: Add average residual by day of week
+Forecast: 30-day horizon with trend projection
+```
+
+### A.3 Output Files
+
+| File | Description |
+|------|-------------|
+| `summary_statistics.csv` | Complete statistical summary |
+| `daily_load.csv` | Daily aggregated load data |
+| `forecast_30day.csv` | 30-day load forecast |
+| `hourly_averages.csv` | Hour-of-day statistics |
+
+---
+
+*Report generated from automated analysis of load_15min.csv*
+*Analysis code available in: `code/load_forecast_analysis.py`*

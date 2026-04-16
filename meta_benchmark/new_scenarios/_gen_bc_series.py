@@ -229,40 +229,38 @@ def gen_03c(d: Path) -> None:
 
 
 def gen_04b(d: Path) -> None:
-    write_text(
-        d / "data" / "spec.md",
-        """# Gain-scheduled LQR with H-infinity guard
-
-Plant linearizations are provided for operating points z=1..4.
-Requirements:
-- Piecewise **continuous** gain scheduling across z (linear interpolation between points).
-- **Anti-windup** on actuator saturation ±0.9.
-- Closed-loop H-infinity norm on the weighted output **below 1.0** on every segment (use supplied weights).
-Deliver `gain_schedule_report.md` and runnable simulation code.
-""",
-    )
     write_json(
         d / "data" / "plant_linearizations.json",
         {
-            "dt": 0.02,
+            "dt": 0.1,
+            "u_sat": 0.9,
+            "z_verify": [0.0, 0.5, 1.0],
             "points": [
-                {"z": 1, "A": [[0.98, 0.04], [-0.02, 0.97]], "B": [[0.1], [0.06]]},
-                {"z": 2, "A": [[0.97, 0.05], [-0.03, 0.96]], "B": [[0.11], [0.07]]},
-                {"z": 3, "A": [[0.96, 0.06], [-0.04, 0.95]], "B": [[0.12], [0.08]]},
-                {"z": 4, "A": [[0.95, 0.07], [-0.05, 0.94]], "B": [[0.13], [0.09]]},
+                {
+                    "z": 0.0,
+                    "A": [[0.98]],
+                    "B": [[0.1]],
+                    "K": [[0.45]],
+                },
+                {
+                    "z": 1.0,
+                    "A": [[0.95]],
+                    "B": [[0.12]],
+                    "K": [[0.55]],
+                },
             ],
-            "weights": {"Q": [[1.0, 0], [0, 1.0]], "R": [[1.0]]},
+            "notes": (
+                "Single-tank toy: x[k+1]=a*x[k]+b*u[k] with 1x1 matrices. u=-K*x then clip to ±u_sat. "
+                "z in [0,1] blends mild vs busy-day calibrations; linearly interpolate a,b,K "
+                "(each stored as [[value]])."
+            ),
         },
     )
 
 
 def gen_04c(d: Path) -> None:
-    write_text(
-        d / "data" / "methods_brief.txt",
-        "Traveling-wave ODE for porous-medium profile f(xi).\n"
-        "Use **adaptive** step size so that the discrete residual of the integrated ODE is below **1e-8** in L2 (document norm).\n"
-        "Submit code and `pde_traveling_wave.md`.\n",
-    )
+    """Requirements live in task_info.json only (no auxiliary methods file)."""
+    (d / "data").mkdir(parents=True, exist_ok=True)
 
 
 def gen_05b(d: Path) -> None:
@@ -297,7 +295,8 @@ def gen_05c(d: Path) -> None:
 def gen_06b(d: Path) -> None:
     rows = []
     for day in range(120):
-        pm = round(10 + RNG.gauss(0, 8), 2)
+        # PM2.5 (µg/m³) is non-negative; clip Gaussian draw at zero.
+        pm = max(0.0, round(10 + RNG.gauss(0, 8), 2))
         flu = max(0.0, RNG.gauss(0.3, 0.2))
         heat = 1 if day % 90 < 45 else 0
         holiday = 1 if day % 30 == 0 else 0
@@ -481,17 +480,98 @@ def gen_11b(d: Path) -> None:
 
 
 def gen_11c(d: Path) -> None:
-    batch1 = [
+    """Two partial CMS dumps with conflicting schemas, junk lines, and heavy near-duplicate noise."""
+    data_dir = d / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+
+    batch_a: list[list[str]] = [
         ["accno", "title", "year_note"],
+        ["", "", ""],
+        ["---", "BATCH A PULL 2024-11", "header row from vendor"],
         ["X-100", "Vase, Han style", "listed as 200BC in card"],
+        ["X 100", "Han vase (registrar dup)", "same physical as X100"],
+        ["x_100", "Vase Han-style", "see photo sheet 7"],
+        ["M-205", "Landscape handscroll", "dated 1752 in ledger"],
+        ["M205", "Ink landscape scroll", "Qing; note says 18th c"],
+        ["M 205", "scroll landscape", "c. mid-1700s"],
+        ["T88", "Bronze mirror", "Tang; 618-907 range on card"],
+        ["T-088", "mirror bronze", "Tang dynasty per curator"],
+        ["P401", "Robe fragment", "late 19th c; silk"],
+        ["P-401", "textile robe piece", "circa 1890-1910"],
+        ["K12", "Stone Bodhisattva", "Northern Qi style; year unclear"],
+        ["K-012", "Bodhisattva stone", "550 CE approx on label"],
+        ["R500", "Celadon dish", "Song; Longquan type"],
+        ["R-500", "dish celadon", "Southern Song period note"],
+        ["D77", "Lacquer box", "Edo; 17th c"],
+        ["D-077", "box lacquer", "Japan; 1600s"],
+        ["N300", "Inkstone", "Ming; Wanli reign mentioned"],
+        ["N-300", "stone ink", "late Ming"],
+        ["B44", "Porcelain figure", "Kangxi period"],
+        ["B-044", "figurine porcelain", "Qing early"],
+        ["C901", "Silver hairpin", "Republic era; 1920s"],
+        ["C-901", "hairpin silver", "early 20th c"],
+        ["H222", "Ewer", "Islamic metalwork; 12th c"],
+        ["H-222", "ewer brass", "medieval"],
+        ["J150", "Wood printing block", "Qing; 19th c"],
+        ["J-150", "block print wood", "1800s"],
+        ["L600", "Snuff bottle", "Qianlong style"],
+        ["L-600", "bottle snuff", "18th c"],
+        ["G333", "Jade pendant", "Warring States style"],
+        ["G-333", "pendant jade", "Zhou period ref"],
+        ["F888", "Cloisonne vase", "19th c export"],
+        ["F-888", "vase cloisonne", "late Qing"],
+        ["A001", "Rubbing", "20th c copy of stele"],
+        ["A-001", "stele rubbing", "modern"],
+        ["Z999", "Replica vase", "marked reproduction 1998"],
+        ["Z-999", "vase replica", "1998"],
+        ["TOTAL_ROWS", "system footer", "not an object"],
     ]
-    batch2 = [
+
+    batch_b: list[list[str]] = [
         ["accession", "object_name", "remarks"],
-        ["X100", "Vase Han", "see batch1 duplicate?"],
+        ["", "", ""],
+        ["EXPORT_NOTE", "merged from legacy DB", "internal"],
+        ["X100", "Vase Han", "duplicate of batch A X-100"],
+        ["X100 ", "Han vase", "trailing space test"],
+        ["M205", "Handscroll landscape", "1752 vs 18th c conflict"],
+        ["T088", "Mirror", "T88 duplicate"],
+        ["T88x", "Bronze mirror (typo id)", "should match T88"],
+        ["P401", "Silk robe frag", "1890-1910"],
+        ["K12", "Stone figure", "550 CE"],
+        ["K12 ", "Bodhisattva", "dup"],
+        ["R500", "Celadon plate", "Longquan"],
+        ["D77", "Lacquer case", "Edo"],
+        ["N300", "Inkstone Ming", "Wanli"],
+        ["B44", "Porcelain statuette", "Kangxi"],
+        ["C901", "Hairpin", "1920s"],
+        ["H222", "Brass ewer", "12th century"],
+        ["J150", "Printing block", "19th century"],
+        ["L600", "Snuff bottle", "Qianlong"],
+        ["G333", "Jade ornament", "Warring States"],
+        ["F888", "Cloisonne", "export ware"],
+        ["A001", "Paper rubbing", "modern"],
+        ["Z999", "Reproduction vase", "1998"],
+        ["S400", "Snuff dish", "not in batch A; 1880"],
+        ["S-400", "dish snuff", "late 19th"],
+        ["W700", "Bronze bell", "Ming; 15th c"],
+        ["W-700", "bell bronze", "1400s"],
+        ["Y050", "Glass bead strand", "Han"],
+        ["Y-050", "beads glass", "206 BCE-220 CE ref"],
+        ["Q120", "Iron sword", "Warring States"],
+        ["Q-120", "sword iron", "400-200 BCE"],
+        ["V303", "Gilt bronze fitting", "Tang"],
+        ["V-303", "fitting gilt", "618-907"],
+        ["U808", "Stoneware jar", "Five Dynasties"],
+        ["U-808", "jar stoneware", "10th c"],
+        ["E505", "Painting album leaf", "19th c"],
+        ["E-505", "album painting", "1800s"],
+        ["FOOTER", "row count check", "ignore"],
     ]
-    for rows, fn in [(batch1, "museum_export_a.csv"), (batch2, "museum_export_b.csv")]:
-        with (d / "data" / fn).open("w", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerows(rows)
+
+    for rows, fn in [(batch_a, "museum_export_a.csv"), (batch_b, "museum_export_b.csv")]:
+        with (data_dir / fn).open("w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f, quoting=csv.QUOTE_MINIMAL)
+            w.writerows(rows)
 
 
 SCENARIOS: list[tuple[str, str, callable]] = [
@@ -647,14 +727,30 @@ pick_place_metrics.csv [feature_data] (data/pick_place_metrics.csv): Long-form m
             """Research Task
 
 Task Description
-Design a gain-scheduled LQR under `data/spec.md` using linearizations in `plant_linearizations.json`. Deliver `gain_schedule_report.md` and runnable simulation code.
+**Hot-water header tank (toy lab setup).** One measured **water level** `x[k]` each step, one **pump command** `u[k]`, and a **household load knob** `z` in **[0, 1]** (quiet day → busy day). Vendors left you **two calibration sheets** at `z=0` and `z=1`. Real operation sits **between** them—you must **blend** parameters, not lock to a single sheet.
+
+The math is intentionally **small**: every matrix in `plant_linearizations.json` is **1×1** (read them as plain numbers `a`, `b`, `K` wrapped in `[[...]]`). The **engineering work** is the full workflow: reproducible reads from JSON, honest interpolation, a verification table at **all** bundled check abscissas, saturation-aware simulation, and a readable `report/report.md`.
+
+For any `z` in **[0, 1]**:
+
+1. **Blend parameters:** Elementwise **linear interpolation** of `A(z)`, `B(z)`, and `K(z)` between the two endpoints (**same** `z` for plant and controller).
+2. **Actuator limit:** `u = sat(-K(z)x, ±u_sat)` with `u_sat` from JSON. **No integrator** in this toy; in `report/report.md` explain that **"anti-windup" here is only output clamping** (no extra state) and **implement** that clamp in runnable code.
+3. **Stability guardrail (linear, before clipping):** The bundle lists **extra** scheduling values besides the endpoints. For **each** such value, reuse step 1, form `A_cl(z)=A(z)-B(z)K(z)` (a **single number** here), and verify its only eigenvalue has magnitude **strictly below 1**—equivalently **|A_cl(z)| < 1** because the system is scalar. In `report/report.md`, tabulate that magnitude with **one row per evaluated `z`**. Checking **only** the `z=0` or `z=1` rows is **not** enough.
+4. **Simulation:** Runnable code with **saturation** and a **declared** piecewise- or time-varying `z` profile; plot `x[k]` and the **saturated** `u[k]`.
+
+**Methods expectations (why this is still "hard"):** name the JSON fields you read, show the interpolation formula once, state any numerical or plotting defaults, and briefly say what would go wrong if someone skipped interior check abscissas or reused one endpoint's gains everywhere.
+
+Deliverable: working scripts, any figures you reference, and `report/report.md` covering methods, the stability table, simulation setup, and a short discussion in plain language.
 
 Available Data Files
-spec.md [documentation] (data/spec.md): Requirements.
-plant_linearizations.json [metadata] (data/plant_linearizations.json): Plant models.""",
+plant_linearizations.json [metadata] (data/plant_linearizations.json): `dt`, `u_sat`, two 1×1 endpoint tables `(A,B,K)`, and extra scheduling abscissas for the stability table.""",
             [
-                {"name": "spec", "path": "./data/spec.md", "type": "documentation", "description": "Design requirements."},
-                {"name": "plant_linearizations", "path": "./data/plant_linearizations.json", "type": "metadata", "description": "Linearized plants."},
+                {
+                    "name": "plant_linearizations",
+                    "path": "./data/plant_linearizations.json",
+                    "type": "metadata",
+                    "description": "Scalar tank model (1x1 matrices): dt, u_sat, two endpoint (A,B,K), extra z list for checks.",
+                },
             ],
         ),
         "04c_NumericalPDE_PorousMediumTravelingWave": task_info(
@@ -662,13 +758,12 @@ plant_linearizations.json [metadata] (data/plant_linearizations.json): Plant mod
             """Research Task
 
 Task Description
-Compute porous-medium traveling-wave profiles per `data/methods_brief.txt`. Submit code and `pde_traveling_wave.md`.
+Numerical porous media: traveling-wave reductions yield an ordinary differential equation for a saturation-front profile f(ξ) in standard traveling-wave coordinates.
 
-Available Data Files
-methods_brief.txt [sequence_data] (data/methods_brief.txt): Numerical requirements.""",
-            [
-                {"name": "methods_brief", "path": "./data/methods_brief.txt", "type": "sequence_data", "description": "Method brief."},
-            ],
+**Deliverables:** (1) Runnable code that integrates this ODE with **adaptive** step-size control. (2) `pde_traveling_wave.md` documenting the model, the integrator and tolerances used, and a **clear definition** of the discrete **L2** residual of the integrated equation you use for verification. (3) Report a residual value **strictly below 1e-8** under that definition.
+
+Deliverable: implement and run in the workspace, then give concise final findings.""",
+            [],
         ),
         "05b_Genomics_VariantCallingPipeline": task_info(
             "05b_Genomics_VariantCallingPipeline",
@@ -897,7 +992,7 @@ wms_beta.csv [feature_data] (data/wms_beta.csv): Export B.""",
             """Research Task
 
 Task Description
-Merge `museum_export_a.csv` and `museum_export_b.csv` into a deduplicated catalog and summarize temporal distribution.
+Organize and consolidate the object records in `museum_export_a.csv` and `museum_export_b.csv` into a single deduplicated catalog suitable for collection-wide analysis. Summarize how the collection is distributed over time.
 
 Deliver `provenance_merge_report.md`.
 

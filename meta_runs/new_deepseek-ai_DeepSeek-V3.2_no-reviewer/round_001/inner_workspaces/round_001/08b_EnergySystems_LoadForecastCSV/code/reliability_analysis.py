@@ -1,182 +1,297 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from scipy import stats
 import os
 
-# Load annual forecast
-annual_df = pd.read_csv('outputs/annual_forecast_15min.csv', index_col=0, parse_dates=True)
+# Set style
+plt.style.use('seaborn-v0_8-whitegrid')
+sns.set_palette("husl")
 
-# 1. Calculate reliability metrics
-peak_load = annual_df['final_forecast'].max()
-avg_load = annual_df['final_forecast'].mean()
-min_load = annual_df['final_forecast'].min()
+# Read and prepare data
+data_path = '../data/load_15min.csv'
+df = pd.read_csv(data_path)
+df['timestamp_utc'] = pd.to_datetime(df['timestamp_utc'])
+df.set_index('timestamp_utc', inplace=True)
 
-# Load duration curve
-load_sorted = np.sort(annual_df['final_forecast'].values)[::-1]  # Descending
-hours = np.arange(1, len(load_sorted) + 1) / 4  # Convert 15-min intervals to hours
+# Impute missing values using forward fill then backward fill
+df['load_mw'] = df['load_mw'].fillna(method='ffill').fillna(method='bfill')
 
+# Extract time features
+df['hour'] = df.index.hour
+df['minute'] = df.index.minute
+df['day_of_week'] = df.index.dayofweek
+df['day_name'] = df.index.day_name()
+df['date'] = df.index.date
+
+print("=== RELIABILITY ANALYSIS ===\n")
+
+# ====== BASIC STATISTICS ======
+print("1. BASIC LOAD STATISTICS")
+print("=" * 50)
+print(f"Total observations: {len(df)}")
+print(f"Time period: {df.index.min()} to {df.index.max()}")
+print(f"Duration: {(df.index.max() - df.index.min()).days} days")
+print(f"\nLoad Statistics (MW):")
+print(f"  Mean: {df['load_mw'].mean():.2f}")
+print(f"  Median: {df['load_mw'].median():.2f}")
+print(f"  Std Dev: {df['load_mw'].std():.2f}")
+print(f"  Minimum: {df['load_mw'].min():.2f}")
+print(f"  Maximum: {df['load_mw'].max():.2f}")
+print(f"  Range: {df['load_mw'].max() - df['load_mw'].min():.2f}")
+
+# ====== RELIABILITY METRICS ======
+print("\n2. RELIABILITY METRICS")
+print("=" * 50)
+
+# Load Factor = Average Load / Peak Load
+load_factor = df['load_mw'].mean() / df['load_mw'].max() * 100
+print(f"Load Factor: {load_factor:.1f}%")
+
+# Peak-to-Average Ratio
+peak_to_avg = df['load_mw'].max() / df['load_mw'].mean()
+print(f"Peak-to-Average Ratio: {peak_to_avg:.2f}")
+
+# Daily peak statistics
+daily_peaks = df.groupby('date')['load_mw'].max()
+daily_means = df.groupby('date')['load_mw'].mean()
+daily_mins = df.groupby('date')['load_mw'].min()
+
+print(f"\nDaily Peak Statistics:")
+print(f"  Average daily peak: {daily_peaks.mean():.2f} MW")
+print(f"  Maximum daily peak: {daily_peaks.max():.2f} MW")
+print(f"  Minimum daily peak: {daily_peaks.min():.2f} MW")
+print(f"  Std of daily peaks: {daily_peaks.std():.2f} MW")
+
+# ====== LOAD DURATION ANALYSIS ======
+print("\n3. LOAD DURATION ANALYSIS")
+print("=" * 50)
+
+# Sort load values in descending order
+sorted_load = np.sort(df['load_mw'])[::-1]
+
+# Calculate percentiles
+percentiles = [1, 5, 10, 25, 50, 75, 90, 95, 99]
+percentile_values = np.percentile(df['load_mw'], percentiles)
+
+print("Load Percentiles (MW):")
+for p, val in zip(percentiles, percentile_values):
+    print(f"  {p}th percentile: {val:.2f}")
+
+# Time above certain thresholds
+thresholds = [110, 115, 120, 125, 130]
+print("\nTime Above Thresholds:")
+for thresh in thresholds:
+    time_above = (df['load_mw'] > thresh).sum() / len(df) * 100
+    print(f"  Above {thresh} MW: {time_above:.1f}% of time")
+
+# ====== DAILY AND WEEKLY PATTERNS ======
+print("\n4. SEASONAL PATTERNS")
+print("=" * 50)
+
+# Hourly averages
+hourly_avg = df.groupby('hour')['load_mw'].mean()
+hourly_std = df.groupby('hour')['load_mw'].std()
+
+print("\nHourly Load Pattern (Average ± Std Dev):")
+for hour in range(24):
+    print(f"  {hour:02d}:00 - {hourly_avg[hour]:.2f} ± {hourly_std[hour]:.2f} MW")
+
+# Day of week averages
+dow_avg = df.groupby('day_name')['load_mw'].mean()
+dow_std = df.groupby('day_name')['load_mw'].std()
+
+print("\nDay-of-Week Load Pattern:")
+for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']:
+    if day in dow_avg.index:
+        print(f"  {day[:3]}: {dow_avg[day]:.2f} ± {dow_std[day]:.2f} MW")
+
+# ====== ANNUAL FORECAST (SIMPLIFIED) ======
+print("\n5. ANNUAL FORECAST PROJECTION")
+print("=" * 50)
+
+# Based on one week of data, we can project annual patterns
+# Assumptions:
+# 1. Weekly pattern repeats throughout the year
+# 2. Seasonal variations are not captured (need more data)
+# 3. Growth trend is not captured (need historical data)
+
+# Calculate weekly statistics
+weekly_avg = df['load_mw'].mean()
+weekly_peak = df['load_mw'].max()
+weekly_min = df['load_mw'].min()
+
+# For annual forecast, we assume similar patterns
+# Conservative estimate: use observed weekly pattern
+annual_avg = weekly_avg  # Assuming no growth
+annual_peak = weekly_peak * 1.1  # 10% margin for annual peak
+annual_min = weekly_min
+
+print(f"\nBased on one week of data (conservative estimates):")
+print(f"  Projected annual average load: {annual_avg:.2f} MW")
+print(f"  Projected annual peak load: {annual_peak:.2f} MW (+10% margin)")
+print(f"  Projected annual minimum load: {annual_min:.2f} MW")
+print(f"  Projected load factor: {annual_avg/annual_peak*100:.1f}%")
+
+# Calculate capacity requirements
+# Assuming 15% reserve margin for reliability
+required_capacity = annual_peak * 1.15
+print(f"\nCapacity Planning (15% reserve margin):")
+print(f"  Required capacity: {required_capacity:.2f} MW")
+print(f"  Reserve margin: {required_capacity - annual_peak:.2f} MW")
+
+# ====== VISUALIZATIONS ======
+print("\n6. GENERATING VISUALIZATIONS...")
+
+# 1. Load Duration Curve
 plt.figure(figsize=(12, 6))
-plt.plot(hours, load_sorted, 'b-', linewidth=2)
-plt.axhline(y=avg_load, color='r', linestyle='--', alpha=0.7, label=f'Average ({avg_load:.1f} MW)')
-plt.axhline(y=peak_load, color='g', linestyle='--', alpha=0.7, label=f'Peak ({peak_load:.1f} MW)')
-plt.fill_between(hours, 0, load_sorted, alpha=0.3, color='b')
-plt.title('Load Duration Curve 2026', fontsize=14)
-plt.xlabel('Hours')
+plt.plot(sorted_load, 'b-', linewidth=2)
+plt.title('Load Duration Curve')
+plt.xlabel('Number of Intervals (sorted by load)')
 plt.ylabel('Load (MW)')
-plt.xlim(0, 8760)  # Hours in a year
+plt.grid(True, alpha=0.3)
+
+# Add percentile markers
+for p, val in zip([10, 50, 90], np.percentile(df['load_mw'], [10, 50, 90])):
+    plt.axhline(y=val, color='r', linestyle='--', alpha=0.5)
+    plt.text(0, val, f' {p}th: {val:.1f} MW', verticalalignment='bottom')
+
+plt.tight_layout()
+plt.savefig('../report/images/load_duration_curve.png', dpi=300)
+plt.close()
+
+# 2. Hourly load profile with confidence intervals
+plt.figure(figsize=(12, 6))
+plt.errorbar(hourly_avg.index, hourly_avg.values, 
+             yerr=hourly_std.values, 
+             fmt='o-', linewidth=2, capsize=5)
+plt.title('Average Hourly Load Profile with Standard Deviation')
+plt.xlabel('Hour of Day')
+plt.ylabel('Load (MW)')
+plt.xticks(range(0, 24, 2))
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('../report/images/hourly_profile.png', dpi=300)
+plt.close()
+
+# 3. Boxplot by day of week
+day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+plt.figure(figsize=(12, 6))
+box_data = [df[df['day_name'] == day]['load_mw'].values for day in day_order]
+plt.boxplot(box_data, labels=[day[:3] for day in day_order])
+plt.title('Load Distribution by Day of Week')
+plt.xlabel('Day of Week')
+plt.ylabel('Load (MW)')
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('../report/images/dow_boxplot.png', dpi=300)
+plt.close()
+
+# 4. Time series with peak identification
+plt.figure(figsize=(14, 6))
+plt.plot(df.index, df['load_mw'], 'b-', alpha=0.7, linewidth=1)
+
+# Identify peaks (local maxima)
+from scipy.signal import find_peaks
+peaks, _ = find_peaks(df['load_mw'], height=120, distance=4)  # distance=4 = 1 hour
+plt.plot(df.index[peaks], df['load_mw'].iloc[peaks], 'ro', 
+         markersize=8, label=f'Peaks (>120 MW, {len(peaks)} found)')
+
+plt.title('Load Time Series with Peak Identification')
+plt.xlabel('Timestamp')
+plt.ylabel('Load (MW)')
 plt.legend()
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig('report/images/load_duration_curve.png', dpi=300, bbox_inches='tight')
+plt.savefig('../report/images/peak_identification.png', dpi=300)
 plt.close()
 
-# 2. Calculate capacity margin
-# Assume system capacity based on peak + 20% reserve margin
-system_capacity = peak_load * 1.20
-capacity_margin = system_capacity - peak_load
-capacity_margin_percent = (capacity_margin / system_capacity) * 100
+# 5. Reliability dashboard
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 
-# Hours above certain thresholds
-threshold_90 = peak_load * 0.90
-threshold_95 = peak_load * 0.95
-hours_above_90 = (annual_df['final_forecast'] > threshold_90).sum() / 4  # Convert to hours
-hours_above_95 = (annual_df['final_forecast'] > threshold_95).sum() / 4
+# Subplot 1: Histogram with thresholds
+axes[0, 0].hist(df['load_mw'], bins=30, edgecolor='black', alpha=0.7)
+for thresh in [115, 125]:
+    axes[0, 0].axvline(x=thresh, color='r', linestyle='--', alpha=0.7)
+    axes[0, 0].text(thresh, axes[0, 0].get_ylim()[1]*0.9, f' {thresh} MW', 
+                   rotation=90, verticalalignment='top')
+axes[0, 0].set_title('Load Distribution with Reliability Thresholds')
+axes[0, 0].set_xlabel('Load (MW)')
+axes[0, 0].set_ylabel('Frequency')
+axes[0, 0].grid(True, alpha=0.3)
 
-# 3. Calculate LOLP (Loss of Load Probability)
-# Simplified approach: probability that load exceeds available capacity
-# Assuming normal distribution of forecast errors based on test performance
-forecast_error_std = 4.16  # RMSE from mean forecast
-lolp = 1 - stats.norm.cdf(system_capacity, loc=peak_load, scale=forecast_error_std)
+# Subplot 2: Daily peaks
+daily_dates = [pd.Timestamp(date) for date in daily_peaks.index]
+axes[0, 1].bar(daily_dates, daily_peaks.values, width=0.8, alpha=0.7)
+axes[0, 1].axhline(y=daily_peaks.mean(), color='r', linestyle='--', label=f'Mean: {daily_peaks.mean():.1f} MW')
+axes[0, 1].set_title('Daily Peak Loads')
+axes[0, 1].set_xlabel('Date')
+axes[0, 1].set_ylabel('Peak Load (MW)')
+axes[0, 1].legend()
+axes[0, 1].grid(True, alpha=0.3)
+plt.setp(axes[0, 1].xaxis.get_majorticklabels(), rotation=45)
 
-# 4. Calculate EENS (Expected Energy Not Served)
-# Simplified calculation
-if lolp > 0:
-    # Expected shortfall when load exceeds capacity
-    expected_shortfall = forecast_error_std * stats.norm.pdf(
-        (system_capacity - peak_load) / forecast_error_std
-    ) - (system_capacity - peak_load) * lolp
-    eens = expected_shortfall * 8760  # Hours in year
-else:
-    eens = 0
+# Subplot 3: Time above thresholds
+threshold_percentages = [(df['load_mw'] > thresh).sum() / len(df) * 100 for thresh in thresholds]
+axes[1, 0].bar(range(len(thresholds)), threshold_percentages, alpha=0.7)
+axes[1, 0].set_title('Percentage of Time Above Load Thresholds')
+axes[1, 0].set_xlabel('Threshold (MW)')
+axes[1, 0].set_ylabel('Time Above Threshold (%)')
+axes[1, 0].set_xticks(range(len(thresholds)))
+axes[1, 0].set_xticklabels(thresholds)
+for i, pct in enumerate(threshold_percentages):
+    axes[1, 0].text(i, pct + 1, f'{pct:.1f}%', ha='center')
+axes[1, 0].grid(True, alpha=0.3)
 
-# 5. Create reliability summary
-reliability_metrics = pd.DataFrame({
-    'Metric': [
-        'Peak Load (MW)',
-        'Average Load (MW)',
-        'Minimum Load (MW)',
-        'Load Factor',
-        'System Capacity (MW)',
-        'Capacity Margin (MW)',
-        'Capacity Margin (%)',
-        'Hours > 90% of Peak',
-        'Hours > 95% of Peak',
-        'Loss of Load Probability (LOLP)',
-        'Expected Energy Not Served (EENS, MWh)'
-    ],
-    'Value': [
-        peak_load,
-        avg_load,
-        min_load,
-        avg_load / peak_load,
-        system_capacity,
-        capacity_margin,
-        capacity_margin_percent,
-        hours_above_90,
-        hours_above_95,
-        lolp,
-        eens
-    ]
-})
-
-reliability_metrics.to_csv('outputs/reliability_metrics.csv', index=False)
-print("Reliability metrics saved to outputs/reliability_metrics.csv")
-print("\nReliability Summary:")
-print(reliability_metrics.to_string(index=False))
-
-# 6. Monthly reliability analysis
-monthly_peaks = annual_df.resample('M')['final_forecast'].max()
-monthly_avg = annual_df.resample('M')['final_forecast'].mean()
-monthly_capacity_margin = system_capacity - monthly_peaks
-monthly_capacity_margin_pct = (monthly_capacity_margin / system_capacity) * 100
-
-monthly_reliability = pd.DataFrame({
-    'Month': monthly_peaks.index.month_name(),
-    'Peak Load (MW)': monthly_peaks.values,
-    'Average Load (MW)': monthly_avg.values,
-    'Capacity Margin (MW)': monthly_capacity_margin.values,
-    'Capacity Margin (%)': monthly_capacity_margin_pct.values
-})
-
-monthly_reliability.to_csv('outputs/monthly_reliability.csv', index=False)
-
-# Plot monthly peaks and capacity margins
-fig, ax1 = plt.subplots(figsize=(14, 6))
-
-color = 'tab:red'
-ax1.set_xlabel('Month')
-ax1.set_ylabel('Load (MW)', color=color)
-ax1.plot(monthly_reliability['Month'], monthly_reliability['Peak Load (MW)'], 
-         color=color, marker='o', linewidth=2, label='Monthly Peak')
-ax1.plot(monthly_reliability['Month'], monthly_reliability['Average Load (MW)'], 
-         color='orange', marker='s', linewidth=2, alpha=0.7, label='Monthly Average')
-ax1.tick_params(axis='y', labelcolor=color)
-ax1.set_xticklabels(monthly_reliability['Month'], rotation=45)
-
-ax2 = ax1.twinx()
-color = 'tab:blue'
-ax2.set_ylabel('Capacity Margin (%)', color=color)
-ax2.plot(monthly_reliability['Month'], monthly_reliability['Capacity Margin (%)'], 
-         color=color, marker='^', linestyle='--', linewidth=2, label='Capacity Margin')
-ax2.tick_params(axis='y', labelcolor=color)
-ax2.axhline(y=15, color='gray', linestyle=':', alpha=0.7, label='15% Target')
-
-fig.tight_layout()
-fig.legend(loc='upper left', bbox_to_anchor=(0.1, 0.9))
-plt.title('Monthly Peak Load and Capacity Margin', fontsize=14)
-plt.savefig('report/images/monthly_reliability.png', dpi=300, bbox_inches='tight')
-plt.close()
-
-# 7. Create risk curves
-# Simulate different capacity levels and calculate LOLP
-capacity_levels = np.linspace(peak_load * 0.9, peak_load * 1.3, 50)
-lolp_curve = []
-eens_curve = []
-
-for capacity in capacity_levels:
-    lolp_val = 1 - stats.norm.cdf(capacity, loc=peak_load, scale=forecast_error_std)
-    lolp_curve.append(lolp_val)
-    
-    if lolp_val > 0:
-        expected_shortfall = forecast_error_std * stats.norm.pdf(
-            (capacity - peak_load) / forecast_error_std
-        ) - (capacity - peak_load) * lolp_val
-        eens_val = expected_shortfall * 8760
+# Subplot 4: Load factor and peak-to-average
+metrics = ['Load Factor', 'Peak-to-Average']
+values = [load_factor, peak_to_avg]
+colors = ['green', 'orange']
+axes[1, 1].bar(metrics, values, color=colors, alpha=0.7)
+axes[1, 1].set_title('Key Reliability Metrics')
+axes[1, 1].set_ylabel('Value')
+for i, (metric, value) in enumerate(zip(metrics, values)):
+    if metric == 'Load Factor':
+        axes[1, 1].text(i, value + 2, f'{value:.1f}%', ha='center')
     else:
-        eens_val = 0
-    eens_curve.append(eens_val)
+        axes[1, 1].text(i, value + 0.05, f'{value:.2f}', ha='center')
+axes[1, 1].grid(True, alpha=0.3)
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
-
-ax1.plot(capacity_levels, lolp_curve, 'b-', linewidth=2)
-ax1.axvline(x=system_capacity, color='r', linestyle='--', alpha=0.7, label=f'Planned Capacity ({system_capacity:.1f} MW)')
-ax1.set_xlabel('System Capacity (MW)')
-ax1.set_ylabel('Loss of Load Probability (LOLP)')
-ax1.set_title('LOLP vs System Capacity')
-ax1.grid(True, alpha=0.3)
-ax1.legend()
-
-ax2.plot(capacity_levels, eens_curve, 'r-', linewidth=2)
-ax2.axvline(x=system_capacity, color='b', linestyle='--', alpha=0.7, label=f'Planned Capacity ({system_capacity:.1f} MW)')
-ax2.set_xlabel('System Capacity (MW)')
-ax2.set_ylabel('Expected Energy Not Served (MWh)')
-ax2.set_title('EENS vs System Capacity')
-ax2.grid(True, alpha=0.3)
-ax2.legend()
-
+plt.suptitle('Reliability Analysis Dashboard', fontsize=16)
 plt.tight_layout()
-plt.savefig('report/images/risk_curves.png', dpi=300, bbox_inches='tight')
+plt.savefig('../report/images/reliability_dashboard.png', dpi=300)
 plt.close()
 
-print("\nReliability analysis complete.")
+print("Visualizations saved to report/images/")
+
+# ====== SAVE RESULTS ======
+# Save reliability metrics
+reliability_metrics = pd.DataFrame({
+    'metric': ['mean_load', 'peak_load', 'min_load', 'load_factor', 'peak_to_avg', 
+               'daily_peak_mean', 'daily_peak_max', 'daily_peak_min',
+               'required_capacity', 'reserve_margin'],
+    'value': [df['load_mw'].mean(), df['load_mw'].max(), df['load_mw'].min(),
+              load_factor, peak_to_avg, daily_peaks.mean(), daily_peaks.max(),
+              daily_peaks.min(), required_capacity, required_capacity - annual_peak],
+    'unit': ['MW', 'MW', 'MW', '%', 'ratio', 'MW', 'MW', 'MW', 'MW', 'MW']
+})
+reliability_metrics.to_csv('../outputs/reliability_metrics.csv', index=False)
+
+# Save percentile data
+percentile_df = pd.DataFrame({
+    'percentile': percentiles,
+    'load_mw': percentile_values
+})
+percentile_df.to_csv('../outputs/load_percentiles.csv', index=False)
+
+# Save hourly profile
+hourly_profile_df = pd.DataFrame({
+    'hour': hourly_avg.index,
+    'mean_load': hourly_avg.values,
+    'std_load': hourly_std.values
+})
+hourly_profile_df.to_csv('../outputs/hourly_profile.csv', index=False)
+
+print("\nResults saved to outputs/ directory")
+print("\n=== ANALYSIS COMPLETE ===")

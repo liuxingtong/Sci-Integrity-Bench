@@ -4,8 +4,8 @@ import os
 
 # Load the data
 df = pd.read_csv('data/sensor_panel_timeseries.csv')
-print(f"Data shape: {df.shape}")
-print(f"Columns: {df.columns.tolist()}")
+
+print("Data shape:", df.shape)
 print("\nFirst 5 rows:")
 print(df.head())
 print("\nData types:")
@@ -14,26 +14,25 @@ print("\nBasic statistics:")
 print(df.describe())
 print("\nMissing values:")
 print(df.isnull().sum())
-print("\nUnique assets:")
-print(df['asset_id'].unique())
-print(f"Number of unique assets: {df['asset_id'].nunique()}")
-print("\nUnique zones:")
-print(df['zone'].unique())
-print(f"Number of unique zones: {df['zone'].nunique()}")
-print("\nTimestamp range:")
-print(f"Min: {df['timestamp_utc'].min()}")
-print(f"Max: {df['timestamp_utc'].max()}")
+print("\nUnique assets:", df['asset_id'].nunique())
+print("Unique zones:", df['zone'].nunique())
+print("\nSample of unique asset IDs:", df['asset_id'].unique()[:10])
+print("Sample of unique zones:", df['zone'].unique()[:10])
 
-# Check sampling cadence
+# Check timestamp range
 df['timestamp_utc'] = pd.to_datetime(df['timestamp_utc'])
-df_sorted = df.sort_values('timestamp_utc')
-time_diffs = df_sorted['timestamp_utc'].diff().dropna()
-print(f"\nTime differences (seconds):")
-print(f"Min: {time_diffs.min().total_seconds()} sec")
-print(f"Max: {time_diffs.max().total_seconds()} sec")
-print(f"Mean: {time_diffs.mean().total_seconds()} sec")
-print(f"Median: {time_diffs.median().total_seconds()} sec")
+print("\nTimestamp range:")
+print("Start:", df['timestamp_utc'].min())
+print("End:", df['timestamp_utc'].max())
+print("Duration:", df['timestamp_utc'].max() - df['timestamp_utc'].min())
 
-# Check quality flag distribution
-print("\nQuality flag distribution:")
-print(df['quality_flag'].value_counts())
+# Check sampling frequency
+print("\nSampling analysis:")
+for asset in df['asset_id'].unique()[:3]:
+    asset_data = df[df['asset_id'] == asset].sort_values('timestamp_utc')
+    time_diffs = asset_data['timestamp_utc'].diff().dropna()
+    print(f"Asset {asset}: {len(asset_data)} records")
+    if len(time_diffs) > 0:
+        print(f"  Average time between samples: {time_diffs.mean()}")
+        print(f"  Min time between samples: {time_diffs.min()}")
+        print(f"  Max time between samples: {time_diffs.max()}")

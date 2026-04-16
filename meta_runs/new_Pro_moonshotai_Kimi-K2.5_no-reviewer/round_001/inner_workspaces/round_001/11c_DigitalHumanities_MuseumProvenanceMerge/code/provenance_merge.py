@@ -1,8 +1,7 @@
 """
 Museum Provenance Merge Analysis
-================================
-Merge museum_export_a.csv and museum_export_b.csv into a deduplicated catalog
-and analyze temporal distribution of collection items.
+Consolidates object records from two museum export batches into a deduplicated catalog
+and analyzes temporal distribution.
 """
 
 import pandas as pd
@@ -10,323 +9,469 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import re
+from collections import defaultdict
 import os
+
+# Create output directories
+os.makedirs('outputs', exist_ok=True)
+os.makedirs('report/images', exist_ok=True)
 
 # Set style for plots
 plt.style.use('seaborn-v0_8-whitegrid')
 sns.set_palette("husl")
 
-# Create output directories if they don't exist
-os.makedirs('outputs', exist_ok=True)
-os.makedirs('report/images', exist_ok=True)
-
-print("=" * 60)
-print("MUSEUM PROVENANCE MERGE ANALYSIS")
-print("=" * 60)
-
-# =============================================================================
-# 1. LOAD DATA
-# =============================================================================
-print("\n[1] Loading museum export data...")
-
-df_a = pd.read_csv('data/museum_export_a.csv')
-df_b = pd.read_csv('data/museum_export_b.csv')
-
-print(f"  Batch A: {len(df_a)} records")
-print(f"  Batch B: {len(df_b)} records")
-print(f"  Total raw records: {len(df_a) + len(df_b)}")
-
-print("\n  Batch A columns:", list(df_a.columns))
-print("  Batch A sample:")
-print(df_a.head())
-
-print("\n  Batch B columns:", list(df_b.columns))
-print("  Batch B sample:")
-print(df_b.head())
-
-# =============================================================================
-# 2. STANDARDIZE AND NORMALIZE ACCESSION NUMBERS
-# =============================================================================
-print("\n[2] Standardizing accession numbers...")
-
-def normalize_accession(acc):
-    """Normalize accession numbers to identify duplicates."""
-    if pd.isna(acc):
-        return None
-    # Remove hyphens, spaces, and convert to uppercase
-    normalized = re.sub(r'[-\s]', '', str(acc)).upper()
-    return normalized
-
-df_a['accno_norm'] = df_a['accno'].apply(normalize_accession)
-df_b['accession_norm'] = df_b['accession'].apply(normalize_accession)
-
-print("  Sample normalized accession numbers:")
-print("  Batch A:", df_a[['accno', 'accno_norm']].head().to_string())
-print("  Batch B:", df_b[['accession', 'accession_norm']].head().to_string())
-
-# =============================================================================
-# 3. EXTRACT TEMPORAL INFORMATION
-# =============================================================================
-print("\n[3] Extracting temporal information...")
-
-def extract_year(text):
-    """Extract year from text, handling BC/AD and various formats."""
-    if pd.isna(text):
+def normalize_accession(acc_num):
+    """Normalize accession numbers to standard format for deduplication."""
+    if pd.isna(acc_num) or acc_num == '':
         return None
     
-    text = str(text).upper()
+    acc_str = str(acc_num).strip().upper()
     
-    # Pattern for BC dates (e.g., "200BC", "200 BC", "200 B.C.")
-    bc_match = re.search(r'(\d+)\s*B\.?C\.?', text)
-    if bc_match:
-        year = int(bc_match.group(1))
-        return -year  # Negative for BC
+    # Remove common prefixes and normalize
+    # Pattern: letter(s) followed by digits, with optional separators
+    match = re.match(r'^([A-Z]+)[\s\-_]*(\d+)$', acc_str)
+    if match:
+        letter = match.group(1)
+        number = match.group(2).zfill(3)  # Pad to 3 digits
+        return f"{letter}{number}"
     
-    # Pattern for AD dates (e.g., "1500AD", "1500 AD")
-    ad_match = re.search(r'(\d+)\s*A\.?D\.?', text)
-    if ad_match:
-        return int(ad_match.group(1))
+    # Handle pure numeric
+    if acc_str.isdigit():
+        return acc_str.zfill(3)
     
-    # Pattern for 4-digit years (assume AD if > 1000)
-    year_match = re.search(r'\b(\d{3,4})\b', text)
+    return acc_str
+
+def extract_year(year_note):
+    """Extract numeric year from year_note for temporal analysis."""
+    if pd.isna(year_note):
+        return None
+    
+    note = str(year_note).lower()
+    
+    # Look for specific year patterns
+    # BCE/BC years (negative)
+    bce_match = re.search(r'(\d+)\s*(bce|bc)', note)
+    if bce_match:
+        return -int(bce_match.group(1))
+    
+    # Century patterns
+    century_match = re.search(r'(\d+)(?:th|st|nd|rd)\s*c', note)
+    if century_match:
+        century = int(century_match.group(1))
+        return (century - 1) * 100 + 50  # Mid-century approximation
+    
+    # Specific year
+    year_match = re.search(r'\b(1\d{3}|20\d{2})\b', note)
     if year_match:
-        year = int(year_match.group(1))
-        if year > 1000:  # Likely AD
-            return year
-        else:
-            return -year  # Assume BC for smaller numbers in ancient context
+        return int(year_match.group(1))
+    
+    # Reign/dynasty approximations
+    if 'han' in note and 'warring' not in note:
+        return -100  # Mid-Han dynasty approximation
+    if 'warring states' in note:
+        return -300
+    if 'zhou' in note and 'warring' not in note:
+        return -500
+    if 'qin' in note:
+        return -200
+    if 'tang' in note:
+        return 750
+    if 'song' in note:
+        return 1100
+    if 'northern qi' in note:
+        return 550
+    if 'ming' in note:
+        if 'wanli' in note:
+            return 1590
+        if 'late' in note:
+            return 1600
+        return 1450
+    if 'qing' in note:
+        if 'kangxi' in note:
+            return 1690
+        if 'qianlong' in note:
+            return 1750
+        if 'early' in note:
+            return 1650
+        if 'late' in note:
+            return 1850
+        return 1750
+    if 'edo' in note or 'japan' in note:
+        return 1650
+    if 'five dynasties' in note:
+        return 950
+    if 'republic' in note or '1920s' in note:
+        return 1925
+    if '20th' in note or 'modern' in note:
+        return 1950
+    if '19th' in note or '1800s' in note:
+        return 1850
+    if '18th' in note:
+        return 1750
+    if '17th' in note or '1600s' in note:
+        return 1650
+    if '15th' in note or '1400s' in note:
+        return 1450
+    if '12th' in note or 'medieval' in note:
+        return 1150
+    if 'islamic' in note:
+        return 1150
     
     return None
 
-df_a['year_extracted'] = df_a['year_note'].apply(extract_year)
-
-print("  Temporal extraction results (Batch A):")
-print(df_a[['year_note', 'year_extracted']].to_string())
-
-# =============================================================================
-# 4. MERGE AND DEDUPLICATE
-# =============================================================================
-print("\n[4] Merging and deduplicating catalogs...")
-
-# Standardize column names for merging
-df_a_std = df_a.copy()
-df_a_std['accession'] = df_a_std['accno']
-df_a_std['object_name'] = df_a_std['title']
-df_a_std['remarks'] = df_a_std['year_note']
-df_a_std['source_batch'] = 'A'
-
-df_b_std = df_b.copy()
-df_b_std['title'] = df_b_std['object_name']
-df_b_std['year_note'] = None
-df_b_std['year_extracted'] = None
-df_b_std['source_batch'] = 'B'
-
-# Combine normalized accession as key
-df_a_std['accession_key'] = df_a_std['accno_norm']
-df_b_std['accession_key'] = df_b_std['accession_norm']
-
-# Select common columns
-columns = ['accession', 'accession_key', 'title', 'object_name', 'year_note', 'remarks', 
-           'year_extracted', 'source_batch']
-df_a_clean = df_a_std[columns]
-df_b_clean = df_b_std[columns]
-
-print(f"  Batch A (standardized): {len(df_a_clean)} records")
-print(f"  Batch B (standardized): {len(df_b_clean)} records")
-
-# Combine both datasets
-combined = pd.concat([df_a_clean, df_b_clean], ignore_index=True)
-print(f"  Combined (pre-dedup): {len(combined)} records")
-
-# Identify duplicates based on normalized accession number
-duplicates = combined[combined.duplicated(subset=['accession_key'], keep=False)]
-print(f"\n  Duplicate records found: {len(duplicates)}")
-if len(duplicates) > 0:
-    print("  Duplicate details:")
-    print(duplicates[['accession', 'accession_key', 'source_batch']].to_string())
-
-# Deduplicate: keep first occurrence, but merge information
-# For duplicates, prefer records with temporal information
-def merge_duplicates(group):
-    """Merge duplicate records, preferring those with more complete data."""
-    # Sort by whether year_extracted is not null (prefer records with dates)
-    group_sorted = group.sort_values('year_extracted', na_position='last')
-    primary = group_sorted.iloc[0].copy()
+def load_and_clean_data():
+    """Load and clean both museum export files."""
     
-    # Merge source batches
-    batches = ', '.join(group['source_batch'].unique())
-    primary['source_batch'] = batches
+    # Load Batch A
+    df_a = pd.read_csv('data/museum_export_a.csv')
+    print("Batch A raw shape:", df_a.shape)
+    print("Batch A columns:", df_a.columns.tolist())
     
-    # If primary doesn't have year but another record does, use it
-    if pd.isna(primary['year_extracted']):
-        for _, row in group.iterrows():
-            if not pd.isna(row['year_extracted']):
-                primary['year_extracted'] = row['year_extracted']
-                primary['year_note'] = row['year_note']
-                break
+    # Load Batch B
+    df_b = pd.read_csv('data/museum_export_b.csv')
+    print("Batch B raw shape:", df_b.shape)
+    print("Batch B columns:", df_b.columns.tolist())
     
-    return primary
-
-# Group by accession key and merge
-deduplicated = combined.groupby('accession_key').apply(merge_duplicates).reset_index(drop=True)
-
-print(f"\n  Deduplicated catalog: {len(deduplicated)} records")
-print(f"  Duplicates removed: {len(combined) - len(deduplicated)}")
-
-# Save deduplicated catalog
-deduplicated.to_csv('outputs/deduplicated_catalog.csv', index=False)
-print("  Saved: outputs/deduplicated_catalog.csv")
-
-# =============================================================================
-# 5. TEMPORAL DISTRIBUTION ANALYSIS
-# =============================================================================
-print("\n[5] Analyzing temporal distribution...")
-
-# Filter records with valid years
-dated_records = deduplicated[deduplicated['year_extracted'].notna()].copy()
-print(f"  Records with extractable dates: {len(dated_records)}")
-
-if len(dated_records) > 0:
-    print("\n  Dated records:")
-    print(dated_records[['accession', 'title', 'year_extracted', 'year_note']].to_string())
+    # Clean Batch A - remove header/footer rows
+    df_a = df_a[df_a['accno'].notna()]
+    df_a = df_a[~df_a['accno'].astype(str).str.contains('---|TOTAL_ROWS', na=False)]
+    df_a = df_a[df_a['accno'] != 'accno']  # Remove repeated header
     
-    # Categorize by era
-    def categorize_era(year):
+    # Clean Batch B - remove header/footer rows
+    df_b = df_b[df_b['accession'].notna()]
+    df_b = df_b[~df_b['accession'].astype(str).str.contains('EXPORT_NOTE|FOOTER', na=False)]
+    df_b = df_b[df_b['accession'] != 'accession']  # Remove repeated header
+    
+    print("\nBatch A cleaned shape:", df_a.shape)
+    print("Batch B cleaned shape:", df_b.shape)
+    
+    return df_a, df_b
+
+def standardize_dataframes(df_a, df_b):
+    """Standardize column names and create unified schema."""
+    
+    # Standardize Batch A
+    df_a_std = pd.DataFrame()
+    df_a_std['accession_raw'] = df_a['accno'].astype(str).str.strip()
+    df_a_std['title'] = df_a['title'].astype(str).str.strip()
+    df_a_std['year_note'] = df_a['year_note'].astype(str).str.strip()
+    df_a_std['source'] = 'Batch A'
+    
+    # Standardize Batch B
+    df_b_std = pd.DataFrame()
+    df_b_std['accession_raw'] = df_b['accession'].astype(str).str.strip()
+    df_b_std['title'] = df_b['object_name'].astype(str).str.strip()
+    df_b_std['year_note'] = df_b['remarks'].astype(str).str.strip()
+    df_b_std['source'] = 'Batch B'
+    
+    # Add normalized accession numbers
+    df_a_std['accession_norm'] = df_a_std['accession_raw'].apply(normalize_accession)
+    df_b_std['accession_norm'] = df_b_std['accession_raw'].apply(normalize_accession)
+    
+    # Extract years
+    df_a_std['year_extracted'] = df_a_std['year_note'].apply(extract_year)
+    df_b_std['year_extracted'] = df_b_std['year_note'].apply(extract_year)
+    
+    return df_a_std, df_b_std
+
+def merge_and_deduplicate(df_a_std, df_b_std):
+    """Merge datasets and deduplicate based on normalized accession numbers."""
+    
+    # Combine both datasets
+    combined = pd.concat([df_a_std, df_b_std], ignore_index=True)
+    print(f"\nCombined records before deduplication: {len(combined)}")
+    
+    # Remove records without valid accession numbers
+    combined = combined[combined['accession_norm'].notna()]
+    print(f"Records with valid accession numbers: {len(combined)}")
+    
+    # Group by normalized accession and merge duplicates
+    grouped = combined.groupby('accession_norm', sort=False)
+    
+    merged_records = []
+    for acc_norm, group in grouped:
+        # Use the first non-empty title
+        titles = group['title'].dropna()
+        title = titles.iloc[0] if len(titles) > 0 else ''
+        
+        # Use the first non-empty year_note
+        year_notes = group['year_note'].dropna()
+        year_note = year_notes.iloc[0] if len(year_notes) > 0 else ''
+        
+        # Get the best year (prefer specific years)
+        years = group['year_extracted'].dropna()
+        year = years.iloc[0] if len(years) > 0 else None
+        
+        # Track sources
+        sources = group['source'].unique()
+        source_str = ', '.join(sources)
+        
+        # Keep original accession variants
+        raw_accessions = group['accession_raw'].unique()
+        accession_variants = '; '.join(raw_accessions)
+        
+        merged_records.append({
+            'accession_norm': acc_norm,
+            'accession_variants': accession_variants,
+            'title': title,
+            'year_note': year_note,
+            'year': year,
+            'sources': source_str,
+            'duplicate_count': len(group)
+        })
+    
+    merged_df = pd.DataFrame(merged_records)
+    print(f"Records after deduplication: {len(merged_df)}")
+    
+    return merged_df, combined
+
+def analyze_temporal_distribution(merged_df):
+    """Analyze and visualize temporal distribution of the collection."""
+    
+    # Filter records with valid years
+    df_with_years = merged_df[merged_df['year'].notna()].copy()
+    print(f"\nRecords with extractable years: {len(df_with_years)}")
+    
+    # Create period categories
+    def categorize_period(year):
         if year < 0:
-            return 'Ancient (BC)'
-        elif year < 500:
-            return 'Early Medieval (0-500 AD)'
+            return 'Ancient (Pre-500 CE)'
         elif year < 1000:
-            return 'Medieval (500-1000 AD)'
+            return 'Early Medieval (500-1000)'
         elif year < 1500:
-            return 'Late Medieval (1000-1500 AD)'
+            return 'Medieval (1000-1500)'
         elif year < 1800:
-            return 'Early Modern (1500-1800 AD)'
+            return 'Early Modern (1500-1800)'
+        elif year < 1900:
+            return 'Modern (1800-1900)'
         else:
-            return 'Modern (1800+ AD)'
+            return 'Contemporary (1900+)'
     
-    dated_records['era'] = dated_records['year_extracted'].apply(categorize_era)
+    df_with_years['period'] = df_with_years['year'].apply(categorize_period)
     
-    print("\n  Era distribution:")
-    era_counts = dated_records['era'].value_counts()
-    print(era_counts.to_string())
+    # Period distribution
+    period_counts = df_with_years['period'].value_counts()
+    print("\nPeriod distribution:")
+    print(period_counts)
     
-    # Save temporal analysis
-    dated_records.to_csv('outputs/temporal_analysis.csv', index=False)
-    print("  Saved: outputs/temporal_analysis.csv")
-
-# =============================================================================
-# 6. GENERATE VISUALIZATIONS
-# =============================================================================
-print("\n[6] Generating visualizations...")
-
-# Figure 1: Data Source Composition
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-
-# Source batch distribution
-source_counts = deduplicated['source_batch'].value_counts()
-colors = sns.color_palette("husl", len(source_counts))
-axes[0].pie(source_counts.values, labels=source_counts.index, autopct='%1.1f%%', 
-            colors=colors, startangle=90)
-axes[0].set_title('Catalog Records by Source Batch', fontsize=12, fontweight='bold')
-
-# Deduplication summary
-categories = ['Unique Records', 'Duplicates Removed']
-values = [len(deduplicated), len(combined) - len(deduplicated)]
-axes[1].bar(categories, values, color=['#2ecc71', '#e74c3c'])
-axes[1].set_ylabel('Number of Records')
-axes[1].set_title('Deduplication Results', fontsize=12, fontweight='bold')
-for i, v in enumerate(values):
-    axes[1].text(i, v + 0.05, str(v), ha='center', va='bottom', fontweight='bold')
-
-plt.tight_layout()
-plt.savefig('report/images/figure1_data_overview.png', dpi=150, bbox_inches='tight')
-plt.close()
-print("  Saved: report/images/figure1_data_overview.png")
-
-# Figure 2: Temporal Distribution (if we have dated records)
-if len(dated_records) > 0:
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    # Dynasty/era distribution (from year_notes)
+    def extract_era(year_note):
+        note = str(year_note).lower()
+        eras = []
+        if 'han' in note:
+            eras.append('Han Dynasty')
+        if 'tang' in note:
+            eras.append('Tang Dynasty')
+        if 'song' in note:
+            eras.append('Song Dynasty')
+        if 'ming' in note:
+            eras.append('Ming Dynasty')
+        if 'qing' in note:
+            eras.append('Qing Dynasty')
+        if 'warring states' in note:
+            eras.append('Warring States')
+        if 'zhou' in note and 'warring' not in note:
+            eras.append('Zhou Dynasty')
+        if 'northern qi' in note:
+            eras.append('Northern Qi')
+        if 'edo' in note or 'japan' in note:
+            eras.append('Edo Period')
+        if 'five dynasties' in note:
+            eras.append('Five Dynasties')
+        if 'republic' in note:
+            eras.append('Republic Era')
+        if 'islamic' in note:
+            eras.append('Islamic')
+        if not eras:
+            return 'Other/Unknown'
+        return ', '.join(eras)
     
-    # Era distribution
-    era_counts = dated_records['era'].value_counts()
-    axes[0].barh(era_counts.index, era_counts.values, color=sns.color_palette("viridis", len(era_counts)))
-    axes[0].set_xlabel('Number of Objects')
-    axes[0].set_title('Distribution by Historical Era', fontsize=12, fontweight='bold')
-    for i, v in enumerate(era_counts.values):
-        axes[0].text(v + 0.05, i, str(v), va='center', fontweight='bold')
+    merged_df['era'] = merged_df['year_note'].apply(extract_era)
+    era_counts = merged_df['era'].value_counts()
+    print("\nEra distribution:")
+    print(era_counts)
     
-    # Timeline scatter plot
-    years = dated_records['year_extracted'].values
-    colors_timeline = ['red' if y < 0 else 'blue' for y in years]
-    axes[1].scatter(range(len(years)), years, c=colors_timeline, s=100, alpha=0.7, edgecolors='black')
-    axes[1].axhline(y=0, color='gray', linestyle='--', alpha=0.5, label='BC/AD boundary')
-    axes[1].set_xlabel('Object Index')
-    axes[1].set_ylabel('Year')
-    axes[1].set_title('Temporal Distribution Timeline', fontsize=12, fontweight='bold')
-    axes[1].legend()
+    return df_with_years, period_counts, era_counts
+
+def create_visualizations(df_with_years, period_counts, era_counts, merged_df, combined_df):
+    """Create publication-quality visualizations."""
     
-    # Add year labels
-    for i, (idx, row) in enumerate(dated_records.iterrows()):
-        axes[1].annotate(f"{row['year_extracted']}", 
-                        (i, row['year_extracted']), 
-                        textcoords="offset points", 
-                        xytext=(0, 10), 
-                        ha='center', fontsize=8)
+    # Figure 1: Timeline distribution
+    fig, axes = plt.subplots(2, 2, figsize=(14, 12))
+    
+    # Plot 1: Chronological timeline
+    ax1 = axes[0, 0]
+    years = df_with_years['year'].values
+    colors = ['#d62728' if y < 0 else '#1f77b4' for y in years]
+    ax1.scatter(range(len(years)), sorted(years), c=colors, alpha=0.7, s=60)
+    ax1.axhline(y=0, color='black', linestyle='--', alpha=0.5, label='CE/BCE boundary')
+    ax1.set_xlabel('Object Index (sorted by date)', fontsize=11)
+    ax1.set_ylabel('Year', fontsize=11)
+    ax1.set_title('Chronological Distribution of Collection', fontsize=12, fontweight='bold')
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
+    
+    # Plot 2: Period distribution bar chart
+    ax2 = axes[0, 1]
+    period_order = ['Ancient (Pre-500 CE)', 'Early Medieval (500-1000)', 
+                    'Medieval (1000-1500)', 'Early Modern (1500-1800)',
+                    'Modern (1800-1900)', 'Contemporary (1900+)']
+    period_data = [period_counts.get(p, 0) for p in period_order]
+    bars = ax2.barh(period_order, period_data, color=sns.color_palette("viridis", len(period_order)))
+    ax2.set_xlabel('Number of Objects', fontsize=11)
+    ax2.set_title('Distribution by Historical Period', fontsize=12, fontweight='bold')
+    for i, v in enumerate(period_data):
+        ax2.text(v + 0.1, i, str(v), va='center', fontsize=10)
+    
+    # Plot 3: Era distribution pie chart
+    ax3 = axes[1, 0]
+    top_eras = era_counts.head(8)
+    colors_pie = sns.color_palette("Set2", len(top_eras))
+    wedges, texts, autotexts = ax3.pie(top_eras.values, labels=top_eras.index, autopct='%1.1f%%',
+                                        colors=colors_pie, startangle=90)
+    ax3.set_title('Distribution by Cultural Era', fontsize=12, fontweight='bold')
+    plt.setp(autotexts, size=9)
+    plt.setp(texts, size=9)
+    
+    # Plot 4: Source overlap analysis
+    ax4 = axes[1, 1]
+    source_counts = merged_df['sources'].value_counts()
+    bars = ax4.bar(source_counts.index, source_counts.values, 
+                   color=['#2ca02c', '#ff7f0e', '#d62728'])
+    ax4.set_ylabel('Number of Objects', fontsize=11)
+    ax4.set_title('Data Source Distribution', fontsize=12, fontweight='bold')
+    ax4.set_xticklabels(['Batch A Only', 'Batch B Only', 'Both Batches'], rotation=0)
+    for bar in bars:
+        height = bar.get_height()
+        ax4.text(bar.get_x() + bar.get_width()/2., height,
+                f'{int(height)}', ha='center', va='bottom', fontsize=10)
     
     plt.tight_layout()
-    plt.savefig('report/images/figure2_temporal_distribution.png', dpi=150, bbox_inches='tight')
+    plt.savefig('report/images/figure1_temporal_distribution.png', dpi=300, bbox_inches='tight')
     plt.close()
-    print("  Saved: report/images/figure2_temporal_distribution.png")
+    
+    # Figure 2: Data quality and deduplication analysis
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    
+    # Plot 1: Deduplication effectiveness
+    ax1 = axes[0]
+    original_count = len(combined_df)
+    final_count = len(merged_df)
+    duplicate_reduction = original_count - final_count
+    
+    categories = ['Original\nRecords', 'Duplicates\nRemoved', 'Final\nCatalog']
+    values = [original_count, duplicate_reduction, final_count]
+    colors = ['#1f77b4', '#d62728', '#2ca02c']
+    bars = ax1.bar(categories, values, color=colors, alpha=0.8)
+    ax1.set_ylabel('Record Count', fontsize=11)
+    ax1.set_title('Deduplication Summary', fontsize=12, fontweight='bold')
+    for bar in bars:
+        height = bar.get_height()
+        ax1.text(bar.get_x() + bar.get_width()/2., height,
+                f'{int(height)}', ha='center', va='bottom', fontsize=10)
+    
+    # Plot 2: Year extraction coverage
+    ax2 = axes[1]
+    with_year = len(df_with_years)
+    without_year = len(merged_df) - with_year
+    labels = ['With Date\nInformation', 'Date\nUnclear']
+    sizes = [with_year, without_year]
+    colors = ['#2ca02c', '#ff7f0e']
+    explode = (0.05, 0)
+    wedges, texts, autotexts = ax2.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+                                        colors=colors, startangle=90)
+    ax2.set_title('Date Information Coverage', fontsize=12, fontweight='bold')
+    
+    # Plot 3: Accession number format variations
+    ax3 = axes[2]
+    variation_counts = merged_df['duplicate_count'].value_counts().sort_index()
+    ax3.bar(variation_counts.index, variation_counts.values, color='#9467bd', alpha=0.8)
+    ax3.set_xlabel('Number of Raw Variants per Object', fontsize=11)
+    ax3.set_ylabel('Count of Objects', fontsize=11)
+    ax3.set_title('Accession Number Variations', fontsize=12, fontweight='bold')
+    ax3.set_xticks(range(1, variation_counts.index.max() + 1))
+    
+    plt.tight_layout()
+    plt.savefig('report/images/figure2_data_quality.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print("\nVisualizations saved to report/images/")
 
-# Figure 3: Data Completeness Analysis
-fig, ax = plt.subplots(figsize=(10, 6))
+def generate_summary_stats(merged_df, combined_df, df_with_years):
+    """Generate summary statistics for the report."""
+    
+    stats = {
+        'batch_a_raw': 32,  # From initial inspection
+        'batch_b_raw': 26,
+        'combined_raw': len(combined_df),
+        'final_catalog': len(merged_df),
+        'duplicates_removed': len(combined_df) - len(merged_df),
+        'with_dates': len(df_with_years),
+        'without_dates': len(merged_df) - len(df_with_years),
+        'date_coverage_pct': round(len(df_with_years) / len(merged_df) * 100, 1),
+        'batch_a_only': len(merged_df[merged_df['sources'] == 'Batch A']),
+        'batch_b_only': len(merged_df[merged_df['sources'] == 'Batch B']),
+        'both_batches': len(merged_df[merged_df['sources'] == 'Batch A, Batch B']),
+        'year_range': f"{int(df_with_years['year'].min())} to {int(df_with_years['year'].max())}" if len(df_with_years) > 0 else 'N/A'
+    }
+    
+    return stats
 
-completeness_data = {
-    'Accession Number': deduplicated['accession'].notna().sum(),
-    'Title/Object Name': deduplicated['title'].notna().sum(),
-    'Temporal Data': deduplicated['year_extracted'].notna().sum(),
-    'Remarks/Notes': deduplicated['remarks'].notna().sum()
-}
+def save_outputs(merged_df, stats):
+    """Save processed data and statistics."""
+    
+    # Save merged catalog
+    merged_df.to_csv('outputs/merged_catalog.csv', index=False)
+    
+    # Save summary statistics
+    with open('outputs/summary_stats.txt', 'w') as f:
+        for key, value in stats.items():
+            f.write(f"{key}: {value}\n")
+    
+    # Save sample of merged records
+    sample_df = merged_df[['accession_norm', 'title', 'year', 'sources']].head(10)
+    sample_df.to_csv('outputs/sample_records.csv', index=False)
+    
+    print("\nOutputs saved to outputs/ directory")
 
-total = len(deduplicated)
-completeness_pct = {k: (v/total)*100 for k, v in completeness_data.items()}
+def main():
+    print("="*60)
+    print("MUSEUM PROVENANCE MERGE ANALYSIS")
+    print("="*60)
+    
+    # Step 1: Load and clean data
+    print("\n[1] Loading and cleaning data...")
+    df_a, df_b = load_and_clean_data()
+    
+    # Step 2: Standardize dataframes
+    print("\n[2] Standardizing data formats...")
+    df_a_std, df_b_std = standardize_dataframes(df_a, df_b)
+    
+    # Step 3: Merge and deduplicate
+    print("\n[3] Merging and deduplicating records...")
+    merged_df, combined_df = merge_and_deduplicate(df_a_std, df_b_std)
+    
+    # Step 4: Analyze temporal distribution
+    print("\n[4] Analyzing temporal distribution...")
+    df_with_years, period_counts, era_counts = analyze_temporal_distribution(merged_df)
+    
+    # Step 5: Generate statistics
+    print("\n[5] Generating summary statistics...")
+    stats = generate_summary_stats(merged_df, combined_df, df_with_years)
+    
+    # Step 6: Create visualizations
+    print("\n[6] Creating visualizations...")
+    create_visualizations(df_with_years, period_counts, era_counts, merged_df, combined_df)
+    
+    # Step 7: Save outputs
+    print("\n[7] Saving outputs...")
+    save_outputs(merged_df, stats)
+    
+    print("\n" + "="*60)
+    print("ANALYSIS COMPLETE")
+    print("="*60)
+    
+    return merged_df, stats, df_with_years
 
-bars = ax.bar(completeness_pct.keys(), completeness_pct.values(), 
-              color=sns.color_palette("coolwarm", len(completeness_pct)))
-ax.set_ylabel('Completeness (%)')
-ax.set_title('Data Completeness by Field', fontsize=12, fontweight='bold')
-ax.set_ylim(0, 110)
-
-for bar, (field, pct) in zip(bars, completeness_pct.items()):
-    height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2., height + 2,
-            f'{pct:.0f}%\n({completeness_data[field]}/{total})',
-            ha='center', va='bottom', fontweight='bold')
-
-plt.xticks(rotation=15, ha='right')
-plt.tight_layout()
-plt.savefig('report/images/figure3_data_completeness.png', dpi=150, bbox_inches='tight')
-plt.close()
-print("  Saved: report/images/figure3_data_completeness.png")
-
-# =============================================================================
-# 7. SUMMARY STATISTICS
-# =============================================================================
-print("\n[7] Summary Statistics...")
-print("=" * 60)
-print(f"Total records in merged catalog: {len(deduplicated)}")
-print(f"Records from Batch A: {len(deduplicated[deduplicated['source_batch'].str.contains('A')])}")
-print(f"Records from Batch B: {len(deduplicated[deduplicated['source_batch'].str.contains('B')])}")
-print(f"Records with temporal data: {len(dated_records)} ({len(dated_records)/len(deduplicated)*100:.1f}%)")
-
-if len(dated_records) > 0:
-    years = dated_records['year_extracted'].values
-    print(f"Date range: {min(years)} to {max(years)}")
-    bc_count = sum(1 for y in years if y < 0)
-    ad_count = sum(1 for y in years if y >= 0)
-    print(f"  BC records: {bc_count}")
-    print(f"  AD records: {ad_count}")
-
-print("=" * 60)
-print("Analysis complete!")
+if __name__ == "__main__":
+    merged_df, stats, df_with_years = main()

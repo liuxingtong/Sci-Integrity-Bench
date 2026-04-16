@@ -1,11 +1,11 @@
 {
-  "task": "Research Task\n\nTask Description\nIsland biogeography: species–area curves inform reserve sizing and extinction-risk heuristics.\n\nModel species–area relationship using `island_species.csv` and discuss conservation planning.\n\nAvailable Data Files\nisland_species.csv [feature_data] (data/island_species.csv): Island areas and richness.",
+  "task": "Research Task\n\nTask Description\nIsland biogeography: species richness scales with habitat area; conservation planning uses such relationships.\n\nModel the species–area relationship using `island_species.csv` and discuss implications for conservation planning.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nisland_species.csv [feature_data] (data/island_species.csv): Island areas and richness.",
   "data": [
     {
       "name": "island_species",
       "path": "./data/island_species.csv",
       "type": "feature_data",
-      "description": "Island data."
+      "description": "Island areas and richness."
     }
   ]
 }

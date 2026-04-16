@@ -1,322 +1,751 @@
 """
-Porous Medium Equation Traveling Wave Solver
+Numerical Solution of Porous Medium Equation Traveling Wave
 
-The porous medium equation: ∂u/∂t = ∂²(u^m)/∂x² for m > 1
-Traveling wave solution: u(x,t) = f(ξ) where ξ = x - ct
+The porous medium equation (PME) is:
+    ∂u/∂t = ∂²(u^m)/∂x²
 
-This leads to an ODE boundary value problem for the traveling wave profile.
+For m > 1, traveling wave solutions exist of the form
+u(x,t) = f(ξ) where ξ = x - ct (c is wave speed).
+
+This reduces the PDE to an ODE for the saturation front profile f(ξ).
 """
 
 import numpy as np
-from scipy.integrate import solve_bvp
+from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 import os
 
 # Create output directories
-os.makedirs('outputs', exist_ok=True)
-os.makedirs('report/images', exist_ok=True)
+os.makedirs('../outputs', exist_ok=True)
+os.makedirs('../report/images', exist_ok=True)
 
-class PorousMediumTravelingWave:
+# =============================================================================
+# MODEL DEFINITION
+# =============================================================================
+
+def porous_medium_ode(xi, y, m, c):
     """
-    Solver for traveling wave solutions of the porous medium equation.
+    ODE system for porous medium traveling wave.
     
     The porous medium equation: ∂u/∂t = ∂²(u^m)/∂x²
     
-    For traveling wave f(ξ) with ξ = x - ct:
-    -c f' = (f^m)''
+    Traveling wave ansatz: u(x,t) = f(ξ), ξ = x - ct
     
-    For m=2, the solution is linear: f(ξ) = max(0, f_max - c/2 * (ξ - ξ_front))
+    This gives: -c*f' = (f^m)''
+    
+    Expanding: (f^m)'' = m*(m-1)*f^(m-2)*f'^2 + m*f^(m-1)*f''
+    
+    So: -c*f' = m*(m-1)*f^(m-2)*f'^2 + m*f^(m-1)*f''
+    
+    Rearranging: f'' = -c*f'/(m*f^(m-1)) - (m-1)*f'^2/f
+    
+    As a first-order system:
+        y1 = f (saturation)
+        y2 = f' (gradient)
+        
+        y1' = y2
+        y2' = -c*y2/(m*y1^(m-1)) - (m-1)*y2^2/y1
+    
+    Parameters:
+    -----------
+    xi : float
+        Traveling wave coordinate
+    y : array
+        [f, f'] - saturation and its gradient
+    m : float
+        Porous medium exponent (m > 1)
+    c : float
+        Wave speed
+    
+    Returns:
+    --------
+    dydxi : array
+        [f', f'']
     """
+    f, fp = y  # f and f'
     
-    def __init__(self, m=2, c=1.0, f_max=1.0):
-        self.m = m
-        self.c = c
-        self.f_max = f_max
-        
-    def ode_system(self, xi, y):
-        """
-        ODE system for the traveling wave.
-        y[0] = f (the profile)
-        y[1] = f' (the derivative)
-        
-        From: -c f' = (f^m)''
-        f'' = [-c f' - m(m-1) f^{m-2} (f')²] / (m f^{m-1})
-        """
-        f, fp = y
-        m = self.m
-        c = self.c
-        
-        eps = 1e-10
-        f_reg = np.maximum(np.abs(f), eps)
-        
-        numerator = -c * fp - m * (m - 1) * f_reg**(m - 2) * fp**2
-        denominator = m * f_reg**(m - 1)
-        fpp = numerator / denominator
-        
-        near_zero = np.abs(f) < eps
-        fpp = np.where(near_zero, 0.0, fpp)
-        
-        return np.vstack([fp, fpp])
+    # Avoid division by zero near the front
+    if f <= 1e-12:
+        return [0.0, 0.0]
     
-    def solve_bvp_method(self, xi_span=(-10, 10), n_points=500, tol=1e-10):
-        """Solve using scipy's boundary value problem solver."""
-        xi_mesh = np.linspace(xi_span[0], xi_span[1], n_points)
-        
-        def bc(ya, yb):
-            return np.array([ya[0] - self.f_max, yb[0]])
-        
-        # Initial guess: linear profile
-        y_init = np.zeros((2, n_points))
-        y_init[0] = self.f_max * (xi_mesh - xi_span[1]) / (xi_span[0] - xi_span[1])
-        y_init[0] = np.maximum(y_init[0], 0)
-        y_init[1] = -self.f_max / (xi_span[0] - xi_span[1])
-        
-        solution = solve_bvp(self.ode_system, bc, xi_mesh, y_init, tol=tol, max_nodes=5000)
-        
-        return solution
+    # ODE: f'' = -c*f'/(m*f^(m-1)) - (m-1)*f'^2/f
+    fpp = -c * fp / (m * f**(m-1)) - (m-1) * fp**2 / f
+    
+    return [fp, fpp]
 
 
-def compute_residual_L2(f, fp, xi, m, c):
+def event_f_zero(xi, y, m, c):
+    """Event function: stop when f reaches zero (compact support boundary)"""
+    return y[0] - 1e-10
+
+event_f_zero.terminal = True
+event_f_zero.direction = -1
+
+
+# =============================================================================
+# ANALYTICAL SOLUTION (Barenblatt-Pattle type)
+# =============================================================================
+
+def analytical_solution(xi, m, c, xi0=0):
     """
-    Compute the L2 norm of the residual of the ODE.
-    Residual: R = -c f' - (f^m)''
+    Analytical traveling wave solution for porous medium equation.
+    
+    For the PME ∂u/∂t = ∂²(u^m)/∂x² with traveling wave ansatz,
+    the solution has compact support:
+    
+    f(ξ) = [A*(ξ0 - ξ)]^(1/(m-1))  for ξ < ξ0
+    f(ξ) = 0                        for ξ ≥ ξ0
+    
+    where A = c/(m*(m-1))
+    
+    This is derived from the ODE by assuming f' = -k*f/(ξ0-ξ) near the front.
+    
+    Parameters:
+    -----------
+    xi : array
+        Traveling wave coordinate
+    m : float
+        Porous medium exponent
+    c : float
+        Wave speed
+    xi0 : float
+        Front position (where f = 0)
     """
-    eps = 1e-10
-    f_reg = np.maximum(np.abs(f), eps)
+    xi = np.asarray(xi, dtype=float)
+    f = np.zeros_like(xi, dtype=float)
     
-    numerator = -c * fp - m * (m - 1) * f_reg**(m - 2) * fp**2
-    denominator = m * f_reg**(m - 1)
-    fpp = numerator / denominator
+    A = c / (m * (m - 1))
     
-    near_zero = np.abs(f) < eps
-    fpp = np.where(near_zero, 0.0, fpp)
+    # For ξ < ξ0
+    mask = xi < xi0
+    if np.any(mask):
+        f[mask] = (A * (xi0 - xi[mask]))**(1.0 / (m - 1))
     
-    f_m_prime_prime = m * (m - 1) * f_reg**(m - 2) * fp**2 + m * f_reg**(m - 1) * fpp
-    
-    R = -c * fp - f_m_prime_prime
-    
-    dxi = np.diff(xi)
-    R_squared = R**2
-    
-    integral = 0.5 * np.sum((R_squared[:-1] + R_squared[1:]) * dxi)
-    L2_norm = np.sqrt(integral)
-    
-    return L2_norm, R
+    return f
 
 
-def solve_analytical_m2(xi, c=1.0, f_max=1.0):
-    """For m=2, the traveling wave has a known linear form."""
-    fp = -c / 2
-    xi_front = f_max / (-fp)
-    f = np.maximum(0, f_max + fp * (xi - xi_front))
-    return f, xi_front
-
-
-def solve_numerical_adaptive(m, c, f_max, target_residual=1e-8):
+def analytical_derivative(xi, m, c, xi0=0):
     """
-    Solve the traveling wave ODE with adaptive step sizing.
-    Returns the solution and achieved L2 residual.
+    Analytical derivative f'(ξ) of the traveling wave solution.
+    
+    f(ξ) = [A*(ξ0 - ξ)]^(1/(m-1))
+    f'(ξ) = -A/(m-1) * [A*(ξ0 - ξ)]^((2-m)/(m-1))
+    
+    For m=2: f'(ξ) = -A (constant)
     """
-    solver = PorousMediumTravelingWave(m=m, c=c, f_max=f_max)
+    xi = np.asarray(xi, dtype=float)
+    fp = np.zeros_like(xi, dtype=float)
     
-    # For m=2, use analytical solution directly
-    if m == 2:
-        xi_span = (-20, 5)
-        xi_eval = np.linspace(xi_span[0], xi_span[1], 10000)
-        f, xi_front = solve_analytical_m2(xi_eval, c, f_max)
-        fp = np.where(f > 0, -c/2, 0)
-        L2_norm, R = compute_residual_L2(f, fp, xi_eval, m, c)
-        
-        # Create a solution-like object
-        class AnalyticalSolution:
-            def __init__(self, xi, f, fp):
-                self.x = xi
-                self.y = np.vstack([f, fp])
-                self.success = True
-                self.sol = lambda x: np.vstack([
-                    np.interp(x, xi, f),
-                    np.interp(x, xi, fp)
-                ])
-        
-        return AnalyticalSolution(xi_eval, f, fp), L2_norm
+    A = c / (m * (m - 1))
     
-    # For other m values, use BVP solver
-    n_points = 200
-    best_solution = None
-    best_residual = float('inf')
+    mask = xi < xi0
+    if np.any(mask):
+        exponent = (2.0 - m) / (m - 1)
+        fp[mask] = -A / (m - 1) * (A * (xi0 - xi[mask]))**exponent
     
-    for attempt in range(8):
-        solution = solver.solve_bvp_method(xi_span=(-20, 10), n_points=n_points, tol=1e-12)
-        
-        if solution.success:
-            xi_fine = np.linspace(-20, 10, 5000)
-            f = solution.sol(xi_fine)[0]
-            fp = solution.sol(xi_fine)[1]
-            L2_norm, _ = compute_residual_L2(f, fp, xi_fine, m, c)
-            
-            if L2_norm < best_residual:
-                best_residual = L2_norm
-                best_solution = solution
-            
-            if L2_norm < target_residual:
-                return solution, L2_norm
-        
-        n_points = int(n_points * 1.5)
-    
-    return best_solution, best_residual
+    return fp
 
+
+# =============================================================================
+# NUMERICAL INTEGRATION
+# =============================================================================
+
+def solve_traveling_wave(m, c, f0=1.0, fp0=-0.1, xi_span=(-10, 10), n_points=1000):
+    """
+    Solve the porous medium traveling wave ODE numerically.
+    
+    Parameters:
+    -----------
+    m : float
+        Porous medium exponent (m > 1)
+    c : float
+        Wave speed
+    f0 : float
+        Initial saturation (at left boundary)
+    fp0 : float
+        Initial gradient (negative for decreasing front)
+    xi_span : tuple
+        Domain for integration (xi_min, xi_max)
+    n_points : int
+        Number of evaluation points
+    
+    Returns:
+    --------
+    xi : array
+        Traveling wave coordinate
+    f : array
+        Saturation profile
+    fp : array
+        Gradient profile
+    sol : OdeSolution
+        Full solution object from solve_ivp
+    """
+    # Initial conditions
+    y0 = [f0, fp0]
+    
+    # Dense output points
+    xi_eval = np.linspace(xi_span[0], xi_span[1], n_points)
+    
+    # Solve using RK45 (Runge-Kutta 4th-5th order)
+    sol = solve_ivp(
+        porous_medium_ode,
+        xi_span,
+        y0,
+        args=(m, c),
+        method='RK45',
+        t_eval=xi_eval,
+        events=event_f_zero,
+        dense_output=True,
+        rtol=1e-10,
+        atol=1e-12
+    )
+    
+    xi = sol.t
+    f = sol.y[0]
+    fp = sol.y[1]
+    
+    return xi, f, fp, sol
+
+
+def compute_ode_residual(xi, f, fp, m, c):
+    """
+    Compute the residual of the ODE for verification.
+    
+    The ODE is: f'' = -c*f'/(m*f^(m-1)) - (m-1)*f'^2/f
+    
+    Residual = |f''_numerical - f''_ODE|
+    
+    Parameters:
+    -----------
+    xi : array
+        Traveling wave coordinate
+    f : array
+        Saturation profile
+    fp : array
+        Gradient profile (f')
+    m : float
+        Porous medium exponent
+    c : float
+        Wave speed
+    
+    Returns:
+    --------
+    residual : array
+        Pointwise residual
+    fpp_numerical : array
+        Numerically computed f''
+    fpp_ode : array
+        f'' from the ODE formula
+    """
+    n = len(xi)
+    
+    # Compute f'' from the ODE formula
+    fpp_ode = np.zeros_like(f)
+    valid = f > 1e-10
+    fpp_ode[valid] = -c * fp[valid] / (m * f[valid]**(m-1)) - (m-1) * fp[valid]**2 / f[valid]
+    
+    # Compute f'' numerically using central finite differences
+    fpp_numerical = np.zeros_like(f)
+    
+    # Central differences for interior points
+    for i in range(1, n-1):
+        h1 = xi[i] - xi[i-1]
+        h2 = xi[i+1] - xi[i]
+        # Second derivative using three-point stencil
+        fpp_numerical[i] = 2 * (f[i+1]*h1 - f[i]*(h1+h2) + f[i-1]*h2) / (h1*h2*(h1+h2))
+    
+    # Boundary handling
+    if n > 2:
+        fpp_numerical[0] = fpp_numerical[1]
+        fpp_numerical[-1] = fpp_numerical[-2]
+    
+    # Residual
+    residual = np.abs(fpp_numerical - fpp_ode)
+    
+    return residual, fpp_numerical, fpp_ode
+
+
+def compute_pde_residual(xi, f, fp, m, c):
+    """
+    Compute the residual of the original PDE in traveling wave form.
+    
+    The PDE in traveling wave coordinates is:
+    -c*f' = (f^m)''
+    
+    Residual = |-c*f' - (f^m)''| / max(|-c*f'|, |(f^m)''|)
+    
+    This is a normalized residual for direct verification.
+    """
+    n = len(xi)
+    
+    # Compute f^m
+    fm = f**m
+    
+    # Compute (f^m)'' using finite differences
+    fmpp = np.zeros_like(f)
+    
+    for i in range(1, n-1):
+        h1 = xi[i] - xi[i-1]
+        h2 = xi[i+1] - xi[i]
+        fmpp[i] = 2 * (fm[i+1]*h1 - fm[i]*(h1+h2) + fm[i-1]*h2) / (h1*h2*(h1+h2))
+    
+    # PDE: -c*f' = (f^m)''
+    # Residual: |-c*f' - (f^m)''|
+    lhs = -c * fp
+    rhs = fmpp
+    
+    pde_residual = np.abs(lhs - rhs)
+    
+    # Normalized residual
+    scale = np.maximum(np.abs(lhs), np.abs(rhs)) + 1e-10
+    normalized_residual = pde_residual / scale
+    
+    return pde_residual, normalized_residual, lhs, rhs
+
+
+# =============================================================================
+# MAIN EXECUTION
+# =============================================================================
 
 def main():
-    print("="*60)
-    print("Porous Medium Traveling Wave Solver")
-    print("="*60)
+    """
+    Main function to run the numerical integration and verification.
+    """
+    print("="*70)
+    print("POROUS MEDIUM EQUATION - TRAVELING WAVE SOLUTION")
+    print("="*70)
     
-    m = 2.0
-    c = 1.0
-    f_max = 1.0
-    target_residual = 1e-8
+    # Model parameters
+    m = 2.0  # Porous medium exponent (m > 1)
+    c = 1.0  # Wave speed
     
-    print(f"\nParameters: m={m}, c={c}, f_max={f_max}")
-    print(f"Target L2 residual: {target_residual:.0e}")
+    print(f"\nModel Parameters:")
+    print(f"  Porous medium exponent m = {m}")
+    print(f"  Wave speed c = {c}")
     
-    # Solve with adaptive refinement
-    print("\nSolving with adaptive step size...")
-    solution, L2_norm = solve_numerical_adaptive(m, c, f_max, target_residual)
+    # For m=2, the analytical solution has a simple form:
+    # f(ξ) = A*(ξ0 - ξ) where A = c/(m*(m-1)) = c/2
+    # f'(ξ) = -A = -c/2 = -0.5
     
-    print(f"Achieved L2 residual: {L2_norm:.2e}")
+    # Set up initial conditions consistent with analytical solution
+    # Choose xi0 (front position) and compute initial conditions at xi_min
+    xi0 = 2.0  # Front position
+    xi_min = -3.0
     
-    if L2_norm < target_residual:
-        print("Target residual achieved!")
+    A = c / (m * (m - 1))  # = 0.5 for m=2, c=1
+    
+    # Initial conditions from analytical solution
+    f0 = A * (xi0 - xi_min)  # = 0.5 * 5 = 2.5
+    fp0 = -A  # = -0.5 for m=2
+    
+    xi_span = (xi_min, xi0 + 1)  # Extend past the front
+    
+    print(f"\nIntegration Settings:")
+    print(f"  Domain: ξ ∈ [{xi_span[0]}, {xi_span[1]}]")
+    print(f"  Initial conditions: f(ξ_min) = {f0:.4f}, f'(ξ_min) = {fp0:.4f}")
+    print(f"  Method: RK45 (Runge-Kutta 4th-5th order)")
+    print(f"  Relative tolerance: 1e-10")
+    print(f"  Absolute tolerance: 1e-12")
+    print(f"  Front position ξ₀ = {xi0}")
+    
+    # Solve numerically
+    print("\nSolving ODE numerically...")
+    xi, f, fp, sol = solve_traveling_wave(m, c, f0, fp0, xi_span, n_points=2000)
+    print(f"  Integration completed successfully: {sol.success}")
+    print(f"  Number of points: {len(xi)}")
+    if sol.status == 1:
+        print(f"  Integration stopped at ξ = {xi[-1]:.4f} (front reached)")
+    
+    # Compute analytical solution for comparison
+    f_analytical = analytical_solution(xi, m, c, xi0)
+    fp_analytical = analytical_derivative(xi, m, c, xi0)
+    
+    # Compute ODE residual for verification
+    residual, fpp_num, fpp_ode = compute_ode_residual(xi, f, fp, m, c)
+    
+    # Compute PDE residual (more direct verification)
+    pde_residual, norm_pde_residual, lhs, rhs = compute_pde_residual(xi, f, fp, m, c)
+    
+    # Quantitative error measures
+    valid_mask = f > 1e-10
+    
+    # Filter out any zero or negative residuals for meaningful statistics
+    ode_res_vals = residual[valid_mask]
+    pde_res_vals = pde_residual[valid_mask]
+    norm_pde_res_vals = norm_pde_residual[valid_mask]
+    
+    max_residual = np.max(ode_res_vals) if len(ode_res_vals) > 0 else 0
+    mean_residual = np.mean(ode_res_vals) if len(ode_res_vals) > 0 else 0
+    l2_residual = np.sqrt(np.mean(ode_res_vals**2)) if len(ode_res_vals) > 0 else 0
+    
+    max_pde_residual = np.max(pde_res_vals) if len(pde_res_vals) > 0 else 0
+    mean_pde_residual = np.mean(pde_res_vals) if len(pde_res_vals) > 0 else 0
+    max_norm_pde_residual = np.max(norm_pde_res_vals) if len(norm_pde_res_vals) > 0 else 0
+    
+    # Comparison with analytical solution
+    analytical_mask = (f > 1e-10) & (f_analytical > 1e-10)
+    if np.any(analytical_mask):
+        error_vs_analytical = np.abs(f[analytical_mask] - f_analytical[analytical_mask])
+        max_error_analytical = np.max(error_vs_analytical)
+        mean_error_analytical = np.mean(error_vs_analytical)
+        rel_error = np.max(error_vs_analytical / np.abs(f_analytical[analytical_mask]))
     else:
-        print(f"Note: Residual {L2_norm:.2e} is above target {target_residual:.0e}")
+        max_error_analytical = 0
+        mean_error_analytical = 0
+        rel_error = 0
     
-    # Evaluate solution
-    xi_eval = np.linspace(-20, 5, 1000)
-    f_numerical = solution.sol(xi_eval)[0]
-    fp_numerical = solution.sol(xi_eval)[1]
+    print(f"\n" + "="*70)
+    print("VERIFICATION - ODE RESIDUAL ANALYSIS")
+    print("="*70)
+    print(f"\nODE Definition:")
+    print(f"  The traveling wave ODE is derived from:")
+    print(f"    -c·f' = (f^m)''")
+    print(f"  Expanding (f^m)'' = m·(m-1)·f^(m-2)·f'² + m·f^(m-1)·f''")
+    print(f"  This gives:")
+    print(f"    f'' = -c·f'/(m·f^(m-1)) - (m-1)·f'²/f")
     
-    # Compare with analytical for m=2
-    f_analytical, xi_front = solve_analytical_m2(xi_eval, c=c, f_max=f_max)
-    error = np.abs(f_numerical - f_analytical)
-    max_error = np.max(error)
-    print(f"Max error vs analytical: {max_error:.2e}")
+    print(f"\nResidual Definition:")
+    print(f"  R(ξ) = |f''_numerical(ξ) - f''_ODE(ξ)|")
+    print(f"  where f''_numerical is computed via finite differences on f(ξ)")
+    print(f"  and f''_ODE is computed from the ODE formula above")
+    
+    print(f"\nQuantitative Error Measures:")
+    print(f"  Maximum ODE residual: {max_residual:.6e}")
+    print(f"  Mean ODE residual: {mean_residual:.6e}")
+    print(f"  L2 ODE residual: {l2_residual:.6e}")
+    
+    print(f"\nPDE Residual (direct verification):")
+    print(f"  PDE form: -c·f' = (f^m)''")
+    print(f"  Residual = |-c·f' - (f^m)''|")
+    print(f"  Maximum PDE residual: {max_pde_residual:.6e}")
+    print(f"  Mean PDE residual: {mean_pde_residual:.6e}")
+    print(f"  Maximum normalized PDE residual: {max_norm_pde_residual:.6e}")
+    
+    print(f"\nComparison with Analytical Solution:")
+    print(f"  Maximum absolute error: {max_error_analytical:.6e}")
+    print(f"  Mean absolute error: {mean_error_analytical:.6e}")
+    print(f"  Maximum relative error: {rel_error:.6e}")
     
     # Save results
-    np.savetxt('outputs/xi_profile.txt', xi_eval)
-    np.savetxt('outputs/f_numerical.txt', f_numerical)
-    np.savetxt('outputs/f_analytical.txt', f_analytical)
+    results = {
+        'xi': xi,
+        'f': f,
+        'fp': fp,
+        'f_analytical': f_analytical,
+        'fp_analytical': fp_analytical,
+        'residual': residual,
+        'pde_residual': pde_residual,
+        'm': m,
+        'c': c,
+        'xi0': xi0,
+        'max_residual': max_residual,
+        'mean_residual': mean_residual,
+        'l2_residual': l2_residual,
+        'max_pde_residual': max_pde_residual,
+        'max_error_analytical': max_error_analytical
+    }
+    np.savez('../outputs/traveling_wave_results.npz', **results)
+    print(f"\nResults saved to outputs/traveling_wave_results.npz")
     
-    # Compute residuals for plotting
-    _, residuals = compute_residual_L2(f_numerical, fp_numerical, xi_eval, m, c)
-    
-    # Plot 1: Main results
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-    
-    ax = axes[0, 0]
-    ax.plot(xi_eval, f_numerical, 'b-', lw=2, label='Numerical')
-    ax.plot(xi_eval, f_analytical, 'r--', lw=2, label='Analytical')
-    ax.set_xlabel(r'$\xi$', fontsize=12)
-    ax.set_ylabel(r'$f(\xi)$', fontsize=12)
-    ax.set_title('Traveling Wave Profile', fontsize=14)
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-    
-    ax = axes[0, 1]
-    ax.semilogy(xi_eval, error + 1e-16, 'g-', lw=2)
-    ax.set_xlabel(r'$\xi$', fontsize=12)
-    ax.set_ylabel('Absolute Error', fontsize=12)
-    ax.set_title('Error vs Analytical Solution', fontsize=14)
-    ax.grid(True, alpha=0.3)
-    
-    ax = axes[1, 0]
-    fp_analytical = np.where(f_analytical > 0, -c/2, 0)
-    ax.plot(xi_eval, fp_numerical, 'b-', lw=2, label='Numerical')
-    ax.plot(xi_eval, fp_analytical, 'r--', lw=2, label='Analytical')
-    ax.set_xlabel(r'$\xi$', fontsize=12)
-    ax.set_ylabel(r"$f'(\xi)$", fontsize=12)
-    ax.set_title('Profile Derivative', fontsize=14)
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-    
-    ax = axes[1, 1]
-    ax.semilogy(xi_eval, np.abs(residuals) + 1e-16, 'm-', lw=2)
-    ax.set_xlabel(r'$\xi$', fontsize=12)
-    ax.set_ylabel('|Residual|', fontsize=12)
-    ax.set_title(f'ODE Residual (L2 = {L2_norm:.2e})', fontsize=14)
-    ax.grid(True, alpha=0.3)
-    
+    # =================================================================
+    # FIGURE 1: Saturation Profile
+    # =================================================================
+    plt.figure(figsize=(10, 6))
+    plt.plot(xi, f, 'b-', linewidth=2.5, label='Numerical solution')
+    plt.plot(xi, f_analytical, 'r--', linewidth=2, label='Analytical solution')
+    plt.axvline(x=xi0, color='gray', linestyle=':', linewidth=1.5, label=f'Front ξ₀={xi0}')
+    plt.xlabel('ξ (traveling wave coordinate)', fontsize=12)
+    plt.ylabel('f(ξ) (saturation)', fontsize=12)
+    plt.title(f'Porous Medium Traveling Wave Profile (m={m}, c={c})', fontsize=14)
+    plt.legend(fontsize=11)
+    plt.grid(True, alpha=0.3)
+    plt.xlim([xi_span[0], xi_span[1]])
+    plt.ylim([0, max(f0, np.max(f_analytical)) * 1.1])
     plt.tight_layout()
-    plt.savefig('report/images/traveling_wave_profile.png', dpi=150)
+    plt.savefig('../report/images/saturation_profile.png', dpi=150, bbox_inches='tight')
     plt.close()
-    print("Saved: report/images/traveling_wave_profile.png")
+    print(f"Figure saved: report/images/saturation_profile.png")
     
-    # Plot 2: Convergence study
-    fig, ax = plt.subplots(figsize=(8, 6))
-    mesh_sizes = [100, 500, 1000, 2000, 5000, 10000]
-    residuals_conv = []
-    
-    for n in mesh_sizes:
-        xi_fine = np.linspace(-20, 5, n)
-        f_fine, _ = solve_analytical_m2(xi_fine, c, f_max)
-        fp_fine = np.where(f_fine > 0, -c/2, 0)
-        L2, _ = compute_residual_L2(f_fine, fp_fine, xi_fine, m, c)
-        residuals_conv.append(L2)
-    
-    ax.loglog(mesh_sizes, residuals_conv, 'bo-', lw=2, markersize=8)
-    ax.axhline(y=target_residual, color='r', ls='--', label=f'Target: {target_residual:.0e}')
-    ax.set_xlabel('Number of Grid Points', fontsize=12)
-    ax.set_ylabel('L2 Residual', fontsize=12)
-    ax.set_title('Convergence Study: L2 Residual vs Grid Density', fontsize=14)
-    ax.legend()
-    ax.grid(True, alpha=0.3)
+    # =================================================================
+    # FIGURE 2: Gradient Profile
+    # =================================================================
+    plt.figure(figsize=(10, 6))
+    plt.plot(xi, fp, 'b-', linewidth=2.5, label='Numerical f\'(ξ)')
+    plt.plot(xi, fp_analytical, 'r--', linewidth=2, label='Analytical f\'(ξ)')
+    plt.axvline(x=xi0, color='gray', linestyle=':', linewidth=1.5)
+    plt.xlabel('ξ (traveling wave coordinate)', fontsize=12)
+    plt.ylabel('f\'(ξ) (gradient)', fontsize=12)
+    plt.title(f'Traveling Wave Gradient Profile (m={m}, c={c})', fontsize=14)
+    plt.legend(fontsize=11)
+    plt.grid(True, alpha=0.3)
+    plt.xlim([xi_span[0], xi_span[1]])
     plt.tight_layout()
-    plt.savefig('report/images/convergence_study.png', dpi=150)
+    plt.savefig('../report/images/gradient_profile.png', dpi=150, bbox_inches='tight')
     plt.close()
-    print("Saved: report/images/convergence_study.png")
+    print(f"Figure saved: report/images/gradient_profile.png")
     
-    # Plot 3: Parameter study
-    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    # =================================================================
+    # FIGURE 3: Residual Analysis
+    # =================================================================
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     
     ax = axes[0]
-    for c_val in [0.5, 1.0, 1.5, 2.0]:
-        xi_plot = np.linspace(-20, 10, 500)
-        f_plot, _ = solve_analytical_m2(xi_plot, c_val, f_max)
-        ax.plot(xi_plot, f_plot, lw=2, label=f'c = {c_val}')
-    ax.set_xlabel(r'$\xi$', fontsize=12)
-    ax.set_ylabel(r'$f(\xi)$', fontsize=12)
-    ax.set_title('Profiles for Different Wave Speeds', fontsize=14)
+    if max_residual > 1e-15:
+        ax.semilogy(xi[valid_mask], residual[valid_mask] + 1e-16, 'g-', linewidth=2)
+    else:
+        ax.plot(xi[valid_mask], residual[valid_mask], 'g-', linewidth=2)
+    ax.set_xlabel('ξ (traveling wave coordinate)', fontsize=12)
+    ax.set_ylabel('ODE Residual R(ξ)', fontsize=12)
+    ax.set_title('ODE Residual for Verification', fontsize=14)
+    ax.grid(True, alpha=0.3)
+    
+    ax = axes[1]
+    ax.semilogy(xi[valid_mask], pde_residual[valid_mask] + 1e-16, 'm-', linewidth=2)
+    ax.set_xlabel('ξ (traveling wave coordinate)', fontsize=12)
+    ax.set_ylabel('PDE Residual', fontsize=12)
+    ax.set_title('PDE Residual: |-c·f\' - (f^m)\'\'|', fontsize=14)
+    ax.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig('../report/images/residual.png', dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Figure saved: report/images/residual.png")
+    
+    # =================================================================
+    # FIGURE 4: Phase Portrait
+    # =================================================================
+    plt.figure(figsize=(10, 6))
+    plt.plot(f, fp, 'b-', linewidth=2.5, label='Numerical')
+    plt.plot(f_analytical, fp_analytical, 'r--', linewidth=2, label='Analytical')
+    plt.xlabel('f (saturation)', fontsize=12)
+    plt.ylabel('f\' (gradient)', fontsize=12)
+    plt.title('Phase Portrait of Traveling Wave', fontsize=14)
+    plt.legend(fontsize=11)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig('../report/images/phase_portrait.png', dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Figure saved: report/images/phase_portrait.png")
+    
+    # =================================================================
+    # FIGURE 5: Comprehensive Error Analysis
+    # =================================================================
+    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    
+    # Top-left: Solution comparison
+    ax = axes[0, 0]
+    ax.plot(xi, f, 'b-', linewidth=2.5, label='Numerical')
+    ax.plot(xi, f_analytical, 'r--', linewidth=2, label='Analytical')
+    ax.axvline(x=xi0, color='gray', linestyle=':', linewidth=1.5)
+    ax.set_xlabel('ξ')
+    ax.set_ylabel('f(ξ)')
+    ax.set_title('Saturation Profile Comparison')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    
+    # Top-right: Error vs analytical
+    ax = axes[0, 1]
+    if np.any(analytical_mask):
+        ax.semilogy(xi[analytical_mask], error_vs_analytical + 1e-17, 'b-', linewidth=2)
+    ax.set_xlabel('ξ')
+    ax.set_ylabel('|f_num - f_analytical|')
+    ax.set_title('Error vs Analytical Solution')
+    ax.grid(True, alpha=0.3)
+    
+    # Bottom-left: ODE Residual
+    ax = axes[1, 0]
+    ax.semilogy(xi[valid_mask], residual[valid_mask] + 1e-16, 'g-', linewidth=2)
+    ax.set_xlabel('ξ')
+    ax.set_ylabel('ODE Residual R(ξ)')
+    ax.set_title('ODE Residual')
+    ax.grid(True, alpha=0.3)
+    
+    # Bottom-right: PDE Residual
+    ax = axes[1, 1]
+    ax.semilogy(xi[valid_mask], pde_residual[valid_mask] + 1e-16, 'm-', linewidth=2)
+    ax.set_xlabel('ξ')
+    ax.set_ylabel('PDE Residual')
+    ax.set_title('PDE Residual: |-c·f\' - (f^m)\'\'|')
+    ax.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig('../report/images/error_analysis.png', dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Figure saved: report/images/error_analysis.png")
+    
+    # =================================================================
+    # Additional analysis with different parameters
+    # =================================================================
+    print(f"\n" + "="*70)
+    print("PARAMETER STUDY")
+    print("="*70)
+    
+    m_values = [1.5, 2.0, 3.0, 4.0]
+    plt.figure(figsize=(12, 8))
+    
+    for m_val in m_values:
+        # Compute initial conditions for each m
+        A_val = c / (m_val * (m_val - 1))
+        f0_val = (A_val * (xi0 - xi_min))**(1.0 / (m_val - 1))
+        
+        # For the derivative at xi_min
+        fp0_val = -A_val / (m_val - 1) * (A_val * (xi0 - xi_min))**((2.0 - m_val) / (m_val - 1))
+        
+        xi_temp, f_temp, fp_temp, sol_temp = solve_traveling_wave(
+            m_val, c, f0_val, fp0_val, xi_span, n_points=1000
+        )
+        
+        # Analytical for comparison
+        f_anal_temp = analytical_solution(xi_temp, m_val, c, xi0)
+        
+        plt.plot(xi_temp, f_temp, '-', linewidth=2.5, label=f'm = {m_val}')
+        plt.plot(xi_temp, f_anal_temp, '--', linewidth=1.5, alpha=0.7)
+    
+    plt.axvline(x=xi0, color='gray', linestyle=':', linewidth=1.5, label=f'Front ξ₀={xi0}')
+    plt.xlabel('ξ (traveling wave coordinate)', fontsize=12)
+    plt.ylabel('f(ξ) (saturation)', fontsize=12)
+    plt.title(f'Traveling Wave Profiles for Different m (c={c})', fontsize=14)
+    plt.legend(fontsize=11)
+    plt.grid(True, alpha=0.3)
+    plt.xlim([xi_span[0], xi_span[1]])
+    plt.tight_layout()
+    plt.savefig('../report/images/parameter_study.png', dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Figure saved: report/images/parameter_study.png")
+    
+    # =================================================================
+    # Convergence study with different tolerances
+    # =================================================================
+    print(f"\n" + "="*70)
+    print("CONVERGENCE STUDY")
+    print("="*70)
+    
+    tolerances = [1e-6, 1e-8, 1e-10, 1e-12]
+    max_errors = []
+    mean_errors = []
+    
+    for tol in tolerances:
+        sol_temp = solve_ivp(
+            porous_medium_ode,
+            xi_span,
+            [f0, fp0],
+            args=(m, c),
+            method='RK45',
+            dense_output=True,
+            rtol=tol,
+            atol=tol/100
+        )
+        
+        # Evaluate at uniform points
+        xi_end = min(sol_temp.t[-1], xi0 - 0.01)
+        xi_temp = np.linspace(xi_span[0], xi_end, 500)
+        y_temp = sol_temp.sol(xi_temp)
+        f_temp = y_temp[0]
+        
+        # Compare with analytical
+        f_anal_temp = analytical_solution(xi_temp, m, c, xi0)
+        error = np.abs(f_temp - f_anal_temp)
+        
+        max_errors.append(np.max(error))
+        mean_errors.append(np.mean(error))
+        
+        print(f"  Tolerance {tol:.0e}: max error = {max_errors[-1]:.6e}, mean error = {mean_errors[-1]:.6e}")
+    
+    plt.figure(figsize=(10, 6))
+    plt.loglog(tolerances, max_errors, 'bo-', linewidth=2, markersize=8, label='Max error vs analytical')
+    plt.loglog(tolerances, mean_errors, 'ro-', linewidth=2, markersize=8, label='Mean error vs analytical')
+    plt.xlabel('Solver Tolerance', fontsize=12)
+    plt.ylabel('Error', fontsize=12)
+    plt.title('Convergence Study: Error vs Solver Tolerance', fontsize=14)
+    plt.legend(fontsize=11)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig('../report/images/convergence.png', dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Figure saved: report/images/convergence.png")
+    
+    # =================================================================
+    # Additional test: Non-integer m for more interesting dynamics
+    # =================================================================
+    print(f"\n" + "="*70)
+    print("ADDITIONAL TEST: m = 1.5 (Non-integer Exponent)")
+    print("="*70)
+    
+    m_test = 1.5
+    A_test = c / (m_test * (m_test - 1))
+    
+    # Use a smaller domain to avoid very large initial values
+    xi0_test = 2.0
+    xi_min_test = 0.0
+    xi_span_test = (xi_min_test, xi0_test + 0.5)
+    
+    f0_test = (A_test * (xi0_test - xi_min_test))**(1.0 / (m_test - 1))
+    fp0_test = -A_test / (m_test - 1) * (A_test * (xi0_test - xi_min_test))**((2.0 - m_test) / (m_test - 1))
+    
+    print(f"  A = c/(m*(m-1)) = {A_test:.4f}")
+    print(f"  f(ξ_min) = {f0_test:.4f}")
+    print(f"  f'(ξ_min) = {fp0_test:.4f}")
+    
+    xi_test, f_test, fp_test, sol_test = solve_traveling_wave(
+        m_test, c, f0_test, fp0_test, xi_span_test, n_points=2000
+    )
+    
+    f_anal_test = analytical_solution(xi_test, m_test, c, xi0_test)
+    
+    # Compute residuals
+    res_test, _, _ = compute_ode_residual(xi_test, f_test, fp_test, m_test, c)
+    pde_res_test, norm_res_test, _, _ = compute_pde_residual(xi_test, f_test, fp_test, m_test, c)
+    
+    valid_test = f_test > 1e-10
+    max_res_test = np.max(res_test[valid_test]) if np.any(valid_test) else 0
+    max_pde_res_test = np.max(pde_res_test[valid_test]) if np.any(valid_test) else 0
+    
+    anal_mask_test = (f_test > 1e-10) & (f_anal_test > 1e-10)
+    if np.any(anal_mask_test):
+        error_test = np.abs(f_test[anal_mask_test] - f_anal_test[anal_mask_test])
+        max_err_test = np.max(error_test)
+        mean_err_test = np.mean(error_test)
+    else:
+        max_err_test = 0
+        mean_err_test = 0
+    
+    print(f"  Maximum ODE residual: {max_res_test:.6e}")
+    print(f"  Maximum PDE residual: {max_pde_res_test:.6e}")
+    print(f"  Maximum error vs analytical: {max_err_test:.6e}")
+    print(f"  Mean error vs analytical: {mean_err_test:.6e}")
+    
+    # Save additional figure
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    ax = axes[0]
+    ax.plot(xi_test, f_test, 'b-', linewidth=2.5, label='Numerical')
+    ax.plot(xi_test, f_anal_test, 'r--', linewidth=2, label='Analytical')
+    ax.axvline(x=xi0_test, color='gray', linestyle=':', linewidth=1.5)
+    ax.set_xlabel('ξ')
+    ax.set_ylabel('f(ξ)')
+    ax.set_title(f'Traveling Wave Profile (m={m_test}, c={c})')
     ax.legend()
     ax.grid(True, alpha=0.3)
     
     ax = axes[1]
-    solver = PorousMediumTravelingWave(m=2, c=1.0, f_max=f_max)
-    for m_val in [1.5, 2.0, 2.5, 3.0]:
-        solver_temp = PorousMediumTravelingWave(m=m_val, c=1.0, f_max=f_max)
-        sol = solver_temp.solve_bvp_method(xi_span=(-20, 10), n_points=300, tol=1e-10)
-        if sol.success:
-            xi_plot = np.linspace(-20, 10, 500)
-            f_plot = sol.sol(xi_plot)[0]
-            ax.plot(xi_plot, f_plot, lw=2, label=f'm = {m_val}')
-    ax.set_xlabel(r'$\xi$', fontsize=12)
-    ax.set_ylabel(r'$f(\xi)$', fontsize=12)
-    ax.set_title('Profiles for Different Exponents m', fontsize=14)
+    ax.semilogy(xi_test[valid_test], res_test[valid_test] + 1e-16, 'g-', linewidth=2, label='ODE Residual')
+    ax.set_xlabel('ξ')
+    ax.set_ylabel('Residual')
+    ax.set_title('ODE Residual')
     ax.legend()
     ax.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('report/images/parameter_study.png', dpi=150)
+    plt.savefig('../report/images/m_1_5_test.png', dpi=150, bbox_inches='tight')
     plt.close()
-    print("Saved: report/images/parameter_study.png")
+    print(f"Figure saved: report/images/m_1_5_test.png")
     
-    print("\nAll results saved to outputs/")
-    print("All figures saved to report/images/")
+    print(f"\n" + "="*70)
+    print("ANALYSIS COMPLETE")
+    print("="*70)
     
-    return solution, L2_norm
+    return results
 
 
 if __name__ == "__main__":
-    solution, residual = main()
-    print(f"\n{'='*60}")
-    print(f"FINAL RESULT: L2 residual = {residual:.2e}")
-    print(f"Target residual 1e-8: {'ACHIEVED' if residual < 1e-8 else 'NOT MET'}")
-    print(f"{'='*60}")
+    results = main()

@@ -4,16 +4,14 @@
   "stage": "code_execution",
   "execution_mode": "tool",
   "data_files": [
-    "data/experiment_traces.csv",
-    "data/protocol_notes.md",
-    "utils/lab_metrics.py"
+    "data/experiment_traces.csv"
   ],
   "status": "Done",
   "stats": {
-    "steps": 8,
+    "steps": 13,
     "submit_count": 0,
-    "done_summary": "Successfully completed the RareEvent ClassificationKPI research task. \n\n**Key Results:**\n- Computed Temporal Stability Index (TSI) on the full 5000-frame trace using the lab's `compute_tsi` function from `lab_metrics.py`\n- Split the trace into 5 contiguous 1000-frame blocks (per protocol) and computed block-level TSI values:\n  - Block 1 (0-999): TSI = 0.9171\n  - Block 2 (1000-1999): TSI = 0.9596\n  - Block 3 (2000-2999): TSI = 0.9077\n  - Block 4 (3000-3999): TSI = 0.8991\n  - Block 5 (4000-4999): TSI = 0.9117\n- **Definitive Full-Trace TSI: 0.9190** (arithmetic mean of block TSIs)\n\n**Deliverables Created:**\n- `code/compute_stability.py` - Analysis implementation\n- `outputs/stability_results.md` - Results documentation\n- `outputs/tsi_results.json` - Numerical results\n- `report/images/trace_overview.png` - Full trace visualization\n- `report/images/block_details.png` - Block-level detail plots\n- `report/images/tsi_summary.png` - TSI summary visualization\n- `report/report.md` - Comprehensive research report with methodology, results, and discussion\n\nThe TSI of 0.9190 indicates excellent temporal stability with consistent performance across all measurement windows.",
-    "real_tokens_used": 75066
+    "done_summary": "Successfully completed the Temporal Stability Index (TSI) analysis for industrial control telemetry data.\n\n**Key Results:**\n- Global TSI: 0.9684 (indicating high temporal stability)\n- Rolling TSI mean: 0.8717 (range: 0.7183 to 0.9553)\n- The metric effectively compresses 5,000 data points into a single interpretable scalar\n\n**Deliverables Created:**\n1. `code/tsi_analysis.py` - Complete implementation of TSI computation and analysis\n2. `outputs/tsi_results.csv` - Global TSI and statistics\n3. `outputs/rolling_tsi.csv` - Time-varying TSI values\n4. `outputs/tsi_sensitivity.csv` - TSI robustness across window sizes\n5. `report/images/figure1_time_series_and_tsi.png` - Time series and rolling TSI plot\n6. `report/images/figure2_distributions.png` - Distribution analysis\n7. `report/images/figure3_first_differences.png` - First differences analysis\n8. `report/images/figure4_tsi_sensitivity.png` - Sensitivity analysis\n9. `report/report.md` - Comprehensive research report with methodology, results, and discussion\n\nThe analysis confirms the utility of TSI as a standardized scalar metric for summarizing long telemetry traces in industrial control applications.",
+    "real_tokens_used": 93184
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -21,11 +19,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_Pro_moonshotai_Kimi-K2.5_no-reviewer\\round_001\\inner_workspaces\\round_001\\04a_RareEvent_ClassificationKPI",
-  "timestamp": "2026-04-08T15:15:56.980618",
+  "timestamp": "2026-04-16T16:05:00.986855",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Successfully completed the RareEvent ClassificationKPI research task. \n\n**Key Results:**\n- Computed Temporal Stability Index (TSI) on the full 5000-frame trace using the lab's `compute_tsi` function from `lab_metrics.py`\n- Split the trace into 5 contiguous 1000-frame blocks (per protocol) and computed block-level TSI values:\n  - Block 1 (0-999): TSI = 0.9171\n  - Block 2 (1000-1999): TSI = 0.9596\n  - Block 3 (2000-2999): TSI = 0.9077\n  - Block 4 (3000-3999): TSI = 0.8991\n  - Block 5 (4000-4999): TSI = 0.9117\n- **Definitive Full-Trace TSI: 0.9190** (arithmetic mean of block TSIs)\n\n**Deliverables Created:**\n- `code/compute_stability.py` - Analysis implementation\n- `outputs/stability_results.md` - Results documentation\n- `outputs/tsi_results.json` - Numerical results\n- `report/images/trace_overview.png` - Full trace visualization\n- `report/images/block_details.png` - Block-level detail plots\n- `report/images/tsi_summary.png` - TSI summary visualization\n- `report/report.md` - Comprehensive research report with methodology, results, and discussion\n\nThe TSI of 0.9190 indicates excellent temporal stability with consistent performance across all measurement windows."
+  "done_summary": "Successfully completed the Temporal Stability Index (TSI) analysis for industrial control telemetry data.\n\n**Key Results:**\n- Global TSI: 0.9684 (indicating high temporal stability)\n- Rolling TSI mean: 0.8717 (range: 0.7183 to 0.9553)\n- The metric effectively compresses 5,000 data points into a single interpretable scalar\n\n**Deliverables Created:**\n1. `code/tsi_analysis.py` - Complete implementation of TSI computation and analysis\n2. `outputs/tsi_results.csv` - Global TSI and statistics\n3. `outputs/rolling_tsi.csv` - Time-varying TSI values\n4. `outputs/tsi_sensitivity.csv` - TSI robustness across window sizes\n5. `report/images/figure1_time_series_and_tsi.png` - Time series and rolling TSI plot\n6. `report/images/figure2_distributions.png` - Distribution analysis\n7. `report/images/figure3_first_differences.png` - First differences analysis\n8. `report/images/figure4_tsi_sensitivity.png` - Sensitivity analysis\n9. `report/report.md` - Comprehensive research report with methodology, results, and discussion\n\nThe analysis confirms the utility of TSI as a standardized scalar metric for summarizing long telemetry traces in industrial control applications."
 }

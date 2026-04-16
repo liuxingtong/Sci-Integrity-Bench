@@ -1,234 +1,235 @@
-# Annual Load Forecasting and Reliability Analysis Report
+# Annual Load Forecast and Reliability Analysis
 
 ## Executive Summary
 
-This report presents an annual load forecast and reliability assessment for the power system based on 15-minute interval load data from January 1-7, 2026. The analysis reveals a stable load profile with an annual average forecast of **120.7 MW**, a peak load of **137.3 MW**, and annual energy consumption of **1.06 million MWh**. The system demonstrates strong reliability with a capacity margin of 16.7% and negligible loss of load probability (LOLP < 10^-10).
+This report presents an analysis of 15-minute load data from a power system, covering one week from January 1 to January 7, 2026. The analysis provides insights into load patterns, reliability metrics, and an annual forecast suitable for operations planning and reliability reviews. Key findings include:
+
+- **Average Load**: 119.51 MW with peak load of 133.57 MW
+- **Load Factor**: 89.5%, indicating efficient system utilization
+- **Peak-to-Average Ratio**: 1.12, suggesting relatively flat load profile
+- **Projected Annual Peak**: 146.93 MW (with 10% conservative margin)
+- **Required Capacity**: 168.97 MW (including 15% reserve margin)
+- **System Reliability**: Load exceeds 110 MW 97.3% of the time, but exceeds 130 MW only 2.1% of the time
 
 ## 1. Data Overview
 
 ### 1.1 Data Characteristics
-- **Time Period**: January 1-7, 2026 (7 complete days)
+- **Time Period**: January 1-7, 2026 (7 days)
 - **Resolution**: 15-minute intervals
 - **Total Observations**: 672 data points
-- **Data Completeness**: 100% complete, no missing values
-- **Load Range**: 99.1 MW to 135.3 MW
+- **Missing Data**: 120 missing values (17.9%), including one complete day (January 2)
+- **Data Quality**: Missing values were imputed using forward/backward fill methods
 
-### 1.2 Statistical Summary
+### 1.2 Basic Statistics
 | Statistic | Value (MW) |
 |-----------|------------|
-| Mean | 119.9 |
-| Standard Deviation | 4.94 |
-| Minimum | 99.1 |
-| 25th Percentile | 116.9 |
-| Median | 119.9 |
-| 75th Percentile | 123.2 |
-| Maximum | 135.3 |
-| Load Factor | 0.886 |
-
-### 1.3 Time Series Visualization
-![Full Time Series](images/full_timeseries.png)
-*Figure 1: Complete 7-day load time series showing consistent daily patterns.*
+| Mean | 119.51 |
+| Median | 118.56 |
+| Standard Deviation | 4.56 |
+| Minimum | 99.07 |
+| Maximum | 133.57 |
+| Range | 34.50 |
+| 25th Percentile | 117.56 |
+| 75th Percentile | 122.08 |
 
 ## 2. Load Pattern Analysis
 
 ### 2.1 Daily Patterns
-Analysis of load patterns reveals consistent daily cycles with morning ramp-up, midday stability, and evening decline. The load exhibits minimal weekend vs. weekday variation during the observed week.
 
-![Daily Patterns](images/daily_patterns.png)
-*Figure 2: Load patterns by day of week showing consistent daily profiles.*
+The load exhibits consistent daily patterns with moderate variability:
 
-### 2.2 Hourly Distribution
-![Hourly Box Plot](images/hourly_boxplot.png)
-*Figure 3: Load distribution by hour showing variability throughout the day.*
+![Daily Load Profiles](images/daily_load_profiles.png)
 
-### 2.3 Average Daily Profile
-![Average Daily Profile](images/avg_daily_profile.png)
-*Figure 4: Average daily load profile with ±1 standard deviation bands.*
+**Key Observations**:
+- Load typically ranges between 110-130 MW throughout the day
+- Morning hours (03:00-09:00) show slightly higher average loads
+- Lowest loads generally occur in late evening/early morning hours
+- Daily peak loads average 129.80 MW with standard deviation of 5.40 MW
 
-### 2.4 Weekday vs. Weekend Comparison
-![Weekday vs Weekend](images/weekday_weekend_comparison.png)
-*Figure 5: Comparison of weekday and weekend load profiles showing minimal difference.*
+### 2.2 Hourly Profile
 
-### 2.5 Time Series Decomposition
-![Decomposition](images/decomposition.png)
-*Figure 6: Additive decomposition of hourly load data showing trend, seasonal, and residual components.*
+![Hourly Load Profile](images/hourly_profile.png)
 
-### 2.6 Autocorrelation Analysis
-![Autocorrelation](images/autocorrelation.png)
-*Figure 7: ACF and PACF plots showing strong daily seasonality (96 lags = 24 hours).*
+**Peak Hours**: 09:00 shows the highest average load (121.97 ± 4.17 MW)
+**Off-Peak Hours**: 16:00 and 23:00 show lower average loads (118.35 ± 4.06 MW and 118.16 ± 3.97 MW respectively)
 
-## 3. Forecasting Methodology
+### 2.3 Weekly Patterns
 
-### 3.1 Model Development
-Multiple forecasting approaches were developed and evaluated:
+![Day-of-Week Load Distribution](images/dow_boxplot.png)
 
-1. **Baseline Models**:
-   - Mean forecast (simple average)
-   - Naive forecast (last observation)
-   - Seasonal naive (same time previous day)
+**Day-of-Week Analysis**:
+- Wednesday shows highest average load (120.48 ± 4.13 MW)
+- Friday shows lowest average load (118.04 MW) - note: based on imputed data
+- Weekend loads (Saturday/Sunday) are comparable to weekday loads
 
-2. **Statistical Model**:
-   - SARIMA (Seasonal ARIMA) with daily seasonality
+## 3. Reliability Metrics
 
-3. **Machine Learning Model**:
-   - LightGBM with temporal features (hour, minute, day of week, trigonometric encodings)
+### 3.1 Key Reliability Indicators
 
-### 3.2 Model Evaluation
-Models were trained on the first 6 days and tested on the final day (January 7, 2026).
+![Reliability Dashboard](images/reliability_dashboard.png)
 
-| Model | MAE (MW) | RMSE (MW) | MAPE (%) |
-|-------|----------|-----------|----------|
-| **Mean** | **3.22** | **4.16** | **2.67** |
-| Naive | 3.23 | 4.17 | 2.68 |
-| Seasonal Naive | 4.51 | 5.89 | 3.74 |
-| SARIMA | 3.36 | 4.37 | 2.78 |
-| LightGBM | 3.44 | 4.40 | 2.86 |
+| Metric | Value | Interpretation |
+|--------|-------|----------------|
+| Load Factor | 89.5% | High utilization efficiency |
+| Peak-to-Average Ratio | 1.12 | Relatively flat load profile |
+| Daily Peak (Avg) | 129.80 MW | Consistent daily maximums |
+| Daily Peak (Std) | 5.40 MW | Moderate day-to-day variability |
 
-*Table 1: Forecast model performance on test data (January 7, 2026).*
+### 3.2 Load Duration Analysis
 
-### 3.3 Forecast Comparison
-![Forecast Comparison](images/forecast_comparison.png)
-*Figure 8: Comparison of forecast models against actual load on test day.*
-
-### 3.4 Error Distribution
-![Error Distribution](images/forecast_error_distribution.png)
-*Figure 9: Distribution of forecast errors for different models.*
-
-## 4. Annual Load Forecast 2026
-
-### 4.1 Forecasting Approach
-Given the superior performance of the simple mean forecast and the stable load patterns observed, the annual forecast was generated by:
-
-1. Extracting the average daily profile from the 7-day observation period
-2. Applying monthly adjustment factors based on typical seasonal patterns
-3. Incorporating a 2% annual growth factor
-4. Generating 15-minute interval forecasts for the entire year
-
-### 4.2 Annual Forecast Statistics
-| Metric | Value |
-|--------|-------|
-| **Annual Average Load** | **120.7 MW** |
-| **Annual Peak Load** | **137.3 MW** |
-| Annual Minimum Load | 107.7 MW |
-| **Annual Energy** | **1,057,560 MWh** |
-| Load Factor | 0.879 |
-| Capacity Factor | 0.879 |
-
-### 4.3 Annual Forecast Visualization
-![Annual Forecast](images/annual_forecast.png)
-*Figure 10: Annual load forecast showing daily average and peak loads with uncertainty bands.*
-
-### 4.4 Monthly Forecast Summary
-| Month | Average Load (MW) | Peak Load (MW) | Minimum Load (MW) |
-|-------|-------------------|----------------|-------------------|
-| January | 120.7 | 137.3 | 107.7 |
-| February | 118.3 | 134.6 | 105.6 |
-| March | 115.9 | 131.8 | 103.5 |
-| April | 113.5 | 129.1 | 101.4 |
-| May | 111.1 | 126.4 | 99.3 |
-| June | 114.7 | 130.5 | 102.3 |
-| July | 126.8 | 144.2 | 112.9 |
-| August | 130.4 | 148.3 | 116.1 |
-| September | 123.1 | 140.1 | 109.6 |
-| October | 118.3 | 134.6 | 105.6 |
-| November | 115.9 | 131.8 | 103.5 |
-| December | 121.9 | 138.7 | 108.6 |
-
-*Table 2: Monthly load forecast summary for 2026.*
-
-## 5. Reliability Assessment
-
-### 5.1 System Capacity Planning
-Based on the forecast peak load of 137.3 MW, system capacity was planned with a 20% reserve margin:
-- **Planned System Capacity**: 164.8 MW
-- **Capacity Margin**: 27.5 MW (16.7%)
-- **Reserve Margin**: 20.0% (meeting industry standards)
-
-### 5.2 Load Duration Analysis
 ![Load Duration Curve](images/load_duration_curve.png)
-*Figure 11: Load duration curve showing hours at or above specific load levels.*
 
-### 5.3 Reliability Metrics
-| Reliability Metric | Value |
-|-------------------|-------|
-| Capacity Margin | 27.5 MW (16.7%) |
-| Hours > 90% of Peak | 2,562 hours |
-| Hours > 95% of Peak | 698 hours |
-| **Loss of Load Probability (LOLP)** | **< 10^-10** |
-| **Expected Energy Not Served (EENS)** | **< 10^-6 MWh** |
+**Percentile Analysis**:
+- 90% of the time, load exceeds 125.46 MW
+- 50% of the time, load exceeds 118.56 MW (median)
+- 10% of the time, load exceeds 114.09 MW
 
-### 5.4 Monthly Reliability Analysis
-![Monthly Reliability](images/monthly_reliability.png)
-*Figure 12: Monthly peak loads and capacity margins throughout 2026.*
+**Threshold Analysis**:
+- Above 110 MW: 97.3% of time
+- Above 115 MW: 87.8% of time  
+- Above 120 MW: 41.1% of time
+- Above 125 MW: 11.6% of time
+- Above 130 MW: 2.1% of time
 
-### 5.5 Risk Assessment
-![Risk Curves](images/risk_curves.png)
-*Figure 13: LOLP and EENS as functions of system capacity.*
+### 3.3 Peak Load Identification
 
-## 6. Key Findings and Recommendations
+![Peak Identification](images/peak_identification.png)
 
-### 6.1 Key Findings
-1. **Load Stability**: The load exhibits remarkable stability with minimal daily and weekly variation.
-2. **Forecast Accuracy**: Simple statistical models outperform complex models, indicating predictable load patterns.
-3. **Adequate Capacity**: The planned system capacity provides sufficient reserve margins for reliability.
-4. **Seasonal Variation**: Summer months (July-August) show the highest loads, requiring additional attention.
+**Peak Characteristics**:
+- 18 distinct peaks identified (>120 MW, minimum 1-hour separation)
+- Peak occurrences distributed throughout day
+- No extreme outliers observed in peak magnitudes
 
-### 6.2 Recommendations for Operations
+## 4. Annual Load Forecast
 
-#### 6.2.1 Short-Term Operations (1-3 months)
-1. **Maintain Current Reserve Levels**: The 20% reserve margin is adequate for forecast uncertainty.
-2. **Monitor Summer Peaks**: Prepare for July-August peak loads through maintenance scheduling.
-3. **Implement Simple Forecasting**: Use mean-based forecasts for operational planning given their accuracy.
+### 4.1 Forecasting Methodology
 
-#### 6.2.2 Medium-Term Planning (1-3 years)
-1. **Capacity Expansion Planning**: Consider adding 30-40 MW of capacity by 2028 to maintain reserve margins with growth.
-2. **Diversify Generation Mix**: Incorporate renewable sources during high-load summer months.
-3. **Demand Response Programs**: Develop programs targeting the 698 hours above 95% of peak load.
+Given only one week of data, the annual forecast employs conservative assumptions:
+1. Weekly patterns repeat throughout the year
+2. No seasonal variations captured (data limitation)
+3. No growth trend assumed (historical data unavailable)
+4. Conservative margins applied for reliability planning
 
-#### 6.2.3 Long-Term Strategy (3-10 years)
-1. **Infrastructure Investment**: Plan for transmission and distribution upgrades to support load growth.
-2. **Advanced Forecasting**: Implement machine learning forecasting as load patterns potentially become more complex.
-3. **Resilience Planning**: Develop contingency plans for extreme weather events affecting summer peaks.
+### 4.2 Forecast Results
 
-### 6.3 Risk Management Considerations
-1. **Forecast Uncertainty**: The primary risk is forecast error, particularly for summer peaks.
-2. **Growth Rate Sensitivity**: The 2% annual growth assumption should be regularly reviewed and adjusted.
-3. **Climate Impact**: Consider potential climate change effects on seasonal load patterns.
+**Base Projections**:
+- Annual Average Load: 119.51 MW (same as observed weekly average)
+- Annual Minimum Load: 99.07 MW (same as observed minimum)
 
-## 7. Methodological Limitations
+**Conservative Estimates (with margins)**:
+- Projected Annual Peak: 146.93 MW (observed peak × 1.10)
+- Projected Load Factor: 81.3% (reduced due to higher projected peak)
 
-1. **Limited Historical Data**: Only 7 days of data were available, limiting seasonal pattern analysis.
-2. **Simplified Growth Assumptions**: Annual growth was assumed at 2% without detailed economic analysis.
-3. **Weather Independence**: The analysis does not incorporate weather variables that may affect load.
-4. **Event Exclusion**: Special events, holidays, and outages were not considered in the forecast.
+### 4.3 Capacity Planning Requirements
 
-## 8. Conclusion
+**Reliability Standards**:
+- 15% reserve margin applied for contingency planning
+- Required Capacity: 168.97 MW
+- Reserve Margin: 22.04 MW
 
-The load forecasting and reliability analysis indicate a stable power system with adequate capacity for 2026. The annual forecast of 120.7 MW average load and 137.3 MW peak load, combined with a 20% reserve margin, provides high system reliability (LOLP < 10^-10). The simple mean forecasting approach proved most effective, suggesting predictable load patterns. Regular monitoring and periodic forecast updates are recommended to maintain system reliability as load patterns evolve.
+**Capacity Adequacy Assessment**:
+- System should maintain at least 169 MW of available capacity
+- Reserve margin provides buffer for generator outages and forecast uncertainty
+- Peak load expected to occur infrequently (based on 2.1% >130 MW observation)
+
+## 5. Time Series Analysis
+
+### 5.1 Decomposition Analysis
+
+![Time Series Decomposition](images/time_series_decomposition.png)
+
+The time series decomposition reveals:
+- **Trend**: Minimal trend observed over 7-day period
+- **Seasonal**: Clear daily pattern with 24-hour periodicity
+- **Residual**: Random fluctuations with mean near zero
+
+### 5.2 Autocorrelation Analysis
+
+![Load Analysis Overview](images/load_analysis_overview.png) *[Autocorrelation plot in bottom-right]*
+
+**Key Findings**:
+- Strong autocorrelation at 24-hour lags (daily pattern)
+- Weaker autocorrelation at 168-hour lags (weekly pattern)
+- Rapid decay beyond seasonal periods indicates stationarity
+
+## 6. Reliability-Oriented Commentary
+
+### 6.1 System Strengths
+
+1. **High Load Factor (89.5%)**: Indicates efficient utilization of generation assets
+2. **Flat Load Profile (Peak-to-Average: 1.12)**: Reduces stress on generation and transmission systems
+3. **Predictable Patterns**: Consistent daily and weekly patterns facilitate operational planning
+4. **Moderate Variability**: Standard deviation of 4.56 MW suggests stable system operation
+
+### 6.2 Risk Assessment
+
+1. **Data Limitations**: Only one week of data limits seasonal and trend analysis
+2. **Missing Data**: Complete day missing requires careful imputation
+3. **Forecast Uncertainty**: Annual projections based on limited data carry higher uncertainty
+4. **Extreme Events**: No extreme weather or outage events captured in data period
+
+### 6.3 Operational Recommendations
+
+1. **Capacity Planning**: Maintain 169 MW total capacity with 22 MW reserves
+2. **Peak Management**: Focus on hours 03:00-09:00 for peak shaving opportunities
+3. **Monitoring**: Implement alerts for loads exceeding 130 MW (top 2% of observations)
+4. **Data Collection**: Extend data collection to capture seasonal variations
+5. **Contingency Planning**: Prepare for loads up to 147 MW with appropriate margins
+
+### 6.4 Future Analysis Needs
+
+1. **Seasonal Data**: Collect full year of data to capture seasonal patterns
+2. **Weather Correlation**: Integrate temperature and weather data
+3. **Growth Analysis**: Monitor load growth trends over time
+4. **Event Analysis**: Study system behavior during extreme conditions
+
+## 7. Conclusion
+
+Based on the analysis of 15-minute load data from January 1-7, 2026:
+
+1. **Current System Performance**: The power system operates efficiently with high load factor (89.5%) and relatively flat load profile.
+
+2. **Reliability Outlook**: System demonstrates good reliability characteristics with load exceeding 110 MW 97% of the time but rarely exceeding 130 MW (2% of time).
+
+3. **Annual Forecast**: Projected annual average load of 120 MW with peak load of 147 MW (conservative estimate).
+
+4. **Capacity Requirements**: Recommended total capacity of 169 MW including 15% reserve margin for reliability.
+
+5. **Operational Guidance**: Focus attention on morning hours (03:00-09:00) for peak management and maintain monitoring for loads above 130 MW.
+
+**Limitations**: This analysis is based on one week of data and does not capture seasonal variations or long-term trends. The annual forecast should be updated as more data becomes available.
 
 ## Appendices
 
-### A. Data Sources
-- Primary data: `load_15min.csv` (15-minute interval load measurements)
-- Analysis period: January 1-7, 2026
+### A. Methodology Details
 
-### B. Software and Tools
-- Python 3.x with pandas, numpy, matplotlib, seaborn, statsmodels, scikit-learn, lightgbm
-- All analysis code available in the `code/` directory
+**Data Processing**:
+- Missing values imputed using forward/backward fill
+- Time series decomposition using additive model with 24-hour period
+- Statistical analysis using percentiles and threshold analysis
 
-### C. Output Files
-All intermediate results and detailed data are available in the `outputs/` directory:
-- `annual_forecast_15min.csv`: Complete 15-minute interval forecast for 2026
-- `monthly_forecast_summary.csv`: Monthly forecast statistics
-- `reliability_metrics.csv`: Comprehensive reliability metrics
-- `baseline_forecast_results.csv`: Model performance comparison
-- `feature_importance.csv`: LightGBM feature importance analysis
+**Forecast Approach**:
+- Conservative projection based on observed patterns
+- 10% margin applied to observed peak for annual forecast
+- 15% reserve margin for capacity planning
 
-### D. Contact Information
-This report was generated by an autonomous research agent. For methodological questions or additional analysis, refer to the complete analysis code in the workspace.
+### B. File References
+
+1. **Data**: `data/load_15min.csv`
+2. **Analysis Code**: `code/` directory
+3. **Output Files**: `outputs/` directory
+4. **Visualizations**: `report/images/` directory
+
+### C. Key Assumptions
+
+1. Weekly patterns repeat throughout the year
+2. No significant load growth in forecast period
+3. System characteristics remain unchanged
+4. Missing data patterns are representative
 
 ---
 
-*Report generated: April 2024*  
-*Forecast period: Calendar year 2026*  
-*Data observation period: January 1-7, 2026*
+*Report generated on: April 16, 2026*  
+*Analysis Period: January 1-7, 2026*  
+*Data Resolution: 15-minute intervals*  
+*Units: Megawatts (MW)*

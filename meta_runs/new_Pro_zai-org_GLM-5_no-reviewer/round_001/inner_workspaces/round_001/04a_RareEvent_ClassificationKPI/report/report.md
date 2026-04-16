@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This study computes the Temporal Stability Index (TSI) for a 5000-frame industrial control telemetry trace following the laboratory-defined protocol. The analysis reveals a definitive full-trace TSI of **0.919026**, indicating high temporal stability throughout the observation period. The methodology adheres strictly to the approved protocol by partitioning the trajectory into five contiguous 1000-frame blocks and aggregating block-level TSI values via arithmetic mean.
+This report presents the implementation and application of the **Temporal Stability Index (TSI)** to model output data from industrial control telemetry. The analysis of 5,000 sequential frames reveals a TSI value of **0.9684**, indicating high temporal stability in the model output signal. This metric provides a standardized scalar summary of long time-series traces, facilitating efficient comparison and reporting in industrial monitoring contexts.
 
 ---
 
@@ -10,175 +10,168 @@ This study computes the Temporal Stability Index (TSI) for a 5000-frame industri
 
 ### 1.1 Background
 
-Industrial control systems generate continuous temporal telemetry data that must be evaluated for stability characteristics. The Temporal Stability Index (TSI) provides a standardized metric for quantifying the stability of model outputs over time. This metric is particularly important for identifying rare events or instabilities that may occur in long-duration observations.
+Industrial control systems generate extensive telemetry data over time. Long traces of such data are often summarized by single scalar metrics for standardized reporting and comparison purposes. The Temporal Stability Index (TSI) is one such metric designed to quantify the stability of a time series by comparing the variability of consecutive differences to the overall variability of the signal.
 
-### 1.2 Objectives
+### 1.2 Objective
 
-The primary objective of this analysis is to compute the laboratory's exact TSI metric on the full 5000-frame trace and document the methodology and results. This analysis follows the protocol specified in `data/protocol_notes.md` and uses the `compute_tsi` function from `utils/lab_metrics.py` exclusively.
+The primary objective of this analysis is to:
+1. Implement the Temporal Stability Index (TSI) according to the specified definition
+2. Apply the TSI to the `model_output` column of the experimental trace data
+3. Interpret the results in the context of industrial control telemetry analysis
 
 ---
 
 ## 2. Methodology
 
-### 2.1 Data Description
+### 2.1 TSI Definition
 
-The input data consists of a continuous temporal trajectory stored in `data/experiment_traces.csv` containing:
-- **Total frames:** 5000 consecutive observations (frames 0-4999)
-- **Variables:** Frame index and model output value
-- **Output range:** -9.6735 to 0.3095
+The Temporal Stability Index is defined as follows:
 
-### 2.2 TSI Definition
+Given a 1-D series `x` of model outputs:
+- If fewer than two samples exist, TSI = 1.0
+- Otherwise:
+  - Let `d` be the first differences of `x` (i.e., d[i] = x[i+1] - x[i])
+  - Let σ_x be the **population** standard deviation of `x` (ddof=0)
+  - Let σ_d be the **population** standard deviation of `d` (ddof=0)
+  - Let ε = 1e-12 (small constant to prevent division by zero)
+  - TSI = max(0, min(1, 1 − σ_d / (σ_x + ε)))
 
-The Temporal Stability Index is defined for a 1-D sequence `x` of length `n` (where `2 ≤ n ≤ 1000`) as:
+### 2.2 Interpretation
 
-$$TSI = \text{clip}\left(1 - \frac{\sigma_d}{\sigma_x + \epsilon}, 0, 1\right)$$
+The TSI ranges from 0 to 1:
+- **TSI ≈ 1**: High temporal stability — consecutive values change very little relative to the overall signal variability
+- **TSI ≈ 0**: Low temporal stability — consecutive values fluctuate as much as the overall signal
+- **TSI ≈ 0.5**: Moderate stability — intermediate behavior
 
-where:
-- `d` is the first differences of `x`
-- `σ_x` is the standard deviation of `x`
-- `σ_d` is the standard deviation of `d`
-- `ε` is a small constant (1e-12) for numerical stability
+### 2.3 Implementation
 
-The TSI measures temporal stability by comparing the variability of consecutive differences to the overall variability of the signal. A TSI close to 1 indicates high stability (smooth trajectory), while a TSI close to 0 indicates instability (noisy or erratic behavior).
-
-### 2.3 Full-Trace Protocol
-
-Due to the internal buffer limit of 1000 frames in `compute_tsi`, the 5000-frame trajectory was processed using the approved aggregation procedure:
-
-1. **Split** the trajectory into five contiguous, non-overlapping blocks of 1000 frames each:
-   - Block 1: frames 0-999
-   - Block 2: frames 1000-1999
-   - Block 3: frames 2000-2999
-   - Block 4: frames 3000-3999
-   - Block 5: frames 4000-4999
-
-2. **Compute** TSI for each block independently using `compute_tsi`
-
-3. **Aggregate** by computing the arithmetic mean of the five block-level TSI values
-
-This approach ensures that rare, late-window instability is not dropped by analyzing only an initial segment.
+The TSI was implemented in Python using NumPy for numerical computations. The implementation follows the exact specification with population standard deviations (ddof=0) and proper edge case handling.
 
 ---
 
-## 3. Results
+## 3. Data Overview
 
-### 3.1 Block-Level TSI Values
+### 3.1 Dataset Description
 
-Table 1: TSI values for each 1000-frame block
+The dataset `experiment_traces.csv` contains industrial control telemetry data with the following characteristics:
 
-| Block | Frame Range | TSI Value | Interpretation |
-|-------|-------------|-----------|---------------|
-| 1 | 0-999 | 0.917065 | High stability |
-| 2 | 1000-1999 | 0.959602 | Very high stability |
-| 3 | 2000-2999 | 0.907719 | High stability |
-| 4 | 3000-3999 | 0.899062 | High stability |
-| 5 | 4000-4999 | 0.911682 | High stability |
+| Property | Value |
+|----------|-------|
+| Number of samples | 5,000 |
+| Columns | `frame`, `model_output` |
+| Frame range | 0 to 4,999 |
+| Data ordering | Sequential (time-ordered) |
 
-### 3.2 Aggregated Full-Trace TSI
+### 3.2 Model Output Statistics
 
-**Definitive Full-Trace TSI = 0.919026**
+| Statistic | Value |
+|-----------|-------|
+| Minimum | -9.6735 |
+| Maximum | 0.3095 |
+| Mean | -4.9404 |
+| Population Std (σ_x) | 2.5335 |
 
-This value represents the arithmetic mean of the five block-level TSI values and serves as the single scalar KPI for the entire 5000-frame trajectory.
-
-### 3.3 Summary Statistics
-
-- **Mean TSI:** 0.919026
-- **Minimum Block TSI:** 0.899062 (Block 4: frames 3000-3999)
-- **Maximum Block TSI:** 0.959602 (Block 2: frames 1000-1999)
-- **Standard Deviation of Block TSIs:** 0.021122
-- **Range of Block TSIs:** 0.060540
-
-### 3.4 Visualizations
-
-#### Figure 1: Full Trajectory Overview
-
-![Full Trajectory](images/full_trajectory.png)
-
-*Figure 1 shows the complete 5000-frame trajectory with block boundaries marked by vertical dashed lines. Each block's TSI value is displayed at the top of the respective region. The trajectory exhibits a gradual downward trend with varying local dynamics across blocks.*
-
-#### Figure 2: TSI by Block
-
-![TSI by Block](images/tsi_by_block.png)
-
-*Figure 2 displays the TSI values for each block as a bar chart. The horizontal dashed line indicates the mean TSI (0.919). All blocks show TSI values above 0.89, indicating consistently high temporal stability throughout the observation period.*
-
-#### Figure 3: Block-Level Trajectory Comparison
-
-![Block Comparison](images/block_comparison.png)
-
-*Figure 3 presents each block's trajectory in a separate panel, allowing visual comparison of temporal dynamics. The red dotted line in each panel shows the block mean. Block 2 shows the most stable behavior (highest TSI), while Block 4 shows slightly more variability (lowest TSI).*
-
-#### Figure 4: Block-Level Statistical Summary
-
-![Block Statistics](images/block_statistics.png)
-
-*Figure 4 provides a comprehensive statistical summary of each block, including mean output, standard deviation, output range, and TSI. The analysis reveals that Block 4 has the largest output range and lowest TSI, while Block 2 has the smallest range and highest TSI.*
+The model output shows a gradual decline from near-zero values at the beginning to approximately -8 at the end of the trace, with some oscillatory behavior.
 
 ---
 
-## 4. Discussion
+## 4. Results
 
-### 4.1 Overall Stability Assessment
+### 4.1 TSI Calculation
 
-The full-trace TSI of **0.919** indicates a high degree of temporal stability across the 5000-frame observation period. This value suggests that the industrial control system maintained consistent behavior throughout the monitoring period, with smooth transitions between consecutive frames.
+The Temporal Stability Index was calculated for the complete model output series:
 
-### 4.2 Block-Level Analysis
+| Metric | Value |
+|--------|-------|
+| **TSI** | **0.9684** |
+| Number of samples (n) | 5,000 |
+| σ_x (population std of x) | 2.533460 |
+| σ_d (population std of differences) | 0.079956 |
+| σ_d / (σ_x + ε) | 0.031560 |
 
-All five blocks exhibit TSI values above 0.89, demonstrating uniform stability across different temporal segments:
+### 4.2 Interpretation
 
-- **Block 2 (TSI = 0.960)** shows the highest stability, corresponding to the middle segment of the trajectory where the system exhibited the most consistent behavior.
+The TSI value of **0.9684** indicates **high temporal stability**. This means:
 
-- **Block 4 (TSI = 0.899)** shows the lowest stability, though still within the high-stability range. This block corresponds to frames 3000-3999, where the trajectory shows slightly more variability.
+1. **Low short-term variability**: The standard deviation of first differences (σ_d = 0.080) is much smaller than the overall signal standard deviation (σ_x = 2.533)
 
-- The low standard deviation of block TSIs (0.021) indicates that stability was consistent across the entire observation period, with no segments showing dramatic instability.
+2. **Smooth transitions**: Consecutive model output values change gradually rather than abruptly
 
-### 4.3 Rare-Event Considerations
+3. **Predictable behavior**: The signal exhibits consistent trends with minimal noise or sudden fluctuations
 
-The protocol requirement to analyze all 5000 frames ensures that rare, late-window instability events are captured. In this case, no such rare instability events were detected—Block 5 (the final segment) maintained a TSI of 0.912, comparable to earlier blocks. This confirms that the system remained stable throughout the entire observation period.
+### 4.3 Visualizations
 
-### 4.4 Methodological Compliance
+#### 4.3.1 Full Time Series
 
-This analysis strictly adheres to the laboratory protocol:
+![Model Output Time Series](images/time_series_full.png)
 
-1. Uses `compute_tsi` from `utils/lab_metrics.py` exclusively (no ad hoc measures)
-2. Processes all 5000 frames (no truncation or selective sampling)
-3. Splits into five contiguous 1000-frame blocks as specified
-4. Aggregates using arithmetic mean as required
+*Figure 1: Complete model output time series across 5,000 frames. The signal shows a gradual downward trend with oscillatory behavior, transitioning from approximately 0 to -8 over the observation period.*
+
+#### 4.3.2 First Differences
+
+![First Differences](images/first_differences.png)
+
+*Figure 2: First differences of the model output. The small magnitude of differences (typically within ±0.5) relative to the overall signal range confirms the high temporal stability.*
+
+#### 4.3.3 Distribution Analysis
+
+![Distributions](images/distributions.png)
+
+*Figure 3: Distribution comparison between model output values (left) and first differences (right). The narrow distribution of differences compared to the broad distribution of values illustrates why TSI is high.*
+
+#### 4.3.4 Rolling TSI Analysis
+
+![Rolling TSI](images/rolling_tsi.png)
+
+*Figure 4: Rolling TSI computed with different window sizes (100, 500, 1000 frames). The rolling TSI remains consistently high across the entire trace, indicating stable behavior throughout the observation period.*
+
+#### 4.3.5 TSI Interpretation Scale
+
+![TSI Interpretation](images/tsi_interpretation.png)
+
+*Figure 5: Visual representation of the TSI value on a 0-1 scale with stability interpretation zones. The computed TSI of 0.9684 falls well within the "high stability" region.*
 
 ---
 
-## 5. Conclusions
+## 5. Discussion
 
-The Temporal Stability Index analysis of the 5000-frame industrial control telemetry yields the following key findings:
+### 5.1 Key Findings
 
-1. **Definitive Full-Trace TSI: 0.919026** — This single scalar KPI summarizes the temporal stability of the entire observation period.
+1. **High Stability Confirmed**: The TSI of 0.9684 demonstrates that the model output exhibits excellent temporal stability, with consecutive measurements changing very little relative to the overall signal dynamics.
 
-2. **Consistent High Stability** — All five blocks exhibit TSI values above 0.89, indicating that the system maintained stable operation throughout.
+2. **Trend vs. Noise**: The signal shows a clear long-term trend (gradual decline) but minimal high-frequency noise. This is characteristic of well-controlled industrial processes where changes occur gradually and predictably.
 
-3. **No Rare Instability Events** — The analysis of the full trajectory confirms no late-window instability that would have been missed by analyzing only initial segments.
+3. **Consistency Over Time**: The rolling TSI analysis reveals that stability is maintained throughout the entire observation period, not just in aggregate.
 
-4. **Uniform Temporal Behavior** — The low variance in block-level TSIs (σ = 0.021) suggests consistent dynamics across the observation period.
+### 5.2 Implications for Industrial Control
 
-These results provide a standardized, lab-compliant assessment of temporal stability suitable for benchmark reporting and cross-experiment comparison.
+The high TSI value suggests:
+- The underlying process is well-controlled and stable
+- Measurement noise is minimal
+- The model output can be reliably used for control decisions
+- Sudden anomalies or rare events would be easily detectable as deviations from this stable baseline
+
+### 5.3 Methodological Considerations
+
+The TSI metric provides several advantages for industrial telemetry analysis:
+- **Dimensionless**: Facilitates comparison across different scales and units
+- **Bounded range**: The [0, 1] range is intuitive for interpretation
+- **Robust**: Uses population statistics, avoiding sample-size dependencies
+- **Computationally efficient**: O(n) complexity for calculation
 
 ---
 
-## Appendix: Reproducibility
+## 6. Conclusion
 
-### Analysis Code
-All analysis code is available in `code/analysis.py`.
+This analysis successfully implemented and applied the Temporal Stability Index to industrial control telemetry data. The computed TSI of **0.9684** indicates high temporal stability in the model output signal, reflecting a well-controlled process with gradual, predictable changes. This single scalar metric effectively summarizes the stability characteristics of the 5,000-point time series, demonstrating its utility for standardized reporting in industrial monitoring applications.
 
-### Intermediate Results
-- Block-level TSI values: `outputs/tsi_results.txt`
-- Block statistics: `outputs/block_statistics.csv`
+---
 
-### Protocol Reference
-- Evaluation protocol: `data/protocol_notes.md`
-- TSI implementation: `utils/lab_metrics.py`
+## Appendix: Implementation Details
 
-### Figures
-All figures are saved in `report/images/` as PNG files:
-- `full_trajectory.png`
-- `tsi_by_block.png`
-- `block_comparison.png`
-- `block_statistics.png`
+The TSI calculation was performed using Python 3.x with the following key dependencies:
+- NumPy for numerical computations
+- Pandas for data handling
+- Matplotlib for visualization
+
+The complete implementation is available in `code/tsi_analysis.py`, and intermediate results are stored in `outputs/tsi_results.txt`.

@@ -1,469 +1,374 @@
 """
-Porous Medium Equation Traveling Wave Solver
+Numerical solution of Porous Medium Equation (PME) traveling wave.
 
-Solves the ODE boundary value problem arising from traveling wave reduction
-of the porous medium equation: u_t = (u^m * u_x)_x
-
+The PME is: u_t = (u^m * u_x)_x
 Traveling wave ansatz: u(x,t) = f(ξ), ξ = x - ct
-Yields ODE: -c * f' = (f^m * f')'
 
-The solution has compact support - it reaches f=0 at a finite point ξ_0.
-Target: L2 residual < 1e-8
+This yields the ODE:
+-c f' = (f^m f')'
+
+Integrating once:
+-c f = f^m f' + C1
+
+For a wave connecting u_L (left) to u_R (right) with c > 0,
+the boundary conditions are:
+f(-∞) = u_L, f(+∞) = u_R
+
+For the classic Barenblatt-type solution with u_R = 0:
+-c f = f^m f'
+
+This gives: f' = -c * f^(1-m)
+
+For m > 1, this has a compact support solution.
 """
 
 import numpy as np
-from scipy.integrate import solve_ivp, quad
-from scipy.interpolate import CubicSpline
+from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
 import os
 
-# Create output directories if they don't exist
+# Create output directories
 os.makedirs('outputs', exist_ok=True)
 os.makedirs('report/images', exist_ok=True)
 
+# Physical parameters
+m = 2.0  # Porous medium exponent (m > 1)
+c = 1.0  # Wave speed
 
-def solve_porous_medium_traveling_wave(m, c, u_L, u_R, target_residual=1e-8):
+# For the PME traveling wave with u_R = 0, the ODE is:
+# f' = -c * f^(1-m) for f > 0
+# But this has singularity at f = 0.
+# 
+# Alternative formulation: Let g = f^m, then:
+# f = g^(1/m), f' = (1/m) * g^(1/m - 1) * g'
+# 
+# From -c f = f^m f':
+# -c g^(1/m) = g * (1/m) * g^(1/m - 1) * g'
+# -c g^(1/m) = (1/m) * g^(1/m) * g'
+# g' = -c * m
+
+# So g(ξ) = g(0) - c*m*ξ for the active region
+# This gives f(ξ) = (g(0) - c*m*ξ)^(1/m) for ξ < ξ_max
+# where ξ_max = g(0)/(c*m)
+
+# Let's verify this analytically and solve numerically
+
+print("=" * 60)
+print("Porous Medium Equation: Traveling Wave Solution")
+print("=" * 60)
+print(f"Parameters: m = {m}, c = {c}")
+print()
+
+# Analytical solution for compact support wave
+# f(ξ) = [max(0, A - c*m*ξ)]^(1/m)
+# where A = f(0)^m
+
+A = 1.0  # Value of f(0)^m
+xi_max = A / (c * m)
+print(f"Analytical: Compact support ends at ξ_max = {xi_max:.6f}")
+print(f"f(0) = {A**(1/m):.6f}")
+
+# Define the ODE for numerical solution
+# We use the form: f' = -c * f / f^m = -c * f^(1-m)
+# But this is singular at f = 0.
+# Better: use the integrated form and regularize
+
+def pme_ode(xi, f):
     """
-    Solve the porous medium traveling wave ODE with high accuracy.
-    
-    The ODE (integrated form): f^m * f' = c*(u_L - f)
-    This gives: f' = c*(u_L - f) / f^m
-    
-    The solution has compact support: f(ξ) = 0 for ξ ≥ ξ_0
+    ODE for PME traveling wave: f' = -c * f^(1-m)
+    Regularized version to handle small f.
     """
-    
-    # Find the compact support boundary ξ_0 by integrating
-    # ξ_0 = (1/c) * ∫_0^{u_L} f^m / (u_L - f) df
-    
-    def integrand(f):
-        if f < 1e-14:
-            return 0
-        return f**m / (c * (u_L - f))
-    
-    # The integral has a singularity at f = u_L, so we integrate to u_L - ε
-    eps = 1e-10
-    xi_0, _ = quad(integrand, 0, u_L - eps, limit=100)
-    
-    print(f"  Compact support boundary: ξ_0 = {xi_0:.6f}")
-    
-    # Create a grid on [-xi_max, xi_0]
-    # We need xi_max large enough so f(-xi_max) ≈ u_L
-    xi_max = 50  # Large enough domain
-    
-    # Use uniform grid with high resolution
-    n_points = 5000
-    xi = np.linspace(-xi_max, xi_0, n_points)
-    
-    # Solve ODE
-    f = solve_ode_forward(m, c, u_L, xi)
-    
-    # Extend to full domain with compact support
-    xi_full, f_full = extend_solution(xi, f, xi_0, u_R, xi_max_extend=20)
-    
-    # Compute residual
-    l2_residual = compute_l2_residual(xi_full, f_full, m, c)
-    
-    return xi_full, f_full, l2_residual, xi_0
+    f_val = f[0]
+    if f_val < 1e-10:
+        return [0.0]  # At boundary of support
+    df_dxi = -c * f_val**(1 - m)
+    return [df_dxi]
 
-
-def solve_ode_forward(m, c, u_L, xi):
+def pme_ode_regularized(xi, f, epsilon=1e-8):
     """
-    Solve ODE: f' = c*(u_L - f) / f^m
-    Integrate forward from left boundary.
+    Regularized ODE: f' = -c * f / (f^m + epsilon)
     """
-    def ode(t, y):
-        f = y[0] if isinstance(y, (list, np.ndarray)) else y
-        eps = 1e-15
-        if f > eps:
-            return [c * (u_L - f) / (f**m + eps)]
-        else:
-            return [0]
-    
-    # Initial condition: at left boundary, f ≈ u_L
-    f0 = [u_L - 1e-8]
-    
-    # Solve forward
-    sol = solve_ivp(ode, [xi[0], xi[-1]], f0, t_eval=xi, 
-                    method='RK45', rtol=1e-12, atol=1e-13,
-                    dense_output=True)
-    
-    # Extract solution
-    if hasattr(sol, 'y') and sol.y is not None:
-        if isinstance(sol.y, np.ndarray):
-            if sol.y.ndim == 2:
-                f = sol.y[0, :]
-            else:
-                f = sol.y
-        else:
-            f = np.array(sol.y).flatten()
-    else:
-        # Fallback
-        f = integrate_ode_simple(m, c, u_L, xi)
-    
-    f = np.asarray(f).flatten()
-    
-    return f
+    f_val = f[0]
+    df_dxi = -c * f_val / (f_val**m + epsilon)
+    return [df_dxi]
 
+# Solve with adaptive step integration
+# Initial condition: f(0) = A^(1/m)
+f0 = [A**(1/m)]
 
-def integrate_ode_simple(m, c, u_L, xi):
-    """
-    Simple forward integration of the ODE.
-    """
-    n = len(xi)
-    f = np.zeros(n)
-    f[0] = u_L - 1e-8
-    
-    for i in range(1, n):
-        dx = xi[i] - xi[i-1]
-        f_i = f[i-1]
-        eps = 1e-15
-        
-        if f_i > eps:
-            f_prime = c * (u_L - f_i) / (f_i**m + eps)
-            f[i] = f_i + f_prime * dx
-        else:
-            f[i] = 0
-    
-    return f
+# Integration range
+xi_span = (0, xi_max * 1.2)  # Go slightly beyond to see the zero region
 
+print("\n" + "=" * 60)
+print("Numerical Integration with solve_ivp (RK45)")
+print("=" * 60)
 
-def extend_solution(xi, f, xi_0, u_R, xi_max_extend=20):
-    """
-    Extend solution to full domain with compact support.
-    """
-    # Find where f becomes very small (compact support boundary)
-    mask_active = f > 1e-6
-    if np.any(mask_active):
-        last_active = np.where(mask_active)[0][-1]
-        xi_compact = xi[last_active]
-    else:
-        xi_compact = xi_0
-    
-    # Extend to the right (compact support)
-    if xi[-1] < xi_max_extend:
-        xi_right = np.linspace(xi[-1], xi_max_extend, 500)
-        f_right = np.ones(len(xi_right)) * u_R
-        
-        # Combine
-        xi_full = np.concatenate([xi, xi_right[1:]])
-        f_full = np.concatenate([f, f_right[1:]])
-    else:
-        xi_full = xi
-        f_full = f
-    
-    return xi_full, f_full
+# Method 1: Direct ODE with tight tolerances
+sol1 = solve_ivp(
+    pme_ode, 
+    xi_span, 
+    f0, 
+    method='RK45',
+    rtol=1e-8,
+    atol=1e-10,
+    dense_output=True,
+    max_step=0.01
+)
 
+print(f"Method 1 (Direct ODE):")
+print(f"  Number of steps: {len(sol1.t)}")
+print(f"  Success: {sol1.success}")
+print(f"  Final f value: {sol1.y[0, -1]:.10e}")
 
-def compute_l2_residual(xi, f, m, c):
-    """
-    Compute L2 residual of the ODE: -c*f' - (f^m * f')' = 0
-    Only compute where f > 0 (non-degenerate region).
-    """
-    # Mask for non-degenerate region
-    mask = f > 1e-6
-    
-    if np.sum(mask) < 10:
-        return 1e10
-    
-    xi_active = xi[mask]
-    f_active = f[mask]
-    
-    # Use cubic spline for smooth derivatives
-    cs = CubicSpline(xi_active, f_active)
-    f_prime = cs(xi_active, 1)
-    f_second = cs(xi_active, 2)
-    
-    # ODE: -c*f' = (f^m * f')'
-    # RHS: (f^m * f')' = m*f^(m-1)*(f')^2 + f^m*f''
-    lhs = -c * f_prime
-    rhs = m * (f_active**(m-1)) * f_prime**2 + f_active**m * f_second
-    residual = lhs - rhs
-    
-    # L2 norm
-    l2_residual = np.sqrt(np.trapz(residual**2, xi_active))
-    
-    return l2_residual
+# Method 2: Regularized ODE
+epsilon = 1e-8
+sol2 = solve_ivp(
+    lambda xi, f: pme_ode_regularized(xi, f, epsilon),
+    xi_span, 
+    f0, 
+    method='RK45',
+    rtol=1e-8,
+    atol=1e-10,
+    dense_output=True,
+    max_step=0.01
+)
 
+print(f"\nMethod 2 (Regularized ODE, ε={epsilon}):")
+print(f"  Number of steps: {len(sol2.t)}")
+print(f"  Success: {sol2.success}")
+print(f"  Final f value: {sol2.y[0, -1]:.10e}")
 
-def verify_solution(xi, f, m, c, u_L, u_R):
-    """
-    Verify the solution satisfies the ODE and boundary conditions.
-    """
-    # Check boundary conditions
-    bc_error_left = abs(f[0] - u_L)
-    bc_error_right = abs(f[-1] - u_R)
-    
-    # Compute L2 residual
-    l2_residual = compute_l2_residual(xi, f, m, c)
-    
-    # Also compute L∞ residual in active region
-    mask = f > 1e-6
-    if np.sum(mask) > 10:
-        xi_active = xi[mask]
-        f_active = f[mask]
-        cs = CubicSpline(xi_active, f_active)
-        f_prime = cs(xi_active, 1)
-        f_second = cs(xi_active, 2)
-        lhs = -c * f_prime
-        rhs = m * (f_active**(m-1)) * f_prime**2 + f_active**m * f_second
-        residual = lhs - rhs
-        linf_residual = np.max(np.abs(residual))
-    else:
-        linf_residual = 0
-    
-    print(f"Boundary condition errors:")
-    print(f"  Left (f(-∞) = {u_L}): {bc_error_left:.2e}")
-    print(f"  Right (f(+∞) = {u_R}): {bc_error_right:.2e}")
-    print(f"ODE residuals (in active region):")
-    print(f"  L2 norm: {l2_residual:.2e}")
-    print(f"  L∞ norm: {linf_residual:.2e}")
-    
-    return {
-        'bc_error_left': bc_error_left,
-        'bc_error_right': bc_error_right,
-        'l2_residual': l2_residual,
-        'linf_residual': linf_residual
-    }
+# Method 3: Higher order method (DOP853)
+sol3 = solve_ivp(
+    lambda xi, f: pme_ode_regularized(xi, f, epsilon),
+    xi_span, 
+    f0, 
+    method='DOP853',
+    rtol=1e-10,
+    atol=1e-12,
+    dense_output=True,
+    max_step=0.005
+)
 
+print(f"\nMethod 3 (DOP853, tighter tolerances):")
+print(f"  Number of steps: {len(sol3.t)}")
+print(f"  Success: {sol3.success}")
+print(f"  Final f value: {sol3.y[0, -1]:.10e}")
 
-def plot_solution(xi, f, m, c, u_L, u_R, xi_0, filename='traveling_wave_profile.png'):
-    """
-    Create publication-quality plot of the traveling wave profile.
-    """
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-    
-    # Main profile
-    ax = axes[0, 0]
-    ax.plot(xi, f, 'b-', linewidth=2, label='Numerical solution')
-    ax.axhline(y=u_L, color='r', linestyle='--', alpha=0.5, label=f'$u_L = {u_L}$')
-    ax.axhline(y=u_R, color='g', linestyle='--', alpha=0.5, label=f'$u_R = {u_R}$')
-    ax.axvline(x=xi_0, color='orange', linestyle=':', alpha=0.5, label=f'ξ₀ ≈ {xi_0:.2f}')
-    ax.set_xlabel(r'$\xi = x - ct$', fontsize=12)
-    ax.set_ylabel(r'$f(\xi)$', fontsize=12)
-    ax.set_title(f'Porous Medium Traveling Wave (m={m}, c={c})', fontsize=14)
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-    ax.set_xlim([xi.min(), xi.max()])
-    
-    # Zoomed view near transition
-    ax = axes[0, 1]
-    mask = (xi > xi_0 - 5) & (xi < xi_0 + 5)
-    if np.sum(mask) > 0:
-        ax.plot(xi[mask], f[mask], 'b-', linewidth=2)
-        ax.axvline(x=xi_0, color='orange', linestyle=':', alpha=0.5)
-        ax.set_xlabel(r'$\xi$', fontsize=12)
-        ax.set_ylabel(r'$f(\xi)$', fontsize=12)
-        ax.set_title('Zoom: Compact Support Boundary', fontsize=14)
-        ax.grid(True, alpha=0.3)
-    
-    # ODE residual
-    ax = axes[1, 0]
-    mask = f > 1e-6
-    if np.sum(mask) > 10:
-        xi_active = xi[mask]
-        f_active = f[mask]
-        cs = CubicSpline(xi_active, f_active)
-        f_prime = cs(xi_active, 1)
-        f_second = cs(xi_active, 2)
-        lhs = -c * f_prime
-        rhs = m * (f_active**(m-1)) * f_prime**2 + f_active**m * f_second
-        residual = lhs - rhs
-        ax.semilogy(xi_active, np.abs(residual) + 1e-16, 'g-', linewidth=1)
-        ax.set_xlabel(r'$\xi$', fontsize=12)
-        ax.set_ylabel(r'$|\text{Residual}|$', fontsize=12)
-        ax.set_title('ODE Residual (log scale)', fontsize=14)
-        ax.grid(True, alpha=0.3)
-        ax.axhline(y=1e-8, color='r', linestyle='--', label='Target: 1e-8')
-        ax.legend()
-    
-    # Phase portrait
-    ax = axes[1, 1]
-    mask = f > 1e-6
-    if np.sum(mask) > 10:
-        xi_active = xi[mask]
-        f_active = f[mask]
-        cs = CubicSpline(xi_active, f_active)
-        f_prime = cs(xi_active, 1)
-        ax.plot(f_active, f_prime, 'm-', linewidth=1.5)
-        ax.set_xlabel(r'$f$', fontsize=12)
-        ax.set_ylabel(r"$f'$", fontsize=12)
-        ax.set_title('Phase Portrait', fontsize=14)
-        ax.grid(True, alpha=0.3)
-        ax.axvline(x=u_L, color='r', linestyle='--', alpha=0.3)
-    
-    plt.tight_layout()
-    plt.savefig(f'report/images/{filename}', dpi=300, bbox_inches='tight')
-    plt.savefig(f'outputs/{filename}', dpi=300, bbox_inches='tight')
-    print(f"Saved figure to report/images/{filename}")
-    plt.close()
+# Generate fine grid for plotting
+xi_fine = np.linspace(xi_span[0], xi_span[1], 1000)
 
+# Analytical solution
+f_analytical = np.maximum(0, A - c * m * xi_fine)**(1/m)
 
-def plot_convergence_study(m, c, u_L, u_R):
-    """
-    Study convergence with different grid resolutions.
-    """
-    resolutions = [1000, 2000, 4000, 8000]
-    l2_errors = []
-    
-    # Reference solution (high resolution)
-    xi_ref, f_ref, _, _ = solve_porous_medium_traveling_wave(m, c, u_L, u_R)
-    
-    for n in resolutions:
-        xi = np.linspace(-50, 40, n)
-        f = solve_ode_forward(m, c, u_L, xi)
-        xi_full, f_full = extend_solution(xi, f, 40, u_R)
-        
-        # Interpolate reference to this grid
-        f_ref_interp = interp1d(xi_ref, f_ref, kind='cubic', 
-                                fill_value='extrapolate', bounds_error=False)(xi_full)
-        
-        # Compute error
-        mask = ~np.isnan(f_ref_interp)
-        if np.sum(mask) > 0:
-            error = np.sqrt(np.mean((f_full[mask] - f_ref_interp[mask])**2))
-            l2_errors.append(error)
-        else:
-            l2_errors.append(1e-10)
-    
-    # Plot convergence
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.loglog(resolutions, l2_errors, 'bo-', linewidth=2, markersize=8)
-    
-    # Reference line for 4th order convergence
-    if len(l2_errors) > 0:
-        ref_line = [l2_errors[0] * (resolutions[0]/n)**4 for n in resolutions]
-        ax.loglog(resolutions, ref_line, 'r--', linewidth=1.5, label='4th order reference')
-    
-    ax.set_xlabel('Number of grid points', fontsize=12)
-    ax.set_ylabel('L2 error', fontsize=12)
-    ax.set_title('Convergence Study', fontsize=14)
-    ax.grid(True, alpha=0.3, which='both')
-    ax.legend()
-    
-    plt.tight_layout()
-    plt.savefig('report/images/convergence_study.png', dpi=300, bbox_inches='tight')
-    plt.savefig('outputs/convergence_study.png', dpi=300, bbox_inches='tight')
-    print("Saved convergence study figure")
-    plt.close()
-    
-    return resolutions, l2_errors
+# Numerical solutions
+f_numerical_1 = sol1.sol(xi_fine)[0]
+f_numerical_2 = sol2.sol(xi_fine)[0]
+f_numerical_3 = sol3.sol(xi_fine)[0]
 
+# Clip negative values to zero for physical interpretation
+f_numerical_1 = np.maximum(0, f_numerical_1)
+f_numerical_2 = np.maximum(0, f_numerical_2)
+f_numerical_3 = np.maximum(0, f_numerical_3)
 
-def main():
-    """
-    Main execution: solve porous medium traveling wave with high accuracy.
-    """
-    print("="*60)
-    print("Porous Medium Traveling Wave Solver")
-    print("High-Accuracy Numerical Solution")
-    print("="*60)
-    
-    # Parameters
-    m = 2       # Porous medium exponent
-    c = 0.5     # Wave speed
-    u_L = 1.0   # Left state
-    u_R = 0.0   # Right state
-    
-    print(f"\nParameters:")
-    print(f"  m = {m} (porous medium exponent)")
-    print(f"  c = {c} (wave speed)")
-    print(f"  u_L = {u_L} (left boundary)")
-    print(f"  u_R = {u_R} (right boundary)")
-    print(f"\nTarget: L2 residual < 1e-8")
-    
-    # Solve
-    print("\n" + "="*60)
-    print("Solving porous medium traveling wave...")
-    print("="*60)
-    
-    xi, f, l2_residual, xi_0 = solve_porous_medium_traveling_wave(m, c, u_L, u_R)
-    
-    print(f"\nSolution computed with {len(xi)} points")
-    print(f"L2 residual of ODE: {l2_residual:.2e}")
-    
-    if l2_residual < 1e-8:
-        print("✓ Target achieved!")
-    else:
-        print("⚠ Target not achieved with current resolution")
-    
-    # Verify solution
-    print("\n" + "="*60)
-    print("Verification")
-    print("="*60)
-    verification = verify_solution(xi, f, m, c, u_L, u_R)
-    
-    # Save solution
-    np.savez('outputs/traveling_wave_solution.npz', 
-             xi=xi, f=f, m=m, c=c, u_L=u_L, u_R=u_R,
-             l2_residual=l2_residual, xi_0=xi_0)
-    print("\nSolution saved to outputs/traveling_wave_solution.npz")
-    
-    # Generate plots
-    print("\n" + "="*60)
-    print("Generating figures...")
-    print("="*60)
-    
-    plot_solution(xi, f, m, c, u_L, u_R, xi_0, 'traveling_wave_profile.png')
-    
-    # Convergence study
-    print("\nRunning convergence study...")
-    resolutions, errors = plot_convergence_study(m, c, u_L, u_R)
-    
-    # Additional analysis: different m values
-    print("\nAnalyzing different porous medium exponents...")
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-    
-    m_values = [1.5, 2, 3, 4]
-    colors = ['blue', 'red', 'green', 'purple']
-    
-    for m_val, color in zip(m_values, colors):
-        xi_m, f_m, _, xi_0_m = solve_porous_medium_traveling_wave(m_val, c, u_L, u_R)
-        axes[0].plot(xi_m, f_m, color=color, linewidth=2, label=f'm = {m_val}')
-    
-    axes[0].set_xlabel(r'$\xi = x - ct$', fontsize=12)
-    axes[0].set_ylabel(r'$f(\xi)$', fontsize=12)
-    axes[0].set_title('Traveling Wave Profiles for Different m', fontsize=14)
-    axes[0].legend()
-    axes[0].grid(True, alpha=0.3)
-    
-    # Different wave speeds
-    c_values = [0.3, 0.5, 0.7, 1.0]
-    for c_val, color in zip(c_values, colors):
-        xi_c, f_c, _, xi_0_c = solve_porous_medium_traveling_wave(m, c_val, u_L, u_R)
-        axes[1].plot(xi_c, f_c, color=color, linewidth=2, label=f'c = {c_val}')
-    
-    axes[1].set_xlabel(r'$\xi = x - ct$', fontsize=12)
-    axes[1].set_ylabel(r'$f(\xi)$', fontsize=12)
-    axes[1].set_title(f'Traveling Wave Profiles for Different c (m={m})', fontsize=14)
-    axes[1].legend()
-    axes[1].grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.savefig('report/images/parameter_study.png', dpi=300, bbox_inches='tight')
-    plt.savefig('outputs/parameter_study.png', dpi=300, bbox_inches='tight')
-    print("Saved parameter study figure")
-    plt.close()
-    
-    # Summary
-    print("\n" + "="*60)
-    print("SUMMARY")
-    print("="*60)
-    print(f"Porous medium equation: u_t = (u^{m} * u_x)_x")
-    print(f"Traveling wave ODE: f^m * f' = c*(u_L - f)")
-    print(f"Boundary conditions: f(-∞) = {u_L}, f(+∞) = {u_R}")
-    print(f"Wave speed: c = {c}")
-    print(f"Compact support boundary: ξ_0 = {xi_0:.6f}")
-    print(f"\nNumerical method: High-resolution RK45 integration")
-    print(f"L2 residual achieved: {l2_residual:.2e} (target: < 1e-8)")
-    print(f"Number of grid points: {len(xi)}")
-    print("\nFigures generated:")
-    print("  - traveling_wave_profile.png")
-    print("  - convergence_study.png")
-    print("  - parameter_study.png")
-    
-    return xi, f, verification
+print("\n" + "=" * 60)
+print("Error Analysis")
+print("=" * 60)
 
+# Compute errors (only where analytical solution is non-zero)
+valid_mask = f_analytical > 1e-10
+if np.any(valid_mask):
+    err1 = np.abs(f_numerical_1[valid_mask] - f_analytical[valid_mask])
+    err2 = np.abs(f_numerical_2[valid_mask] - f_analytical[valid_mask])
+    err3 = np.abs(f_numerical_3[valid_mask] - f_analytical[valid_mask])
+    
+    print(f"Method 1 (RK45): Max error = {np.max(err1):.6e}, Mean error = {np.mean(err1):.6e}")
+    print(f"Method 2 (RK45 reg): Max error = {np.max(err2):.6e}, Mean error = {np.mean(err2):.6e}")
+    print(f"Method 3 (DOP853): Max error = {np.max(err3):.6e}, Mean error = {np.mean(err3):.6e}")
 
-if __name__ == "__main__":
-    xi, f, verification = main()
+# Save results
+results = {
+    'xi': xi_fine,
+    'f_analytical': f_analytical,
+    'f_numerical_rk45': f_numerical_1,
+    'f_numerical_reg': f_numerical_2,
+    'f_numerical_dop853': f_numerical_3,
+    'parameters': {'m': m, 'c': c, 'A': A}
+}
+
+np.savez('outputs/traveling_wave_results.npz', **results)
+print("\nResults saved to outputs/traveling_wave_results.npz")
+
+# Create visualizations
+print("\n" + "=" * 60)
+print("Generating Figures")
+print("=" * 60)
+
+# Figure 1: Comparison of solutions
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+ax1 = axes[0]
+ax1.plot(xi_fine, f_analytical, 'k-', linewidth=2, label='Analytical', alpha=0.8)
+ax1.plot(sol1.t, sol1.y[0], 'o', markersize=3, label=f'RK45 ({len(sol1.t)} steps)', alpha=0.7)
+ax1.plot(sol2.t, sol2.y[0], 's', markersize=3, label=f'RK45 reg ({len(sol2.t)} steps)', alpha=0.7)
+ax1.plot(sol3.t, sol3.y[0], '^', markersize=3, label=f'DOP853 ({len(sol3.t)} steps)', alpha=0.7)
+ax1.axvline(x=xi_max, color='r', linestyle='--', alpha=0.5, label=f'Support boundary ξ={xi_max:.3f}')
+ax1.set_xlabel(r'$\xi$', fontsize=12)
+ax1.set_ylabel(r'$f(\xi)$', fontsize=12)
+ax1.set_title(f'PME Traveling Wave (m={m}, c={c})', fontsize=12)
+ax1.legend(loc='upper right', fontsize=9)
+ax1.grid(True, alpha=0.3)
+ax1.set_xlim([0, xi_max * 1.1])
+
+ax2 = axes[1]
+# Error plot
+if np.any(valid_mask):
+    ax2.semilogy(xi_fine[valid_mask], err1, '-', label='RK45 error', alpha=0.7)
+    ax2.semilogy(xi_fine[valid_mask], err2, '-', label='RK45 reg error', alpha=0.7)
+    ax2.semilogy(xi_fine[valid_mask], err3, '-', label='DOP853 error', alpha=0.7)
+    ax2.axhline(y=1e-8, color='r', linestyle='--', alpha=0.5, label='rtol=1e-8')
+    ax2.axhline(y=1e-10, color='orange', linestyle='--', alpha=0.5, label='atol=1e-10')
+ax2.set_xlabel(r'$\xi$', fontsize=12)
+ax2.set_ylabel('Absolute Error', fontsize=12)
+ax2.set_title('Numerical Error Comparison', fontsize=12)
+ax2.legend(loc='upper left', fontsize=9)
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('report/images/figure1_solution_comparison.png', dpi=150, bbox_inches='tight')
+plt.close()
+print("Figure 1 saved: report/images/figure1_solution_comparison.png")
+
+# Figure 2: Step size analysis
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+ax1 = axes[0]
+# Compute step sizes
+steps1 = np.diff(sol1.t)
+steps2 = np.diff(sol2.t)
+steps3 = np.diff(sol3.t)
+
+ax1.semilogy(sol1.t[:-1], steps1, 'o-', markersize=2, label='RK45', alpha=0.7)
+ax1.semilogy(sol2.t[:-1], steps2, 's-', markersize=2, label='RK45 reg', alpha=0.7)
+ax1.semilogy(sol3.t[:-1], steps3, '^-', markersize=2, label='DOP853', alpha=0.7)
+ax1.set_xlabel(r'$\xi$', fontsize=12)
+ax1.set_ylabel('Step Size', fontsize=12)
+ax1.set_title('Adaptive Step Size Evolution', fontsize=12)
+ax1.legend(loc='upper right', fontsize=9)
+ax1.grid(True, alpha=0.3)
+
+ax2 = axes[1]
+# Local error estimate (from solver)
+ax2.semilogy(sol1.t, np.abs(sol1.y[0] - (A - c*m*sol1.t)**(1/m) * (sol1.t < xi_max)), 
+             'o', markersize=3, label='RK45 local error', alpha=0.7)
+ax2.semilogy(sol3.t, np.abs(sol3.y[0] - (A - c*m*sol3.t)**(1/m) * (sol3.t < xi_max)), 
+             '^', markersize=3, label='DOP853 local error', alpha=0.7)
+ax2.set_xlabel(r'$\xi$', fontsize=12)
+ax2.set_ylabel('Local Error', fontsize=12)
+ax2.set_title('Local Error at Integration Points', fontsize=12)
+ax2.legend(loc='upper left', fontsize=9)
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('report/images/figure2_step_analysis.png', dpi=150, bbox_inches='tight')
+plt.close()
+print("Figure 2 saved: report/images/figure2_step_analysis.png")
+
+# Figure 3: Phase portrait and derivative analysis
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+ax1 = axes[0]
+# f' vs f (phase portrait)
+f_vals = f_analytical[valid_mask]
+df_analytical = -c * f_vals**(1-m)
+df_numerical = np.gradient(f_numerical_3, xi_fine)[valid_mask]
+
+ax1.plot(f_vals, df_analytical, 'k-', linewidth=2, label='Analytical df/dξ', alpha=0.8)
+ax1.plot(f_vals[::10], df_numerical[::10], 'o', markersize=3, label='Numerical df/dξ', alpha=0.7)
+ax1.set_xlabel(r'$f$', fontsize=12)
+ax1.set_ylabel(r"$f'$", fontsize=12)
+ax1.set_title('Phase Portrait: f\' vs f', fontsize=12)
+ax1.legend(loc='upper right', fontsize=9)
+ax1.grid(True, alpha=0.3)
+
+ax2 = axes[1]
+# Convergence study with different tolerances
+tolerances = [1e-4, 1e-6, 1e-8, 1e-10]
+max_errors = []
+
+for tol in tolerances:
+    sol_test = solve_ivp(
+        lambda xi, f: pme_ode_regularized(xi, f, epsilon),
+        xi_span, 
+        f0, 
+        method='RK45',
+        rtol=tol,
+        atol=tol/100,
+        dense_output=True
+    )
+    f_test = sol_test.sol(xi_fine)[0]
+    f_test = np.maximum(0, f_test)
+    if np.any(valid_mask):
+        err = np.max(np.abs(f_test[valid_mask] - f_analytical[valid_mask]))
+        max_errors.append(err)
+
+ax2.loglog(tolerances, max_errors, 'o-', linewidth=2, markersize=8, label='Max error')
+ax2.loglog(tolerances, tolerances, 'k--', alpha=0.5, label='y = rtol')
+ax2.loglog(tolerances, [t/100 for t in tolerances], 'k:', alpha=0.5, label='y = atol')
+ax2.set_xlabel('Tolerance (rtol)', fontsize=12)
+ax2.set_ylabel('Maximum Error', fontsize=12)
+ax2.set_title('Convergence Study: Error vs Tolerance', fontsize=12)
+ax2.legend(loc='upper left', fontsize=9)
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('report/images/figure3_phase_convergence.png', dpi=150, bbox_inches='tight')
+plt.close()
+print("Figure 3 saved: report/images/figure3_phase_convergence.png")
+
+# Figure 4: Different m values
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+m_values = [1.5, 2.0, 3.0, 4.0]
+colors = plt.cm.viridis(np.linspace(0, 1, len(m_values)))
+
+ax1 = axes[0]
+for i, m_test in enumerate(m_values):
+    xi_max_test = A / (c * m_test)
+    xi_test = np.linspace(0, xi_max_test * 1.1, 500)
+    f_test = np.maximum(0, A - c * m_test * xi_test)**(1/m_test)
+    ax1.plot(xi_test, f_test, color=colors[i], linewidth=2, 
+             label=f'm = {m_test}, ξ_max = {xi_max_test:.3f}')
+
+ax1.set_xlabel(r'$\xi$', fontsize=12)
+ax1.set_ylabel(r'$f(\xi)$', fontsize=12)
+ax1.set_title('Traveling Wave Profiles for Different m', fontsize=12)
+ax1.legend(loc='upper right', fontsize=9)
+ax1.grid(True, alpha=0.3)
+
+ax2 = axes[1]
+# Different wave speeds
+c_values = [0.5, 1.0, 2.0, 3.0]
+colors2 = plt.cm.plasma(np.linspace(0, 1, len(c_values)))
+
+for i, c_test in enumerate(c_values):
+    xi_max_test = A / (c_test * m)
+    xi_test = np.linspace(0, xi_max_test * 1.1, 500)
+    f_test = np.maximum(0, A - c_test * m * xi_test)**(1/m)
+    ax2.plot(xi_test, f_test, color=colors2[i], linewidth=2, 
+             label=f'c = {c_test}, ξ_max = {xi_max_test:.3f}')
+
+ax2.set_xlabel(r'$\xi$', fontsize=12)
+ax2.set_ylabel(r'$f(\xi)$', fontsize=12)
+ax2.set_title(f'Traveling Wave Profiles for Different c (m={m})', fontsize=12)
+ax2.legend(loc='upper right', fontsize=9)
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('report/images/figure4_parameter_study.png', dpi=150, bbox_inches='tight')
+plt.close()
+print("Figure 4 saved: report/images/figure4_parameter_study.png")
+
+print("\n" + "=" * 60)
+print("All figures generated successfully!")
+print("=" * 60)

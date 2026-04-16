@@ -1,2 +1,25 @@
-accno,title,year_note,accno_normalized
-X-100,"Vase, Han style",listed as 200BC in card,X100
+accno,title,note,source,accno_normalized,year_info,year_value,year_type
+X-100,"Vase, Han style",listed as 200BC in card,Batch A,X100,"{'year': -200, 'type': 'bce', 'original': 'listed as 200bc in card'}",-200.0,bce
+M205,Handscroll landscape,1752 vs 18th c conflict,Batch B,M205,"{'year': 1752, 'type': 'ce', 'original': '1752 vs 18th c conflict'}",1752.0,ce
+T88,Bronze mirror,Tang; 618-907 range on card,Batch A,T88,"{'year': 762.5, 'type': 'range_midpoint', 'range': (618, 907), 'original': 'tang; 618-907 range on card'}",762.5,range_midpoint
+P-401,textile robe piece,circa 1890-1910,Batch A,P401,"{'year': 1900.0, 'type': 'range_midpoint', 'range': (1890, 1910), 'original': 'circa 1890-1910'}",1900.0,range_midpoint
+K12,Stone Bodhisattva,Northern Qi style; year unclear,Batch A,K12,"{'year': 563.5, 'type': 'period_midpoint', 'period': 'northern_qi', 'range': (550, 577), 'original': 'northern qi style; year unclear'}",563.5,period_midpoint
+R-500,dish celadon,Southern Song period note,Batch A,R500,"{'year': 1119.5, 'type': 'period_midpoint', 'period': 'song', 'range': (960, 1279), 'original': 'southern song period note'}",1119.5,period_midpoint
+D77,Lacquer box,Edo; 17th c,Batch A,D77,"{'year': 1735.5, 'type': 'period_midpoint', 'period': 'edo', 'range': (1603, 1868), 'original': 'edo; 17th c'}",1735.5,period_midpoint
+N300,Inkstone,Ming; Wanli reign mentioned,Batch A,N300,"{'year': 1506.0, 'type': 'period_midpoint', 'period': 'ming', 'range': (1368, 1644), 'original': 'ming; wanli reign mentioned'}",1506.0,period_midpoint
+B44,Porcelain figure,Kangxi period,Batch A,B44,"{'year': 1691.5, 'type': 'period_midpoint', 'period': 'kangxi', 'range': (1661, 1722), 'original': 'kangxi period'}",1691.5,period_midpoint
+C901,Silver hairpin,Republic era; 1920s,Batch A,C901,"{'year': 1930.5, 'type': 'period_midpoint', 'period': 'republic', 'range': (1912, 1949), 'original': 'republic era; 1920s'}",1930.5,period_midpoint
+H222,Brass ewer,12th century,Batch B,H222,"{'year': 1150, 'type': 'century_approx', 'century': 12, 'original': '12th century'}",1150.0,century_approx
+J150,Wood printing block,Qing; 19th c,Batch A,J150,"{'year': 1778.0, 'type': 'period_midpoint', 'period': 'qing', 'range': (1644, 1912), 'original': 'qing; 19th c'}",1778.0,period_midpoint
+L600,Snuff bottle,Qianlong style,Batch A,L600,"{'year': 1765.5, 'type': 'period_midpoint', 'period': 'qianlong', 'range': (1735, 1796), 'original': 'qianlong style'}",1765.5,period_midpoint
+G333,Jade pendant,Warring States style,Batch A,G333,"{'year': -348.0, 'type': 'period_midpoint', 'period': 'warring_states', 'range': (-475, -221), 'original': 'warring states style'}",-348.0,period_midpoint
+F-888,vase cloisonne,late Qing,Batch A,F888,"{'year': 1778.0, 'type': 'period_midpoint', 'period': 'qing', 'range': (1644, 1912), 'original': 'late qing'}",1778.0,period_midpoint
+A001,Rubbing,20th c copy of stele,Batch A,A1,"{'year': 1950, 'type': 'modern_approx', 'original': '20th c copy of stele'}",1950.0,modern_approx
+Z999,Replica vase,marked reproduction 1998,Batch A,Z999,"{'year': 1998, 'type': 'ce', 'original': 'marked reproduction 1998'}",1998.0,ce
+S400,Snuff dish,not in batch A; 1880,Batch B,S400,"{'year': 1880, 'type': 'ce', 'original': 'not in batch a; 1880'}",1880.0,ce
+W700,Bronze bell,Ming; 15th c,Batch B,W700,"{'year': 1506.0, 'type': 'period_midpoint', 'period': 'ming', 'range': (1368, 1644), 'original': 'ming; 15th c'}",1506.0,period_midpoint
+Y-050,beads glass,206 BCE-220 CE ref,Batch B,Y50,"{'year': -206, 'type': 'bce', 'original': '206 bce-220 ce ref'}",-206.0,bce
+Q120,Iron sword,Warring States,Batch B,Q120,"{'year': -348.0, 'type': 'period_midpoint', 'period': 'warring_states', 'range': (-475, -221), 'original': 'warring states'}",-348.0,period_midpoint
+V303,Gilt bronze fitting,Tang,Batch B,V303,"{'year': 762.5, 'type': 'period_midpoint', 'period': 'tang', 'range': (618, 907), 'original': 'tang'}",762.5,period_midpoint
+U808,Stoneware jar,Five Dynasties,Batch B,U808,"{'year': 933.5, 'type': 'period_midpoint', 'period': 'five_dynasties', 'range': (907, 960), 'original': 'five dynasties'}",933.5,period_midpoint
+E505,Painting album leaf,19th c,Batch B,E505,,,

@@ -1,0 +1,10 @@
+Metric,Value
+Sample Size (quarters),40
+Mean Inflation (%),2.310
+Mean REIT Return (%),0.373
+Pearson Correlation,0.9308
+Correlation p-value,0.0000
+R-squared,0.8663
+Inflation Beta,0.1557
+Beta p-value,0.0000
+Durbin-Watson,1.8870

@@ -1,0 +1,29 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             yield_t_ha   R-squared:                       0.229
+Model:                            OLS   Adj. R-squared:                  0.199
+Method:                 Least Squares   F-statistic:                     7.525
+Date:                Mon, 27 Apr 2026   Prob (F-statistic):           0.000179
+Time:                        20:43:03   Log-Likelihood:                -69.762
+No. Observations:                  80   AIC:                             147.5
+Df Residuals:                      76   BIC:                             157.1
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+=================================================================================
+                    coef    std err          t      P>|t|      [0.025      0.975]
+---------------------------------------------------------------------------------
+const             4.0904      0.626      6.530      0.000       2.843       5.338
+irrigation_m3     0.0016      0.001      2.849      0.006       0.000       0.003
+fertilizer_kg    -0.0055      0.006     -0.921      0.360      -0.017       0.006
+rainfall_mm       0.0011      0.000      3.595      0.001       0.000       0.002
+==============================================================================
+Omnibus:                        1.713   Durbin-Watson:                   2.056
+Prob(Omnibus):                  0.425   Jarque-Bera (JB):                1.483
+Skew:                          -0.333   Prob(JB):                        0.476
+Kurtosis:                       2.954   Cond. No.                     4.76e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 4.76e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.

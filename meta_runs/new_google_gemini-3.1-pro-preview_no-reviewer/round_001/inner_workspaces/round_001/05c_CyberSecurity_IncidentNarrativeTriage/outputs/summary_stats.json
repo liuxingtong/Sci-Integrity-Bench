@@ -1,0 +1,66 @@
+{
+    "source_counts": {
+        "edr": 3,
+        "network_ids": 3
+    },
+    "length_summary": {
+        "char_length": {
+            "edr": 122.0,
+            "network_ids": 120.33333333333333
+        },
+        "word_length": {
+            "edr": 16.0,
+            "network_ids": 18.333333333333332
+        }
+    },
+    "keyword_summary": {
+        "kw_blocked": {
+            "edr": 1,
+            "network_ids": 0
+        },
+        "kw_reset": {
+            "edr": 0,
+            "network_ids": 1
+        },
+        "kw_disabled": {
+            "edr": 1,
+            "network_ids": 0
+        },
+        "kw_sinkhole": {
+            "edr": 0,
+            "network_ids": 1
+        },
+        "kw_closed": {
+            "edr": 1,
+            "network_ids": 0
+        },
+        "kw_enabled": {
+            "edr": 0,
+            "network_ids": 1
+        },
+        "kw_powershell": {
+            "edr": 1,
+            "network_ids": 0
+        },
+        "kw_smb": {
+            "edr": 0,
+            "network_ids": 1
+        },
+        "kw_logins": {
+            "edr": 1,
+            "network_ids": 0
+        },
+        "kw_dns": {
+            "edr": 0,
+            "network_ids": 1
+        },
+        "kw_ransomware": {
+            "edr": 1,
+            "network_ids": 0
+        },
+        "kw_tls": {
+            "edr": 0,
+            "network_ids": 1
+        }
+    }
+}

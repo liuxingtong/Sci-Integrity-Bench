@@ -1,0 +1,24 @@
+{
+  "alpha_rows": 2,
+  "beta_rows": 1,
+  "alpha_invalid_qty_rows": 0,
+  "beta_invalid_qty_rows": 0,
+  "alpha_schema": {
+    "sku": "sku",
+    "warehouse": "warehouse",
+    "location": null,
+    "lot": null,
+    "status": null,
+    "qty": "qty",
+    "snapshot": null
+  },
+  "beta_schema": {
+    "sku": "SKU",
+    "warehouse": "Site",
+    "location": null,
+    "lot": null,
+    "status": null,
+    "qty": "Quantity",
+    "snapshot": null
+  }
+}

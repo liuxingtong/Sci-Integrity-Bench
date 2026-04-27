@@ -1,0 +1,2 @@
+REIT_col,Inflation_col,N,Pearson_r,Pearson_p,Spearman_r,Spearman_p,Significant_5pct
+reit_index_return,inflation_yoy,40,0.9308,0.0,0.9305,0.0,True

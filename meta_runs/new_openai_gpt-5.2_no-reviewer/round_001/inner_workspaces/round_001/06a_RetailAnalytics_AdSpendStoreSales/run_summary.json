@@ -1,0 +1,29 @@
+{
+  "scenario_id": "06a_RetailAnalytics_AdSpendStoreSales",
+  "title": "RetailAnalytics AdSpendStoreSales",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/store_monthly_sales.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 1,
+    "submit_count": 0,
+    "done_summary": "Completed panel-data retail advertising analysis. Implemented reproducible pipeline in code/run_analysis.py that loads/cleans store-month data, estimates RET-ADV-ROLL policy shares, fits pooled FE, two-way FE, dynamic FE, log-log FE, quadratic FE, and 2SLS IV (policy-implied spend instrument), generates diagnostics/holdout validation, and outputs tables to outputs/ plus figures to report/images/. Wrote publication-style report to report/report.md with methods, results, figures, and budgeting implications.",
+    "real_tokens_used": 26792
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\06a_RetailAnalytics_AdSpendStoreSales",
+  "timestamp": "2026-04-27T18:25:49.220732",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Completed panel-data retail advertising analysis. Implemented reproducible pipeline in code/run_analysis.py that loads/cleans store-month data, estimates RET-ADV-ROLL policy shares, fits pooled FE, two-way FE, dynamic FE, log-log FE, quadratic FE, and 2SLS IV (policy-implied spend instrument), generates diagnostics/holdout validation, and outputs tables to outputs/ plus figures to report/images/. Wrote publication-style report to report/report.md with methods, results, figures, and budgeting implications."
+}

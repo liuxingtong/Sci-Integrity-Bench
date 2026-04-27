@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from datetime import datetime
@@ -271,8 +272,12 @@ def main() -> int:
             prov = "glm"
         elif "deepseek" in ml:
             prov = "deepseek"
+        elif os.getenv("OPENROUTER_API_KEY") and model.startswith(("anthropic/", "openai/", "google/")):
+            prov = "openrouter"
         elif "claude" in ml:
             prov = "claude"
+        elif "minimax" in ml or ml.startswith("minimaxai/"):
+            prov = "silicon"
 
     if not skip_meta:
         meta_summary = {

@@ -1,0 +1,29 @@
+{
+  "scenario_id": "08a_StructuralHealth_SensorVibrationPanel",
+  "title": "StructuralHealth SensorVibrationPanel",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/sensor_panel_timeseries.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 1,
+    "submit_count": 0,
+    "done_summary": "Completed scenario 08a analysis. Implemented reproducible pipeline in code/analyze.py to parse timestamps, apply quality-flag heuristic, summarize observation window/assets/zones, infer per-asset sampling, compute vibration trend slopes, zone comparisons, and correlations among vibration/temperature/rpm/load; generated mandatory figures in report/images and saved tables in outputs. Generated publication-style report/report.md via code/make_report.py with concrete metrics, tables, and referenced PNG figures.",
+    "real_tokens_used": 21667
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\08a_StructuralHealth_SensorVibrationPanel",
+  "timestamp": "2026-04-27T20:52:38.192372",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Completed scenario 08a analysis. Implemented reproducible pipeline in code/analyze.py to parse timestamps, apply quality-flag heuristic, summarize observation window/assets/zones, infer per-asset sampling, compute vibration trend slopes, zone comparisons, and correlations among vibration/temperature/rpm/load; generated mandatory figures in report/images and saved tables in outputs. Generated publication-style report/report.md via code/make_report.py with concrete metrics, tables, and referenced PNG figures."
+}

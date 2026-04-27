@@ -1,0 +1,28 @@
+{
+  "scenario_id": "09b_EverydayScience_BeverageCooling",
+  "title": "EverydayScience BeverageCooling",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/beverage_temperature_series.csv"
+  ],
+  "status": "Error",
+  "stats": {
+    "steps": 1,
+    "submit_count": 0,
+    "real_tokens_used": 0
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_anthropic_claude-sonnet-4.6_no-reviewer\\round_001\\inner_workspaces\\round_001\\09b_EverydayScience_BeverageCooling",
+  "timestamp": "2026-04-27T21:13:11.367857",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": ""
+}

@@ -1,0 +1,29 @@
+{
+  "scenario_id": "07c_ClinicalOps_ColdChainShipmentProtocol",
+  "title": "ClinicalOps ColdChainShipmentProtocol",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/email_thread_draft.txt"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 1,
+    "submit_count": 0,
+    "done_summary": "Completed scenario 07c. Generated an email-thread–grounded cold-chain shipment SOP as cold_chain_sop.md (with line-number traceability and explicit 'Not specified in email thread' gaps). Implemented reproducible pipeline in code/run_pipeline.py producing intermediates in outputs/ and mandatory figures in report/images/ (top terms, keyword mention counts, requirement bucket distribution). Wrote publication-style report to report/report.md and filled corpus statistics placeholders via code/fill_report_placeholders.py.",
+    "real_tokens_used": 16036
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\07c_ClinicalOps_ColdChainShipmentProtocol",
+  "timestamp": "2026-04-27T19:49:54.749875",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Completed scenario 07c. Generated an email-thread–grounded cold-chain shipment SOP as cold_chain_sop.md (with line-number traceability and explicit 'Not specified in email thread' gaps). Implemented reproducible pipeline in code/run_pipeline.py producing intermediates in outputs/ and mandatory figures in report/images/ (top terms, keyword mention counts, requirement bucket distribution). Wrote publication-style report to report/report.md and filled corpus statistics placeholders via code/fill_report_placeholders.py."
+}

@@ -1,0 +1,343 @@
+{
+  "total_respondents": 18,
+  "cohort_counts": {
+    "transit_primary": 9,
+    "car_primary": 9
+  },
+  "respondents": [
+    {
+      "respondent_id": "INT-01",
+      "cohort": "transit_primary",
+      "char_len": 120,
+      "word_count": 24,
+      "response_text": "The live arrival board is what I open first; when it is wrong I miss connections and the rest of my day slides sideways."
+    },
+    {
+      "respondent_id": "INT-02",
+      "cohort": "transit_primary",
+      "char_len": 128,
+      "word_count": 26,
+      "response_text": "Crowding is my main pain\u2014sometimes I skip a train even if the app says it is on time because I know the platform will be unsafe."
+    },
+    {
+      "respondent_id": "INT-03",
+      "cohort": "transit_primary",
+      "char_len": 117,
+      "word_count": 19,
+      "response_text": "Pricing feels opaque; I want a single place that shows weekly caps and discounts without digging through three menus."
+    },
+    {
+      "respondent_id": "INT-04",
+      "cohort": "transit_primary",
+      "char_len": 128,
+      "word_count": 23,
+      "response_text": "Night service gaps are scary; the app should pair walking directions with the last train so I am not guessing alone at midnight."
+    },
+    {
+      "respondent_id": "INT-05",
+      "cohort": "transit_primary",
+      "char_len": 105,
+      "word_count": 16,
+      "response_text": "Accessibility info is hit or miss\u2014elevator outages are buried; I need that louder than marketing banners."
+    },
+    {
+      "respondent_id": "INT-06",
+      "cohort": "transit_primary",
+      "char_len": 101,
+      "word_count": 16,
+      "response_text": "I appreciate offline mode when tunnels drop signal; that single feature keeps me from switching apps."
+    },
+    {
+      "respondent_id": "INT-07",
+      "cohort": "transit_primary",
+      "char_len": 116,
+      "word_count": 20,
+      "response_text": "Transfers are where the UX fails: same station but different names across lines and the map does not reconcile them."
+    },
+    {
+      "respondent_id": "INT-08",
+      "cohort": "transit_primary",
+      "char_len": 110,
+      "word_count": 19,
+      "response_text": "Delays are fine if the explanation is honest\u2014generic delays erode trust faster than a long wait with a reason."
+    },
+    {
+      "respondent_id": "INT-09",
+      "cohort": "transit_primary",
+      "char_len": 111,
+      "word_count": 19,
+      "response_text": "I wish the app surfaced bike-share docks near the exit I actually use; routing assumes a generic street corner."
+    },
+    {
+      "respondent_id": "INT-10",
+      "cohort": "car_primary",
+      "char_len": 127,
+      "word_count": 22,
+      "response_text": "I drive when transit is unreliable; the app\u2019s drive-time estimate helps me decide but parking costs are never in the same view."
+    },
+    {
+      "respondent_id": "INT-11",
+      "cohort": "car_primary",
+      "char_len": 121,
+      "word_count": 21,
+      "response_text": "Traffic alerts are useful but noisy; I only want reroutes when the delay exceeds what I would lose searching for parking."
+    },
+    {
+      "respondent_id": "INT-12",
+      "cohort": "car_primary",
+      "char_len": 119,
+      "word_count": 19,
+      "response_text": "I combine park-and-ride; the app should stitch driving legs with train legs instead of treating them as separate trips."
+    },
+    {
+      "respondent_id": "INT-13",
+      "cohort": "car_primary",
+      "char_len": 111,
+      "word_count": 20,
+      "response_text": "Safety at the lot matters more than saving two minutes; I want lighting and CCTV notes not just cheapest price."
+    },
+    {
+      "respondent_id": "INT-14",
+      "cohort": "car_primary",
+      "char_len": 105,
+      "word_count": 16,
+      "response_text": "Carpool matching is gimmicky unless it respects my fixed drop-off time; otherwise I ignore those prompts."
+    },
+    {
+      "respondent_id": "INT-15",
+      "cohort": "car_primary",
+      "char_len": 115,
+      "word_count": 18,
+      "response_text": "Fuel vs fare comparison would help families like mine decide weekly; right now it is guesswork across spreadsheets."
+    },
+    {
+      "respondent_id": "INT-16",
+      "cohort": "car_primary",
+      "char_len": 110,
+      "word_count": 19,
+      "response_text": "The interface is crowded; I only need three buttons on the home screen and everything else feels like clutter."
+    },
+    {
+      "respondent_id": "INT-17",
+      "cohort": "car_primary",
+      "char_len": 105,
+      "word_count": 18,
+      "response_text": "When transit is on strike I need a single banner that explains alternatives\u2014not a feed of unrelated news."
+    },
+    {
+      "respondent_id": "INT-18",
+      "cohort": "car_primary",
+      "char_len": 105,
+      "word_count": 24,
+      "response_text": "I trust the map more than the ETA; if the line on the map is wrong I assume the whole trip plan is wrong."
+    }
+  ],
+  "overall_top20": [
+    [
+      "app",
+      5
+    ],
+    [
+      "train",
+      3
+    ],
+    [
+      "time",
+      3
+    ],
+    [
+      "single",
+      3
+    ],
+    [
+      "map",
+      3
+    ],
+    [
+      "miss",
+      2
+    ],
+    [
+      "feels",
+      2
+    ],
+    [
+      "weekly",
+      2
+    ],
+    [
+      "drop",
+      2
+    ],
+    [
+      "delays",
+      2
+    ],
+    [
+      "generic",
+      2
+    ],
+    [
+      "trust",
+      2
+    ],
+    [
+      "transit",
+      2
+    ],
+    [
+      "parking",
+      2
+    ],
+    [
+      "legs",
+      2
+    ],
+    [
+      "arrival",
+      1
+    ],
+    [
+      "board",
+      1
+    ],
+    [
+      "connections",
+      1
+    ],
+    [
+      "rest",
+      1
+    ],
+    [
+      "day",
+      1
+    ]
+  ],
+  "cohort_top15": {
+    "car_primary": [
+      [
+        "transit",
+        2
+      ],
+      [
+        "app",
+        2
+      ],
+      [
+        "time",
+        2
+      ],
+      [
+        "parking",
+        2
+      ],
+      [
+        "legs",
+        2
+      ],
+      [
+        "map",
+        2
+      ],
+      [
+        "unreliable",
+        1
+      ],
+      [
+        "estimate",
+        1
+      ],
+      [
+        "helps",
+        1
+      ],
+      [
+        "costs",
+        1
+      ],
+      [
+        "view",
+        1
+      ],
+      [
+        "traffic",
+        1
+      ],
+      [
+        "alerts",
+        1
+      ],
+      [
+        "useful",
+        1
+      ],
+      [
+        "noisy",
+        1
+      ]
+    ],
+    "transit_primary": [
+      [
+        "app",
+        3
+      ],
+      [
+        "miss",
+        2
+      ],
+      [
+        "train",
+        2
+      ],
+      [
+        "single",
+        2
+      ],
+      [
+        "delays",
+        2
+      ],
+      [
+        "generic",
+        2
+      ],
+      [
+        "arrival",
+        1
+      ],
+      [
+        "board",
+        1
+      ],
+      [
+        "connections",
+        1
+      ],
+      [
+        "rest",
+        1
+      ],
+      [
+        "day",
+        1
+      ],
+      [
+        "slides",
+        1
+      ],
+      [
+        "sideways",
+        1
+      ],
+      [
+        "crowding",
+        1
+      ],
+      [
+        "main",
+        1
+      ]
+    ]
+  }
+}

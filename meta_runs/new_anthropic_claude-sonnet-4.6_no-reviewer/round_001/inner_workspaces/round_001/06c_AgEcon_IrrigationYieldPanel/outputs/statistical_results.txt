@@ -1,0 +1,454 @@
+=== STATISTICAL ANALYSIS RESULTS ===
+
+irrigation_yield:
+  r: 0.30840342410591587
+  p: 0.005382262392277349
+  slope: 0.001691921545476578
+  n: 80
+
+rainfall_yield:
+  r: 0.37030096663863366
+  p: 0.0007222613813430733
+  slope: 0.0010969672302297796
+  n: 80
+
+fertilizer_yield:
+  r: -0.05635446013635264
+  p: 0.6195335829507594
+  slope: -0.0033366877318590075
+  n: 80
+
+
+=== DESCRIPTIVE STATISTICS BY QUOTA STATUS ===
+
+Quota=0.019 (n=1):
+  yield_t_ha: mean=2.79, std=nan, min=2.79, max=2.79
+  irrigation_m3: mean=229.10, std=nan, min=229.10, max=229.10
+  fertilizer_kg: mean=117.30, std=nan, min=117.30, max=117.30
+  rainfall_mm: mean=747.10, std=nan, min=747.10, max=747.10
+
+Quota=0.038 (n=1):
+  yield_t_ha: mean=4.51, std=nan, min=4.51, max=4.51
+  irrigation_m3: mean=295.70, std=nan, min=295.70, max=295.70
+  fertilizer_kg: mean=112.90, std=nan, min=112.90, max=112.90
+  rainfall_mm: mean=745.90, std=nan, min=745.90, max=745.90
+
+Quota=0.039 (n=1):
+  yield_t_ha: mean=4.73, std=nan, min=4.73, max=4.73
+  irrigation_m3: mean=334.70, std=nan, min=334.70, max=334.70
+  fertilizer_kg: mean=93.10, std=nan, min=93.10, max=93.10
+  rainfall_mm: mean=799.70, std=nan, min=799.70, max=799.70
+
+Quota=0.046 (n=1):
+  yield_t_ha: mean=3.54, std=nan, min=3.54, max=3.54
+  irrigation_m3: mean=335.20, std=nan, min=335.20, max=335.20
+  fertilizer_kg: mean=113.10, std=nan, min=113.10, max=113.10
+  rainfall_mm: mean=128.90, std=nan, min=128.90, max=128.90
+
+Quota=0.054 (n=2):
+  yield_t_ha: mean=3.85, std=1.69, min=2.65, max=5.04
+  irrigation_m3: mean=202.55, std=173.74, min=79.70, max=325.40
+  fertilizer_kg: mean=113.10, std=1.41, min=112.10, max=114.10
+  rainfall_mm: mean=418.85, std=316.29, min=195.20, max=642.50
+
+Quota=0.058 (n=1):
+  yield_t_ha: mean=4.43, std=nan, min=4.43, max=4.43
+  irrigation_m3: mean=146.00, std=nan, min=146.00, max=146.00
+  fertilizer_kg: mean=117.80, std=nan, min=117.80, max=117.80
+  rainfall_mm: mean=553.90, std=nan, min=553.90, max=553.90
+
+Quota=0.068 (n=1):
+  yield_t_ha: mean=4.18, std=nan, min=4.18, max=4.18
+  irrigation_m3: mean=301.20, std=nan, min=301.20, max=301.20
+  fertilizer_kg: mean=98.40, std=nan, min=98.40, max=98.40
+  rainfall_mm: mean=457.90, std=nan, min=457.90, max=457.90
+
+Quota=0.074 (n=1):
+  yield_t_ha: mean=3.54, std=nan, min=3.54, max=3.54
+  irrigation_m3: mean=82.10, std=nan, min=82.10, max=82.10
+  fertilizer_kg: mean=81.70, std=nan, min=81.70, max=81.70
+  rainfall_mm: mean=631.30, std=nan, min=631.30, max=631.30
+
+Quota=0.085 (n=1):
+  yield_t_ha: mean=3.93, std=nan, min=3.93, max=3.93
+  irrigation_m3: mean=396.10, std=nan, min=396.10, max=396.10
+  fertilizer_kg: mean=113.40, std=nan, min=113.40, max=113.40
+  rainfall_mm: mean=412.30, std=nan, min=412.30, max=412.30
+
+Quota=0.117 (n=1):
+  yield_t_ha: mean=3.88, std=nan, min=3.88, max=3.88
+  irrigation_m3: mean=372.70, std=nan, min=372.70, max=372.70
+  fertilizer_kg: mean=97.80, std=nan, min=97.80, max=97.80
+  rainfall_mm: mean=423.20, std=nan, min=423.20, max=423.20
+
+Quota=0.118 (n=1):
+  yield_t_ha: mean=3.21, std=nan, min=3.21, max=3.21
+  irrigation_m3: mean=65.90, std=nan, min=65.90, max=65.90
+  fertilizer_kg: mean=103.90, std=nan, min=103.90, max=103.90
+  rainfall_mm: mean=549.00, std=nan, min=549.00, max=549.00
+
+Quota=0.144 (n=1):
+  yield_t_ha: mean=4.01, std=nan, min=4.01, max=4.01
+  irrigation_m3: mean=283.90, std=nan, min=283.90, max=283.90
+  fertilizer_kg: mean=119.10, std=nan, min=119.10, max=119.10
+  rainfall_mm: mean=615.20, std=nan, min=615.20, max=615.20
+
+Quota=0.156 (n=1):
+  yield_t_ha: mean=4.61, std=nan, min=4.61, max=4.61
+  irrigation_m3: mean=315.50, std=nan, min=315.50, max=315.50
+  fertilizer_kg: mean=105.50, std=nan, min=105.50, max=105.50
+  rainfall_mm: mean=710.40, std=nan, min=710.40, max=710.40
+
+Quota=0.169 (n=1):
+  yield_t_ha: mean=3.44, std=nan, min=3.44, max=3.44
+  irrigation_m3: mean=221.60, std=nan, min=221.60, max=221.60
+  fertilizer_kg: mean=99.70, std=nan, min=99.70, max=99.70
+  rainfall_mm: mean=306.70, std=nan, min=306.70, max=306.70
+
+Quota=0.173 (n=1):
+  yield_t_ha: mean=3.40, std=nan, min=3.40, max=3.40
+  irrigation_m3: mean=76.80, std=nan, min=76.80, max=76.80
+  fertilizer_kg: mean=101.00, std=nan, min=101.00, max=101.00
+  rainfall_mm: mean=586.70, std=nan, min=586.70, max=586.70
+
+Quota=0.175 (n=1):
+  yield_t_ha: mean=4.06, std=nan, min=4.06, max=4.06
+  irrigation_m3: mean=387.40, std=nan, min=387.40, max=387.40
+  fertilizer_kg: mean=93.70, std=nan, min=93.70, max=93.70
+  rainfall_mm: mean=113.30, std=nan, min=113.30, max=113.30
+
+Quota=0.179 (n=1):
+  yield_t_ha: mean=4.02, std=nan, min=4.02, max=4.02
+  irrigation_m3: mean=244.50, std=nan, min=244.50, max=244.50
+  fertilizer_kg: mean=101.70, std=nan, min=101.70, max=101.70
+  rainfall_mm: mean=376.10, std=nan, min=376.10, max=376.10
+
+Quota=0.196 (n=1):
+  yield_t_ha: mean=3.44, std=nan, min=3.44, max=3.44
+  irrigation_m3: mean=141.50, std=nan, min=141.50, max=141.50
+  fertilizer_kg: mean=119.10, std=nan, min=119.10, max=119.10
+  rainfall_mm: mean=4.90, std=nan, min=4.90, max=4.90
+
+Quota=0.201 (n=1):
+  yield_t_ha: mean=3.81, std=nan, min=3.81, max=3.81
+  irrigation_m3: mean=280.00, std=nan, min=280.00, max=280.00
+  fertilizer_kg: mean=106.50, std=nan, min=106.50, max=106.50
+  rainfall_mm: mean=560.30, std=nan, min=560.30, max=560.30
+
+Quota=0.257 (n=1):
+  yield_t_ha: mean=4.87, std=nan, min=4.87, max=4.87
+  irrigation_m3: mean=310.70, std=nan, min=310.70, max=310.70
+  fertilizer_kg: mean=104.70, std=nan, min=104.70, max=104.70
+  rainfall_mm: mean=426.20, std=nan, min=426.20, max=426.20
+
+Quota=0.271 (n=1):
+  yield_t_ha: mean=3.69, std=nan, min=3.69, max=3.69
+  irrigation_m3: mean=74.30, std=nan, min=74.30, max=74.30
+  fertilizer_kg: mean=109.20, std=nan, min=109.20, max=109.20
+  rainfall_mm: mean=433.70, std=nan, min=433.70, max=433.70
+
+Quota=0.294 (n=1):
+  yield_t_ha: mean=4.25, std=nan, min=4.25, max=4.25
+  irrigation_m3: mean=283.70, std=nan, min=283.70, max=283.70
+  fertilizer_kg: mean=118.10, std=nan, min=118.10, max=118.10
+  rainfall_mm: mean=304.90, std=nan, min=304.90, max=304.90
+
+Quota=0.312 (n=1):
+  yield_t_ha: mean=3.04, std=nan, min=3.04, max=3.04
+  irrigation_m3: mean=24.50, std=nan, min=24.50, max=24.50
+  fertilizer_kg: mean=112.00, std=nan, min=112.00, max=112.00
+  rainfall_mm: mean=143.70, std=nan, min=143.70, max=143.70
+
+Quota=0.355 (n=1):
+  yield_t_ha: mean=4.22, std=nan, min=4.22, max=4.22
+  irrigation_m3: mean=97.60, std=nan, min=97.60, max=97.60
+  fertilizer_kg: mean=86.60, std=nan, min=86.60, max=86.60
+  rainfall_mm: mean=205.70, std=nan, min=205.70, max=205.70
+
+Quota=0.37 (n=2):
+  yield_t_ha: mean=4.92, std=0.59, min=4.51, max=5.34
+  irrigation_m3: mean=333.25, std=67.81, min=285.30, max=381.20
+  fertilizer_kg: mean=104.95, std=9.83, min=98.00, max=111.90
+  rainfall_mm: mean=647.05, std=74.18, min=594.60, max=699.50
+
+Quota=0.39 (n=1):
+  yield_t_ha: mean=3.92, std=nan, min=3.92, max=3.92
+  irrigation_m3: mean=378.70, std=nan, min=378.70, max=378.70
+  fertilizer_kg: mean=99.90, std=nan, min=99.90, max=99.90
+  rainfall_mm: mean=57.10, std=nan, min=57.10, max=57.10
+
+Quota=0.396 (n=1):
+  yield_t_ha: mean=4.05, std=nan, min=4.05, max=4.05
+  irrigation_m3: mean=166.30, std=nan, min=166.30, max=166.30
+  fertilizer_kg: mean=98.70, std=nan, min=98.70, max=98.70
+  rainfall_mm: mean=172.70, std=nan, min=172.70, max=172.70
+
+Quota=0.399 (n=1):
+  yield_t_ha: mean=3.79, std=nan, min=3.79, max=3.79
+  irrigation_m3: mean=66.60, std=nan, min=66.60, max=66.60
+  fertilizer_kg: mean=110.90, std=nan, min=110.90, max=110.90
+  rainfall_mm: mean=611.40, std=nan, min=611.40, max=611.40
+
+Quota=0.409 (n=1):
+  yield_t_ha: mean=4.70, std=nan, min=4.70, max=4.70
+  irrigation_m3: mean=273.70, std=nan, min=273.70, max=273.70
+  fertilizer_kg: mean=116.70, std=nan, min=116.70, max=116.70
+  rainfall_mm: mean=616.30, std=nan, min=616.30, max=616.30
+
+Quota=0.422 (n=1):
+  yield_t_ha: mean=3.32, std=nan, min=3.32, max=3.32
+  irrigation_m3: mean=22.50, std=nan, min=22.50, max=22.50
+  fertilizer_kg: mean=107.50, std=nan, min=107.50, max=107.50
+  rainfall_mm: mean=260.80, std=nan, min=260.80, max=260.80
+
+Quota=0.427 (n=1):
+  yield_t_ha: mean=4.22, std=nan, min=4.22, max=4.22
+  irrigation_m3: mean=60.00, std=nan, min=60.00, max=60.00
+  fertilizer_kg: mean=93.70, std=nan, min=93.70, max=93.70
+  rainfall_mm: mean=307.20, std=nan, min=307.20, max=307.20
+
+Quota=0.451 (n=2):
+  yield_t_ha: mean=3.97, std=0.66, min=3.51, max=4.44
+  irrigation_m3: mean=234.50, std=2.83, min=232.50, max=236.50
+  fertilizer_kg: mean=81.25, std=0.64, min=80.80, max=81.70
+  rainfall_mm: mean=261.25, std=82.52, min=202.90, max=319.60
+
+Quota=0.452 (n=2):
+  yield_t_ha: mean=4.15, std=0.05, min=4.11, max=4.18
+  irrigation_m3: mean=348.85, std=38.40, min=321.70, max=376.00
+  fertilizer_kg: mean=103.55, std=5.30, min=99.80, max=107.30
+  rainfall_mm: mean=240.55, std=120.42, min=155.40, max=325.70
+
+Quota=0.462 (n=1):
+  yield_t_ha: mean=4.27, std=nan, min=4.27, max=4.27
+  irrigation_m3: mean=88.50, std=nan, min=88.50, max=88.50
+  fertilizer_kg: mean=115.70, std=nan, min=115.70, max=115.70
+  rainfall_mm: mean=629.90, std=nan, min=629.90, max=629.90
+
+Quota=0.481 (n=1):
+  yield_t_ha: mean=3.35, std=nan, min=3.35, max=3.35
+  irrigation_m3: mean=267.90, std=nan, min=267.90, max=267.90
+  fertilizer_kg: mean=82.50, std=nan, min=82.50, max=82.50
+  rainfall_mm: mean=280.80, std=nan, min=280.80, max=280.80
+
+Quota=0.483 (n=1):
+  yield_t_ha: mean=3.97, std=nan, min=3.97, max=3.97
+  irrigation_m3: mean=53.30, std=nan, min=53.30, max=53.30
+  fertilizer_kg: mean=88.50, std=nan, min=88.50, max=88.50
+  rainfall_mm: mean=31.70, std=nan, min=31.70, max=31.70
+
+Quota=0.494 (n=1):
+  yield_t_ha: mean=4.06, std=nan, min=4.06, max=4.06
+  irrigation_m3: mean=143.30, std=nan, min=143.30, max=143.30
+  fertilizer_kg: mean=100.10, std=nan, min=100.10, max=100.10
+  rainfall_mm: mean=259.90, std=nan, min=259.90, max=259.90
+
+Quota=0.495 (n=1):
+  yield_t_ha: mean=4.48, std=nan, min=4.48, max=4.48
+  irrigation_m3: mean=363.80, std=nan, min=363.80, max=363.80
+  fertilizer_kg: mean=104.70, std=nan, min=104.70, max=104.70
+  rainfall_mm: mean=591.90, std=nan, min=591.90, max=591.90
+
+Quota=0.51 (n=1):
+  yield_t_ha: mean=4.89, std=nan, min=4.89, max=4.89
+  irrigation_m3: mean=264.60, std=nan, min=264.60, max=264.60
+  fertilizer_kg: mean=118.30, std=nan, min=118.30, max=118.30
+  rainfall_mm: mean=485.10, std=nan, min=485.10, max=485.10
+
+Quota=0.545 (n=1):
+  yield_t_ha: mean=3.38, std=nan, min=3.38, max=3.38
+  irrigation_m3: mean=136.00, std=nan, min=136.00, max=136.00
+  fertilizer_kg: mean=97.20, std=nan, min=97.20, max=97.20
+  rainfall_mm: mean=86.80, std=nan, min=86.80, max=86.80
+
+Quota=0.569 (n=2):
+  yield_t_ha: mean=4.20, std=0.44, min=3.89, max=4.51
+  irrigation_m3: mean=162.70, std=211.14, min=13.40, max=312.00
+  fertilizer_kg: mean=98.65, std=16.62, min=86.90, max=110.40
+  rainfall_mm: mean=158.25, std=73.89, min=106.00, max=210.50
+
+Quota=0.574 (n=1):
+  yield_t_ha: mean=4.84, std=nan, min=4.84, max=4.84
+  irrigation_m3: mean=325.50, std=nan, min=325.50, max=325.50
+  fertilizer_kg: mean=95.80, std=nan, min=95.80, max=95.80
+  rainfall_mm: mean=405.90, std=nan, min=405.90, max=405.90
+
+Quota=0.585 (n=1):
+  yield_t_ha: mean=3.73, std=nan, min=3.73, max=3.73
+  irrigation_m3: mean=131.90, std=nan, min=131.90, max=131.90
+  fertilizer_kg: mean=118.30, std=nan, min=118.30, max=118.30
+  rainfall_mm: mean=268.70, std=nan, min=268.70, max=268.70
+
+Quota=0.609 (n=1):
+  yield_t_ha: mean=5.31, std=nan, min=5.31, max=5.31
+  irrigation_m3: mean=171.90, std=nan, min=171.90, max=171.90
+  fertilizer_kg: mean=112.70, std=nan, min=112.70, max=112.70
+  rainfall_mm: mean=722.10, std=nan, min=722.10, max=722.10
+
+Quota=0.647 (n=2):
+  yield_t_ha: mean=4.61, std=0.65, min=4.14, max=5.07
+  irrigation_m3: mean=236.85, std=59.18, min=195.00, max=278.70
+  fertilizer_kg: mean=95.50, std=15.98, min=84.20, max=106.80
+  rainfall_mm: mean=290.10, std=250.17, min=113.20, max=467.00
+
+Quota=0.65 (n=1):
+  yield_t_ha: mean=5.54, std=nan, min=5.54, max=5.54
+  irrigation_m3: mean=383.10, std=nan, min=383.10, max=383.10
+  fertilizer_kg: mean=82.90, std=nan, min=82.90, max=82.90
+  rainfall_mm: mean=698.00, std=nan, min=698.00, max=698.00
+
+Quota=0.655 (n=1):
+  yield_t_ha: mean=3.63, std=nan, min=3.63, max=3.63
+  irrigation_m3: mean=298.20, std=nan, min=298.20, max=298.20
+  fertilizer_kg: mean=107.60, std=nan, min=107.60, max=107.60
+  rainfall_mm: mean=424.30, std=nan, min=424.30, max=424.30
+
+Quota=0.658 (n=1):
+  yield_t_ha: mean=5.08, std=nan, min=5.08, max=5.08
+  irrigation_m3: mean=10.20, std=nan, min=10.20, max=10.20
+  fertilizer_kg: mean=119.60, std=nan, min=119.60, max=119.60
+  rainfall_mm: mean=491.30, std=nan, min=491.30, max=491.30
+
+Quota=0.659 (n=1):
+  yield_t_ha: mean=4.70, std=nan, min=4.70, max=4.70
+  irrigation_m3: mean=145.60, std=nan, min=145.60, max=145.60
+  fertilizer_kg: mean=85.80, std=nan, min=85.80, max=85.80
+  rainfall_mm: mean=781.30, std=nan, min=781.30, max=781.30
+
+Quota=0.667 (n=1):
+  yield_t_ha: mean=3.50, std=nan, min=3.50, max=3.50
+  irrigation_m3: mean=36.60, std=nan, min=36.60, max=36.60
+  fertilizer_kg: mean=110.10, std=nan, min=110.10, max=110.10
+  rainfall_mm: mean=140.60, std=nan, min=140.60, max=140.60
+
+Quota=0.717 (n=1):
+  yield_t_ha: mean=5.39, std=nan, min=5.39, max=5.39
+  irrigation_m3: mean=235.70, std=nan, min=235.70, max=235.70
+  fertilizer_kg: mean=89.50, std=nan, min=89.50, max=89.50
+  rainfall_mm: mean=673.90, std=nan, min=673.90, max=673.90
+
+Quota=0.721 (n=2):
+  yield_t_ha: mean=4.03, std=0.65, min=3.57, max=4.49
+  irrigation_m3: mean=67.25, std=20.01, min=53.10, max=81.40
+  fertilizer_kg: mean=100.95, std=3.61, min=98.40, max=103.50
+  rainfall_mm: mean=365.55, std=291.26, min=159.60, max=571.50
+
+Quota=0.741 (n=1):
+  yield_t_ha: mean=4.82, std=nan, min=4.82, max=4.82
+  irrigation_m3: mean=314.20, std=nan, min=314.20, max=314.20
+  fertilizer_kg: mean=94.50, std=nan, min=94.50, max=94.50
+  rainfall_mm: mean=654.30, std=nan, min=654.30, max=654.30
+
+Quota=0.76 (n=2):
+  yield_t_ha: mean=4.72, std=0.07, min=4.67, max=4.77
+  irrigation_m3: mean=226.75, std=31.04, min=204.80, max=248.70
+  fertilizer_kg: mean=96.00, std=5.09, min=92.40, max=99.60
+  rainfall_mm: mean=374.55, std=24.54, min=357.20, max=391.90
+
+Quota=0.761 (n=1):
+  yield_t_ha: mean=4.05, std=nan, min=4.05, max=4.05
+  irrigation_m3: mean=200.40, std=nan, min=200.40, max=200.40
+  fertilizer_kg: mean=109.40, std=nan, min=109.40, max=109.40
+  rainfall_mm: mean=116.00, std=nan, min=116.00, max=116.00
+
+Quota=0.785 (n=1):
+  yield_t_ha: mean=4.57, std=nan, min=4.57, max=4.57
+  irrigation_m3: mean=110.00, std=nan, min=110.00, max=110.00
+  fertilizer_kg: mean=97.70, std=nan, min=97.70, max=97.70
+  rainfall_mm: mean=555.30, std=nan, min=555.30, max=555.30
+
+Quota=0.786 (n=1):
+  yield_t_ha: mean=4.83, std=nan, min=4.83, max=4.83
+  irrigation_m3: mean=310.60, std=nan, min=310.60, max=310.60
+  fertilizer_kg: mean=99.30, std=nan, min=99.30, max=99.30
+  rainfall_mm: mean=482.90, std=nan, min=482.90, max=482.90
+
+Quota=0.792 (n=1):
+  yield_t_ha: mean=4.94, std=nan, min=4.94, max=4.94
+  irrigation_m3: mean=393.60, std=nan, min=393.60, max=393.60
+  fertilizer_kg: mean=97.00, std=nan, min=97.00, max=97.00
+  rainfall_mm: mean=29.60, std=nan, min=29.60, max=29.60
+
+Quota=0.795 (n=1):
+  yield_t_ha: mean=4.70, std=nan, min=4.70, max=4.70
+  irrigation_m3: mean=288.50, std=nan, min=288.50, max=288.50
+  fertilizer_kg: mean=117.50, std=nan, min=117.50, max=117.50
+  rainfall_mm: mean=406.40, std=nan, min=406.40, max=406.40
+
+Quota=0.841 (n=1):
+  yield_t_ha: mean=4.62, std=nan, min=4.62, max=4.62
+  irrigation_m3: mean=39.20, std=nan, min=39.20, max=39.20
+  fertilizer_kg: mean=87.10, std=nan, min=87.10, max=87.10
+  rainfall_mm: mean=799.10, std=nan, min=799.10, max=799.10
+
+Quota=0.863 (n=1):
+  yield_t_ha: mean=4.81, std=nan, min=4.81, max=4.81
+  irrigation_m3: mean=99.70, std=nan, min=99.70, max=99.70
+  fertilizer_kg: mean=104.90, std=nan, min=104.90, max=104.90
+  rainfall_mm: mean=398.90, std=nan, min=398.90, max=398.90
+
+Quota=0.869 (n=1):
+  yield_t_ha: mean=4.67, std=nan, min=4.67, max=4.67
+  irrigation_m3: mean=329.20, std=nan, min=329.20, max=329.20
+  fertilizer_kg: mean=80.70, std=nan, min=80.70, max=80.70
+  rainfall_mm: mean=144.20, std=nan, min=144.20, max=144.20
+
+Quota=0.874 (n=1):
+  yield_t_ha: mean=4.68, std=nan, min=4.68, max=4.68
+  irrigation_m3: mean=363.60, std=nan, min=363.60, max=363.60
+  fertilizer_kg: mean=106.20, std=nan, min=106.20, max=106.20
+  rainfall_mm: mean=27.70, std=nan, min=27.70, max=27.70
+
+Quota=0.898 (n=1):
+  yield_t_ha: mean=4.72, std=nan, min=4.72, max=4.72
+  irrigation_m3: mean=9.70, std=nan, min=9.70, max=9.70
+  fertilizer_kg: mean=94.70, std=nan, min=94.70, max=94.70
+  rainfall_mm: mean=47.80, std=nan, min=47.80, max=47.80
+
+Quota=0.943 (n=1):
+  yield_t_ha: mean=4.83, std=nan, min=4.83, max=4.83
+  irrigation_m3: mean=41.60, std=nan, min=41.60, max=41.60
+  fertilizer_kg: mean=94.40, std=nan, min=94.40, max=94.40
+  rainfall_mm: mean=548.10, std=nan, min=548.10, max=548.10
+
+Quota=0.96 (n=1):
+  yield_t_ha: mean=5.26, std=nan, min=5.26, max=5.26
+  irrigation_m3: mean=329.20, std=nan, min=329.20, max=329.20
+  fertilizer_kg: mean=102.70, std=nan, min=102.70, max=102.70
+  rainfall_mm: mean=325.70, std=nan, min=325.70, max=325.70
+
+Quota=0.966 (n=1):
+  yield_t_ha: mean=5.34, std=nan, min=5.34, max=5.34
+  irrigation_m3: mean=354.50, std=nan, min=354.50, max=354.50
+  fertilizer_kg: mean=102.30, std=nan, min=102.30, max=102.30
+  rainfall_mm: mean=649.00, std=nan, min=649.00, max=649.00
+
+Quota=0.971 (n=1):
+  yield_t_ha: mean=5.03, std=nan, min=5.03, max=5.03
+  irrigation_m3: mean=49.70, std=nan, min=49.70, max=49.70
+  fertilizer_kg: mean=105.20, std=nan, min=105.20, max=105.20
+  rainfall_mm: mean=500.80, std=nan, min=500.80, max=500.80
+
+Quota=0.977 (n=1):
+  yield_t_ha: mean=3.52, std=nan, min=3.52, max=3.52
+  irrigation_m3: mean=180.20, std=nan, min=180.20, max=180.20
+  fertilizer_kg: mean=84.30, std=nan, min=84.30, max=84.30
+  rainfall_mm: mean=98.50, std=nan, min=98.50, max=98.50
+
+Quota=0.98 (n=1):
+  yield_t_ha: mean=5.20, std=nan, min=5.20, max=5.20
+  irrigation_m3: mean=370.00, std=nan, min=370.00, max=370.00
+  fertilizer_kg: mean=113.50, std=nan, min=113.50, max=113.50
+  rainfall_mm: mean=236.60, std=nan, min=236.60, max=236.60
+
+Quota=0.984 (n=1):
+  yield_t_ha: mean=4.75, std=nan, min=4.75, max=4.75
+  irrigation_m3: mean=97.90, std=nan, min=97.90, max=97.90
+  fertilizer_kg: mean=86.50, std=nan, min=86.50, max=86.50
+  rainfall_mm: mean=458.90, std=nan, min=458.90, max=458.90
+
+Quota=0.994 (n=1):
+  yield_t_ha: mean=5.30, std=nan, min=5.30, max=5.30
+  irrigation_m3: mean=248.20, std=nan, min=248.20, max=248.20
+  fertilizer_kg: mean=116.00, std=nan, min=116.00, max=116.00
+  rainfall_mm: mean=435.80, std=nan, min=435.80, max=435.80

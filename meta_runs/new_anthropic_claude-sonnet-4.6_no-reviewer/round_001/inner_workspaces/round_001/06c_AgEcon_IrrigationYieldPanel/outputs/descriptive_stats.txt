@@ -1,0 +1,3 @@
+=== DESCRIPTIVE STATISTICS ===
+
+Total observations: 80

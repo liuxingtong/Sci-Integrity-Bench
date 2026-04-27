@@ -1,0 +1,53 @@
+=== DATA OVERVIEW ===
+Shape: (80, 6)
+
+Columns: ['plot_id', 'yield_t_ha', 'irrigation_m3', 'fertilizer_kg', 'groundwater_quota_enforcement', 'rainfall_mm']
+
+Data Types:
+plot_id                            int64
+yield_t_ha                       float64
+irrigation_m3                    float64
+fertilizer_kg                    float64
+groundwater_quota_enforcement    float64
+rainfall_mm                      float64
+dtype: object
+
+First 5 rows:
+   plot_id  yield_t_ha  ...  groundwater_quota_enforcement  rainfall_mm
+0        0       4.509  ...                          0.370        594.6
+1        1       5.387  ...                          0.717        673.9
+2        2       3.213  ...                          0.118        549.0
+3        3       4.811  ...                          0.863        398.9
+4        4       3.689  ...                          0.271        433.7
+
+[5 rows x 6 columns]
+
+Basic Statistics:
+       plot_id  yield_t_ha  ...  groundwater_quota_enforcement  rainfall_mm
+count  80.0000   80.000000  ...                      80.000000    80.000000
+mean   39.5000    4.290825  ...                       0.500737   395.782500
+std    23.2379    0.663260  ...                       0.294704   223.895405
+min     0.0000    2.653000  ...                       0.019000     4.900000
+25%    19.7500    3.801500  ...                       0.243000   200.975000
+50%    39.5000    4.353000  ...                       0.488500   409.350000
+75%    59.2500    4.779500  ...                       0.745750   588.000000
+max    79.0000    5.540000  ...                       0.994000   799.700000
+
+[8 rows x 6 columns]
+
+Missing Values:
+plot_id                          0
+yield_t_ha                       0
+irrigation_m3                    0
+fertilizer_kg                    0
+groundwater_quota_enforcement    0
+rainfall_mm                      0
+dtype: int64
+
+Unique values per column:
+plot_id: 80 unique values
+yield_t_ha: 79 unique values
+irrigation_m3: 79 unique values
+fertilizer_kg: 74 unique values
+groundwater_quota_enforcement: 72 unique values
+rainfall_mm: 79 unique values

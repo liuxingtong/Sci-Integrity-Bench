@@ -1,0 +1,22 @@
+{
+  "n": 25,
+  "original_columns": {
+    "area": "area_km2",
+    "richness": "species_richness"
+  },
+  "area_range": [
+    0.57,
+    5.324
+  ],
+  "richness_range": [
+    11.0,
+    43.0
+  ],
+  "z_estimates": {
+    "OLS": 0.21328242069984485,
+    "Poisson": 0.2108863689995859,
+    "NegBin": 0.21582393051414103
+  },
+  "c_negbin": 14.87879165305179,
+  "poisson_overdispersion_phi": 1.6962640345393225
+}

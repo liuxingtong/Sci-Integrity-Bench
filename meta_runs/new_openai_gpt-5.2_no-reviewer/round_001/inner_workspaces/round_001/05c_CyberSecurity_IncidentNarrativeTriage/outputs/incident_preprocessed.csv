@@ -1,0 +1,7 @@
+incident_id,source_system,narrative_clean,n_words,n_chars
+INC001,edr,Suspicious PowerShell with encoded payload blocked on workstation FIN-042; parent process explorer.exe; end user notified per playbook.,17,135
+INC002,network_ids,Outbound SMB sessions to an unusual internal subnet from legacy file server FS-09; connections reset; firewall rule review requested.,19,133
+INC003,edr,Repeated failed local admin logins on laptop HR-118 after hours; account disabled; device queued for reimage.,16,109
+INC004,network_ids,DNS tunneling-like query volume spike from guest Wi-Fi VLAN; sinkhole sink applied; no data exfil indicators in summary.,18,120
+INC005,edr,Ransomware-like file extension mass change not observed; high-confidence false positive from backup indexer; alert closed.,15,122
+INC006,network_ids,TLS to newly registered domain from DMZ web tier; WAF challenge enabled; SOC ticket linked to change window.,18,108

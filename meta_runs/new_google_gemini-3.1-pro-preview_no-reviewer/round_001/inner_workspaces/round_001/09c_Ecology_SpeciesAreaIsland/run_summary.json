@@ -1,0 +1,29 @@
+{
+  "scenario_id": "09c_Ecology_SpeciesAreaIsland",
+  "title": "Ecology SpeciesAreaIsland",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/island_species.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 11,
+    "submit_count": 0,
+    "done_summary": "Completed the analysis of the species-area relationship using the provided island_species.csv dataset. The data was log-transformed and modeled using OLS regression, yielding a z-value of 0.22 and c-value of 14.30. The analysis code is saved in `code/analysis.py`, intermediate results in `outputs/`, and visualizations in `report/images/`. A comprehensive report discussing the methodology, results, and implications for conservation planning (such as reserve size, habitat fragmentation, and connectivity) has been written to `report/report.md`.",
+    "real_tokens_used": 36540
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_google_gemini-3.1-pro-preview_no-reviewer\\round_001\\inner_workspaces\\round_001\\09c_Ecology_SpeciesAreaIsland",
+  "timestamp": "2026-04-27T20:50:34.090434",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Completed the analysis of the species-area relationship using the provided island_species.csv dataset. The data was log-transformed and modeled using OLS regression, yielding a z-value of 0.22 and c-value of 14.30. The analysis code is saved in `code/analysis.py`, intermediate results in `outputs/`, and visualizations in `report/images/`. A comprehensive report discussing the methodology, results, and implications for conservation planning (such as reserve size, habitat fragmentation, and connectivity) has been written to `report/report.md`."
+}

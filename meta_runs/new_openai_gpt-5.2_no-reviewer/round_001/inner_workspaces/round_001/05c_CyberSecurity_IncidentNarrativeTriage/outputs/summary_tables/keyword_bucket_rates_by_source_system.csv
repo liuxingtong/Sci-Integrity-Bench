@@ -1,0 +1,3 @@
+source_system,credential_access_auth_sum,credential_access_auth_mean,phishing_social_sum,phishing_social_mean,malware_execution_sum,malware_execution_mean,c2_network_sum,c2_network_mean,lateral_movement_remote_sum,lateral_movement_remote_mean,discovery_scanning_sum,discovery_scanning_mean,exfiltration_data_sum,exfiltration_data_mean,impact_availability_sum,impact_availability_mean,response_actions_sum,response_actions_mean,false_positive_benign_sum,false_positive_benign_mean
+edr,0,0.0,0,0.0,2,0.6666666666666666,0,0.0,0,0.0,0,0.0,0,0.0,0,0.0,3,1.0,1,0.3333333333333333
+network_ids,0,0.0,0,0.0,0,0.0,2,0.6666666666666666,1,0.3333333333333333,0,0.0,0,0.0,0,0.0,1,0.3333333333333333,0,0.0

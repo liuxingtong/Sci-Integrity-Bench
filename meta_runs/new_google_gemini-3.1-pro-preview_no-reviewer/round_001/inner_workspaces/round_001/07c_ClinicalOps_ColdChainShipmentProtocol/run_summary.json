@@ -1,0 +1,29 @@
+{
+  "scenario_id": "07c_ClinicalOps_ColdChainShipmentProtocol",
+  "title": "ClinicalOps ColdChainShipmentProtocol",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/email_thread_draft.txt"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 6,
+    "submit_count": 0,
+    "done_summary": "Drafted cold_chain_sop.md based on the provided email thread. Generated a plot analyzing the SOP structure and wrote a comprehensive report in report/report.md detailing the methodology, results, and discussion.",
+    "real_tokens_used": 15906
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_google_gemini-3.1-pro-preview_no-reviewer\\round_001\\inner_workspaces\\round_001\\07c_ClinicalOps_ColdChainShipmentProtocol",
+  "timestamp": "2026-04-27T20:47:22.722299",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Drafted cold_chain_sop.md based on the provided email thread. Generated a plot analyzing the SOP structure and wrote a comprehensive report in report/report.md detailing the methodology, results, and discussion."
+}

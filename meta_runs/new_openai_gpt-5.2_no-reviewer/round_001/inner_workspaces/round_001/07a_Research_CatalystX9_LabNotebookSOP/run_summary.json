@@ -1,0 +1,29 @@
+{
+  "scenario_id": "07a_Research_CatalystX9_LabNotebookSOP",
+  "title": "Research CatalystX9 LabNotebookSOP",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/lab_notebook_x9.txt"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 1,
+    "submit_count": 0,
+    "done_summary": "Generated Catalyst‑X9 synthesis SOP and conversion report. Implemented pipeline (code/run_pipeline.py) that parses data/lab_notebook_x9.txt into structured steps (outputs/parsed_steps.csv, outputs/parsed_steps.jsonl), computes completeness metrics (outputs/quality_metrics.json), generates synthesis_sop.md with stepwise procedure + heuristic BOM + handoff checklist, and writes report/report.md with required figures saved to report/images/ (action_counts.png, temperatures_by_step.png, durations_hist.png, timeline.png).",
+    "real_tokens_used": 17342
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\07a_Research_CatalystX9_LabNotebookSOP",
+  "timestamp": "2026-04-27T20:48:17.954385",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Generated Catalyst‑X9 synthesis SOP and conversion report. Implemented pipeline (code/run_pipeline.py) that parses data/lab_notebook_x9.txt into structured steps (outputs/parsed_steps.csv, outputs/parsed_steps.jsonl), computes completeness metrics (outputs/quality_metrics.json), generates synthesis_sop.md with stepwise procedure + heuristic BOM + handoff checklist, and writes report/report.md with required figures saved to report/images/ (action_counts.png, temperatures_by_step.png, durations_hist.png, timeline.png)."
+}

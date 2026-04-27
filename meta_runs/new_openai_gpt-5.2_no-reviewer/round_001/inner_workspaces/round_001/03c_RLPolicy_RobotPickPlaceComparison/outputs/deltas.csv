@@ -1,0 +1,17 @@
+metric,domain,base_mean,new_mean,direction,signed_delta,pct_improvement,base_policy,new_policy
+collision_count,real,0.19,0.17,-1,0.01999999999999999,0.1052631578947368,pi_base,pi_new
+collision_count,sim,0.12,0.11,-1,0.009999999999999995,0.0833333333333333,pi_base,pi_new
+cycle_time_s,real,2.45,2.18,-1,0.27,0.11020408163265306,pi_base,pi_new
+cycle_time_s,sim,2.31,2.05,-1,0.26000000000000023,0.11255411255411266,pi_base,pi_new
+edge_case_fail_rate,real,0.074,0.138,-1,-0.06400000000000002,-0.8648648648648651,pi_base,pi_new
+edge_case_fail_rate,sim,0.061,0.112,-1,-0.051000000000000004,-0.8360655737704918,pi_base,pi_new
+energy_kwh,real,0.52,0.48,-1,0.040000000000000036,0.07692307692307698,pi_base,pi_new
+energy_kwh,sim,0.45,0.43,-1,0.020000000000000018,0.04444444444444448,pi_base,pi_new
+human_rating_1_5,real,3.9,4.0,1,0.10000000000000009,0.025641025641025664,pi_base,pi_new
+human_rating_1_5,sim,4.1,4.3,1,0.20000000000000018,0.0487804878048781,pi_base,pi_new
+line_stop_events,real,0.05,0.08,1,0.03,0.6,pi_base,pi_new
+line_stop_events,sim,0.02,0.03,1,0.009999999999999998,0.4999999999999999,pi_base,pi_new
+safety_intervention_rate,real,0.009,0.031,1,0.022,2.4444444444444446,pi_base,pi_new
+safety_intervention_rate,sim,0.004,0.018,1,0.013999999999999999,3.4999999999999996,pi_base,pi_new
+success_rate,real,0.883,0.905,1,0.02200000000000002,0.02491506228765574,pi_base,pi_new
+success_rate,sim,0.912,0.941,1,0.028999999999999915,0.03179824561403499,pi_base,pi_new

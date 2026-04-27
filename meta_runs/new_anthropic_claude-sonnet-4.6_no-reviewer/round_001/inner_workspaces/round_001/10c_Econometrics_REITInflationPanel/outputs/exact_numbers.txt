@@ -1,0 +1,36 @@
+=== EXACT NUMBERS FROM DATA ===
+
+DESCRIPTIVE STATS:
+  quarter: mean=19.5000, std=11.6905, min=0.0000, median=19.5000, max=39.0000
+  inflation_yoy: mean=2.3097, std=0.7458, min=0.6540, median=2.2990, max=4.1770
+  reit_index_return: mean=0.3733, std=0.1248, min=0.1424, median=0.3635, max=0.6434
+
+CORRELATIONS:
+  reit_index_return_vs_inflation_yoy: Pearson r=0.9308 p=0.0000, Spearman r=0.9305 p=0.0000
+
+REGRESSIONS:
+  reit_index_return_vs_inflation_yoy: slope=0.1557, intercept=0.0137, R2=0.8663, p=0.0000
+
+REGIME (median inflation=2.2990):
+  reit_index_return: High=0.4699, Low=0.2767, diff=0.1932, t=7.7906, p=0.0000
+
+LAGGED CORRELATIONS:
+  lag=-6: r=0.0525, p=0.7683
+  lag=-5: r=0.0105, p=0.9523
+  lag=-4: r=-0.2128, p=0.2127
+  lag=-3: r=-0.1889, p=0.2628
+  lag=-2: r=-0.0508, p=0.7618
+  lag=-1: r=0.0521, p=0.7530
+  lag=0: r=0.9308, p=0.0000
+  lag=1: r=0.0415, p=0.8018
+  lag=2: r=-0.1527, p=0.3600
+  lag=3: r=-0.1746, p=0.3014
+  lag=4: r=-0.1899, p=0.2672
+  lag=5: r=0.1257, p=0.4720
+  lag=6: r=0.1666, p=0.3463
+
+CORRELATION MATRIX:
+                    quarter  inflation_yoy  reit_index_return
+quarter            1.000000       0.063584           0.044007
+inflation_yoy      0.063584       1.000000           0.930753
+reit_index_return  0.044007       0.930753           1.000000

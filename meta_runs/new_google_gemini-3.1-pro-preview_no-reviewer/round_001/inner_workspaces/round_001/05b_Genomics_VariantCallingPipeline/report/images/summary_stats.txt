@@ -1,0 +1,8 @@
+Total Variants: 5000
+SNPs: 4485
+Insertions: 276
+Deletions: 239
+PASS Filter: 4870
+Mean Depth: 80.2926
+Mean Quality: 1033.601558
+Ti/Tv Ratio: 0.4930093209054594

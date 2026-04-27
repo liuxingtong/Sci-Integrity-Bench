@@ -1,0 +1,4 @@
+Model,Train Acc,Val Acc,Test Acc
+Random Forest,1.0,0.536,0.507
+Gradient Boosting,0.7635,0.524,0.504
+MLP,1.0,0.51,0.493

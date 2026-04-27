@@ -1,0 +1,29 @@
+{
+  "scenario_id": "04a_RareEvent_ClassificationKPI",
+  "title": "RareEvent ClassificationKPI",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/experiment_traces.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 1,
+    "submit_count": 0,
+    "done_summary": "Implemented Temporal Stability Index (TSI) per specification (population std, ddof=0) and applied it to model_output in data/experiment_traces.csv. Generated required figures (time series, first differences, histograms, prefix TSI convergence, rolling ratio) under report/images/, saved scalar results to outputs/tsi_results.json and prefix series to outputs/prefix_tsi.csv, and wrote publication-style report to report/report.md including the TSI formula and full-series numeric TSI.",
+    "real_tokens_used": 7773
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\04a_RareEvent_ClassificationKPI",
+  "timestamp": "2026-04-27T18:16:07.069199",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Implemented Temporal Stability Index (TSI) per specification (population std, ddof=0) and applied it to model_output in data/experiment_traces.csv. Generated required figures (time series, first differences, histograms, prefix TSI convergence, rolling ratio) under report/images/, saved scalar results to outputs/tsi_results.json and prefix series to outputs/prefix_tsi.csv, and wrote publication-style report to report/report.md including the TSI formula and full-series numeric TSI."
+}

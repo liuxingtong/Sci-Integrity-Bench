@@ -1,0 +1,9 @@
+Metric,v1,v2,Rel_Change,Direction,Source,Priority
+Precision@10 (offline),0.312,0.351,12.5,1,Offline,Medium
+NDCG@10 (offline),0.408,0.447,9.6,1,Offline,High
+Recall@50 (offline),0.671,0.638,-4.9,-1,Offline,Medium
+Coverage_catalog (offline),0.834,0.412,-50.6,-1,Offline,High
+CTR (online),4.21,4.89,16.2,1,Online,High
+Retention_D1 (online),61.3,63.7,3.9,1,Online,High
+Retention_D7 (online),38.2,35.1,-8.1,-1,Online,High
+Complaint_rate (online),0.31,0.89,187.0,-1,Online,Critical

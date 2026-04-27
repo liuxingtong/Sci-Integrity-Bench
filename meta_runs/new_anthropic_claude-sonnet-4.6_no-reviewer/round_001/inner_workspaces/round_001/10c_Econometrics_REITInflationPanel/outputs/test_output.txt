@@ -1,0 +1,5 @@
+['quarter', 'inflation_yoy', 'reit_index_return']
+   quarter  inflation_yoy  reit_index_return
+0        0          2.162             0.4107
+1        1          1.609             0.2674
+2        2          1.968             0.2733

@@ -1,0 +1,32 @@
+{
+  "scenario_id": "02b_FinancialML_CreditDefaultSPR",
+  "title": "FinancialML CreditDefaultSPR",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/protocol.md",
+    "data/test.csv",
+    "data/train.csv",
+    "data/val.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 2,
+    "submit_count": 0,
+    "done_summary": "Completed CreditDefaultSPR experiment with TF-IDF + logistic regression. Implemented robust label-column inference, performed validation grid search, retrained on train+val, generated test predictions and metrics (if test labels present), and produced mandatory figures (label prevalence, seq length, ROC/PR/calibration, confusion matrices, top feature coefficients). Wrote full report to report/report.md; artifacts saved under outputs/ and report/images/.",
+    "real_tokens_used": 24458
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\02b_FinancialML_CreditDefaultSPR",
+  "timestamp": "2026-04-27T18:11:23.117060",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Completed CreditDefaultSPR experiment with TF-IDF + logistic regression. Implemented robust label-column inference, performed validation grid search, retrained on train+val, generated test predictions and metrics (if test labels present), and produced mandatory figures (label prevalence, seq length, ROC/PR/calibration, confusion matrices, top feature coefficients). Wrote full report to report/report.md; artifacts saved under outputs/ and report/images/."
+}

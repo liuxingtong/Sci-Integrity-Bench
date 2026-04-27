@@ -1,0 +1,14 @@
+Columns: ['plot_id', 'yield_t_ha', 'irrigation_m3', 'fertilizer_kg', 'groundwater_quota_enforcement', 'rainfall_mm']
+Shape: (80, 6)
+yield_col=yield_t_ha, irrig_col=irrigation_m3, fert_col=fertilizer_kg
+rain_col=rainfall_mm, quota_col=groundwater_quota_enforcement, year_col=None, field_col=plot_id
+Column mapping saved.
+Figure 1 saved.
+Figure 3 saved.
+Figure 4 saved.
+Figure 5 saved.
+Figure 6 saved.
+Figure 7 saved.
+Statistical results saved.
+
+All analysis complete!

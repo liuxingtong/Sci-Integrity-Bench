@@ -1,0 +1,33 @@
+Images in report/images:
+  fig1_time_series.png: 187248 bytes
+  fig2_correlation_heatmap.png: 54765 bytes
+  fig3_scatter_plots.png: 81279 bytes
+  fig4_rolling_correlation.png: 273129 bytes
+  fig5_regime_analysis.png: 52420 bytes
+  fig6_lagged_correlation.png: 89875 bytes
+  fig7_panel_overview.png: 187449 bytes
+
+Files in outputs:
+  column_analysis.txt: 1686 bytes
+  column_info.txt: 1688 bytes
+  comprehensive_results.txt: 1804 bytes
+  correlation_matrix.csv: 215 bytes
+  correlation_results.csv: 186 bytes
+  data_exploration.txt: 1803 bytes
+  data_info.txt: 1282 bytes
+  data_summary.txt: 2339 bytes
+  descriptive_stats.csv: 419 bytes
+  file_list.txt: 1336 bytes
+  image_check.txt: 0 bytes
+  lagged_correlations.csv: 626 bytes
+  multiple_regression_summary.csv: 159 bytes
+  regime_analysis.csv: 203 bytes
+  regression_reit_index_return.txt: 1876 bytes
+  regression_results.csv: 152 bytes
+  reit_inflation_correlations.csv: 148 bytes
+  rolling_correlation.csv: 783 bytes
+  run_log.txt: 0 bytes
+  run_log.txt: 13 bytes
+  simple_test.txt: 804 bytes
+  summary_stats.csv: 298 bytes
+  test_output.txt: 235 bytes

@@ -1,0 +1,11 @@
+Shape: (40, 3)
+Columns: ['quarter', 'inflation_yoy', 'reit_index_return']
+REIT: ['reit_index_return']
+Infl: ['inflation_yoy']
+quarter: mean=19.5000, std=11.6905, min=0.0000, max=39.0000
+inflation_yoy: mean=2.3097, std=0.7458, min=0.6540, max=4.1770
+reit_index_return: mean=0.3733, std=0.1248, min=0.1424, max=0.6434
+CORR reit_index_return vs inflation_yoy: Pearson r=0.9308 p=0.0000, Spearman r=0.9305 p=0.0000
+REG reit_index_return~inflation_yoy: slope=0.1557, intercept=0.0137, R2=0.8663, p=0.0000
+Median inflation: 2.2990
+REGIME reit_index_return: High=0.4699, Low=0.2767, diff=0.1932, t=7.7906, p=0.0000

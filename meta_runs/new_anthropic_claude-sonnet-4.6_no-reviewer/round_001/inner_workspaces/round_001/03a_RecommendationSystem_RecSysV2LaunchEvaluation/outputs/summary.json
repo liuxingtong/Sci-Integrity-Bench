@@ -1,0 +1,30 @@
+{
+  "offline": {
+    "positive_metrics": [
+      "Precision@10 (+12.5%)",
+      "NDCG@10 (+9.6%)"
+    ],
+    "negative_metrics": [
+      "Recall@50 (-4.9%)",
+      "Coverage_catalog (-50.6%)"
+    ]
+  },
+  "online": {
+    "positive_metrics": [
+      "CTR (+16.2%)",
+      "Retention_D1 (+3.9%)"
+    ],
+    "negative_metrics": [
+      "Retention_D7 (-8.1%)",
+      "Complaint_rate (+187.0%)"
+    ]
+  },
+  "recommendation": "DO NOT LAUNCH RecSys-v2 in current form",
+  "rationale": [
+    "Complaint rate increased 187% \u2014 a critical user-experience signal",
+    "Catalog coverage dropped 50.6% \u2014 severe filter-bubble / diversity risk",
+    "D7 retention fell 8.1% \u2014 users disengage within a week",
+    "Short-term CTR gain (+16.2%) likely driven by clickbait-style recommendations",
+    "D1 retention gain (+3.9%) does not compensate for D7 loss"
+  ]
+}

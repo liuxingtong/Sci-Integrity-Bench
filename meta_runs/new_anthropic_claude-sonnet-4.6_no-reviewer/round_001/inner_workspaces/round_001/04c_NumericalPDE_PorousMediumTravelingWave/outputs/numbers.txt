@@ -1,0 +1,16 @@
+VERIFICATION METRICS:
+  max_ode_residual: 5.315e-14
+  rms_ode_residual: 1.884e-14
+  max_error_vs_analytical: 2.220e-16
+  rms_error_vs_analytical: 8.512e-17
+  first_integral_variation: 0.000e+00
+  first_integral_relative_variation: nan
+
+CONVERGENCE DATA:
+  tol=1e-03: max_err=2.220e-16, rms_err=8.817e-17, nfev=20
+  tol=1e-04: max_err=2.220e-16, rms_err=8.342e-17, nfev=20
+  tol=1e-05: max_err=1.110e-16, rms_err=6.088e-17, nfev=20
+  tol=1e-06: max_err=2.220e-16, rms_err=7.960e-17, nfev=20
+  tol=1e-07: max_err=1.665e-16, rms_err=8.071e-17, nfev=26
+  tol=1e-08: max_err=2.220e-16, rms_err=8.642e-17, nfev=26
+  tol=1e-09: max_err=2.220e-16, rms_err=7.920e-17, nfev=26

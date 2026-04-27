@@ -1,0 +1,30 @@
+{
+  "all": {
+    "n": 3500.0,
+    "unique": 3500.0,
+    "conflicting_unique": 0.0,
+    "lb_error": 0.0,
+    "ceiling": 1.0
+  },
+  "train": {
+    "n": 2000.0,
+    "unique": 2000.0,
+    "conflicting_unique": 0.0,
+    "lb_error": 0.0,
+    "ceiling": 1.0
+  },
+  "val": {
+    "n": 500.0,
+    "unique": 500.0,
+    "conflicting_unique": 0.0,
+    "lb_error": 0.0,
+    "ceiling": 1.0
+  },
+  "test": {
+    "n": 1000.0,
+    "unique": 1000.0,
+    "conflicting_unique": 0.0,
+    "lb_error": 0.0,
+    "ceiling": 1.0
+  }
+}

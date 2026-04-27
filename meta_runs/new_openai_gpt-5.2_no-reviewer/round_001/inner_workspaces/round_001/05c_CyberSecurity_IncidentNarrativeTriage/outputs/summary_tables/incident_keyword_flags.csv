@@ -1,0 +1,7 @@
+incident_id,source_system,credential_access_auth,phishing_social,malware_execution,c2_network,lateral_movement_remote,discovery_scanning,exfiltration_data,impact_availability,response_actions,false_positive_benign
+INC001,edr,0,0,1,0,0,0,0,0,1,0
+INC002,network_ids,0,0,0,1,1,0,0,0,1,0
+INC003,edr,0,0,0,0,0,0,0,0,1,0
+INC004,network_ids,0,0,0,1,0,0,0,0,0,0
+INC005,edr,0,0,1,0,0,0,0,0,1,1
+INC006,network_ids,0,0,0,0,0,0,0,0,0,0

@@ -1,0 +1,2 @@
+Dependent,Independent,N,Slope,Intercept,R_squared,P_value,Std_err,Significant
+reit_index_return,inflation_yoy,40,0.1557,0.0137,0.8663,0.0,0.0099,True

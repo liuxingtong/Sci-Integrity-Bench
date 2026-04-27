@@ -1,0 +1,47 @@
+F:\Aworks\1readraft\ai_scientist\meta_runs\new_anthropic_claude-sonnet-4.6_no-reviewer\round_001\inner_workspaces\round_001\04c_NumericalPDE_PorousMediumTravelingWave\code\verification_analysis.py:104: RuntimeWarning: invalid value encountered in scalar divide
+  print(f"  Relative variation: {np.max(np.abs(I_residual[interior]))/abs(I_expected):.3e}")
+F:\Aworks\1readraft\ai_scientist\meta_runs\new_anthropic_claude-sonnet-4.6_no-reviewer\round_001\inner_workspaces\round_001\04c_NumericalPDE_PorousMediumTravelingWave\code\verification_analysis.py:349: RuntimeWarning: invalid value encountered in scalar divide
+  'first_integral_relative_variation': float(np.max(np.abs(I_residual[interior]))/abs(I_expected))
+DETAILED RESIDUAL ANALYSIS
+==================================================
+
+Method 1: Direct ODE Residual R(xi) = -c*f' - (m*f^(m-1)*f')'
+  Max |R| (interior): 5.315e-14
+  Mean |R| (interior): 8.874e-15
+  RMS |R| (interior): 1.884e-14
+
+Method 2: First Integral I(xi) = m*f^(m-1)*f' + c*f
+  Expected value: 0.000000
+  Max |I - I_0| (interior): 0.000e+00
+  Relative variation: nan
+
+Method 3: Error vs Analytical Solution (m=2)
+  Max |error| (interior): 2.220e-16
+  RMS error (interior): 8.512e-17
+  Relative RMS error: 1.743e-16
+
+CONVERGENCE TABLE
+==================================================
+      rtol    Max Error    RMS Error     nfev
+---------------------------------------------
+     1e-03    2.220e-16    8.817e-17       20
+     1e-04    2.220e-16    8.342e-17       20
+     1e-05    1.110e-16    6.088e-17       20
+     1e-06    2.220e-16    7.960e-17       20
+     1e-07    1.665e-16    8.071e-17       26
+     1e-08    2.220e-16    8.642e-17       26
+     1e-09    2.220e-16    7.920e-17       26
+
+MULTIPLE m VALUES
+==================================================
+  m=2: I_mean=0.0000, I_std=0.00e+00, nfev=26
+  m=3: I_mean=0.0097, I_std=3.43e-09, nfev=686
+  m=4: I_mean=0.0388, I_std=3.92e-09, nfev=806
+  m=5: I_mean=0.0788, I_std=4.12e-09, nfev=884
+
+Saved: report/images/comprehensive_verification.png
+Saved: report/images/multiple_m_profiles.png
+
+Saved: outputs/summary.json
+
+ALL DONE!

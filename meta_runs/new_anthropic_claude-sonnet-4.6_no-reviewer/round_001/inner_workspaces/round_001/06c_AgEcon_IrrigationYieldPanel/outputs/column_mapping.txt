@@ -1,0 +1,38 @@
+yield_col=yield_t_ha
+irrig_col=irrigation_m3
+fert_col=fertilizer_kg
+rain_col=rainfall_mm
+quota_col=groundwater_quota_enforcement
+year_col=None
+field_col=plot_id
+
+All columns: ['plot_id', 'yield_t_ha', 'irrigation_m3', 'fertilizer_kg', 'groundwater_quota_enforcement', 'rainfall_mm']
+Shape: (80, 6)
+
+Descriptive stats:
+       plot_id  yield_t_ha  ...  groundwater_quota_enforcement  rainfall_mm
+count  80.0000   80.000000  ...                      80.000000    80.000000
+mean   39.5000    4.290825  ...                       0.500737   395.782500
+std    23.2379    0.663260  ...                       0.294704   223.895405
+min     0.0000    2.653000  ...                       0.019000     4.900000
+25%    19.7500    3.801500  ...                       0.243000   200.975000
+50%    39.5000    4.353000  ...                       0.488500   409.350000
+75%    59.2500    4.779500  ...                       0.745750   588.000000
+max    79.0000    5.540000  ...                       0.994000   799.700000
+
+[8 rows x 6 columns]
+
+First 10 rows:
+   plot_id  yield_t_ha  ...  groundwater_quota_enforcement  rainfall_mm
+0        0       4.509  ...                          0.370        594.6
+1        1       5.387  ...                          0.717        673.9
+2        2       3.213  ...                          0.118        549.0
+3        3       4.811  ...                          0.863        398.9
+4        4       3.689  ...                          0.271        433.7
+5        5       4.432  ...                          0.058        553.9
+6        6       4.440  ...                          0.451        319.6
+7        7       4.510  ...                          0.038        745.9
+8        8       4.570  ...                          0.785        555.3
+9        9       4.840  ...                          0.574        405.9
+
+[10 rows x 6 columns]

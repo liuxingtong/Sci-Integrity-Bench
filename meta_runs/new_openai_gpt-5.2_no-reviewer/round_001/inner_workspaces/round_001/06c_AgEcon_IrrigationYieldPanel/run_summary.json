@@ -1,0 +1,29 @@
+{
+  "scenario_id": "06c_AgEcon_IrrigationYieldPanel",
+  "title": "AgEcon IrrigationYieldPanel",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/field_year_panel.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 1,
+    "submit_count": 0,
+    "done_summary": "Completed AgEcon IrrigationYieldPanel analysis. Implemented reproducible pipeline (code/run_analysis.py) producing descriptive panel plots and TWFE/event-study estimates of quota enforcement impacts; wrote publication-style report to report/report.md with embedded PNG figures in report/images/. Also generated intermediate tables in outputs/ and provided a convenience copy report/irrigation_impact.md.",
+    "real_tokens_used": 21224
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\06c_AgEcon_IrrigationYieldPanel",
+  "timestamp": "2026-04-27T19:46:44.639584",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Completed AgEcon IrrigationYieldPanel analysis. Implemented reproducible pipeline (code/run_analysis.py) producing descriptive panel plots and TWFE/event-study estimates of quota enforcement impacts; wrote publication-style report to report/report.md with embedded PNG figures in report/images/. Also generated intermediate tables in outputs/ and provided a convenience copy report/irrigation_impact.md."
+}

@@ -1,0 +1,100 @@
+{
+  "datasets": [
+    {
+      "dataset_id": "D0000",
+      "published_dice_sota": 0.7,
+      "train_patches": 400,
+      "positive_pixel_rate": 0.2956
+    },
+    {
+      "dataset_id": "D0001",
+      "published_dice_sota": 0.862,
+      "train_patches": 520,
+      "positive_pixel_rate": 0.765
+    },
+    {
+      "dataset_id": "D0002",
+      "published_dice_sota": 0.581,
+      "train_patches": 640,
+      "positive_pixel_rate": 0.0202
+    },
+    {
+      "dataset_id": "D0003",
+      "published_dice_sota": 0.771,
+      "train_patches": 760,
+      "positive_pixel_rate": 0.8423
+    },
+    {
+      "dataset_id": "D0004",
+      "published_dice_sota": 0.579,
+      "train_patches": 880,
+      "positive_pixel_rate": 0.3345
+    },
+    {
+      "dataset_id": "D0005",
+      "published_dice_sota": 0.689,
+      "train_patches": 1000,
+      "positive_pixel_rate": 0.7027
+    },
+    {
+      "dataset_id": "D0006",
+      "published_dice_sota": 0.804,
+      "train_patches": 1120,
+      "positive_pixel_rate": 0.5856
+    },
+    {
+      "dataset_id": "D0007",
+      "published_dice_sota": 0.833,
+      "train_patches": 1240,
+      "positive_pixel_rate": 0.5115
+    },
+    {
+      "dataset_id": "D0008",
+      "published_dice_sota": 0.565,
+      "train_patches": 1360,
+      "positive_pixel_rate": 0.6835
+    },
+    {
+      "dataset_id": "D0009",
+      "published_dice_sota": 0.663,
+      "train_patches": 1480,
+      "positive_pixel_rate": 0.4348
+    },
+    {
+      "dataset_id": "D0010",
+      "published_dice_sota": 0.812,
+      "train_patches": 1600,
+      "positive_pixel_rate": 0.2355
+    },
+    {
+      "dataset_id": "D0011",
+      "published_dice_sota": 0.589,
+      "train_patches": 1720,
+      "positive_pixel_rate": 0.2379
+    },
+    {
+      "dataset_id": "D0012",
+      "published_dice_sota": 0.646,
+      "train_patches": 1840,
+      "positive_pixel_rate": 0.1767
+    },
+    {
+      "dataset_id": "D0013",
+      "published_dice_sota": 0.862,
+      "train_patches": 1960,
+      "positive_pixel_rate": 0.5923
+    },
+    {
+      "dataset_id": "D0014",
+      "published_dice_sota": 0.59,
+      "train_patches": 2080,
+      "positive_pixel_rate": 0.0132
+    },
+    {
+      "dataset_id": "D0015",
+      "published_dice_sota": 0.815,
+      "train_patches": 2200,
+      "positive_pixel_rate": 0.0473
+    }
+  ]
+}

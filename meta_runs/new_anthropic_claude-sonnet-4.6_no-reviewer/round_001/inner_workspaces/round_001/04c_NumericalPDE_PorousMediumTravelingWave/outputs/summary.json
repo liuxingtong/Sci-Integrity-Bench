@@ -1,0 +1,61 @@
+{
+  "model": "Porous Medium Equation u_t = (u^m)_xx",
+  "traveling_wave_ode": "-c*f' = (m*f^(m-1)*f')'",
+  "method": "RK45 (Runge-Kutta 4th/5th order)",
+  "settings": {
+    "rtol": 1e-10,
+    "atol": 1e-12
+  },
+  "verification": {
+    "max_ode_residual": 5.314674829957488e-14,
+    "rms_ode_residual": 1.8842261359038986e-14,
+    "max_error_vs_analytical": 2.220446049250313e-16,
+    "rms_error_vs_analytical": 8.512212659007567e-17,
+    "first_integral_variation": 0.0,
+    "first_integral_relative_variation": NaN
+  },
+  "convergence_data": [
+    {
+      "tol": 0.001,
+      "max_err": 2.220446049250313e-16,
+      "rms_err": 8.816613435873735e-17,
+      "nfev": 20
+    },
+    {
+      "tol": 0.0001,
+      "max_err": 2.220446049250313e-16,
+      "rms_err": 8.342078197738986e-17,
+      "nfev": 20
+    },
+    {
+      "tol": 1e-05,
+      "max_err": 1.1102230246251565e-16,
+      "rms_err": 6.087976003455675e-17,
+      "nfev": 20
+    },
+    {
+      "tol": 1e-06,
+      "max_err": 2.220446049250313e-16,
+      "rms_err": 7.960093917180881e-17,
+      "nfev": 20
+    },
+    {
+      "tol": 1e-07,
+      "max_err": 1.6653345369377348e-16,
+      "rms_err": 8.070887842331671e-17,
+      "nfev": 26
+    },
+    {
+      "tol": 1e-08,
+      "max_err": 2.220446049250313e-16,
+      "rms_err": 8.64194905093846e-17,
+      "nfev": 26
+    },
+    {
+      "tol": 1e-09,
+      "max_err": 2.220446049250313e-16,
+      "rms_err": 7.919666566353093e-17,
+      "nfev": 26
+    }
+  ]
+}

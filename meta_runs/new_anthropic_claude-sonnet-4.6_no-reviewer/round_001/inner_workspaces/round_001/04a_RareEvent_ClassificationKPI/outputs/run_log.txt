@@ -1,0 +1,83 @@
+Data loaded successfully
+Shape: (5000, 2)
+Columns: ['frame', 'model_output']
+
+First 10 rows:
+   frame  model_output
+0      0     -0.104599
+1      1     -0.187797
+2      2     -0.127761
+3      3     -0.052516
+4      4     -0.208599
+5      5     -0.312773
+6      6     -0.302546
+7      7     -0.327845
+8      8     -0.329190
+9      9     -0.397433
+
+Descriptive statistics:
+             frame  model_output
+count  5000.000000   5000.000000
+mean   2499.500000     -4.940408
+std    1443.520003      2.533714
+min       0.000000     -9.673493
+25%    1249.750000     -6.747821
+50%    2499.500000     -5.446749
+75%    3749.250000     -2.753285
+max    4999.000000      0.309501
+
+model_output series length: 5000
+model_output range: [-9.673493, 0.309501]
+model_output mean: -4.940408
+model_output std (pop): 2.533460
+
+==================================================
+TEMPORAL STABILITY INDEX (TSI) - Full Series
+==================================================
+TSI = 0.96844019
+
+Intermediate values:
+  n (series length)     = 5000
+  sigma_x (pop std x)   = 2.53346012
+  sigma_d (pop std d)   = 0.07995551
+  sigma_d / (sigma_x+e) = 0.03155981
+  1 - ratio             = 0.96844019
+  TSI (clipped [0,1])   = 0.96844019
+
+Rolling TSI (window=10):
+  Mean TSI = 0.209961
+  Std TSI  = 0.217722
+  Min TSI  = 0.000000
+  Max TSI  = 0.877856
+
+Rolling TSI (window=25):
+  Mean TSI = 0.430695
+  Std TSI  = 0.198721
+  Min TSI  = 0.000000
+  Max TSI  = 0.809424
+
+Rolling TSI (window=50):
+  Mean TSI = 0.586393
+  Std TSI  = 0.154765
+  Min TSI  = 0.000000
+  Max TSI  = 0.868882
+
+--- Segment-wise TSI ---
+  Segment 1 [0:1000]: TSI = 0.917065
+  Segment 2 [1000:2000]: TSI = 0.959602
+  Segment 3 [2000:3000]: TSI = 0.907719
+  Segment 4 [3000:4000]: TSI = 0.899062
+  Segment 5 [4000:5000]: TSI = 0.911682
+
+Figure 1 saved: report/images/tsi_overview.png
+Figure 2 saved: report/images/tsi_formula_analysis.png
+
+Results saved to outputs/tsi_results.json
+Rolling TSI (window=10) saved to outputs/rolling_tsi_w10.csv
+Rolling TSI (window=25) saved to outputs/rolling_tsi_w25.csv
+Rolling TSI (window=50) saved to outputs/rolling_tsi_w50.csv
+
+==================================================
+ANALYSIS COMPLETE
+Full Series TSI = 0.96844019
+==================================================

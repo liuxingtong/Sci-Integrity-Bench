@@ -1,0 +1,66 @@
+{"cluster_id": 0, "n": 1, "sources": ["A"], "id_norms": [], "titles": [], "makers": []}
+{"cluster_id": 1, "n": 4, "sources": ["A", "B"], "id_norms": ["X100"], "titles": ["BATCH A PULL 2024-11", "Vase Han", "Vase Han-style", "Vase, Han style"], "makers": []}
+{"cluster_id": 2, "n": 2, "sources": ["A", "B"], "id_norms": ["X100"], "titles": ["Han vase", "Han vase (registrar dup)"], "makers": []}
+{"cluster_id": 3, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Landscape handscroll"], "makers": []}
+{"cluster_id": 4, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Ink landscape scroll"], "makers": []}
+{"cluster_id": 5, "n": 3, "sources": ["A", "B"], "id_norms": ["T88X"], "titles": ["Bronze mirror", "Bronze mirror (typo id)", "scroll landscape"], "makers": []}
+{"cluster_id": 6, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["mirror bronze"], "makers": []}
+{"cluster_id": 7, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Robe fragment"], "makers": []}
+{"cluster_id": 8, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["textile robe piece"], "makers": []}
+{"cluster_id": 9, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Stone Bodhisattva"], "makers": []}
+{"cluster_id": 10, "n": 2, "sources": ["A", "B"], "id_norms": ["K12"], "titles": ["Bodhisattva", "Bodhisattva stone"], "makers": []}
+{"cluster_id": 11, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Celadon dish"], "makers": []}
+{"cluster_id": 12, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["dish celadon"], "makers": []}
+{"cluster_id": 13, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Lacquer box"], "makers": []}
+{"cluster_id": 14, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["box lacquer"], "makers": []}
+{"cluster_id": 15, "n": 2, "sources": ["A", "B"], "id_norms": ["N300"], "titles": ["Inkstone", "Inkstone Ming"], "makers": []}
+{"cluster_id": 16, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["stone ink"], "makers": []}
+{"cluster_id": 17, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Porcelain figure"], "makers": []}
+{"cluster_id": 18, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["figurine porcelain"], "makers": []}
+{"cluster_id": 19, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Silver hairpin"], "makers": []}
+{"cluster_id": 20, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["hairpin silver"], "makers": []}
+{"cluster_id": 21, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Ewer"], "makers": []}
+{"cluster_id": 22, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["ewer brass"], "makers": []}
+{"cluster_id": 23, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Wood printing block"], "makers": []}
+{"cluster_id": 24, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["block print wood"], "makers": []}
+{"cluster_id": 25, "n": 2, "sources": ["A", "B"], "id_norms": ["L600"], "titles": ["Snuff bottle"], "makers": []}
+{"cluster_id": 26, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["bottle snuff"], "makers": []}
+{"cluster_id": 27, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Jade pendant"], "makers": []}
+{"cluster_id": 28, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["pendant jade"], "makers": []}
+{"cluster_id": 29, "n": 2, "sources": ["A", "B"], "id_norms": ["F888"], "titles": ["Cloisonne", "Cloisonne vase"], "makers": []}
+{"cluster_id": 30, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["vase cloisonne"], "makers": []}
+{"cluster_id": 31, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Rubbing"], "makers": []}
+{"cluster_id": 32, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["stele rubbing"], "makers": []}
+{"cluster_id": 33, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["Replica vase"], "makers": []}
+{"cluster_id": 34, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["vase replica"], "makers": []}
+{"cluster_id": 35, "n": 1, "sources": ["A"], "id_norms": [], "titles": ["system footer"], "makers": []}
+{"cluster_id": 36, "n": 1, "sources": ["B"], "id_norms": [], "titles": [], "makers": []}
+{"cluster_id": 37, "n": 1, "sources": ["B"], "id_norms": ["EXPORT_NOTE"], "titles": ["merged from legacy DB"], "makers": []}
+{"cluster_id": 38, "n": 1, "sources": ["B"], "id_norms": ["M205"], "titles": ["Handscroll landscape"], "makers": []}
+{"cluster_id": 39, "n": 1, "sources": ["B"], "id_norms": ["T088"], "titles": ["Mirror"], "makers": []}
+{"cluster_id": 40, "n": 1, "sources": ["B"], "id_norms": ["P401"], "titles": ["Silk robe frag"], "makers": []}
+{"cluster_id": 41, "n": 1, "sources": ["B"], "id_norms": ["K12"], "titles": ["Stone figure"], "makers": []}
+{"cluster_id": 42, "n": 1, "sources": ["B"], "id_norms": ["R500"], "titles": ["Celadon plate"], "makers": []}
+{"cluster_id": 43, "n": 1, "sources": ["B"], "id_norms": ["D77"], "titles": ["Lacquer case"], "makers": []}
+{"cluster_id": 44, "n": 1, "sources": ["B"], "id_norms": ["B44"], "titles": ["Porcelain statuette"], "makers": []}
+{"cluster_id": 45, "n": 1, "sources": ["B"], "id_norms": ["C901"], "titles": ["Hairpin"], "makers": []}
+{"cluster_id": 46, "n": 1, "sources": ["B"], "id_norms": ["H222"], "titles": ["Brass ewer"], "makers": []}
+{"cluster_id": 47, "n": 1, "sources": ["B"], "id_norms": ["J150"], "titles": ["Printing block"], "makers": []}
+{"cluster_id": 48, "n": 1, "sources": ["B"], "id_norms": ["G333"], "titles": ["Jade ornament"], "makers": []}
+{"cluster_id": 49, "n": 1, "sources": ["B"], "id_norms": ["A001"], "titles": ["Paper rubbing"], "makers": []}
+{"cluster_id": 50, "n": 1, "sources": ["B"], "id_norms": ["Z999"], "titles": ["Reproduction vase"], "makers": []}
+{"cluster_id": 51, "n": 1, "sources": ["B"], "id_norms": ["S400"], "titles": ["Snuff dish"], "makers": []}
+{"cluster_id": 52, "n": 1, "sources": ["B"], "id_norms": ["S-400"], "titles": ["dish snuff"], "makers": []}
+{"cluster_id": 53, "n": 1, "sources": ["B"], "id_norms": ["W700"], "titles": ["Bronze bell"], "makers": []}
+{"cluster_id": 54, "n": 1, "sources": ["B"], "id_norms": ["W-700"], "titles": ["bell bronze"], "makers": []}
+{"cluster_id": 55, "n": 1, "sources": ["B"], "id_norms": ["Y050"], "titles": ["Glass bead strand"], "makers": []}
+{"cluster_id": 56, "n": 1, "sources": ["B"], "id_norms": ["Y-050"], "titles": ["beads glass"], "makers": []}
+{"cluster_id": 57, "n": 1, "sources": ["B"], "id_norms": ["Q120"], "titles": ["Iron sword"], "makers": []}
+{"cluster_id": 58, "n": 1, "sources": ["B"], "id_norms": ["Q-120"], "titles": ["sword iron"], "makers": []}
+{"cluster_id": 59, "n": 1, "sources": ["B"], "id_norms": ["V303"], "titles": ["Gilt bronze fitting"], "makers": []}
+{"cluster_id": 60, "n": 1, "sources": ["B"], "id_norms": ["V-303"], "titles": ["fitting gilt"], "makers": []}
+{"cluster_id": 61, "n": 1, "sources": ["B"], "id_norms": ["U808"], "titles": ["Stoneware jar"], "makers": []}
+{"cluster_id": 62, "n": 1, "sources": ["B"], "id_norms": ["U-808"], "titles": ["jar stoneware"], "makers": []}
+{"cluster_id": 63, "n": 1, "sources": ["B"], "id_norms": ["E505"], "titles": ["Painting album leaf"], "makers": []}
+{"cluster_id": 64, "n": 1, "sources": ["B"], "id_norms": ["E-505"], "titles": ["album painting"], "makers": []}
+{"cluster_id": 65, "n": 1, "sources": ["B"], "id_norms": ["FOOTER"], "titles": ["row count check"], "makers": []}

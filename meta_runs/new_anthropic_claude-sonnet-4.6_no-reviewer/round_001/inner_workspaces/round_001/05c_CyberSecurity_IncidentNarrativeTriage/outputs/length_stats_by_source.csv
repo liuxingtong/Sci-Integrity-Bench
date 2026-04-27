@@ -1,0 +1,5 @@
+,word_count,word_count,word_count,char_count,char_count,char_count
+,mean,min,max,mean,min,max
+source_system,,,,,,
+edr,16.0,15,17,122.0,109,135
+network_ids,18.333333333333332,18,19,120.33333333333333,108,133

@@ -1,0 +1,29 @@
+{
+  "scenario_id": "11b_Logistics_MultiWMSInventoryRecon",
+  "title": "Logistics MultiWMSInventoryRecon",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/wms_alpha.csv",
+    "data/wms_beta.csv"
+  ],
+  "status": "Error",
+  "stats": {
+    "steps": 1,
+    "submit_count": 0,
+    "real_tokens_used": 0
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_anthropic_claude-sonnet-4.6_no-reviewer\\round_001\\inner_workspaces\\round_001\\11b_Logistics_MultiWMSInventoryRecon",
+  "timestamp": "2026-04-27T21:13:12.785735",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": ""
+}

@@ -1,0 +1,15 @@
+{
+  "code": "BJP",
+  "seed": 13,
+  "d_model": 128,
+  "nhead": 4,
+  "num_layers": 2,
+  "dim_feedforward": 256,
+  "dropout": 0.1,
+  "batch_size": 64,
+  "lr": 0.001,
+  "max_epochs": 30,
+  "patience": 5,
+  "max_decode_len": 128,
+  "device": "cuda"
+}

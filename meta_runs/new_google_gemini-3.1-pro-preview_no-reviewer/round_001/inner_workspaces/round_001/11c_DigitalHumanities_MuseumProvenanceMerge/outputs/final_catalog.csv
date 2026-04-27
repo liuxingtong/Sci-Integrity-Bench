@@ -1,0 +1,25 @@
+norm_acc,accession,title,note,period
+A1,A001 | A-001,Rubbing | stele rubbing | Paper rubbing,20th c copy of stele | modern,20th Century
+B44,B44 | B-044,Porcelain figure | figurine porcelain | Porcelain statuette,Kangxi period | Qing early | Kangxi,Early Modern (1500 - 1800 CE)
+C901,C901 | C-901,Silver hairpin | hairpin silver | Hairpin,Republic era; 1920s | early 20th c | 1920s,20th Century
+D77,D77 | D-077,Lacquer box | box lacquer | Lacquer case,Edo; 17th c | Japan; 1600s | Edo,Early Modern (1500 - 1800 CE)
+E505,E505 | E-505,Painting album leaf | album painting,19th c | 1800s,19th Century
+F888,F888 | F-888,Cloisonne vase | vase cloisonne | Cloisonne,19th c export | late Qing | export ware,19th Century
+G333,G333 | G-333,Jade pendant | pendant jade | Jade ornament,Warring States style | Zhou period ref | Warring States,BCE & Early CE (up to 500 CE)
+H222,H222 | H-222,Ewer | ewer brass | Brass ewer,Islamic metalwork; 12th c | medieval | 12th century,Medieval (500 - 1500 CE)
+J150,J150 | J-150,Wood printing block | block print wood | Printing block,Qing; 19th c | 1800s | 19th century,19th Century
+K12,K12 | K-012 | K12 ,Stone Bodhisattva | Bodhisattva stone | Stone figure | Bodhisattva,Northern Qi style; year unclear | 550 CE approx on label | 550 CE | dup,Medieval (500 - 1500 CE)
+L600,L600 | L-600,Snuff bottle | bottle snuff,Qianlong style | 18th c | Qianlong,Early Modern (1500 - 1800 CE)
+M205,M-205 | M205 | M 205,Landscape handscroll | Ink landscape scroll | scroll landscape | Handscroll landscape,dated 1752 in ledger | Qing; note says 18th c | c. mid-1700s | 1752 vs 18th c conflict,Early Modern (1500 - 1800 CE)
+N300,N300 | N-300,Inkstone | stone ink | Inkstone Ming,Ming; Wanli reign mentioned | late Ming | Wanli,Early Modern (1500 - 1800 CE)
+P401,P401 | P-401,Robe fragment | textile robe piece | Silk robe frag,late 19th c; silk | circa 1890-1910 | 1890-1910,19th Century
+Q120,Q120 | Q-120,Iron sword | sword iron,Warring States | 400-200 BCE,BCE & Early CE (up to 500 CE)
+R500,R500 | R-500,Celadon dish | dish celadon | Celadon plate,Song; Longquan type | Southern Song period note | Longquan,Medieval (500 - 1500 CE)
+S400,S400 | S-400,Snuff dish | dish snuff,not in batch A; 1880 | late 19th,19th Century
+T88,T88 | T-088 | T088 | T88x,Bronze mirror | mirror bronze | Mirror | Bronze mirror (typo id),Tang; 618-907 range on card | Tang dynasty per curator | T88 duplicate | should match T88,Medieval (500 - 1500 CE)
+U808,U808 | U-808,Stoneware jar | jar stoneware,Five Dynasties | 10th c,Medieval (500 - 1500 CE)
+V303,V303 | V-303,Gilt bronze fitting | fitting gilt,Tang | 618-907,Medieval (500 - 1500 CE)
+W700,W700 | W-700,Bronze bell | bell bronze,Ming; 15th c | 1400s,Medieval (500 - 1500 CE)
+X100,X-100 | X 100 | x_100 | X100 | X100 ,"Vase, Han style | Han vase (registrar dup) | Vase Han-style | Vase Han | Han vase",listed as 200BC in card | same physical as X100 | see photo sheet 7 | duplicate of batch A X-100 | trailing space test,BCE & Early CE (up to 500 CE)
+Y50,Y050 | Y-050,Glass bead strand | beads glass,Han | 206 BCE-220 CE ref,BCE & Early CE (up to 500 CE)
+Z999,Z999 | Z-999,Replica vase | vase replica | Reproduction vase,marked reproduction 1998 | 1998,20th Century

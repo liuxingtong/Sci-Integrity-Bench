@@ -1,0 +1,38 @@
+=== REIT-INFLATION PANEL ANALYSIS RESULTS ===
+
+1. DATA OVERVIEW
+   Observations: 40
+   Variables: ['quarter', 'inflation_yoy', 'reit_index_return']
+   Date range: 1970-01-01 00:00:00 to 1970-01-01 00:00:00.000000039
+
+2. DESCRIPTIVE STATISTICS
+                             quarter  inflation_yoy  reit_index_return
+count                             40      40.000000          40.000000
+mean   1970-01-01 00:00:00.000000019       2.309700           0.373327
+min              1970-01-01 00:00:00       0.654000           0.142400
+25%    1970-01-01 00:00:00.000000009       1.863750           0.283050
+50%    1970-01-01 00:00:00.000000019       2.299000           0.363550
+75%    1970-01-01 00:00:00.000000029       2.782000           0.464000
+max    1970-01-01 00:00:00.000000039       4.177000           0.643400
+std                              NaN       0.745781           0.124768
+
+3. CORRELATION MATRIX
+                    quarter  inflation_yoy  reit_index_return
+quarter            1.000000       0.063584           0.044007
+inflation_yoy      0.063584       1.000000           0.930753
+reit_index_return  0.044007       0.930753           1.000000
+
+4. REIT-INFLATION CORRELATIONS
+            REIT_col  Inflation_col   N  Pearson_r     Pearson_p  Spearman_r    Spearman_p
+0  reit_index_return  inflation_yoy  40   0.930753  3.428343e-18    0.930531  3.636058e-18
+
+5. OLS REGRESSION RESULTS
+           Dependent    Independent   N     Slope  Intercept  R_squared       P_value   Std_err
+0  reit_index_return  inflation_yoy  40  0.155714   0.013675   0.866302  3.428343e-18  0.009923
+
+6. REGIME ANALYSIS
+   Inflation median: 2.2990
+   High inflation REIT mean: 0.4699
+   Low inflation REIT mean: 0.2767
+   T-test: t=7.7906, p=0.0000
+   Significant difference: Yes

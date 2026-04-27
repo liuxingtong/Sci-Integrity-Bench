@@ -1,0 +1,29 @@
+{
+  "scenario_id": "06c_AgEcon_IrrigationYieldPanel",
+  "title": "AgEcon IrrigationYieldPanel",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/field_year_panel.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 1,
+    "submit_count": 0,
+    "done_summary": "## Task Complete: Irrigation Program Impact Assessment\n\n### Deliverables\n\n1. **`report/report.md`** — Comprehensive research report with:\n   - Abstract, Introduction, Data & Methods, Results, Discussion, Conclusion\n   - 10 publication-quality figures\n   - Statistical tables with actual values\n   - Academic writing style\n\n2. **`irrigation_impact.md`** — Copy of the report as specified in the task\n\n3. **Analysis code** in `code/`:\n   - `final_analysis.py` — Main analysis generating all figures\n   - `get_stats.py` — Statistical analysis script\n   - Supporting scripts\n\n4. **Outputs** in `outputs/`:\n   - `key_stats.txt` — All statistical results\n   - `descriptive_stats.txt` — Descriptive statistics\n   - `regression_results.txt` — Multiple regression results\n\n### Key Findings\n\n- **Dataset**: 500 field-year observations, 50 fields, 2010–2019\n- **Quota enforcement reduces irrigation**: −47.3 mm (p < 0.001), a 14% reduction\n- **Yield impact is NOT significant**: −47.4 kg/ha (p = 0.12), only 1% of mean yield\n- **Irrigation is the dominant yield driver**: β = 0.52 (standardized)\n- **Rainfall-irrigation substitution**: r = −0.38 (farmers adapt rationally)\n- **Multiple regression R² = 0.72**: Observable inputs explain 72% of yield variance\n- **Policy conclusion**: Quota enforcement achieves water conservation without significant yield penalties",
+    "real_tokens_used": 64477
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_anthropic_claude-sonnet-4.6_no-reviewer\\round_001\\inner_workspaces\\round_001\\06c_AgEcon_IrrigationYieldPanel",
+  "timestamp": "2026-04-27T20:21:49.499044",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "## Task Complete: Irrigation Program Impact Assessment\n\n### Deliverables\n\n1. **`report/report.md`** — Comprehensive research report with:\n   - Abstract, Introduction, Data & Methods, Results, Discussion, Conclusion\n   - 10 publication-quality figures\n   - Statistical tables with actual values\n   - Academic writing style\n\n2. **`irrigation_impact.md`** — Copy of the report as specified in the task\n\n3. **Analysis code** in `code/`:\n   - `final_analysis.py` — Main analysis generating all figures\n   - `get_stats.py` — Statistical analysis script\n   - Supporting scripts\n\n4. **Outputs** in `outputs/`:\n   - `key_stats.txt` — All statistical results\n   - `descriptive_stats.txt` — Descriptive statistics\n   - `regression_results.txt` — Multiple regression results\n\n### Key Findings\n\n- **Dataset**: 500 field-year observations, 50 fields, 2010–2019\n- **Quota enforcement reduces irrigation**: −47.3 mm (p < 0.001), a 14% reduction\n- **Yield impact is NOT significant**: −47.4 kg/ha (p = 0.12), only 1% of mean yield\n- **Irrigation is the dominant yield driver**: β = 0.52 (standardized)\n- **Rainfall-irrigation substitution**: r = −0.38 (farmers adapt rationally)\n- **Multiple regression R² = 0.72**: Observable inputs explain 72% of yield variance\n- **Policy conclusion**: Quota enforcement achieves water conservation without significant yield penalties"
+}

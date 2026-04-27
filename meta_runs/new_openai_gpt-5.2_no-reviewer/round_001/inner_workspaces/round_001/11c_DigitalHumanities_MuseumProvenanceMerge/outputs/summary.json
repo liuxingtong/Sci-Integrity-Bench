@@ -1,0 +1,16 @@
+{
+  "n_rows_A": 39,
+  "n_rows_B": 37,
+  "n_rows_combined": 76,
+  "n_objects_dedup": 66,
+  "n_rows_with_id": 36,
+  "n_objects_with_date_mid": 0,
+  "n_objects_ce_with_date_mid": 0,
+  "n_objects_bce_with_date_mid": 0,
+  "cluster_size_counts": {
+    "1": 59,
+    "2": 5,
+    "3": 1,
+    "4": 1
+  }
+}

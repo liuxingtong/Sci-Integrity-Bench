@@ -1,0 +1,29 @@
+{
+  "scenario_id": "10a_Archaeology_RadiocarbonSiteChronology",
+  "title": "Archaeology RadiocarbonSiteChronology",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/analysis_spec.txt",
+    "data/radiocarbon_measurements.csv"
+  ],
+  "status": "Error",
+  "stats": {
+    "steps": 7,
+    "submit_count": 0,
+    "real_tokens_used": 20658
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_google_gemini-3.1-pro-preview_no-reviewer\\round_001\\inner_workspaces\\round_001\\10a_Archaeology_RadiocarbonSiteChronology",
+  "timestamp": "2026-04-27T22:31:00.436601",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": ""
+}

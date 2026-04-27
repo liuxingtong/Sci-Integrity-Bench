@@ -1,0 +1,19 @@
+respondent_id,cohort,response_text
+INT-01,transit_primary,The live arrival board is what I open first; when it is wrong I miss connections and the rest of my day slides sideways.
+INT-02,transit_primary,Crowding is my main pain—sometimes I skip a train even if the app says it is on time because I know the platform will be unsafe.
+INT-03,transit_primary,Pricing feels opaque; I want a single place that shows weekly caps and discounts without digging through three menus.
+INT-04,transit_primary,Night service gaps are scary; the app should pair walking directions with the last train so I am not guessing alone at midnight.
+INT-05,transit_primary,Accessibility info is hit or miss—elevator outages are buried; I need that louder than marketing banners.
+INT-06,transit_primary,I appreciate offline mode when tunnels drop signal; that single feature keeps me from switching apps.
+INT-07,transit_primary,Transfers are where the UX fails: same station but different names across lines and the map does not reconcile them.
+INT-08,transit_primary,Delays are fine if the explanation is honest—generic delays erode trust faster than a long wait with a reason.
+INT-09,transit_primary,I wish the app surfaced bike-share docks near the exit I actually use; routing assumes a generic street corner.
+INT-10,car_primary,I drive when transit is unreliable; the app’s drive-time estimate helps me decide but parking costs are never in the same view.
+INT-11,car_primary,Traffic alerts are useful but noisy; I only want reroutes when the delay exceeds what I would lose searching for parking.
+INT-12,car_primary,I combine park-and-ride; the app should stitch driving legs with train legs instead of treating them as separate trips.
+INT-13,car_primary,Safety at the lot matters more than saving two minutes; I want lighting and CCTV notes not just cheapest price.
+INT-14,car_primary,Carpool matching is gimmicky unless it respects my fixed drop-off time; otherwise I ignore those prompts.
+INT-15,car_primary,Fuel vs fare comparison would help families like mine decide weekly; right now it is guesswork across spreadsheets.
+INT-16,car_primary,The interface is crowded; I only need three buttons on the home screen and everything else feels like clutter.
+INT-17,car_primary,When transit is on strike I need a single banner that explains alternatives—not a feed of unrelated news.
+INT-18,car_primary,I trust the map more than the ETA; if the line on the map is wrong I assume the whole trip plan is wrong.

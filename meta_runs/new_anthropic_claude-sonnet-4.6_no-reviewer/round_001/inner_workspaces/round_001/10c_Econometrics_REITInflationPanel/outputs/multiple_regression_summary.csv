@@ -1,0 +1,2 @@
+Dependent,Predictors,N,R_squared,Adj_R_squared,F_stat,F_pvalue,AIC,BIC
+reit_index_return,['inflation_yoy'],40,0.8663,0.8628,246.2221,0.0,-130.4882,-127.1105

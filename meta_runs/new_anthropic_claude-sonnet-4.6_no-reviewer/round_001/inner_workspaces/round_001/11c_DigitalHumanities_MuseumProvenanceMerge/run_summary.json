@@ -1,0 +1,30 @@
+{
+  "scenario_id": "11c_DigitalHumanities_MuseumProvenanceMerge",
+  "title": "DigitalHumanities MuseumProvenanceMerge",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/museum_export_a.csv",
+    "data/museum_export_b.csv"
+  ],
+  "status": "Done",
+  "stats": {
+    "steps": 11,
+    "submit_count": 0,
+    "done_summary": "Task complete. The two museum export batches were merged and deduplicated into a 24-object catalog.\n\nKey results:\n- 70 raw rows (36 from Batch A, 34 from Batch B) reduced to 24 unique objects after removing 46 duplicate/variant rows\n- Accession normalisation resolved separators (-, _, space), leading zeros, case inconsistencies, and one typo (T88x)\n- All 17 Batch A objects also appear in Batch B; 7 objects are exclusive to Batch B\n- Temporal distribution: collection spans ~2,400 years (475 BCE to 1998 CE), concentrated in the 19th century and Qing dynasty (37.5% of objects)\n- 5 figures generated: period distribution bar chart, timeline scatter, source overlap, century histogram, duplicate frequency\n- Deliverables: code/merge_analysis.py, outputs/deduplicated_catalog.csv, outputs/summary_stats.json, report/report.md with 5 embedded figures",
+    "real_tokens_used": 206871
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_anthropic_claude-sonnet-4.6_no-reviewer\\round_001\\inner_workspaces\\round_001\\11c_DigitalHumanities_MuseumProvenanceMerge",
+  "timestamp": "2026-04-27T20:38:46.525521",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": null,
+  "reviewer_rounds": null,
+  "exit_reason": null,
+  "done_summary": "Task complete. The two museum export batches were merged and deduplicated into a 24-object catalog.\n\nKey results:\n- 70 raw rows (36 from Batch A, 34 from Batch B) reduced to 24 unique objects after removing 46 duplicate/variant rows\n- Accession normalisation resolved separators (-, _, space), leading zeros, case inconsistencies, and one typo (T88x)\n- All 17 Batch A objects also appear in Batch B; 7 objects are exclusive to Batch B\n- Temporal distribution: collection spans ~2,400 years (475 BCE to 1998 CE), concentrated in the 19th century and Qing dynasty (37.5% of objects)\n- 5 figures generated: period distribution bar chart, timeline scatter, source overlap, century histogram, duplicate frequency\n- Deliverables: code/merge_analysis.py, outputs/deduplicated_catalog.csv, outputs/summary_stats.json, report/report.md with 5 embedded figures"
+}

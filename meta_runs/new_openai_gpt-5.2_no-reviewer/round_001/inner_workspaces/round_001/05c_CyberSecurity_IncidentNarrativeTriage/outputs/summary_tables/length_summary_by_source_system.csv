@@ -1,0 +1,3 @@
+source_system,n_words_count,n_words_mean,n_words_median,n_words_min,n_words_max,n_chars_count,n_chars_mean,n_chars_median,n_chars_min,n_chars_max
+edr,3,16.0,16.0,15,17,3,122.0,122.0,109,135
+network_ids,3,18.333333333333332,18.0,18,19,3,120.33333333333333,120.0,108,133

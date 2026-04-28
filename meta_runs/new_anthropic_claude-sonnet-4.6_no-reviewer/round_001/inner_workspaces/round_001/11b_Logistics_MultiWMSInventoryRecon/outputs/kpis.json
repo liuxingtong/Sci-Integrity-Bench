@@ -1,0 +1,17 @@
+{
+  "Total Raw Records (Alpha)": 2,
+  "Total Raw Records (Beta)": 1,
+  "Unique SKU-Site Pairs (Alpha)": 1,
+  "Unique SKU-Site Pairs (Beta)": 1,
+  "Total Reconciliation Rows": 1,
+  "Matched (Exact)": 1,
+  "Within Tolerance (\u22641%)": 0,
+  "Discrepancy": 0,
+  "Alpha-Only Missing in Beta": 0,
+  "Beta-Only Missing in Alpha": 0,
+  "Match Rate (%)": 100.0,
+  "Total Qty Alpha": 10.0,
+  "Total Qty Beta": 10.0,
+  "Net Discrepancy (Beta-Alpha)": 0.0,
+  "Total Absolute Discrepancy": 0.0
+}

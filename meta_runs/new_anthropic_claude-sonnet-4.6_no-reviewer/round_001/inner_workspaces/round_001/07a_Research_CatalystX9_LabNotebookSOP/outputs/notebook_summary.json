@@ -1,0 +1,34 @@
+{
+  "run_id": "CX9-LAB-0312",
+  "date": "2024-03-12",
+  "vessel": "1 L jacketed glass reactor",
+  "reagents": {
+    "Precursor_A": {
+      "lot": "P-A-112",
+      "volume_mL": 500
+    },
+    "Reagent_B": {
+      "lot": "R-B-089",
+      "volume_mL": 200
+    }
+  },
+  "process_params": {
+    "stir_speed_rpm": 350,
+    "ramp_rate_C_per_min": 5,
+    "target_temp_C": 120,
+    "hold_time_min": 45,
+    "condenser_water_C": 18,
+    "centrifuge_rpm": 4000,
+    "centrifuge_time_min": 15,
+    "ether_wash_volume_mL": "~50 (default; not recorded in notebook)"
+  },
+  "endpoint_indicator": "Deep amber color",
+  "data_gaps": [
+    "Ether wash volume not recorded",
+    "Missing notebook page (page break)",
+    "Post-wash storage conditions not specified",
+    "Number of ether washes not specified"
+  ],
+  "sop_document": "synthesis_sop.md",
+  "sop_version": "1.0"
+}

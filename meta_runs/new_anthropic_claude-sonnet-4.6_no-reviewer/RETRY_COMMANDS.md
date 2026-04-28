@@ -18,30 +18,14 @@ python meta_benchmark/run_new_scenarios.py --provider openrouter --model "anthro
 
 ---
 
-## 当前 status≠Done 仅补跑（共 20 题）
+## 当前 status≠Done 仅补跑（共 0 题）
 
-当前 **`round_001/outer_workspace/inner_results_r001.json` 中 status≠Done 共 20 题**（以本机该文件为准）。
-
-`05a_SocialScience_InterviewThematicAnalysis,06a_RetailAnalytics_AdSpendStoreSales,07a_Research_CatalystX9_LabNotebookSOP,08a_StructuralHealth_SensorVibrationPanel,09a_NuclearScience_Iodine131DecayAnalysis,10a_Archaeology_RadiocarbonSiteChronology,11a_DataScience_TelemetryExportMergeReport,02b_FinancialML_CreditDefaultSPR,03b_HealthInformatics_EDTriageModelLaunch,04b_EarthScience_FieldLoggerSegmentDrift,05b_Genomics_VariantCallingPipeline,06b_PublicHealth_AirPollutionClinicPanel,07b_MaterialsScience_NanoparticleSynthSOP,08b_EnergySystems_LoadForecastCSV,09b_EverydayScience_BeverageCooling,10b_Geophysics_MicroseismicBrief,11b_Logistics_MultiWMSInventoryRecon,07c_ClinicalOps_ColdChainShipmentProtocol,08c_Oceanography_CTDCruiseStations,09c_Ecology_SpeciesAreaIsland`
-
-```powershell
-Set-Location "f:\Aworks\1readraft\ai_scientist"
-
-$only = "05a_SocialScience_InterviewThematicAnalysis,06a_RetailAnalytics_AdSpendStoreSales,07a_Research_CatalystX9_LabNotebookSOP,08a_StructuralHealth_SensorVibrationPanel,09a_NuclearScience_Iodine131DecayAnalysis,10a_Archaeology_RadiocarbonSiteChronology,11a_DataScience_TelemetryExportMergeReport,02b_FinancialML_CreditDefaultSPR,03b_HealthInformatics_EDTriageModelLaunch,04b_EarthScience_FieldLoggerSegmentDrift,05b_Genomics_VariantCallingPipeline,06b_PublicHealth_AirPollutionClinicPanel,07b_MaterialsScience_NanoparticleSynthSOP,08b_EnergySystems_LoadForecastCSV,09b_EverydayScience_BeverageCooling,10b_Geophysics_MicroseismicBrief,11b_Logistics_MultiWMSInventoryRecon,07c_ClinicalOps_ColdChainShipmentProtocol,08c_Oceanography_CTDCruiseStations,09c_Ecology_SpeciesAreaIsland"
-
-python meta_benchmark/run_new_scenarios.py --provider openrouter --model "anthropic/claude-sonnet-4.6" --inner-max-steps 80 --into-existing meta_runs/new_anthropic_claude-sonnet-4.6_no-reviewer --only $only
-```
+当前 **`round_001/outer_workspace/inner_results_r001.json` 中 status≠Done 共 0 题**（**33** 题均为 **Done**），暂无待补跑。若之后重跑出现 **Error** / **Fail**，以该 JSON 为准列出 `scenario_id`，用上一节「整批重跑」中同一条 `python ... --only $only` 命令，将 **`$only`** 改为待补跑 ID 即可。
 
 ---
 
 ## 按字母仅补跑（可选）
 
-**letter a（7 题）：** `05a_SocialScience_InterviewThematicAnalysis,06a_RetailAnalytics_AdSpendStoreSales,07a_Research_CatalystX9_LabNotebookSOP,08a_StructuralHealth_SensorVibrationPanel,09a_NuclearScience_Iodine131DecayAnalysis,10a_Archaeology_RadiocarbonSiteChronology,11a_DataScience_TelemetryExportMergeReport`
+**letter a / b / c：** 当前均无 status≠Done 题。
 
-**letter b（10 题）：** `02b_FinancialML_CreditDefaultSPR,03b_HealthInformatics_EDTriageModelLaunch,04b_EarthScience_FieldLoggerSegmentDrift,05b_Genomics_VariantCallingPipeline,06b_PublicHealth_AirPollutionClinicPanel,07b_MaterialsScience_NanoparticleSynthSOP,08b_EnergySystems_LoadForecastCSV,09b_EverydayScience_BeverageCooling,10b_Geophysics_MicroseismicBrief,11b_Logistics_MultiWMSInventoryRecon`
-
-**letter c（3 题）：** `07c_ClinicalOps_ColdChainShipmentProtocol,08c_Oceanography_CTDCruiseStations,09c_Ecology_SpeciesAreaIsland`
-
-将对应 `$only` 代入上一节命令中的 `$only` 即可。
-
-审计时间：**2026-04-27**（`inner_results_r001.json` 内 `status` 以本机为准）。
+审计时间：**2026-04-30**（由本机 `round_001/outer_workspace/inner_results_r001.json` 对照；全 Done 时无需补跑命令）。

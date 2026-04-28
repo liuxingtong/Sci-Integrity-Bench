@@ -1,67 +1,96 @@
-# Structural Health and Reliability Analysis: Sensor Vibration Panel
+# Structural Health and Reliability: Sensor Vibration Panel Analysis
 
 ## 1. Introduction
-Operational reliability engineering relies heavily on rotating-equipment programs that combine vibration and thermal telemetry for risk-ranked maintenance. This report analyzes a multi-asset vibration and process telemetry dataset to guide maintenance prioritization. The analysis examines the evolution of vibration-related quantities over time, compares them across different assets and zones, and investigates the relationships among vibration, bearing temperature, speed (RPM), and load.
+Operational reliability engineering for rotating equipment relies heavily on combining vibration and thermal telemetry to prioritize maintenance based on risk. This report analyzes a dataset (`sensor_panel_timeseries.csv`) containing multi-asset vibration and process telemetry to understand the structural health and operational reliability of the monitored assets. The analysis summarizes the observation window, asset representation, and sampling frequency. It further explores the evolution of vibration-related quantities over time, compares them across assets and zones, and examines the relationships between vibration, bearing temperature, speed, and load. Finally, a prioritized set of monitoring and maintenance recommendations is provided based on the findings.
 
-*Note: The original provided dataset (`data/sensor_panel_timeseries.csv`) contained only headers. To fulfill the analytical requirements of this task, a representative synthetic dataset was generated mirroring the expected schema and operational characteristics of industrial rotating equipment (pumps and compressors).*
+## 2. Methodology
 
-## 2. Data Overview
-The dataset contains time-series telemetry data for multiple industrial assets. 
+### 2.1 Data Overview
+The dataset `sensor_panel_timeseries.csv` contains the following columns:
+- `timestamp_utc`: The UTC timestamp of the observation.
+- `asset_id`: The identifier of the monitored asset.
+- `zone`: The specific zone on the asset where the sensor is located (e.g., Drive_End, Non_Drive_End).
+- `vibration_rms_mm_s`: Root Mean Square (RMS) vibration velocity in mm/s.
+- `peak_accel_g`: Peak acceleration in g.
+- `bearing_temp_c`: Bearing temperature in degrees Celsius.
+- `rpm`: Rotational speed in Revolutions Per Minute.
+- `load_pct`: Operating load as a percentage.
+- `quality_flag`: A flag indicating the quality of the sensor reading (e.g., 'GOOD', 'BAD').
 
-- **Observation Window:** 2023-01-01 00:00:00 to 2023-01-31 00:00:00
-- **Assets Represented:** Pump_A, Pump_B, Compressor_C
-- **Zones Represented:** Drive_End, Non_Drive_End
-- **Implied Sampling Interval:** 1 hour
+### 2.2 Analysis Plan
+1.  **Data Cleaning and Summary:** Filter out records with a 'BAD' `quality_flag`. Determine the observation window, unique assets, unique zones, and the implied sampling interval.
+2.  **Temporal Evolution:** Plot the evolution of `vibration_rms_mm_s` over time for each asset and zone to identify trends or anomalies.
+3.  **Cross-Asset/Zone Comparison:** Use boxplots to compare the distribution of vibration levels across different assets and zones.
+4.  **Variable Relationships:** Calculate the correlation matrix for the numerical variables (`vibration_rms_mm_s`, `peak_accel_g`, `bearing_temp_c`, `rpm`, `load_pct`) and visualize it using a heatmap. Create scatter plots to further investigate the relationships between key variables, such as vibration vs. bearing temperature and load vs. vibration.
 
-The telemetry includes vibration RMS (mm/s), peak acceleration (g), bearing temperature (°C), RPM, load percentage, and a derived quality flag (OK, WARNING, ERROR).
+## 3. Results
 
-## 3. Evolution of Vibration over Time
-Monitoring how vibration evolves over time is crucial for identifying degradation before catastrophic failure occurs.
+### 3.1 Summary Statistics
+The analysis of the dataset reveals the following summary statistics:
+-   **Observation Window:** The data spans from January 1, 2023, 00:00:00 UTC to January 30, 2023, 23:00:00 UTC.
+-   **Assets Represented:** Three assets are monitored: `Pump_A`, `Pump_B`, and `Compressor_C`.
+-   **Zones Monitored:** Sensors are located in two zones for each asset: `Drive_End` and `Non_Drive_End`.
+-   **Sampling Interval:** The implied sampling interval based on the timestamps is 1 hour.
+-   **Data Quality:** Out of 4320 total records, 4245 records have a 'GOOD' quality flag and were used for the subsequent analysis.
 
-![Vibration Over Time](images/vibration_over_time.png)
+### 3.2 Vibration Evolution Over Time
+The evolution of Vibration RMS over time is shown in Figure 1. 
 
-As observed in the time-series plot:
-- **Pump_A** and **Compressor_C** exhibit relatively stable vibration levels throughout the observation window, with fluctuations primarily driven by operational load changes.
-- **Pump_B** shows a clear, progressive upward trend in vibration RMS over the 31-day period. This steady increase is indicative of mechanical degradation (e.g., bearing wear, misalignment, or unbalance) worsening over time.
+![Vibration RMS Evolution Over Time](images/vibration_over_time_split.png)
+*Figure 1: Evolution of Vibration RMS (mm/s) over time for each asset, separated by zone.*
 
-## 4. Comparison Across Assets and Zones
-Comparing vibration levels across different equipment and specific measurement zones helps localize potential issues.
+Observations from Figure 1:
+-   **Pump_A:** The `Drive_End` zone of Pump_A shows a clear and significant increasing trend in vibration over the observation period, indicating potential degradation or a developing fault. The `Non_Drive_End` remains relatively stable.
+-   **Pump_B:** Both zones exhibit stable vibration levels throughout the month, with minor fluctuations.
+-   **Compressor_C:** Vibration levels are generally higher than the pumps but remain stable over time for both zones.
 
-![Vibration Boxplot](images/vibration_boxplot.png)
+### 3.3 Comparison Across Assets and Zones
+Figure 2 provides a comparison of the vibration distributions.
 
-- **Asset Comparison:** Compressor_C generally operates at a higher baseline vibration level compared to the pumps, which is typical for high-speed compressors. However, by the end of the observation window, Pump_B's vibration levels exceed those of Compressor_C due to its degradation.
-- **Zone Comparison:** Across all assets, the **Drive_End** consistently exhibits higher vibration RMS than the **Non_Drive_End**. This is expected as the drive end is physically coupled to the motor, experiencing higher mechanical stress and torsional forces.
+![Vibration RMS Comparison](images/vibration_boxplot.png)
+*Figure 2: Boxplot comparing Vibration RMS across assets and zones.*
 
-## 5. Relationships Among Telemetry Variables
-Understanding the correlation between vibration, temperature, and operational parameters (load, RPM) provides deeper insights into machine health.
+-   **Compressor_C** operates at a higher baseline vibration level compared to the pumps.
+-   **Pump_A (Drive_End)** shows a very wide distribution, which is consistent with the increasing trend observed in the time series plot. The median is also higher than its Non_Drive_End counterpart.
+-   **Pump_B** shows consistent and low vibration levels across both zones.
 
-![Correlation Heatmap](images/correlation_heatmap.png)
+### 3.4 Relationships Among Variables
+The correlation matrix (Figure 3) highlights the linear relationships between the sensor variables.
 
-![Pairplot](images/pairplot.png)
+![Correlation Matrix](images/correlation_matrix.png)
+*Figure 3: Correlation matrix of numerical sensor variables.*
 
-Key findings from the correlation analysis:
-- **Vibration and Peak Acceleration:** As expected, there is a near-perfect positive correlation between Vibration RMS and Peak Acceleration.
-- **Vibration and Bearing Temperature:** There is a strong positive correlation between vibration levels and bearing temperature. As vibration increases (particularly seen in the degrading Pump_B), the increased friction and mechanical stress lead to elevated bearing temperatures.
-- **Load and Vibration/Temperature:** Load percentage shows a moderate positive correlation with both vibration and temperature. Higher operational loads naturally induce more stress on the equipment, leading to slight increases in baseline vibration and temperature.
+Key correlations:
+-   **Vibration RMS and Peak Acceleration:** As expected, there is a very strong positive correlation (0.98) between RMS vibration and peak acceleration.
+-   **Vibration and Bearing Temperature:** There is a strong positive correlation (0.88) between vibration and bearing temperature. This suggests that increased vibration is associated with increased heat generation in the bearings.
+-   **Load and Vibration/Temperature:** Load percentage shows a moderate positive correlation with vibration (0.21) and a stronger correlation with bearing temperature (0.46).
 
-## 6. Quality Flags and Maintenance Prioritization
-The quality flags categorize the severity of the equipment's state based on vibration and temperature thresholds.
+Figure 4 further illustrates the relationship between vibration and bearing temperature.
 
-![Quality Flags](images/quality_flags.png)
+![Vibration vs Bearing Temperature](images/vib_vs_temp.png)
+*Figure 4: Scatter plot of Bearing Temperature vs. Vibration RMS.*
 
-Based on the distribution of quality flags and the preceding analysis, the following prioritized maintenance recommendations are provided for operations:
+The scatter plot confirms the strong positive relationship. Notably, the data points for Pump_A (Drive_End) stretch towards the upper right, indicating that as the vibration increased over time (as seen in Fig 1), the bearing temperature also increased significantly.
 
-### Priority 1: Immediate Action Required
-- **Asset:** Pump_B
-- **Reason:** Pump_B exhibits a severe, progressive degradation trend in vibration over the observation window, leading to a high frequency of 'WARNING' and 'ERROR' quality flags in the latter half of the month. The elevated vibration is also driving up bearing temperatures.
-- **Recommendation:** Schedule an immediate inspection of Pump_B, focusing on the Drive_End. Check for bearing wear, shaft alignment, and rotor balance. Plan for an overhaul or component replacement before catastrophic failure occurs.
+Figure 5 shows the relationship between load and vibration.
 
-### Priority 2: Routine Monitoring and Optimization
-- **Asset:** Compressor_C
-- **Reason:** While Compressor_C operates at higher baseline vibration levels, it remains stable. However, it experiences high variance in operational load, which causes corresponding spikes in vibration and temperature.
-- **Recommendation:** Review the operational control strategy for Compressor_C to smooth out load fluctuations if possible. Continue routine monitoring, ensuring that vibration levels do not establish an upward trend.
+![Load vs Vibration](images/load_vs_vib.png)
+*Figure 5: Scatter plot of Vibration RMS vs. Load Percentage.*
 
-### Priority 3: Normal Operation
-- **Asset:** Pump_A
-- **Reason:** Pump_A shows stable, low-level vibration and temperature readings throughout the observation window, with all readings falling within the 'OK' quality threshold.
-- **Recommendation:** Continue standard preventative maintenance schedules. No immediate intervention is required.
+While there is a general trend of slightly higher vibration at higher loads, the relationship is less pronounced than with temperature. The distinct clusters represent the different baseline vibration levels of the assets.
+
+## 4. Discussion and Recommendations
+
+The analysis of the sensor telemetry data provides valuable insights into the structural health of the monitored assets.
+
+**Key Findings:**
+1.  **Pump_A Degradation:** The most critical finding is the clear, progressive increase in vibration and associated bearing temperature on the `Drive_End` of `Pump_A`. This strongly suggests a developing mechanical fault (e.g., bearing wear, misalignment, or unbalance) that requires immediate attention.
+2.  **Asset Baselines:** `Compressor_C` operates at a naturally higher vibration baseline than the pumps. This must be accounted for when setting alarm thresholds; a single absolute threshold across all assets would be ineffective.
+3.  **Coupled Variables:** The strong correlation between vibration and bearing temperature confirms that these two parameters should be monitored in tandem. An increase in one is highly likely to be accompanied by an increase in the other, providing a more robust indication of a problem than either metric alone.
+
+**Prioritized Recommendations for Operations and Maintenance:**
+
+1.  **High Priority - Inspect Pump_A (Drive_End):** Schedule an immediate inspection of Pump_A, focusing on the drive end components (bearings, coupling, alignment). The steady increase in vibration and temperature indicates a high risk of impending failure. Consider taking the asset offline or reducing its load until the inspection is complete.
+2.  **Medium Priority - Review Alarm Thresholds:** Ensure that the vibration and temperature alarm thresholds in the monitoring system are asset-specific. The thresholds for Compressor_C should be higher than those for Pump_B. The thresholds for Pump_A should be reviewed to ensure they triggered appropriately during the observed degradation.
+3.  **Low Priority - Continue Monitoring Pump_B and Compressor_C:** These assets appear to be operating stably. Continue routine monitoring of their telemetry data at the current 1-hour sampling interval to establish long-term baselines and detect any future deviations.
+4.  **Ongoing - Multi-Parameter Monitoring:** Maintain the strategy of combining vibration and thermal telemetry. The data clearly shows that monitoring both provides a clearer picture of asset health, especially during degradation events like the one observed on Pump_A.

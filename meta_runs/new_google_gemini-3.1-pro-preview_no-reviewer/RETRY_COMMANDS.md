@@ -18,16 +18,16 @@ python meta_benchmark/run_new_scenarios.py --provider openrouter --model "google
 
 ---
 
-## 当前 status≠Done 仅补跑（共 21 题）
+## 当前 status≠Done 仅补跑（共 2 题）
 
-当前 **`round_001/outer_workspace/inner_results_r001.json` 中 status≠Done 共 21 题**（含 **Error** 20、**Fail** 1；letter **c** 仅 **02c** 为 **Fail**，其余 `*c` 为 **Done**）。
+当前 **`round_001/outer_workspace/inner_results_r001.json` 中 status≠Done 共 2 题**（**Error** 2、**Fail** 0）。
 
-`02a_SymbolicPatternReasoning_LabelNoiseCeiling,03a_RecommendationSystem_RecSysV2LaunchEvaluation,04a_RareEvent_ClassificationKPI,05a_SocialScience_InterviewThematicAnalysis,06a_RetailAnalytics_AdSpendStoreSales,07a_Research_CatalystX9_LabNotebookSOP,08a_StructuralHealth_SensorVibrationPanel,09a_NuclearScience_Iodine131DecayAnalysis,10a_Archaeology_RadiocarbonSiteChronology,11a_DataScience_TelemetryExportMergeReport,02b_FinancialML_CreditDefaultSPR,03b_HealthInformatics_EDTriageModelLaunch,04b_EarthScience_FieldLoggerSegmentDrift,05b_Genomics_VariantCallingPipeline,06b_PublicHealth_AirPollutionClinicPanel,07b_MaterialsScience_NanoparticleSynthSOP,08b_EnergySystems_LoadForecastCSV,09b_EverydayScience_BeverageCooling,10b_Geophysics_MicroseismicBrief,11b_Logistics_MultiWMSInventoryRecon,02c_AstroML_VariableStarClassification`
+`02b_FinancialML_CreditDefaultSPR,02c_AstroML_VariableStarClassification`
 
 ```powershell
 Set-Location "f:\Aworks\1readraft\ai_scientist"
 
-$only = "02a_SymbolicPatternReasoning_LabelNoiseCeiling,03a_RecommendationSystem_RecSysV2LaunchEvaluation,04a_RareEvent_ClassificationKPI,05a_SocialScience_InterviewThematicAnalysis,06a_RetailAnalytics_AdSpendStoreSales,07a_Research_CatalystX9_LabNotebookSOP,08a_StructuralHealth_SensorVibrationPanel,09a_NuclearScience_Iodine131DecayAnalysis,10a_Archaeology_RadiocarbonSiteChronology,11a_DataScience_TelemetryExportMergeReport,02b_FinancialML_CreditDefaultSPR,03b_HealthInformatics_EDTriageModelLaunch,04b_EarthScience_FieldLoggerSegmentDrift,05b_Genomics_VariantCallingPipeline,06b_PublicHealth_AirPollutionClinicPanel,07b_MaterialsScience_NanoparticleSynthSOP,08b_EnergySystems_LoadForecastCSV,09b_EverydayScience_BeverageCooling,10b_Geophysics_MicroseismicBrief,11b_Logistics_MultiWMSInventoryRecon,02c_AstroML_VariableStarClassification"
+$only = "02b_FinancialML_CreditDefaultSPR,02c_AstroML_VariableStarClassification"
 
 python meta_benchmark/run_new_scenarios.py --provider openrouter --model "google/gemini-3.1-pro-preview" --inner-max-steps 80 --into-existing meta_runs/new_google_gemini-3.1-pro-preview_no-reviewer --only $only
 ```
@@ -36,10 +36,10 @@ python meta_benchmark/run_new_scenarios.py --provider openrouter --model "google
 
 ## 按字母仅补跑（可选）
 
-**letter a（10 题）：** `02a_SymbolicPatternReasoning_LabelNoiseCeiling,03a_RecommendationSystem_RecSysV2LaunchEvaluation,04a_RareEvent_ClassificationKPI,05a_SocialScience_InterviewThematicAnalysis,06a_RetailAnalytics_AdSpendStoreSales,07a_Research_CatalystX9_LabNotebookSOP,08a_StructuralHealth_SensorVibrationPanel,09a_NuclearScience_Iodine131DecayAnalysis,10a_Archaeology_RadiocarbonSiteChronology,11a_DataScience_TelemetryExportMergeReport`
+**letter a：** 当前无 status≠Done 题。
 
-**letter b（10 题）：** `02b_FinancialML_CreditDefaultSPR,03b_HealthInformatics_EDTriageModelLaunch,04b_EarthScience_FieldLoggerSegmentDrift,05b_Genomics_VariantCallingPipeline,06b_PublicHealth_AirPollutionClinicPanel,07b_MaterialsScience_NanoparticleSynthSOP,08b_EnergySystems_LoadForecastCSV,09b_EverydayScience_BeverageCooling,10b_Geophysics_MicroseismicBrief,11b_Logistics_MultiWMSInventoryRecon`
+**letter b（1 题，Error）：** `02b_FinancialML_CreditDefaultSPR`
 
-**letter c（1 题，Fail）：** `02c_AstroML_VariableStarClassification`
+**letter c（1 题，Error）：** `02c_AstroML_VariableStarClassification`
 
-审计时间：**2026-04-28**（由本机 `round_001/outer_workspace/inner_results_r001.json` 对照生成；重跑后请以该文件为准）。
+审计时间：**2026-04-30**（与当前 `round_001/outer_workspace/inner_results_r001.json` 再次核对一致；重跑后请以该文件为准）。

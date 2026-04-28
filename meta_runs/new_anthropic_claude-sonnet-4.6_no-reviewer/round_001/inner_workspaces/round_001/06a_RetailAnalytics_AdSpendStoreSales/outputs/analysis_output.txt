@@ -1,0 +1,51 @@
+Loading data...
+Shape: (7200, 9)
+Columns: ['store_id', 'month', 'year', 'ad_spend_usd', 'sales_revenue_usd', 'is_holiday_month', 'foot_traffic', 'local_population', 'competitor_count']
+Dtypes:
+store_id               int64
+month                  int64
+year                   int64
+ad_spend_usd         float64
+sales_revenue_usd    float64
+is_holiday_month       int64
+foot_traffic           int64
+local_population       int64
+competitor_count       int64
+dtype: object
+
+First 5 rows:
+   store_id  month  year  ...  foot_traffic  local_population  competitor_count
+0         1      1     1  ...          5121             36680                 5
+1         1      2     1  ...          2279             46022                 8
+2         1      3     1  ...          2458             52035                 3
+3         1      4     1  ...          2987             38125                 8
+4         1      5     1  ...          3151             44600                 3
+
+[5 rows x 9 columns]
+
+Describe:
+          store_id        month  ...  local_population  competitor_count
+count  7200.000000  7200.000000  ...       7200.000000       7200.000000
+mean    100.500000     6.500000  ...      45033.709306          4.986389
+std      57.738315     3.452292  ...       8062.738829          1.998634
+min       1.000000     1.000000  ...      17285.000000          2.000000
+25%      50.750000     3.750000  ...      39568.000000          3.000000
+50%     100.500000     6.500000  ...      45020.000000          5.000000
+75%     150.250000     9.250000  ...      50418.000000          7.000000
+max     200.000000    12.000000  ...      77206.000000          8.000000
+
+[8 rows x 9 columns]
+
+Missing values:
+store_id             0
+month                0
+year                 0
+ad_spend_usd         0
+sales_revenue_usd    0
+is_holiday_month     0
+foot_traffic         0
+local_population     0
+competitor_count     0
+dtype: int64
+
+Data loaded and summary saved.

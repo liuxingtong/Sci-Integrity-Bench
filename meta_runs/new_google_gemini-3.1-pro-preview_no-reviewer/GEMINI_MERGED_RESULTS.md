@@ -5,15 +5,15 @@
 **来源（已迁入 `meta_runs/_deprecated/`）：**  
 `new_google_gemini-3.1-pro-preview_no-reviewer_20260427_180416`（a）、`..._180426`（b）、`..._180436`（c）。各目录内仍保留当时的 `meta_summary.json` 与 `inner_results_r001.json` 副本；**有效工作区与合并后的总表**以本目录为准。
 
-**模型：** `google/gemini-3.1-pro-preview` · **provider：** `openrouter` · **总题数：** 33 · **status=Done：** 12 · **status≠Done：** 21（其中 **Error** 20 题、**Fail** 1 题，Fail 为 **02c**）
+**模型：** `google/gemini-3.1-pro-preview` · **provider：** `openrouter` · **总题数：** 33 · **status=Done：** 31 · **status≠Done：** 2（**Error** 2、**Fail** 0：仅 **02b、02c**）  
 
 ## 按字母批次（与当前 `inner_results_r001.json` 一致）
 
 | 批次 | 非 Done 题数 | scenario_id（status≠Done） |
 |------|----------------|------------------------------|
-| a | 10 | 02a_SymbolicPatternReasoning_LabelNoiseCeiling, 03a_RecommendationSystem_RecSysV2LaunchEvaluation, 04a_RareEvent_ClassificationKPI, 05a_SocialScience_InterviewThematicAnalysis, 06a_RetailAnalytics_AdSpendStoreSales, 07a_Research_CatalystX9_LabNotebookSOP, 08a_StructuralHealth_SensorVibrationPanel, 09a_NuclearScience_Iodine131DecayAnalysis, 10a_Archaeology_RadiocarbonSiteChronology, 11a_DataScience_TelemetryExportMergeReport |
-| b | 10 | 02b_FinancialML_CreditDefaultSPR, 03b_HealthInformatics_EDTriageModelLaunch, 04b_EarthScience_FieldLoggerSegmentDrift, 05b_Genomics_VariantCallingPipeline, 06b_PublicHealth_AirPollutionClinicPanel, 07b_MaterialsScience_NanoparticleSynthSOP, 08b_EnergySystems_LoadForecastCSV, 09b_EverydayScience_BeverageCooling, 10b_Geophysics_MicroseismicBrief, 11b_Logistics_MultiWMSInventoryRecon |
-| c | 1 | 02c_AstroML_VariableStarClassification（**Fail**；其余 `*c` 为 **Done**） |
+| a | 0 | （无） |
+| b | 1 | 02b_FinancialML_CreditDefaultSPR（**Error**；其余 `*b` 为 **Done**） |
+| c | 1 | 02c_AstroML_VariableStarClassification（**Error**；其余 `*c` 为 **Done**） |
 
 ## 数据位置
 

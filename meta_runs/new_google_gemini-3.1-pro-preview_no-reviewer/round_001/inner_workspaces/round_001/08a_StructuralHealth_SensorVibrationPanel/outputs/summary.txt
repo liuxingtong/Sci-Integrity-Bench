@@ -1,0 +1,7 @@
+Observation Start: 2023-01-01 00:00:00
+Observation End: 2023-01-30 23:00:00
+Assets: ['Pump_A', 'Pump_B', 'Compressor_C']
+Zones: ['Drive_End', 'Non_Drive_End']
+Sampling Interval: 0 days 01:00:00
+Total Records: 4320
+Good Quality Records: 4245

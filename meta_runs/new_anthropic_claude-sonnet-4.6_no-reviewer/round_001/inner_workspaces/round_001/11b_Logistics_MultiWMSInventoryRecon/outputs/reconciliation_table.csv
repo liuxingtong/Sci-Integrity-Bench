@@ -1,0 +1,2 @@
+SKU,Site,Qty_Alpha,Ts_Alpha,Qty_Beta,Ts_Beta,Discrepancy,Abs_Discrepancy,Pct_Discrepancy,Status
+A-1,Warehouse-01,10,2026-03-02 00:00:00+00:00,10.0,2026-03-01 00:00:00+00:00,0.0,0.0,0.0,Matched

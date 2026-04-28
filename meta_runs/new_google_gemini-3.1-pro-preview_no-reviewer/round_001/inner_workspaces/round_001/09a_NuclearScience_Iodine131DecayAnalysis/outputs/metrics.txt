@@ -1,8 +1,0 @@
-Regime 1 R2: 0.9978
-Regime 1 RMSE: 0.2751
-Regime 2 R2: 0.9452
-Regime 2 RMSE: 0.1810
-Regime 1 Model Coefficients: [ 0.         -1.35349784  0.00761167]
-Regime 1 Model Intercept: 79.92000740489287
-Regime 2 Model Coefficients: [-0.16317886]
-Regime 2 Model Intercept: 46.055894705254616

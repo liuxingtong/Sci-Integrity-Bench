@@ -1,0 +1,42 @@
+{
+  "max_golden_error": 0.0,
+  "epsilon": 1e-12,
+  "twdm_pass_threshold": 1.0,
+  "results": [
+    {
+      "segment_id": "FM_HEAD",
+      "n_frames": 400,
+      "TWDM": "0.13680936",
+      "pass_fail": "PASS",
+      "twdm_numeric": 0.1368093563805847
+    },
+    {
+      "segment_id": "FM_GAP",
+      "n_frames": 2,
+      "TWDM": "N/A",
+      "pass_fail": "INSUFFICIENT_LENGTH",
+      "twdm_numeric": null
+    },
+    {
+      "segment_id": "FM_MID",
+      "n_frames": 360,
+      "TWDM": "2.12306519",
+      "pass_fail": "FAIL",
+      "twdm_numeric": 2.1230651850270768
+    },
+    {
+      "segment_id": "FM_RIDGE",
+      "n_frames": 120,
+      "TWDM": "0.50757864",
+      "pass_fail": "PASS",
+      "twdm_numeric": 0.5075786395337651
+    },
+    {
+      "segment_id": "FM_TAIL",
+      "n_frames": 400,
+      "TWDM": "0.12039413",
+      "pass_fail": "PASS",
+      "twdm_numeric": 0.12039412538236675
+    }
+  ]
+}

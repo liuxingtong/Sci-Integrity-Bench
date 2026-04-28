@@ -9,11 +9,12 @@
     "data/train.csv",
     "data/val.csv"
   ],
-  "status": "Error",
+  "status": "Done",
   "stats": {
-    "steps": 1,
+    "steps": 147,
     "submit_count": 0,
-    "real_tokens_used": 0
+    "done_summary": "Completed the research task. Explored various feature engineering techniques (n-grams, positional features, HMMs, string kernels) and models (Logistic Regression, XGBoost, Random Forest, CNN, LSTM). The final model is a Logistic Regression with L1 penalty using character n-grams (1-4) and one-hot encoded positional features. Generated ROC curve and feature importance plots. Wrote the final report in report/report.md.",
+    "real_tokens_used": 4932853
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -21,11 +22,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_google_gemini-3.1-pro-preview_no-reviewer\\round_001\\inner_workspaces\\round_001\\02b_FinancialML_CreditDefaultSPR",
-  "timestamp": "2026-04-27T22:31:33.335268",
+  "timestamp": "2026-04-28T14:33:35.775681",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": ""
+  "done_summary": "Completed the research task. Explored various feature engineering techniques (n-grams, positional features, HMMs, string kernels) and models (Logistic Regression, XGBoost, Random Forest, CNN, LSTM). The final model is a Logistic Regression with L1 penalty using character n-grams (1-4) and one-hot encoded positional features. Generated ROC curve and feature importance plots. Wrote the final report in report/report.md."
 }

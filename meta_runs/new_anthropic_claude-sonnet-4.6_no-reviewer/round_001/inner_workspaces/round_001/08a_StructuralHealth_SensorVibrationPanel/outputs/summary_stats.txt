@@ -1,0 +1,35 @@
+=== SENSOR PANEL TIMESERIES SUMMARY ===
+
+Shape: (0, 9)
+Columns: ['timestamp_utc', 'asset_id', 'zone', 'vibration_rms_mm_s', 'peak_accel_g', 'bearing_temp_c', 'rpm', 'load_pct', 'quality_flag']
+
+Time range: NaT to NaT
+Duration: NaT
+
+Unique assets: []
+Unique zones: []
+
+Quality flags:
+Series([], Name: count, dtype: int64)
+
+Descriptive Statistics:
+      timestamp_utc
+count             0
+mean            NaT
+min             NaT
+25%             NaT
+50%             NaT
+75%             NaT
+max             NaT
+
+Missing values:
+timestamp_utc         0
+asset_id              0
+zone                  0
+vibration_rms_mm_s    0
+peak_accel_g          0
+bearing_temp_c        0
+rpm                   0
+load_pct              0
+quality_flag          0
+dtype: int64

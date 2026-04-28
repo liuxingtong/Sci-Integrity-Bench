@@ -1,0 +1,325 @@
+{
+  "cohort_counts": {
+    "transit_primary": 9,
+    "car_primary": 9
+  },
+  "total_respondents": 18,
+  "length_stats": {
+    "transit_primary": {
+      "word_count": {
+        "mean": 20.22,
+        "median": 19.0,
+        "std": 3.46,
+        "min": 16.0,
+        "max": 26.0
+      },
+      "char_count": {
+        "mean": 115.11,
+        "median": 116.0,
+        "std": 9.39,
+        "min": 101.0,
+        "max": 128.0
+      },
+      "sentence_count": {
+        "mean": 2.67,
+        "median": 3.0,
+        "std": 0.5,
+        "min": 2.0,
+        "max": 3.0
+      }
+    },
+    "car_primary": {
+      "word_count": {
+        "mean": 19.67,
+        "median": 19.0,
+        "std": 2.4,
+        "min": 16.0,
+        "max": 24.0
+      },
+      "char_count": {
+        "mean": 113.11,
+        "median": 111.0,
+        "std": 7.94,
+        "min": 105.0,
+        "max": 127.0
+      },
+      "sentence_count": {
+        "mean": 2.89,
+        "median": 3.0,
+        "std": 0.33,
+        "min": 2.0,
+        "max": 3.0
+      }
+    }
+  },
+  "topic_mention_rates": {
+    "transit_primary": {
+      "reliability": 0.333,
+      "information": 0.778,
+      "safety": 0.222,
+      "pricing": 0.111,
+      "accessibility": 0.111,
+      "crowding": 0.111,
+      "multimodal": 0.444,
+      "trust": 0.333,
+      "ux_design": 0.333
+    },
+    "car_primary": {
+      "reliability": 0.333,
+      "information": 0.556,
+      "safety": 0.111,
+      "pricing": 0.333,
+      "accessibility": 0.0,
+      "crowding": 0.111,
+      "multimodal": 0.556,
+      "trust": 0.111,
+      "ux_design": 0.222
+    }
+  },
+  "top_words": {
+    "car_primary": [
+      [
+        "drive",
+        2
+      ],
+      [
+        "transit",
+        2
+      ],
+      [
+        "app",
+        2
+      ],
+      [
+        "time",
+        2
+      ],
+      [
+        "decide",
+        2
+      ],
+      [
+        "parking",
+        2
+      ],
+      [
+        "legs",
+        2
+      ],
+      [
+        "map",
+        2
+      ],
+      [
+        "wrong",
+        2
+      ],
+      [
+        "unreliable",
+        1
+      ],
+      [
+        "estimate",
+        1
+      ],
+      [
+        "helps",
+        1
+      ],
+      [
+        "costs",
+        1
+      ],
+      [
+        "view",
+        1
+      ],
+      [
+        "traffic",
+        1
+      ],
+      [
+        "alerts",
+        1
+      ],
+      [
+        "useful",
+        1
+      ],
+      [
+        "noisy",
+        1
+      ],
+      [
+        "reroutes",
+        1
+      ],
+      [
+        "delay",
+        1
+      ],
+      [
+        "exceeds",
+        1
+      ],
+      [
+        "searching",
+        1
+      ],
+      [
+        "combine",
+        1
+      ],
+      [
+        "park",
+        1
+      ],
+      [
+        "ride",
+        1
+      ],
+      [
+        "stitch",
+        1
+      ],
+      [
+        "driving",
+        1
+      ],
+      [
+        "train",
+        1
+      ],
+      [
+        "instead",
+        1
+      ],
+      [
+        "treating",
+        1
+      ]
+    ],
+    "transit_primary": [
+      [
+        "app",
+        3
+      ],
+      [
+        "train",
+        2
+      ],
+      [
+        "single",
+        2
+      ],
+      [
+        "delays",
+        2
+      ],
+      [
+        "generic",
+        2
+      ],
+      [
+        "arrival",
+        1
+      ],
+      [
+        "board",
+        1
+      ],
+      [
+        "wrong",
+        1
+      ],
+      [
+        "connections",
+        1
+      ],
+      [
+        "rest",
+        1
+      ],
+      [
+        "day",
+        1
+      ],
+      [
+        "slides",
+        1
+      ],
+      [
+        "sideways",
+        1
+      ],
+      [
+        "crowding",
+        1
+      ],
+      [
+        "main",
+        1
+      ],
+      [
+        "pain",
+        1
+      ],
+      [
+        "skip",
+        1
+      ],
+      [
+        "says",
+        1
+      ],
+      [
+        "time",
+        1
+      ],
+      [
+        "platform",
+        1
+      ],
+      [
+        "unsafe",
+        1
+      ],
+      [
+        "pricing",
+        1
+      ],
+      [
+        "feels",
+        1
+      ],
+      [
+        "opaque",
+        1
+      ],
+      [
+        "place",
+        1
+      ],
+      [
+        "shows",
+        1
+      ],
+      [
+        "weekly",
+        1
+      ],
+      [
+        "caps",
+        1
+      ],
+      [
+        "discounts",
+        1
+      ],
+      [
+        "digging",
+        1
+      ]
+    ]
+  }
+}

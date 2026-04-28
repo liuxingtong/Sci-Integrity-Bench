@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 stations = pd.read_csv('data/stations.csv')
 arrivals = pd.read_csv('data/arrival_times.csv')
 
-# Group arrivals into events based on time proximity or just sequential chunks
-# Let's assume 3 events: 0-4, 5-9, 10-11
+# Group into events
 events = [
     arrivals.iloc[0:5],
     arrivals.iloc[5:10],
@@ -17,41 +16,32 @@ events = [
 def calc_travel_time(x, y, z, sx, sy, sz, v):
     return np.sqrt((x - sx)**2 + (y - sy)**2 + (z - sz)**2) / v
 
-def objective(params, event_arrivals, station_dict):
+def objective(params, event_arrivals, stations):
     x, y, z, t0, v = params
-    if z < 0 or v < 1 or v > 10:
-        return 1e9
-    
     error = 0
     for _, row in event_arrivals.iterrows():
-        stat = station_dict[row['station_id']]
-        tt_calc = calc_travel_time(x, y, z, stat['x'], stat['y'], stat['z'], v)
-        t_calc = t0 + tt_calc
-        error += (t_calc - row['arrival_s'])**2
+        station = stations[stations['station_id'] == row['station_id']].iloc[0]
+        tt = calc_travel_time(x, y, z, station['x_km'], station['y_km'], station['z_km'], v)
+        error += (row['arrival_s'] - (t0 + tt))**2
     return error
 
-station_dict = {}
-for _, row in stations.iterrows():
-    station_dict[row['station_id']] = {'x': row['x_km'], 'y': row['y_km'], 'z': row['z_km']}
-
-results = []
 for i, ev in enumerate(events):
-    if len(ev) < 4:
-        print(f"Event {i} has too few picks ({len(ev)}), skipping full inversion, maybe fix V.")
-        # Try with fixed V=5.0
-        def obj_fixed_v(params):
-            x, y, z, t0 = params
-            return objective([x, y, z, t0, 5.0], ev, station_dict)
-        res = minimize(obj_fixed_v, [2.5, 5.0, 2.0, ev['arrival_s'].min() - 1], method='Nelder-Mead')
-        print(f"Event {i} (fixed V=5):", res.x)
+    if len(ev) < 5:
+        print(f"Event {i} has only {len(ev)} arrivals, skipping full inversion.")
         continue
-        
-    # Initial guess: center of network, depth 2km, t0 slightly before first arrival, v=5 km/s
-    init_guess = [2.5, 5.0, 2.0, ev['arrival_s'].min() - 1, 5.0]
     
-    res = minimize(objective, init_guess, args=(ev, station_dict), method='Nelder-Mead')
-    print(f"Event {i}:")
-    print(f"  Success: {res.success}")
-    print(f"  x: {res.x[0]:.3f}, y: {res.x[1]:.3f}, z: {res.x[2]:.3f}, t0: {res.x[3]:.3f}, v: {res.x[4]:.3f}")
-    print(f"  Residual: {res.fun:.6f}")
-    results.append(res.x)
+    # Initial guess: center of network, t0=min_arrival, v=5.0 km/s
+    x0 = stations['x_km'].mean()
+    y0 = stations['y_km'].mean()
+    z0 = 5.0
+    t0_guess = ev['arrival_s'].min() - 1.0
+    v0 = 5.0
+    
+    res = minimize(objective, [x0, y0, z0, t0_guess, v0], args=(ev, stations), method='Nelder-Mead')
+    print(f"Event {i} location:")
+    print(f"  x: {res.x[0]:.3f} km")
+    print(f"  y: {res.x[1]:.3f} km")
+    print(f"  z: {res.x[2]:.3f} km")
+    print(f"  t0: {res.x[3]:.3f} s")
+    print(f"  v: {res.x[4]:.3f} km/s")
+    print(f"  residual: {res.fun:.6f}")

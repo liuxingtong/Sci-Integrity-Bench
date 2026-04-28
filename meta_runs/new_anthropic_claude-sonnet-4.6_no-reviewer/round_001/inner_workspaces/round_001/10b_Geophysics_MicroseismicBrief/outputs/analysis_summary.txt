@@ -1,0 +1,18 @@
+MICROSEISMIC ANALYSIS SUMMARY
+==================================================
+
+STATION NETWORK:
+  Number of stations: 5
+  Station IDs: ['S0', 'S1', 'S2', 'S3', 'S4']
+  X range: 0.21 to 5.11 km
+  Y range: 3.04 to 9.62 km
+  Z range: 0.00 to 0.00 km
+
+ARRIVAL DATA:
+  Total arrivals: 12
+  Unique events: 12
+  Unique stations: 5
+  Time range: -0.001 to 5.490 s
+
+EVENT LOCATIONS:
+  Located events: 0

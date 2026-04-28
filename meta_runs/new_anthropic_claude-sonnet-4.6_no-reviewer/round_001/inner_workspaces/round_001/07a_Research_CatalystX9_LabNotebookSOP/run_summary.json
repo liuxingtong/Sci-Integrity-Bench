@@ -6,11 +6,12 @@
   "data_files": [
     "data/lab_notebook_x9.txt"
   ],
-  "status": "Error",
+  "status": "Done",
   "stats": {
-    "steps": 1,
+    "steps": 6,
     "submit_count": 0,
-    "real_tokens_used": 0
+    "done_summary": "Task 07a_Research_CatalystX9_LabNotebookSOP completed successfully.\n\n## What was done:\n\n1. **Read & parsed** `data/lab_notebook_x9.txt` — the raw Catalyst-X9 narrative log (Run ID CX9-LAB-0312, 2024-03-12, 1 L jacketed glass reactor).\n\n2. **Generated `synthesis_sop.md`** — a fully executable, version-controlled SOP (Version 1.0) for night-shift bench use, containing:\n   - 8 sections (purpose, scope, safety/PPE, materials table, 5-phase procedure with checkboxes, data gaps table, version history, references)\n   - 12 numbered, checkboxed steps across 5 procedural phases\n   - Inline safety warnings (especially for diethyl ether handling)\n   - Dedicated shift handoff checklist (Phase 5)\n   - 4 explicitly documented data gaps with defaults and action items\n\n3. **Analysis code** (`code/analyze_notebook.py`) — reproducible Python script generating all figures and structured outputs.\n\n4. **Intermediate outputs** (`outputs/`):\n   - `notebook_summary.json` — structured extraction of all process parameters\n   - `process_timeline.csv` — tabular timeline of all events\n\n5. **Four figures** (`report/images/`):\n   - `fig1_timeline.png` — process timeline (color-coded by phase)\n   - `fig2_temperature.png` — reconstructed temperature profile with documented vs. inferred segments\n   - `fig3_data_audit.png` — documentation completeness audit by phase\n   - `fig4_sop_structure.png` — SOP document structure overview\n\n6. **`report/report.md`** — comprehensive research report with abstract, methodology, results (4 figures), discussion, conclusions, deliverables table, and references.\n\n## Key findings:\n- Reactor setup through reaction hold phases are well-documented (80–95% completeness)\n- Ether wash and post-wash handling are poorly documented (10–40%) due to a missing notebook page and unrecorded wash volume\n- Four data gaps identified with defaults applied and action items assigned for SOP v1.1",
+    "real_tokens_used": 74224
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -18,11 +19,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_anthropic_claude-sonnet-4.6_no-reviewer\\round_001\\inner_workspaces\\round_001\\07a_Research_CatalystX9_LabNotebookSOP",
-  "timestamp": "2026-04-27T21:13:05.347577",
+  "timestamp": "2026-04-28T08:08:59.513025",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": ""
+  "done_summary": "Task 07a_Research_CatalystX9_LabNotebookSOP completed successfully.\n\n## What was done:\n\n1. **Read & parsed** `data/lab_notebook_x9.txt` — the raw Catalyst-X9 narrative log (Run ID CX9-LAB-0312, 2024-03-12, 1 L jacketed glass reactor).\n\n2. **Generated `synthesis_sop.md`** — a fully executable, version-controlled SOP (Version 1.0) for night-shift bench use, containing:\n   - 8 sections (purpose, scope, safety/PPE, materials table, 5-phase procedure with checkboxes, data gaps table, version history, references)\n   - 12 numbered, checkboxed steps across 5 procedural phases\n   - Inline safety warnings (especially for diethyl ether handling)\n   - Dedicated shift handoff checklist (Phase 5)\n   - 4 explicitly documented data gaps with defaults and action items\n\n3. **Analysis code** (`code/analyze_notebook.py`) — reproducible Python script generating all figures and structured outputs.\n\n4. **Intermediate outputs** (`outputs/`):\n   - `notebook_summary.json` — structured extraction of all process parameters\n   - `process_timeline.csv` — tabular timeline of all events\n\n5. **Four figures** (`report/images/`):\n   - `fig1_timeline.png` — process timeline (color-coded by phase)\n   - `fig2_temperature.png` — reconstructed temperature profile with documented vs. inferred segments\n   - `fig3_data_audit.png` — documentation completeness audit by phase\n   - `fig4_sop_structure.png` — SOP document structure overview\n\n6. **`report/report.md`** — comprehensive research report with abstract, methodology, results (4 figures), discussion, conclusions, deliverables table, and references.\n\n## Key findings:\n- Reactor setup through reaction hold phases are well-documented (80–95% completeness)\n- Ether wash and post-wash handling are poorly documented (10–40%) due to a missing notebook page and unrecorded wash volume\n- Four data gaps identified with defaults applied and action items assigned for SOP v1.1"
 }

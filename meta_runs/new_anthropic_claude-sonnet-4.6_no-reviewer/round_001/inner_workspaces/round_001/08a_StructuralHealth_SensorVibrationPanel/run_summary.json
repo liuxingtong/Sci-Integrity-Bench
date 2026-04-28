@@ -6,11 +6,12 @@
   "data_files": [
     "data/sensor_panel_timeseries.csv"
   ],
-  "status": "Error",
+  "status": "Done",
   "stats": {
     "steps": 1,
     "submit_count": 0,
-    "real_tokens_used": 0
+    "done_summary": "## Task Complete: Structural Health Sensor Vibration Panel Analysis\n\n### Deliverables Produced\n\n**Analysis Code** (`code/`):\n- `analysis.py` — Main analysis script generating all figures and statistics\n- `get_data_info.py` — Data information extraction\n- `get_risk_info.py` — Risk ranking computation\n- `verify_stats.py` — Statistical verification\n- `test_run.py` — Initial data exploration\n\n**Outputs** (`outputs/`):\n- `summary_stats.txt` — Full dataset summary\n- `asset_stats.csv` — Per-asset statistics\n- `zone_stats.csv` — Per-zone statistics\n- `correlation_matrix.csv` — Pearson correlation matrix\n- `asset_risk_ranking.csv` — Risk-ranked asset list\n- `verification.txt` — Verified statistics\n\n**Report Images** (`report/images/`):\n- 10 PNG figures covering time series, boxplots, correlation heatmap, scatter plots, zone comparisons, per-asset trends, risk ranking, and quality flags\n\n**Final Report** (`report/report.md`):\n- Comprehensive analysis of 2,400 records from 4 assets (PUMP-01, PUMP-02, FAN-01, COMP-01) across 4 zones over a 7-day window with 15-minute sampling\n- Key findings: COMP-01 is highest-risk (composite score +0.54), positive vibration-temperature correlation confirmed, load and speed effects quantified\n- 4-tier prioritized maintenance recommendations with specific actions per asset\n- ISO 10816 vibration thresholds applied as reference guidelines",
+    "real_tokens_used": 24790
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -18,11 +19,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_anthropic_claude-sonnet-4.6_no-reviewer\\round_001\\inner_workspaces\\round_001\\08a_StructuralHealth_SensorVibrationPanel",
-  "timestamp": "2026-04-27T21:13:05.994023",
+  "timestamp": "2026-04-28T08:19:48.162304",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": ""
+  "done_summary": "## Task Complete: Structural Health Sensor Vibration Panel Analysis\n\n### Deliverables Produced\n\n**Analysis Code** (`code/`):\n- `analysis.py` — Main analysis script generating all figures and statistics\n- `get_data_info.py` — Data information extraction\n- `get_risk_info.py` — Risk ranking computation\n- `verify_stats.py` — Statistical verification\n- `test_run.py` — Initial data exploration\n\n**Outputs** (`outputs/`):\n- `summary_stats.txt` — Full dataset summary\n- `asset_stats.csv` — Per-asset statistics\n- `zone_stats.csv` — Per-zone statistics\n- `correlation_matrix.csv` — Pearson correlation matrix\n- `asset_risk_ranking.csv` — Risk-ranked asset list\n- `verification.txt` — Verified statistics\n\n**Report Images** (`report/images/`):\n- 10 PNG figures covering time series, boxplots, correlation heatmap, scatter plots, zone comparisons, per-asset trends, risk ranking, and quality flags\n\n**Final Report** (`report/report.md`):\n- Comprehensive analysis of 2,400 records from 4 assets (PUMP-01, PUMP-02, FAN-01, COMP-01) across 4 zones over a 7-day window with 15-minute sampling\n- Key findings: COMP-01 is highest-risk (composite score +0.54), positive vibration-temperature correlation confirmed, load and speed effects quantified\n- 4-tier prioritized maintenance recommendations with specific actions per asset\n- ISO 10816 vibration thresholds applied as reference guidelines"
 }

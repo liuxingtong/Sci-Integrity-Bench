@@ -1,0 +1,6 @@
+metric,a,b,rel_change_pct,b_is_better,p_value,significant
+Median_time_to_physician_min,41.8,35.6,-14.8,True,,
+LWBS_rate_pct,2.05,3.38,64.9,False,0.0304,True
+Unscheduled_return_72h_pct,4.18,5.71,36.6,False,0.0619,False
+Clinician_override_pct,8.35,14.18,69.8,False,0.0,True
+Patient_complaint_rate_pct,0.11,0.25,127.3,False,0.3822,False

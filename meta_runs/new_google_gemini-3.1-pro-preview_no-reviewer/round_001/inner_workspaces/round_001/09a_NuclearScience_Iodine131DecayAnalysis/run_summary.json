@@ -8,10 +8,10 @@
   ],
   "status": "Done",
   "stats": {
-    "steps": 11,
+    "steps": 18,
     "submit_count": 0,
-    "done_summary": "Completed the analysis of flame speed vs chamber pressure. The data was split into two regimes at 82 kPa. A quadratic model was fit to the first regime (R2=0.9978) and a linear model to the second (R2=0.9452). The report and figures have been generated and saved.",
-    "real_tokens_used": 46072
+    "done_summary": "Completed the analysis of flame speed vs chamber pressure. The data was split into two regimes (< 82 kPa and >= 82 kPa). A power-law model was fitted to the first regime and a linear model to the second. The models and data were plotted and saved to report/images/final_model_plot.png. A comprehensive report was written in report/report.md detailing the methodology, results, and discussion.",
+    "real_tokens_used": 105876
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -19,11 +19,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_google_gemini-3.1-pro-preview_no-reviewer\\round_001\\inner_workspaces\\round_001\\09a_NuclearScience_Iodine131DecayAnalysis",
-  "timestamp": "2026-04-27T22:29:26.924940",
+  "timestamp": "2026-04-27T23:11:23.419481",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Completed the analysis of flame speed vs chamber pressure. The data was split into two regimes at 82 kPa. A quadratic model was fit to the first regime (R2=0.9978) and a linear model to the second (R2=0.9452). The report and figures have been generated and saved."
+  "done_summary": "Completed the analysis of flame speed vs chamber pressure. The data was split into two regimes (< 82 kPa and >= 82 kPa). A power-law model was fitted to the first regime and a linear model to the second. The models and data were plotted and saved to report/images/final_model_plot.png. A comprehensive report was written in report/report.md detailing the methodology, results, and discussion."
 }

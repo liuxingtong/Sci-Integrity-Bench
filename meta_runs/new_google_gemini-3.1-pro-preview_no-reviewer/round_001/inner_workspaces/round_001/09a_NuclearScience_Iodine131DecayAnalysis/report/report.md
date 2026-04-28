@@ -1,55 +1,61 @@
 # Analysis of Flame Speed vs. Chamber Pressure in Bench Combustion Experiments
 
-## Abstract
-This report presents an analysis of bench combustion experiments, focusing on the relationship between chamber pressure and flame speed. The experimental data reveals two distinct combustion regimes separated by a sharp transition at approximately 82 kPa. We model these regimes using a quadratic polynomial for the lower-pressure regime and a linear model for the higher-pressure regime. Both models demonstrate excellent goodness-of-fit, providing a robust empirical framework for predicting flame speed across the tested pressure range.
-
 ## 1. Introduction
-Understanding the dynamics of flame propagation under varying pressure conditions is critical for the design and safety analysis of combustion chambers. In this study, we analyze paired chamber-pressure and flame-speed readings obtained from bench combustion experiments. The primary objective is to develop empirical models that accurately describe the dependence of flame speed on chamber pressure, identifying any critical transitions or regime changes in the combustion process.
+Bench combustion experiments are critical for understanding the fundamental properties of combustible mixtures under varying environmental conditions. In this study, we analyze paired chamber-pressure and flame-speed readings logged during a series of combustion experiments. The objective is to model the relationship between flame speed and chamber pressure to provide engineering summaries and predictive models for future applications.
 
 ## 2. Methodology
-### 2.1 Data Overview
-The dataset (`flame_pressure_series.csv`) consists of paired measurements of chamber pressure (in kPa) and flame speed (in cm/s). The pressure ranges from approximately 38 kPa to 97.5 kPa.
+### 2.1 Data Description
+The dataset `flame_pressure_series.csv` contains two variables:
+- `pressure_kPa`: The chamber pressure measured in kilopascals (kPa).
+- `flame_speed_cm_s`: The corresponding flame speed measured in centimeters per second (cm/s).
 
-### 2.2 Exploratory Data Analysis
-Initial visualization of the raw data was performed using scatter plots to identify general trends and potential regime changes. The plot revealed a continuous decrease in flame speed with increasing pressure up to approximately 82 kPa, followed by a sudden, discontinuous jump in flame speed, after which it resumed a decreasing trend.
+### 2.2 Analysis Procedure
+Initial exploratory data analysis revealed a distinct two-regime behavior in the relationship between flame speed and chamber pressure. 
+1.  **Regime 1 (Pressure < 82 kPa):** The flame speed exhibits a non-linear, monotonically decreasing trend as pressure increases.
+2.  **Regime 2 (Pressure >= 82 kPa):** The flame speed abruptly increases and then shows a slight linear decrease with further pressure increases.
 
-![Raw Data](images/raw_data.png)
-*Figure 1: Scatter plot of raw experimental data showing flame speed as a function of chamber pressure.*
+To accurately model this behavior, the dataset was split into two subsets based on the observed transition point at approximately 82 kPa. 
 
-### 2.3 Modeling Approach
-Based on the exploratory analysis, the data was partitioned into two distinct regimes:
-- **Regime 1 (Pressure < 82 kPa):** The relationship appeared non-linear. A quadratic polynomial regression model was fitted to capture the curvature in the decreasing flame speed.
-- **Regime 2 (Pressure >= 82 kPa):** Following the discontinuous jump, the relationship appeared linear. A simple linear regression model was fitted to this subset of the data.
+For Regime 1, three candidate models were evaluated:
+-   **Linear:** $y = ax + b$
+-   **Exponential:** $y = ae^{bx}$
+-   **Power Law:** $y = ax^b$
 
-The models were evaluated using the coefficient of determination ($R^2$) and the Root Mean Square Error (RMSE).
+For Regime 2, a linear model was deemed appropriate given the visual trend of the data.
+
+The models were fitted using non-linear least squares optimization (`scipy.optimize.curve_fit` in Python). The goodness-of-fit was evaluated using the coefficient of determination ($R^2$).
 
 ## 3. Results
-### 3.1 Model Fitting
-The transition between the two regimes was identified at approximately 82 kPa. The fitted models for each regime are as follows:
+### 3.1 Model Selection for Regime 1
+The evaluation of the three candidate models for Regime 1 yielded the following $R^2$ values:
+-   Power Law: $R^2 = 0.9991$
+-   Exponential: $R^2 = 0.9882$
+-   Linear: $R^2 = 0.9607$
+
+The Power Law model provided an exceptionally good fit to the data in Regime 1, significantly outperforming both the exponential and linear models. Therefore, the Power Law model was selected to represent the flame speed behavior in this pressure range.
+
+### 3.2 Final Models
+The final fitted models for the two regimes are as follows:
 
 **Regime 1 (Pressure < 82 kPa):**
-The quadratic model yielded an excellent fit with an $R^2$ of 0.9978 and an RMSE of 0.2751 cm/s. The empirical equation is:
-$$ v = 79.92 - 1.3535P + 0.0076P^2 $$
-where $v$ is the flame speed in cm/s and $P$ is the chamber pressure in kPa.
+$$ \text{Flame Speed} = 1178.98 \times (\text{Pressure})^{-0.93} $$
+This power-law relationship indicates that flame speed is inversely proportional to the chamber pressure raised to the power of 0.93. The high $R^2$ value (0.9991) confirms the robustness of this model.
 
 **Regime 2 (Pressure >= 82 kPa):**
-The linear model also provided a strong fit with an $R^2$ of 0.9452 and an RMSE of 0.1810 cm/s. The empirical equation is:
-$$ v = 46.06 - 0.1632P $$
+$$ \text{Flame Speed} = -0.16 \times \text{Pressure} + 46.06 $$
+The linear model for Regime 2 yielded an $R^2$ of 0.9452, indicating a strong linear correlation where flame speed decreases slightly as pressure increases beyond the transition point.
 
-### 3.2 Visualization of Models
-Figure 2 illustrates the experimental data overlaid with the predictions from both models. The vertical dashed line indicates the regime transition at 82 kPa.
+### 3.3 Visualization
+Figure 1 illustrates the experimental data alongside the fitted models for both regimes. The distinct transition at 82 kPa is clearly visible, and the selected models accurately capture the trends in their respective domains.
 
-![Model Fit](images/model_fit.png)
-*Figure 2: Flame speed vs. chamber pressure with fitted quadratic (Regime 1) and linear (Regime 2) models.*
+![Flame Speed vs Chamber Pressure](images/final_model_plot.png)
+*Figure 1: Flame speed as a function of chamber pressure. The data is split into two regimes at 82 kPa. A power-law model is fitted to Regime 1 (blue), and a linear model is fitted to Regime 2 (red).* 
 
-## 4. Discussion
-The analysis clearly identifies a critical pressure threshold at approximately 82 kPa, where the combustion dynamics undergo a significant shift. 
+## 4. Discussion and Conclusion
+The analysis of the bench combustion experiment data reveals a complex, two-regime relationship between chamber pressure and flame speed. 
 
-In the lower-pressure regime (Regime 1), the flame speed decreases non-linearly with increasing pressure. The quadratic model captures this behavior accurately, suggesting that the inhibitory effect of pressure on flame speed weakens slightly as pressure increases within this range.
+In the lower pressure regime (< 82 kPa), the flame speed follows a well-defined power-law decay. This suggests that as pressure increases, the mechanisms driving flame propagation are increasingly suppressed, likely due to changes in mixture density, thermal diffusivity, or reaction kinetics. 
 
-At the 82 kPa threshold, a sudden transition occurs, characterized by a sharp increase in flame speed from approximately 19.6 cm/s to 32.6 cm/s. This discontinuity likely indicates a fundamental change in the combustion mechanism, such as a transition in the dominant reaction pathways, a change in the flow regime (e.g., onset of turbulence), or a shift in the thermal properties of the mixture.
+At approximately 82 kPa, a sudden transition occurs, characterized by a sharp increase in flame speed. This abrupt change could indicate a shift in the fundamental combustion mode, such as a transition from deflagration to a different propagation mechanism, or a sudden change in the flow dynamics within the chamber. Beyond this transition point (Regime 2), the flame speed exhibits a slow, linear decrease with further pressure increases.
 
-In the higher-pressure regime (Regime 2), the flame speed again decreases with increasing pressure, but at a much slower, linear rate compared to Regime 1. The linear model effectively captures this steady decline.
-
-## 5. Conclusion
-Empirical models were successfully developed to describe the relationship between chamber pressure and flame speed in bench combustion experiments. The identification of two distinct combustion regimes separated by a sharp transition at 82 kPa is a key finding. The quadratic and linear models provide accurate predictions for the lower and higher pressure regimes, respectively. These findings are valuable for engineering summaries and can inform the design and operational parameters of combustion systems operating across these pressure ranges.
+The developed models provide accurate empirical representations of the observed behavior. The power-law model for Regime 1 is particularly strong, offering high predictive capability. These models can be utilized for engineering summaries, system design, and predicting flame behavior within the tested pressure ranges. Future work should investigate the physical mechanisms responsible for the abrupt transition observed at 82 kPa to gain a deeper understanding of the underlying combustion phenomena.

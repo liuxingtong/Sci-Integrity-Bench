@@ -1,0 +1,3 @@
+Images found:
+fig1_timeseries_overview.png
+Total: 1

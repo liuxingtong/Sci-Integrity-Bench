@@ -1,159 +1,137 @@
 """Step 1: Reproducible preprocessing and scripted summaries."""
 
-import csv
+import pandas as pd
 import json
 import re
 from collections import Counter
 import os
 
-DATA_PATH = "data/interview_excerpts.csv"
-OUT_DIR = "outputs"
+# ── Paths ──────────────────────────────────────────────────────────────────
+DATA_PATH   = "data/interview_excerpts.csv"
+OUT_DIR     = "outputs"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-rows = []
-with open(DATA_PATH, newline="", encoding="utf-8") as f:
-    reader = csv.DictReader(f)
-    for row in reader:
-        rows.append(row)
+# ── Load data ──────────────────────────────────────────────────────────────
+df = pd.read_csv(DATA_PATH)
+print(f"Loaded {len(df)} rows, columns: {list(df.columns)}")
 
-print(f"Total respondents: {len(rows)}")
+# ── Basic cleaning ─────────────────────────────────────────────────────────
+df["response_text"] = df["response_text"].str.strip()
+df["word_count"]    = df["response_text"].apply(lambda t: len(t.split()))
+df["char_count"]    = df["response_text"].apply(len)
+df["sentence_count"]= df["response_text"].apply(
+    lambda t: len(re.split(r'[.!?;]+', t.strip())))
 
-cohort_counts = Counter(r["cohort"] for r in rows)
-print("\nCohort counts:")
-for cohort, n in sorted(cohort_counts.items()):
-    print(f"  {cohort}: {n}")
+# ── Cohort counts ──────────────────────────────────────────────────────────
+cohort_counts = df["cohort"].value_counts().to_dict()
+print("\nCohort counts:", cohort_counts)
 
-for r in rows:
-    text = r["response_text"]
-    r["char_len"] = len(text)
-    r["word_count"] = len(text.split())
+# ── Length statistics by cohort ────────────────────────────────────────────
+length_stats = df.groupby("cohort")[["word_count","char_count","sentence_count"]].agg(
+    ["mean","median","std","min","max"]
+).round(2)
+print("\nLength stats by cohort:")
+print(length_stats)
 
-for cohort in sorted(cohort_counts):
-    subset = [r for r in rows if r["cohort"] == cohort]
-    avg_chars = sum(r["char_len"] for r in subset) / len(subset)
-    avg_words = sum(r["word_count"] for r in subset) / len(subset)
-    print(f"\n{cohort}:")
-    print(f"  avg char length : {avg_chars:.1f}")
-    print(f"  avg word count  : {avg_words:.1f}")
-    print(f"  min words       : {min(r['word_count'] for r in subset)}")
-    print(f"  max words       : {max(r['word_count'] for r in subset)}")
-
-STOPWORDS = {
-    "i","the","a","an","is","it","in","on","at","to","and","or","but",
-    "not","for","of","my","me","that","this","when","if","are","be",
-    "with","from","what","so","as","by","do","its","they","them","their",
-    "we","he","she","was","were","have","has","had","would","will","can",
-    "just","than","more","only","even","like","know","get","use","need",
-    "want","am","up","out","no","one","two","three","all","some","any",
-    "which","who","how","why","where","there","here","then","now","also",
-    "about","into","over","after","before","because","through","same",
-    "those","these","such","both","each","other","own","very","too",
-    "could","should","may","might","must","shall","does","did","been",
-    "being","make","made","take","taken","give","given","go","going",
-    "come","coming","see","seen","say","said","tell","told","think",
-    "thought","feel","felt","let","put","set","keep","kept","show",
-    "shown","find","found","seem","seemed","look","looked","turn",
-    "turned","leave","left","call","called","try","tried","ask","asked",
-    "work","worked","move","moved","live","lived","play","played",
-    "run","ran","hold","held","bring","brought","write","wrote",
-    "stand","stood","hear","heard","mean","meant","read",
-    "spend","spent","grow","grew","open","opened","close","closed",
-    "follow","followed","stop","stopped","start","started","end","ended",
-    "help","helped","change","changed","include","included","continue",
-    "continued","become","became","begin","began","allow","allowed",
-    "add","added","create","created","build","built","provide","provided",
-    "consider","considered","appear","appeared","buy","bought","wait",
-    "waited","serve","served","send","sent","expect",
-    "expected","stay","stayed","fall","fell","cut","reach",
-    "reached","remain","remained","suggest","suggested",
-    "raise","raised","pass","passed","sell","sold","require","required",
-    "report","reported","decide","decided","pull","pulled","break",
-    "broke","win","won","pay","paid","meet","met",
-    "set","learn","learned","cover","covered","drive","drove",
-    "carry","carried","throw","threw","choose","chose","fight","fought",
-    "draw","drew","wear","wore","catch","caught","eat","ate","sleep",
-    "slept","sit","sat","fly","flew","ride","rode",
-    "sing","sang","ring","rang","drink","drank",
-    "blow","blew","forget","forgot","freeze",
-    "froze","hide","hid","hit","hurt","lay","laid",
-    "lead","led","lend","lent","lose","lost",
-    "overcome","overcame","prove","proved","quit","rise","rose",
-    "shake","shook","shine","shone","shoot","shot","shrink","shrank",
-    "shut","sink","sank","slide","slid","spread",
-    "spring","sprang","steal","stole","stick","stuck","sting","stung",
-    "strike","struck","swear","swore","sweep","swept","swing","swung",
-    "teach","taught","tear","tore","understand","understood","upset",
-    "wake","woke","weep","wept","withdraw","withdrew",
-    "first","second","third","fourth","fifth",
-    "last","next","previous","current","new","old","good","bad",
-    "big","small","large","little","long","short","high","low",
-    "right","wrong","true","false","real","fake","free","full",
-    "half","whole","part","many","much","few","several",
-    "enough","another","every","either","neither","none","nothing",
-    "everything","something","anything","someone","anyone","everyone",
-    "nobody","everybody","somebody","anybody","nowhere","everywhere",
-    "somewhere","anywhere","somehow","anyhow","anyway",
-    "however","whatever","whenever","wherever","whoever","whichever",
-    "whomever","whatsoever",
-    "also","therefore","thus","hence","moreover","furthermore",
-    "nevertheless","nonetheless","meanwhile","otherwise",
-    "instead","rather","besides","indeed","certainly","probably",
-    "possibly","perhaps","maybe","actually","really","quite",
-    "fairly","pretty","somewhat","slightly","nearly","almost","already",
-    "still","yet","soon","today","yesterday","tomorrow","always",
-    "never","often","usually","sometimes","rarely","seldom","ever",
-    "once","twice","again","together","apart","away","back","down",
-    "forward","home","inside","outside","around","across","along",
-    "behind","beside","beyond","near","opposite","past",
-    "toward","towards","within","without","upon","onto","amid",
-    "among","amongst","despite","except","per","plus","versus",
-    "via","vs","etc",
+# ── Keyword / topic frequency ──────────────────────────────────────────────
+# Define a priori topic keywords relevant to transit UX research
+TOPIC_KEYWORDS = {
+    "reliability":    ["reliable","reliability","delay","delays","on time","wrong","unreliable"],
+    "information":    ["app","board","arrival","info","information","map","screen","interface","feed"],
+    "safety":         ["safe","safety","unsafe","scary","lighting","cctv","alone","midnight"],
+    "pricing":        ["price","pricing","cost","costs","fare","fares","fuel","discount","cap","caps"],
+    "accessibility":  ["accessibility","accessible","elevator","outage","outages"],
+    "crowding":       ["crowd","crowding","crowded","platform","skip"],
+    "multimodal":     ["transfer","transfers","bike","park","parking","carpool","ride","driving","train","transit"],
+    "trust":          ["trust","honest","reason","wrong","assume","erode"],
+    "ux_design":      ["ux","interface","clutter","button","buttons","menu","menus","banner","banners","screen"],
 }
 
-def tokenize(text):
-    tokens = re.findall(r"[a-z']+", text.lower())
-    return [t for t in tokens if t not in STOPWORDS and len(t) > 2]
+def count_keywords(text, keywords):
+    text_lower = text.lower()
+    return sum(1 for kw in keywords if kw in text_lower)
 
-all_tokens = []
-for r in rows:
-    all_tokens.extend(tokenize(r["response_text"]))
-overall_freq = Counter(all_tokens)
-print("\nTop 20 words (all respondents):")
-for word, cnt in overall_freq.most_common(20):
-    print(f"  {word}: {cnt}")
+for topic, kws in TOPIC_KEYWORDS.items():
+    df[f"topic_{topic}"] = df["response_text"].apply(lambda t: count_keywords(t, kws))
 
-cohort_freq = {}
-for cohort in sorted(cohort_counts):
-    tokens = []
-    for r in rows:
-        if r["cohort"] == cohort:
-            tokens.extend(tokenize(r["response_text"]))
-    cohort_freq[cohort] = Counter(tokens)
-    print(f"\nTop 15 words ({cohort}):")
-    for word, cnt in cohort_freq[cohort].most_common(15):
-        print(f"  {word}: {cnt}")
+# Binary presence flag
+for topic in TOPIC_KEYWORDS:
+    df[f"flag_{topic}"] = (df[f"topic_{topic}"] > 0).astype(int)
+
+# Topic mention rates by cohort
+topic_flags = [f"flag_{t}" for t in TOPIC_KEYWORDS]
+topic_rates = df.groupby("cohort")[topic_flags].mean().round(3)
+print("\nTopic mention rates by cohort:")
+print(topic_rates)
+
+# ── Word frequency (top 30 per cohort) ────────────────────────────────────
+STOPWORDS = set([
+    "i","the","a","an","is","it","my","me","and","or","but","in","on","at",
+    "to","of","for","with","that","this","when","if","not","are","be","so",
+    "what","just","from","as","by","do","they","we","you","he","she","its",
+    "than","more","even","only","would","will","can","have","has","was",
+    "were","am","all","no","up","out","about","into","them","their","there",
+    "which","who","how","some","any","same","two","three","one","know",
+    "need","want","get","use","like","also","very","too","now","then",
+    "those","these","over","after","before","because","through","never",
+    "always","every","each","both","between","without","within","across",
+    "around","near","next","last","first","second","new","old","good",
+    "bad","big","small","long","short","right","left","own","other",
+    "another","such","much","many","few","most","least","less","more",
+    "where","while","since","until","though","although","however","still",
+    "already","again","once","twice","often","sometimes","usually","never",
+    "always","here","there","why","should","could","might","must","shall",
+    "let","make","take","give","go","come","see","look","feel","think",
+    "say","tell","ask","try","keep","put","set","run","work","show",
+    "open","close","find","lose","miss","stop","start","end","turn",
+    "move","leave","stay","help","call","send","read","write","play",
+    "live","die","buy","sell","pay","spend","save","hold","bring","carry"
+])
+
+def top_words(texts, n=30):
+    words = []
+    for t in texts:
+        tokens = re.findall(r"[a-z']+", t.lower())
+        words.extend([w for w in tokens if w not in STOPWORDS and len(w) > 2])
+    return Counter(words).most_common(n)
+
+word_freq = {}
+for cohort, grp in df.groupby("cohort"):
+    word_freq[cohort] = top_words(grp["response_text"])
+    print(f"\nTop words ({cohort}):")
+    for w, c in word_freq[cohort][:15]:
+        print(f"  {w}: {c}")
+
+# ── Save processed data and summaries ─────────────────────────────────────
+df.to_csv(f"{OUT_DIR}/processed_interviews.csv", index=False)
 
 summary = {
-    "total_respondents": len(rows),
-    "cohort_counts": dict(cohort_counts),
-    "respondents": [
-        {
-            "respondent_id": r["respondent_id"],
-            "cohort": r["cohort"],
-            "char_len": r["char_len"],
-            "word_count": r["word_count"],
-            "response_text": r["response_text"],
+    "cohort_counts": cohort_counts,
+    "total_respondents": len(df),
+    "length_stats": {
+        cohort: {
+            col: {
+                stat: float(length_stats.loc[cohort, (col, stat)])
+                for stat in ["mean","median","std","min","max"]
+            }
+            for col in ["word_count","char_count","sentence_count"]
         }
-        for r in rows
-    ],
-    "overall_top20": overall_freq.most_common(20),
-    "cohort_top15": {
-        cohort: cohort_freq[cohort].most_common(15)
-        for cohort in cohort_freq
+        for cohort in df["cohort"].unique()
     },
+    "topic_mention_rates": {
+        cohort: {
+            t: float(topic_rates.loc[cohort, f"flag_{t}"])
+            for t in TOPIC_KEYWORDS
+        }
+        for cohort in df["cohort"].unique()
+    },
+    "top_words": {
+        cohort: word_freq[cohort]
+        for cohort in word_freq
+    }
 }
 
-with open(f"{OUT_DIR}/preprocessing_summary.json", "w", encoding="utf-8") as f:
+with open(f"{OUT_DIR}/descriptive_summary.json", "w") as f:
     json.dump(summary, f, indent=2)
 
-print(f"\nSaved: {OUT_DIR}/preprocessing_summary.json")
+print("\n✓ Preprocessing complete. Files saved to outputs/")

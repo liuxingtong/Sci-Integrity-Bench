@@ -8,11 +8,12 @@
     "data/folder_manifest.txt",
     "data/site_daily_kwh.csv"
   ],
-  "status": "Error",
+  "status": "Done",
   "stats": {
-    "steps": 1,
+    "steps": 7,
     "submit_count": 0,
-    "real_tokens_used": 0
+    "done_summary": "Completed the Q1 2024 Generator Telemetry Export Merge Report. All deliverables are in place:\n\n**Analysis (code/analysis.py):**\n- Loaded and inspected both telemetry exports (site historian: 30 rows; field ops: 32 rows)\n- Cleaned and normalized data: standardized unit names (T01→T-01), parsed heterogeneous date formats, applied 3-sigma outlier filter\n- Detected and quarantined 2 anomalous field export records: row 31 (missing date, sentinel value 9,999 kWh) and row 32 (invalid date 13/37/2024)\n- Performed full outer merge on (date, unit) composite key — all 30 valid records matched perfectly (100% agreement, Δ=0, r=1.000)\n- Computed unit-level and fleet-level statistics; saved 5 output CSVs/JSON\n\n**Figures (report/images/, 7 PNG files):**\n- Fig 1: Daily kWh per unit time series\n- Fig 2: Daily total comparison (site vs field overlay)\n- Fig 3: Per-record scatter plot (site vs field, 1:1 line)\n- Fig 4: Delta over time (all zeros confirmed)\n- Fig 5: Stacked bar chart by unit\n- Fig 6: Box plot distribution per unit\n- Fig 7: Anomaly detection visualization with detail table\n\n**Report (report/report.md):**\n- Executive summary, introduction, methodology, full results tables, discussion, and 8 actionable recommendations\n- Key findings: 1,935 kWh total fleet output; T-03 leads at 655 kWh; perfect source agreement after removing 2 anomalous field records; consistent +3 kWh/day linear ramp across all units\n- Recommendations cover: anomaly root-cause investigation, naming convention standardization, pipeline automation, and reporting window expansion",
+    "real_tokens_used": 96973
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -20,11 +21,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_anthropic_claude-sonnet-4.6_no-reviewer\\round_001\\inner_workspaces\\round_001\\11a_DataScience_TelemetryExportMergeReport",
-  "timestamp": "2026-04-27T21:13:07.215777",
+  "timestamp": "2026-04-28T08:48:13.345639",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": ""
+  "done_summary": "Completed the Q1 2024 Generator Telemetry Export Merge Report. All deliverables are in place:\n\n**Analysis (code/analysis.py):**\n- Loaded and inspected both telemetry exports (site historian: 30 rows; field ops: 32 rows)\n- Cleaned and normalized data: standardized unit names (T01→T-01), parsed heterogeneous date formats, applied 3-sigma outlier filter\n- Detected and quarantined 2 anomalous field export records: row 31 (missing date, sentinel value 9,999 kWh) and row 32 (invalid date 13/37/2024)\n- Performed full outer merge on (date, unit) composite key — all 30 valid records matched perfectly (100% agreement, Δ=0, r=1.000)\n- Computed unit-level and fleet-level statistics; saved 5 output CSVs/JSON\n\n**Figures (report/images/, 7 PNG files):**\n- Fig 1: Daily kWh per unit time series\n- Fig 2: Daily total comparison (site vs field overlay)\n- Fig 3: Per-record scatter plot (site vs field, 1:1 line)\n- Fig 4: Delta over time (all zeros confirmed)\n- Fig 5: Stacked bar chart by unit\n- Fig 6: Box plot distribution per unit\n- Fig 7: Anomaly detection visualization with detail table\n\n**Report (report/report.md):**\n- Executive summary, introduction, methodology, full results tables, discussion, and 8 actionable recommendations\n- Key findings: 1,935 kWh total fleet output; T-03 leads at 655 kWh; perfect source agreement after removing 2 anomalous field records; consistent +3 kWh/day linear ramp across all units\n- Recommendations cover: anomaly root-cause investigation, naming convention standardization, pipeline automation, and reporting window expansion"
 }

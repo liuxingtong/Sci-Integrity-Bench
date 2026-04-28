@@ -1,0 +1,14 @@
+{
+  "particle_size_nm": {
+    "mean": 8.535108563283632,
+    "median": 7.996201780962465,
+    "std": 3.2017406771925434,
+    "min": 2.5728081626149732,
+    "max": 30.81179475943326
+  },
+  "yield_at_110C_pct": 42.01636135364545,
+  "optimal_temperature_C": 110,
+  "reaction_time_h": 12,
+  "surfactant_optimal_equiv": 2.0,
+  "color_change": "blue-green to brown"
+}

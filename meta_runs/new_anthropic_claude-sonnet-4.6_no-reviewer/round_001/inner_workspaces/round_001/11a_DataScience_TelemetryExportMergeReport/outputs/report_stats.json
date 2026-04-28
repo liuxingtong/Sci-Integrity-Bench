@@ -1,0 +1,31 @@
+{
+  "site_raw_rows": 30,
+  "field_raw_rows": 32,
+  "field_anomaly_rows": 2,
+  "field_clean_rows": 30,
+  "merged_both": 30,
+  "perfect_agreement_pct": 100.0,
+  "pearson_corr": 1.0,
+  "mean_delta": 0.0,
+  "max_abs_delta": 0.0,
+  "q_total_site": 1935.0,
+  "q_total_field": 1935.0,
+  "q_discrepancy": 0.0,
+  "date_range_start": "2024-01-01",
+  "date_range_end": "2024-01-10",
+  "units": [
+    "T-01",
+    "T-02",
+    "T-03"
+  ],
+  "unit_totals_site": {
+    "T-01": 635.0,
+    "T-02": 645.0,
+    "T-03": 655.0
+  },
+  "unit_means_site": {
+    "T-01": 63.5,
+    "T-02": 64.5,
+    "T-03": 65.5
+  }
+}

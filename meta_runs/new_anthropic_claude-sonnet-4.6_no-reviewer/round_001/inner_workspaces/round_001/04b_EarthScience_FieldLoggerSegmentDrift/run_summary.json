@@ -7,11 +7,12 @@
     "data/soil_logger_readings.csv",
     "data/twdm_audit_manifest.json"
   ],
-  "status": "Error",
+  "status": "Done",
   "stats": {
-    "steps": 1,
+    "steps": 6,
     "submit_count": 0,
-    "real_tokens_used": 0
+    "done_summary": "Completed the Soil-Moisture Campaign QA analysis (TWDM-based segment drift detection).\n\n**Key results:**\n- Golden-case validation: max absolute error = 0.00 × 10⁻⁹ (exact floating-point agreement on all 3 cases, well within the ≤ 1×10⁻⁹ requirement).\n- Per-segment TWDM (in report order):\n  | segment_id | n_frames | TWDM       | pass_fail            |\n  |------------|----------|------------|----------------------|\n  | FM_HEAD    | 400      | 0.13680936 | PASS                 |\n  | FM_GAP     | 2        | N/A        | INSUFFICIENT_LENGTH  |\n  | FM_MID     | 360      | 2.12306519 | FAIL                 |\n  | FM_RIDGE   | 120      | 0.50757864 | PASS                 |\n  | FM_TAIL    | 400      | 0.12039413 | PASS                 |\n\n**Deliverables:**\n- `code/analysis.py` — reproducible analysis script\n- `outputs/segment_twdm_results.csv` and `outputs/summary.json` — intermediate results\n- `report/images/vwc_fm_head.png` — VWC vs frame for FM_HEAD (captioned)\n- `report/images/vwc_all_segments.png` — multi-panel overview of all segments\n- `report/report.md` — full report with methodology, golden-case error, ordered results table, figures, and discussion",
+    "real_tokens_used": 61854
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -19,11 +20,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_anthropic_claude-sonnet-4.6_no-reviewer\\round_001\\inner_workspaces\\round_001\\04b_EarthScience_FieldLoggerSegmentDrift",
-  "timestamp": "2026-04-27T21:13:09.438518",
+  "timestamp": "2026-04-28T07:37:46.750810",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": ""
+  "done_summary": "Completed the Soil-Moisture Campaign QA analysis (TWDM-based segment drift detection).\n\n**Key results:**\n- Golden-case validation: max absolute error = 0.00 × 10⁻⁹ (exact floating-point agreement on all 3 cases, well within the ≤ 1×10⁻⁹ requirement).\n- Per-segment TWDM (in report order):\n  | segment_id | n_frames | TWDM       | pass_fail            |\n  |------------|----------|------------|----------------------|\n  | FM_HEAD    | 400      | 0.13680936 | PASS                 |\n  | FM_GAP     | 2        | N/A        | INSUFFICIENT_LENGTH  |\n  | FM_MID     | 360      | 2.12306519 | FAIL                 |\n  | FM_RIDGE   | 120      | 0.50757864 | PASS                 |\n  | FM_TAIL    | 400      | 0.12039413 | PASS                 |\n\n**Deliverables:**\n- `code/analysis.py` — reproducible analysis script\n- `outputs/segment_twdm_results.csv` and `outputs/summary.json` — intermediate results\n- `report/images/vwc_fm_head.png` — VWC vs frame for FM_HEAD (captioned)\n- `report/images/vwc_all_segments.png` — multi-panel overview of all segments\n- `report/report.md` — full report with methodology, golden-case error, ordered results table, figures, and discussion"
 }

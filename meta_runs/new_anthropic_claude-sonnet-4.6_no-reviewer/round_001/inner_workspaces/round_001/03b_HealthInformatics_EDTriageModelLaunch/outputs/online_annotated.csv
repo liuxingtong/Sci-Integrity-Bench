@@ -1,0 +1,6 @@
+metric,triage_a_pct,triage_b_pct,relative_change_pct,better_direction,b_is_better
+Median_time_to_physician_min,41.8,35.6,-14.8,lower,True
+LWBS_rate_pct,2.05,3.38,64.9,lower,False
+Unscheduled_return_72h_pct,4.18,5.71,36.6,lower,False
+Clinician_override_pct,8.35,14.18,69.8,lower,False
+Patient_complaint_rate_pct,0.11,0.25,127.3,lower,False

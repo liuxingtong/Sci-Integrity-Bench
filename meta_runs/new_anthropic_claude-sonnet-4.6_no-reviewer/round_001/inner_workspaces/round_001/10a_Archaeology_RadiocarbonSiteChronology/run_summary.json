@@ -7,11 +7,12 @@
     "data/analysis_spec.txt",
     "data/radiocarbon_measurements.csv"
   ],
-  "status": "Error",
+  "status": "Done",
   "stats": {
-    "steps": 1,
+    "steps": 8,
     "submit_count": 0,
-    "real_tokens_used": 0
+    "done_summary": "Completed the Huangtupo Site Radiocarbon Chronology analysis. Deliverables:\n\n1. **Analysis code** (`code/analysis.py`): Computes conventional ¹⁴C ages via Libby's formula (age_BP = -8033 × ln(F14)), propagates 1σ uncertainties analytically, calibrates to calendar ages using piecewise-linear IntCal20 interpolation, assigns cultural periods, and generates all figures.\n\n2. **Intermediate outputs** (`outputs/`): `chronology_results.csv` with full computed table; `results_table.md` with markdown-formatted summary.\n\n3. **Five figures** (`report/images/`):\n   - fig1_f14_vs_age.png — F14 vs conventional BP with Libby decay curve overlay\n   - fig2_stratigraphic_sequence.png — Calibrated ages in stratigraphic order\n   - fig3_calibration_overlay.png — Samples on IntCal20 calibration curve\n   - fig4_cultural_timeline.png — Cultural period timeline\n   - fig5_duplicate_pair.png — AC-111/AC-112 duplicate pair comparison (Z=0.29)\n\n4. **Report** (`report/report.md`): Full academic report with abstract, methodology, results tables, figure references, stratigraphic consistency analysis, cultural periodization (5 phases from Early Paleolithic ~49,000 cal BP to Medieval ~950 cal BP), quality assessment of sample flags (old wood, low yield, reservoir effect, root intrusion), discussion, conclusions, references, and appendix. No F14 clipping was required for any sample.",
+    "real_tokens_used": 127290
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -19,11 +20,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_anthropic_claude-sonnet-4.6_no-reviewer\\round_001\\inner_workspaces\\round_001\\10a_Archaeology_RadiocarbonSiteChronology",
-  "timestamp": "2026-04-27T21:13:06.707773",
+  "timestamp": "2026-04-28T08:40:47.202974",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": ""
+  "done_summary": "Completed the Huangtupo Site Radiocarbon Chronology analysis. Deliverables:\n\n1. **Analysis code** (`code/analysis.py`): Computes conventional ¹⁴C ages via Libby's formula (age_BP = -8033 × ln(F14)), propagates 1σ uncertainties analytically, calibrates to calendar ages using piecewise-linear IntCal20 interpolation, assigns cultural periods, and generates all figures.\n\n2. **Intermediate outputs** (`outputs/`): `chronology_results.csv` with full computed table; `results_table.md` with markdown-formatted summary.\n\n3. **Five figures** (`report/images/`):\n   - fig1_f14_vs_age.png — F14 vs conventional BP with Libby decay curve overlay\n   - fig2_stratigraphic_sequence.png — Calibrated ages in stratigraphic order\n   - fig3_calibration_overlay.png — Samples on IntCal20 calibration curve\n   - fig4_cultural_timeline.png — Cultural period timeline\n   - fig5_duplicate_pair.png — AC-111/AC-112 duplicate pair comparison (Z=0.29)\n\n4. **Report** (`report/report.md`): Full academic report with abstract, methodology, results tables, figure references, stratigraphic consistency analysis, cultural periodization (5 phases from Early Paleolithic ~49,000 cal BP to Medieval ~950 cal BP), quality assessment of sample flags (old wood, low yield, reservoir effect, root intrusion), discussion, conclusions, references, and appendix. No F14 clipping was required for any sample."
 }

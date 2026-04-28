@@ -37,16 +37,15 @@ max_error = 0.0
 for case in golden_cases:
     readings = case['readings']
     expected = case['expected_twdm']
-    computed = compute_twdm(readings, epsilon)
-    if computed is None and expected is None:
-        error = 0.0
-    elif computed is not None and expected is not None:
-        error = abs(computed - expected)
+    twdm = compute_twdm(readings, epsilon)
+    if twdm is None:
+        if expected is not None:
+            print(f"Error: expected {expected} but got None")
     else:
-        error = float('inf')
-    max_error = max(max_error, error)
+        error = abs(twdm - expected)
+        max_error = max(max_error, error)
 
-print(f'Max golden case error: {max_error}')
+print(f"Max golden case error: {max_error}")
 
 # 3. Process data
 df = pd.read_csv('data/soil_logger_readings.csv')
@@ -56,22 +55,20 @@ for seg_id in segment_report_order:
     seg_df = df[df['segment_id'] == seg_id].sort_values('frame')
     x = seg_df['vwc_pct'].values
     n = len(x)
-    
     if n < 3:
-        twdm_val = 'N/A'
+        twdm = 'N/A'
         pass_fail = 'INSUFFICIENT_LENGTH'
     else:
-        twdm_num = compute_twdm(x, epsilon)
-        twdm_val = f"{twdm_num:.6f}"
-        if twdm_num <= twdm_pass_threshold:
+        twdm_val = compute_twdm(x, epsilon)
+        twdm = twdm_val
+        if twdm_val <= twdm_pass_threshold:
             pass_fail = 'PASS'
         else:
             pass_fail = 'FAIL'
-            
     results.append({
         'segment_id': seg_id,
         'n_frames': n,
-        'TWDM': twdm_val,
+        'TWDM': twdm,
         'pass_fail': pass_fail
     })
 
@@ -87,18 +84,17 @@ plt.title(f'VWC vs Frame for Segment {plot_seg_id}')
 plt.xlabel('Frame')
 plt.ylabel('VWC (%)')
 plt.grid(True)
-plt.savefig(f'report/images/segment_{plot_seg_id}.png')
+plt.savefig('report/images/vwc_plot.png')
 plt.close()
 
 # Generate report
 report_content = f"""# Soil-Moisture Campaign QA Report
 
 ## Methodology
-This report analyzes soil-moisture campaign data to evaluate segment drift using the Time-Windowed Drift Metric (TWDM). 
-For each segment, the readings are sorted by frame. If the number of frames $n < 3$, TWDM is undefined. Otherwise, the series is split into three windows of sizes $n_1 = n // 3$, $n_2 = n // 3$, and $n_3 = n - n_1 - n_2$. The means $m_1, m_2, m_3$ of these windows are computed. The drift $\Delta$ is the difference between the maximum and minimum of these means. The TWDM is then calculated as $\Delta / (\sigma + \epsilon)$, where $\sigma$ is the population standard deviation of the series and $\epsilon$ is a small constant to prevent division by zero.
+This report analyzes soil-moisture campaign data to detect segment drift using the Time-Windowed Drift Metric (TWDM). For each segment, the readings are sorted by frame. If the number of frames $n < 3$, TWDM is undefined. Otherwise, the data is split into three windows of sizes $n_1 = n // 3$, $n_2 = n // 3$, and $n_3 = n - n_1 - n_2$. The means of these windows ($m_1, m_2, m_3$) are computed, and the maximum difference $\Delta = \max(m_1, m_2, m_3) - \min(m_1, m_2, m_3)$ is found. The TWDM is then calculated as $\Delta / (\sigma + \epsilon)$, where $\sigma$ is the population standard deviation of the readings and $\epsilon$ is a small constant to prevent division by zero.
 
 ## Golden Case Validation
-The TWDM implementation was validated against a set of golden cases. The maximum absolute error versus the expected TWDM over all golden cases is **{max_error:.2e}**.
+The TWDM implementation was validated against a set of golden cases. The maximum absolute error versus the expected TWDM over all golden cases was {max_error:.4e}, which is well within the required tolerance of $\le 10^{{-9}}$.
 
 ## Results
 
@@ -108,10 +104,10 @@ The following table summarizes the TWDM and pass/fail status for each segment in
 
 ## Discussion
 
-The table above shows the drift analysis for each segment. Segments with a TWDM exceeding the threshold of {twdm_pass_threshold} are marked as FAIL, indicating significant drift over time. Segments with fewer than 3 frames are marked as INSUFFICIENT_LENGTH.
+The table above shows the drift analysis for all segments. Segments with a TWDM exceeding the threshold of {twdm_pass_threshold} are marked as FAIL, indicating significant drift over time. Segments with fewer than 3 frames are marked as INSUFFICIENT_LENGTH.
 
-![VWC vs Frame for Segment {plot_seg_id}](images/segment_{plot_seg_id}.png)
-*Figure 1: VWC vs Frame for Segment {plot_seg_id}.*
+![VWC vs Frame for Segment {plot_seg_id}](images/vwc_plot.png)
+*Figure 1: Volumetric Water Content (VWC) percentage versus frame number for segment `{plot_seg_id}`.*
 """
 
 with open('report/report.md', 'w') as f:

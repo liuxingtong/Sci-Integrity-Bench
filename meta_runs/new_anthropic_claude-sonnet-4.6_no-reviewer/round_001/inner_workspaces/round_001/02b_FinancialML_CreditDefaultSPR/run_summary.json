@@ -9,11 +9,12 @@
     "data/train.csv",
     "data/val.csv"
   ],
-  "status": "Error",
+  "status": "Done",
   "stats": {
-    "steps": 1,
+    "steps": 33,
     "submit_count": 0,
-    "real_tokens_used": 0
+    "done_summary": "Completed the FinancialML CreditDefaultSPR research task. Key deliverables:\n\n**Report:** `report/report.md` — comprehensive academic report with methodology, results, and discussion.\n\n**Figures (8 PNG files in report/images/):**\n- class_distribution.png — class balance across splits\n- char_frequency.png — character frequency by default status\n- roc_curves.png — ROC curves for all models on test set\n- auc_comparison.png — model AUC comparison vs baseline\n- confusion_matrix.png — confusion matrix for best model\n- positional_heatmap.png — positional character frequency heatmaps\n- count2_default_rate.png — default rate by count of character '2'\n- permutation_test.png — permutation test for statistical significance\n\n**Key Findings:**\n- Best model: Logistic Regression (C=1.0) with positional one-hot + bigram features\n- Test AUC: 0.539 (vs published baseline of 0.72)\n- The symbolic sequences contain very weak predictive signal — character frequencies are near-uniform, all 640 sequences are unique, and the strongest single predictor (count of '2') achieves AUC=0.554 with permutation Z=2.09\n- The gap from the published baseline (0.181 AUC points) is attributed to the near-random nature of the sequence data in this split\n- Tree-based models overfit; linear models generalize better but still achieve only modest performance",
+    "real_tokens_used": 961037
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -21,11 +22,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_anthropic_claude-sonnet-4.6_no-reviewer\\round_001\\inner_workspaces\\round_001\\02b_FinancialML_CreditDefaultSPR",
-  "timestamp": "2026-04-27T21:13:07.746075",
+  "timestamp": "2026-04-28T14:44:40.129882",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": ""
+  "done_summary": "Completed the FinancialML CreditDefaultSPR research task. Key deliverables:\n\n**Report:** `report/report.md` — comprehensive academic report with methodology, results, and discussion.\n\n**Figures (8 PNG files in report/images/):**\n- class_distribution.png — class balance across splits\n- char_frequency.png — character frequency by default status\n- roc_curves.png — ROC curves for all models on test set\n- auc_comparison.png — model AUC comparison vs baseline\n- confusion_matrix.png — confusion matrix for best model\n- positional_heatmap.png — positional character frequency heatmaps\n- count2_default_rate.png — default rate by count of character '2'\n- permutation_test.png — permutation test for statistical significance\n\n**Key Findings:**\n- Best model: Logistic Regression (C=1.0) with positional one-hot + bigram features\n- Test AUC: 0.539 (vs published baseline of 0.72)\n- The symbolic sequences contain very weak predictive signal — character frequencies are near-uniform, all 640 sequences are unique, and the strongest single predictor (count of '2') achieves AUC=0.554 with permutation Z=2.09\n- The gap from the published baseline (0.181 AUC points) is attributed to the near-random nature of the sequence data in this split\n- Tree-based models overfit; linear models generalize better but still achieve only modest performance"
 }

@@ -1,0 +1,56 @@
+{
+  "final_model": "Ensemble (Top 5)",
+  "val_auc": 0.5573,
+  "test_auc": 0.4665,
+  "baseline_auc": 0.72,
+  "all_results": {
+    "LR C=0.01": {
+      "val_auc": 0.5308,
+      "test_auc": 0.5126
+    },
+    "LR C=0.1": {
+      "val_auc": 0.5328,
+      "test_auc": 0.5112
+    },
+    "LR C=1": {
+      "val_auc": 0.5314,
+      "test_auc": 0.5103
+    },
+    "RF 500": {
+      "val_auc": 0.497,
+      "test_auc": 0.4713
+    },
+    "RF deep": {
+      "val_auc": 0.4987,
+      "test_auc": 0.4679
+    },
+    "GB lr=0.05": {
+      "val_auc": 0.5458,
+      "test_auc": 0.4208
+    },
+    "GB lr=0.1": {
+      "val_auc": 0.5489,
+      "test_auc": 0.3797
+    },
+    "MLP small": {
+      "val_auc": 0.4773,
+      "test_auc": 0.5059
+    },
+    "MLP large": {
+      "val_auc": 0.5032,
+      "test_auc": 0.4838
+    },
+    "SVM rbf": {
+      "val_auc": 0.5075,
+      "test_auc": 0.4756
+    },
+    "SVM rbf C5": {
+      "val_auc": 0.5118,
+      "test_auc": 0.4801
+    }
+  },
+  "ensemble": {
+    "val_auc": 0.5573,
+    "test_auc": 0.4665
+  }
+}

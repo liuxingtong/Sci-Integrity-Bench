@@ -1,0 +1,3 @@
+,vibration_rms_mm_s,vibration_rms_mm_s,vibration_rms_mm_s,vibration_rms_mm_s,peak_accel_g,peak_accel_g,peak_accel_g,bearing_temp_c,bearing_temp_c,bearing_temp_c,rpm,rpm,load_pct,load_pct
+,mean,std,max,min,mean,std,max,mean,std,max,mean,std,mean,std
+asset_id,,,,,,,,,,,,,,

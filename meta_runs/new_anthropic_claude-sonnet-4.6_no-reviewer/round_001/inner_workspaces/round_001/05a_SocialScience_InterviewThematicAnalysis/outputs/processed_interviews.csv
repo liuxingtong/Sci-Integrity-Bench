@@ -1,0 +1,19 @@
+respondent_id,cohort,response_text,word_count,char_count,sentence_count,topic_reliability,topic_information,topic_safety,topic_pricing,topic_accessibility,topic_crowding,topic_multimodal,topic_trust,topic_ux_design,flag_reliability,flag_information,flag_safety,flag_pricing,flag_accessibility,flag_crowding,flag_multimodal,flag_trust,flag_ux_design
+INT-01,transit_primary,The live arrival board is what I open first; when it is wrong I miss connections and the rest of my day slides sideways.,24,120,3,1,2,0,0,0,0,0,1,0,1,1,0,0,0,0,0,1,0
+INT-02,transit_primary,Crowding is my main pain—sometimes I skip a train even if the app says it is on time because I know the platform will be unsafe.,26,128,2,1,1,2,0,0,4,1,0,0,1,1,1,0,0,1,1,0,0
+INT-03,transit_primary,Pricing feels opaque; I want a single place that shows weekly caps and discounts without digging through three menus.,19,117,3,0,0,0,4,0,0,0,0,2,0,0,0,1,0,0,0,0,1
+INT-04,transit_primary,Night service gaps are scary; the app should pair walking directions with the last train so I am not guessing alone at midnight.,23,128,3,0,1,3,0,0,0,1,0,0,0,1,1,0,0,0,1,0,0
+INT-05,transit_primary,Accessibility info is hit or miss—elevator outages are buried; I need that louder than marketing banners.,16,105,3,0,1,0,0,4,0,0,0,2,0,1,0,0,1,0,0,0,1
+INT-06,transit_primary,I appreciate offline mode when tunnels drop signal; that single feature keeps me from switching apps.,16,101,3,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+INT-07,transit_primary,Transfers are where the UX fails: same station but different names across lines and the map does not reconcile them.,20,116,2,0,1,0,0,0,0,2,0,1,0,1,0,0,0,0,1,0,1
+INT-08,transit_primary,Delays are fine if the explanation is honest—generic delays erode trust faster than a long wait with a reason.,19,110,2,2,0,0,0,0,0,0,4,0,1,0,0,0,0,0,0,1,0
+INT-09,transit_primary,I wish the app surfaced bike-share docks near the exit I actually use; routing assumes a generic street corner.,19,111,3,0,1,0,0,0,0,1,1,0,0,1,0,0,0,0,1,1,0
+INT-10,car_primary,I drive when transit is unreliable; the app’s drive-time estimate helps me decide but parking costs are never in the same view.,22,127,3,2,1,0,2,0,0,3,0,0,1,1,0,1,0,0,1,0,0
+INT-11,car_primary,Traffic alerts are useful but noisy; I only want reroutes when the delay exceeds what I would lose searching for parking.,21,121,3,1,0,0,0,0,0,2,0,0,1,0,0,0,0,0,1,0,0
+INT-12,car_primary,I combine park-and-ride; the app should stitch driving legs with train legs instead of treating them as separate trips.,19,119,3,0,1,0,0,0,0,4,0,0,0,1,0,0,0,0,1,0,0
+INT-13,car_primary,Safety at the lot matters more than saving two minutes; I want lighting and CCTV notes not just cheapest price.,20,111,3,0,0,4,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0
+INT-14,car_primary,Carpool matching is gimmicky unless it respects my fixed drop-off time; otherwise I ignore those prompts.,16,105,3,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0
+INT-15,car_primary,Fuel vs fare comparison would help families like mine decide weekly; right now it is guesswork across spreadsheets.,18,115,3,0,0,0,2,0,0,0,0,0,0,0,0,1,0,0,0,0,0
+INT-16,car_primary,The interface is crowded; I only need three buttons on the home screen and everything else feels like clutter.,19,110,3,0,2,0,0,0,2,0,0,5,0,1,0,0,0,1,0,0,1
+INT-17,car_primary,When transit is on strike I need a single banner that explains alternatives—not a feed of unrelated news.,18,105,2,0,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1
+INT-18,car_primary,I trust the map more than the ETA; if the line on the map is wrong I assume the whole trip plan is wrong.,24,105,3,1,1,0,0,0,0,0,3,0,1,1,0,0,0,0,0,1,0

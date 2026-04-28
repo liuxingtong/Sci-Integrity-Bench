@@ -1,0 +1,9 @@
+artifact_id,stratigraphic_unit,material,f14_residual_ratio,sigma_f14_absolute,age_BP_rounded,sigma_age_BP_rounded,cal_BP,sigma_cal_BP,cal_BCE_CE_label,cultural_period,clipped_flag,notes
+AC-107,Huangtupo-Trench3-L1,charcoal,0.883,0.004,1000,36,949.6012012584686,32.37023602238888,1000 CE,Medieval (Tang–Song),False,single broad tree-ring block
+AC-108,Huangtupo-Trench3-L2,charred bone,0.647,0.003,3498,37,3797.168446805327,46.119670270231005,1847 BCE,Bronze Age / Neolithic,False,well-collagen preserved
+AC-109,Huangtupo-Trench3-L3,charcoal,0.0041,0.0008,44156,1567,49155.53979624897,1567.4146341463413,47206 BCE,Early Paleolithic,False,very small carbon yield post-pretreatment
+AC-110,Huangtupo-Trench3-L4,shell organics,0.0065,0.001,40454,1236,45453.81126901302,1235.8461538461538,43504 BCE,Early Paleolithic,False,marked reservoir correction discussion pending
+AC-111,Huangtupo-Trench3-L5,charcoal,0.2187,0.002,12211,73,14236.95456638112,117.5381801554641,12287 BCE,Late Paleolithic,False,same ridge source as AC-112 pair for duplicate chronology check
+AC-112,Huangtupo-Trench3-L6,charcoal,0.2195,0.002,12181,73,14190.025075629912,117.10979498861047,12240 BCE,Late Paleolithic,False,same ridge source as AC-111 pair for duplicate chronology check
+AC-113,Huangtupo-Trench4-pit7,charcoal,0.451,0.002,6397,36,7286.23911962234,39.18536585365853,5336 BCE,Neolithic / Mesolithic,False,short-lived twigs
+AC-114,Huangtupo-Trench2-surface scatter,charcoal,0.771,0.003,2089,31,2090.505639524308,38.75844357976611,141 BCE,Early Imperial / Iron Age,False,root intrusion risk flagged in field log

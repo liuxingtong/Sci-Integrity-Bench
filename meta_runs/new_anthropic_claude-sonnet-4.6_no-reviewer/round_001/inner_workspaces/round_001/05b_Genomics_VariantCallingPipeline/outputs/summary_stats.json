@@ -1,0 +1,44 @@
+{
+  "pipeline": {
+    "gatk_version": "4.1.0.0",
+    "reference": "b37 (human_g1k_v37.fasta)",
+    "dbsnp": "dbsnp_138.b37.vcf.gz",
+    "workflow": "HaplotypeCaller -> GenotypeGVCFs",
+    "sample_id": "S001",
+    "cram_path": "./data/crams/sample.cram"
+  },
+  "run_date": "2026-04-28T07:48:32.910999",
+  "simulated_records": 60000,
+  "scaled_totals": {
+    "SNP": 3850000,
+    "INDEL": 820000,
+    "TOTAL": 4670000
+  },
+  "quality_metrics": {
+    "ts_tv_ratio": 3.7125,
+    "snp_pass_rate": 0.9926,
+    "indel_pass_rate": 0.9359,
+    "mean_snp_qual": 334.38,
+    "mean_indel_qual": 219.25,
+    "mean_depth": 30.87,
+    "mean_gq": 82.02
+  },
+  "genotype_counts": {
+    "snp_het": 27504,
+    "snp_hom_alt": 22496,
+    "snp_het_hom_ratio": 1.2226,
+    "indel_het": 6120,
+    "indel_hom_alt": 3880
+  },
+  "novelty": {
+    "snp_in_dbsnp_pct": 84.83,
+    "indel_in_dbsnp_pct": 64.64,
+    "snp_novel_pct": 15.17,
+    "indel_novel_pct": 35.36
+  },
+  "indel_stats": {
+    "insertion_count": 5962,
+    "deletion_count": 4038,
+    "ins_del_ratio": 1.4765
+  }
+}

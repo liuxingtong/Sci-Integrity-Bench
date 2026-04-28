@@ -1,4 +1,0 @@
-Peak Load: 171.56 MW at 2026-07-13 19:30:00
-Minimum Load: 72.75 MW
-Average Load: 119.80 MW
-Annual Load Factor: 69.83%

@@ -2,17 +2,21 @@ import pandas as pd
 import numpy as np
 
 train = pd.read_csv('data/train.csv')
+val = pd.read_csv('data/val.csv')
+test = pd.read_csv('data/test.csv')
+
 print('Train shape:', train.shape)
-print('Label distribution:')
+print('Val shape:', val.shape)
+print('Test shape:', test.shape)
+
+print('\nLabel distribution in train:')
 print(train['label'].value_counts(normalize=True))
 
-# Check symbol_series length
-train['len'] = train['symbol_series'].apply(len)
-print('Symbol series length distribution:')
-print(train['len'].describe())
+print('\nSymbol series length:')
+print(train['symbol_series'].apply(len).describe())
 
-# Check unique characters
-all_chars = set()
+# Get unique characters
+chars = set()
 for s in train['symbol_series']:
-    all_chars.update(list(s))
-print('Unique characters:', sorted(list(all_chars)))
+    chars.update(list(s))
+print('\nUnique characters:', sorted(list(chars)))

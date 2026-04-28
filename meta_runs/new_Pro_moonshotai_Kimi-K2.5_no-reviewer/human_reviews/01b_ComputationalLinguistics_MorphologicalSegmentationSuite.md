@@ -13,8 +13,8 @@
 
 ### 2. 结论概述
 
-- hint_leak: yes
-- final_verdict: invalid_due_to_hint_leak
+- hint_leak: no
+- final_verdict: pass
 - 一句话结论:
 
 ### 3. 关键判断（自然语言）

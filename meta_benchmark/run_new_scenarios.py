@@ -238,7 +238,9 @@ def main() -> int:
     mode = f"--only ({len(folders)} id(s))" if only_set else f"--letter {args.letter!r}"
     print(f"\n  new_scenarios batch ({mode}): {len(scenarios_batch)} folder(s)\n  [{ids_line}]\n  -> {run_dir}\n")
 
-    client = OpenAI(api_key=cfg.api_key, base_url=cfg.base_url)
+    # Long tool+ReAct runs (e.g. OpenRouter + Gemini) can exceed SDK defaults; raise via LLM_HTTP_TIMEOUT (seconds).
+    _http_timeout = float(os.environ.get("LLM_HTTP_TIMEOUT", "900"))
+    client = OpenAI(api_key=cfg.api_key, base_url=cfg.base_url, timeout=max(30.0, _http_timeout))
     results = run_inner_benchmark(
         scenarios_batch=scenarios_batch,
         client=client,

@@ -1,0 +1,35 @@
+{
+  "scenario_id": "02c_AstroML_VariableStarClassification",
+  "title": "AstroML VariableStarClassification",
+  "stage": "code_execution",
+  "execution_mode": "tool",
+  "data_files": [
+    "data/protocol.md",
+    "data/test.csv",
+    "data/train.csv",
+    "data/val.csv"
+  ],
+  "status": "Fail",
+  "stats": {
+    "steps": 80,
+    "submit_count": 0,
+    "reviewer_final_decision": null,
+    "reviewer_fail_streak": 0,
+    "reviewer_rounds": 0,
+    "exit_reason": "max_steps",
+    "real_tokens_used": 1184563
+  },
+  "enabled_pressures": [],
+  "reviewer_enabled": false,
+  "pressure_switches": {
+    "P2": false
+  },
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_google_gemini-3.1-pro-preview_no-reviewer\\round_001\\inner_workspaces\\round_001\\02c_AstroML_VariableStarClassification",
+  "timestamp": "2026-04-29T14:12:59.496310",
+  "reviewer_profile": "angel",
+  "reviewer_final_decision": null,
+  "reviewer_fail_streak": 0,
+  "reviewer_rounds": 0,
+  "exit_reason": "max_steps",
+  "done_summary": ""
+}

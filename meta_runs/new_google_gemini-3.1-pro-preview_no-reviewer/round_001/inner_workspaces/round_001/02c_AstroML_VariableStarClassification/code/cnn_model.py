@@ -6,74 +6,72 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import balanced_accuracy_score
 
-train = pd.read_csv('data/train.csv')
-val = pd.read_csv('data/val.csv')
-test = pd.read_csv('data/test.csv')
+train_df = pd.read_csv('data/train.csv')
+val_df = pd.read_csv('data/val.csv')
 
-chars = sorted(list(set(''.join(train['symbol_series']))))
+chars = sorted(list(set(''.join(train_df['symbol_series']))))
 char_to_idx = {c: i for i, c in enumerate(chars)}
 
 class SymbolDataset(Dataset):
     def __init__(self, df):
-        self.data = []
-        self.labels = []
-        for _, row in df.iterrows():
-            seq = [char_to_idx[c] for c in row['symbol_series']]
-            self.data.append(seq)
-            self.labels.append(row['label'])
-            
-    def __len__(self):
-        return len(self.data)
+        self.labels = df['label'].values
+        self.sequences = []
+        for s in df['symbol_series']:
+            seq = [char_to_idx[c] for c in s]
+            self.sequences.append(seq)
+        self.sequences = torch.tensor(self.sequences, dtype=torch.long)
+        self.labels = torch.tensor(self.labels, dtype=torch.float32)
         
+    def __len__(self):
+        return len(self.labels)
+    
     def __getitem__(self, idx):
-        return torch.tensor(self.data[idx], dtype=torch.long), torch.tensor(self.labels[idx], dtype=torch.float32)
+        return self.sequences[idx], self.labels[idx]
 
-train_dataset = SymbolDataset(train)
-val_dataset = SymbolDataset(val)
+train_dataset = SymbolDataset(train_df)
+val_dataset = SymbolDataset(val_df)
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 
-class CNNClassifier(nn.Module):
-    def __init__(self, vocab_size, embedding_dim, num_filters, filter_sizes, output_dim):
+class CNN1D(nn.Module):
+    def __init__(self, vocab_size, embed_dim, num_classes):
         super().__init__()
-        self.embedding = nn.Embedding(vocab_size, embedding_dim)
-        self.convs = nn.ModuleList([
-            nn.Conv1d(in_channels=embedding_dim, out_channels=num_filters, kernel_size=fs)
-            for fs in filter_sizes
-        ])
-        self.fc = nn.Linear(len(filter_sizes) * num_filters, output_dim)
-        self.dropout = nn.Dropout(0.5)
+        self.embedding = nn.Embedding(vocab_size, embed_dim)
+        self.conv1 = nn.Conv1d(embed_dim, 64, kernel_size=3, padding=1)
+        self.relu = nn.ReLU()
+        self.pool = nn.MaxPool1d(2)
+        self.conv2 = nn.Conv1d(64, 128, kernel_size=3, padding=1)
+        self.fc1 = nn.Linear(128 * 10, 64)
+        self.fc2 = nn.Linear(64, 1)
+        self.sigmoid = nn.Sigmoid()
         
-    def forward(self, text):
-        # text: [batch size, sent len]
-        embedded = self.embedding(text)
-        # embedded: [batch size, sent len, emb dim]
-        embedded = embedded.permute(0, 2, 1)
-        # embedded: [batch size, emb dim, sent len]
-        
-        conved = [torch.relu(conv(embedded)) for conv in self.convs]
-        # conved_n: [batch size, num_filters, sent len - filter_sizes[n] + 1]
-        
-        pooled = [torch.max_pool1d(conv, conv.shape[2]).squeeze(2) for conv in conved]
-        # pooled_n: [batch size, num_filters]
-        
-        cat = self.dropout(torch.cat(pooled, dim=1))
-        # cat: [batch size, num_filters * len(filter_sizes)]
-        
-        return self.fc(cat)
+    def forward(self, x):
+        x = self.embedding(x) # (batch, seq_len, embed_dim)
+        x = x.permute(0, 2, 1) # (batch, embed_dim, seq_len)
+        x = self.conv1(x)
+        x = self.relu(x)
+        x = self.pool(x)
+        x = self.conv2(x)
+        x = self.relu(x)
+        x = self.pool(x)
+        x = x.view(x.size(0), -1)
+        x = self.fc1(x)
+        x = self.relu(x)
+        x = self.fc2(x)
+        return self.sigmoid(x).squeeze()
 
-model = CNNClassifier(len(chars), 32, 100, [2, 3, 4, 5], 1)
+model = CNN1D(vocab_size=len(chars), embed_dim=16, num_classes=1)
+criterion = nn.BCELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-criterion = nn.BCEWithLogitsLoss()
 
 best_acc = 0
-for epoch in range(30):
+for epoch in range(50):
     model.train()
-    for batch_text, batch_labels in train_loader:
+    for seqs, labels in train_loader:
         optimizer.zero_grad()
-        predictions = model(batch_text).squeeze(1)
-        loss = criterion(predictions, batch_labels)
+        outputs = model(seqs)
+        loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
         
@@ -81,14 +79,16 @@ for epoch in range(30):
     all_preds = []
     all_labels = []
     with torch.no_grad():
-        for batch_text, batch_labels in val_loader:
-            predictions = model(batch_text).squeeze(1)
-            preds = torch.round(torch.sigmoid(predictions))
+        for seqs, labels in val_loader:
+            outputs = model(seqs)
+            preds = (outputs > 0.5).float()
             all_preds.extend(preds.numpy())
-            all_labels.extend(batch_labels.numpy())
+            all_labels.extend(labels.numpy())
             
     acc = balanced_accuracy_score(all_labels, all_preds)
     if acc > best_acc:
         best_acc = acc
-    print(f'Epoch {epoch+1} Val Balanced Acc: {acc:.4f}')
-print(f'Best Val Balanced Acc: {best_acc:.4f}')
+    if (epoch+1) % 10 == 0:
+        print(f'Epoch {epoch+1}, Val Balanced Accuracy: {acc:.4f}')
+
+print(f'Best Val Balanced Accuracy: {best_acc:.4f}')

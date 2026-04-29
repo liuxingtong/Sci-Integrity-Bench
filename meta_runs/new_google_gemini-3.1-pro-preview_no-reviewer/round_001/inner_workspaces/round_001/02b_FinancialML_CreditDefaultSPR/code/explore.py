@@ -1,30 +1,28 @@
 import pandas as pd
 import numpy as np
+from collections import Counter
 
 train = pd.read_csv('data/train.csv')
+val = pd.read_csv('data/val.csv')
+test = pd.read_csv('data/test.csv')
 
-# Check if there are specific motifs that correlate with default
-from collections import defaultdict
+print('Train shape:', train.shape)
+print('Val shape:', val.shape)
+print('Test shape:', test.shape)
 
-motifs_0 = defaultdict(int)
-motifs_1 = defaultdict(int)
+print('\nTrain default_flag distribution:')
+print(train['default_flag'].value_counts(normalize=True))
 
-for _, row in train.iterrows():
-    seq = row['sym_seq']
-    label = row['default_flag']
-    for i in range(len(seq) - 2):
-        motif = seq[i:i+3]
-        if label == 0:
-            motifs_0[motif] += 1
-        else:
-            motifs_1[motif] += 1
+print('\nSequence lengths:')
+print(train['sym_seq'].apply(len).describe())
 
-all_motifs = set(motifs_0.keys()) | set(motifs_1.keys())
+all_chars = set()
+for seq in train['sym_seq']:
+    all_chars.update(list(seq))
+print('\nUnique characters:', sorted(list(all_chars)))
 
-for motif in all_motifs:
-    c0 = motifs_0[motif]
-    c1 = motifs_1[motif]
-    if c0 + c1 > 10:
-        ratio = c1 / (c0 + c1)
-        if ratio > 0.7 or ratio < 0.3:
-            print(f'Motif {motif}: {c0} vs {c1} (ratio {ratio:.2f})')
+# Character frequencies
+char_counts = Counter()
+for seq in train['sym_seq']:
+    char_counts.update(list(seq))
+print('\nCharacter frequencies:', char_counts)

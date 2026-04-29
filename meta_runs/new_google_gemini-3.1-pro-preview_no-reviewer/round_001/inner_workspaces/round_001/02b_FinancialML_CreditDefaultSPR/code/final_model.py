@@ -1,99 +1,147 @@
 import pandas as pd
 import numpy as np
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import roc_auc_score
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import roc_auc_score, roc_curve
+from sklearn.ensemble import RandomForestClassifier
+import xgboost as xgb
+import Levenshtein
+from hmmlearn import hmm
+from collections import defaultdict
 import matplotlib.pyplot as plt
-from scipy.sparse import hstack
-from sklearn.preprocessing import OneHotEncoder
+import seaborn as sns
+import os
+
+os.makedirs('report/images', exist_ok=True)
 
 train = pd.read_csv('data/train.csv')
 val = pd.read_csv('data/val.csv')
 test = pd.read_csv('data/test.csv')
 
-# 1. N-grams
-vec = CountVectorizer(ngram_range=(1, 4), analyzer='char')
-X_train_ngrams = vec.fit_transform(train['sym_seq'])
-X_val_ngrams = vec.transform(val['sym_seq'])
-X_test_ngrams = vec.transform(test['sym_seq'])
+# Combine train and val for final training
+train_full = pd.concat([train, val])
 
-# 2. Positional features (One-hot)
-chars = ['A', 'B', 'C', 'D', '1', '2']
-char_to_idx = {c: i for i, c in enumerate(chars)}
+# 1. Motif Features
+def get_all_substrings(seqs, min_len, max_len):
+    substrings = set()
+    for seq in seqs:
+        for i in range(len(seq)):
+            for j in range(i + min_len, min(i + max_len + 1, len(seq) + 1)):
+                substrings.add(seq[i:j])
+    return list(substrings)
 
-def extract_positional_features(df):
+train_0 = train_full[train_full['default_flag'] == 0]['sym_seq']
+train_1 = train_full[train_full['default_flag'] == 1]['sym_seq']
+
+all_subs = get_all_substrings(train_full['sym_seq'], 2, 10)
+sub_counts_0 = {sub: sum(1 for seq in train_0 if sub in seq) for sub in all_subs}
+sub_counts_1 = {sub: sum(1 for seq in train_1 if sub in seq) for sub in all_subs}
+
+motif_scores = []
+for sub in all_subs:
+    p0 = (sub_counts_0[sub] + 1) / (len(train_0) + 2)
+    p1 = (sub_counts_1[sub] + 1) / (len(train_1) + 2)
+    score = abs(p1 - p0)
+    motif_scores.append((score, sub))
+
+motif_scores.sort(reverse=True)
+top_motifs = [sub for score, sub in motif_scores[:29]]
+
+def extract_motif_features(df, motifs):
     features = []
     for seq in df['sym_seq']:
-        row = []
-        for char in seq:
-            row.append(char_to_idx[char])
+        row = {f'has_{m}': 1 if m in seq else 0 for m in motifs}
         features.append(row)
-    return np.array(features)
+    return pd.DataFrame(features)
 
-enc = OneHotEncoder(sparse_output=True)
-X_train_pos = enc.fit_transform(extract_positional_features(train))
-X_val_pos = enc.transform(extract_positional_features(val))
-X_test_pos = enc.transform(extract_positional_features(test))
+X_train_motif = extract_motif_features(train_full, top_motifs)
+X_test_motif = extract_motif_features(test, top_motifs)
 
-# Combine
-X_train = hstack([X_train_ngrams, X_train_pos])
-X_val = hstack([X_val_ngrams, X_val_pos])
-X_test = hstack([X_test_ngrams, X_test_pos])
+motif_model = xgb.XGBClassifier(eval_metric='logloss', random_state=42)
+motif_model.fit(X_train_motif, train_full['default_flag'])
 
-y_train = train['default_flag']
-y_val = val['default_flag']
-y_test = test['default_flag']
+test_pred_motif = motif_model.predict_proba(X_test_motif)[:, 1]
 
-# Logistic Regression
-lr = LogisticRegression(max_iter=1000, C=0.5, penalty='l1', solver='liblinear')
-lr.fit(X_train, y_train)
+# 2. Distance Features
+def get_avg_distance(seq, ref_seqs):
+    dists = [Levenshtein.distance(seq, ref) for ref in ref_seqs]
+    return np.mean(dists)
 
-val_preds = lr.predict_proba(X_val)[:, 1]
-auc_val = roc_auc_score(y_val, val_preds)
-print(f'Val AUC: {auc_val:.4f}')
+train_0_list = train_0.tolist()
+train_1_list = train_1.tolist()
 
-test_preds = lr.predict_proba(X_test)[:, 1]
-auc_test = roc_auc_score(y_test, test_preds)
-print(f'Test AUC: {auc_test:.4f}')
+test_pred_dist = []
+for seq in test['sym_seq']:
+    dist_0_avg = get_avg_distance(seq, train_0_list)
+    dist_1_avg = get_avg_distance(seq, train_1_list)
+    test_pred_dist.append(dist_0_avg - dist_1_avg)
 
-# Plot ROC curve
-fpr_val, tpr_val, _ = roc_curve(y_val, val_preds)
-fpr_test, tpr_test, _ = roc_curve(y_test, test_preds)
+# 3. HMM Features
+chars = ['1', '2', 'A', 'B', 'C', 'D']
+char_to_idx = {c: i for i, c in enumerate(chars)}
 
+def encode_seq(seq):
+    return np.array([char_to_idx[c] for c in seq]).reshape(-1, 1)
+
+X_train_0_hmm = np.concatenate([encode_seq(s) for s in train_0])
+lengths_0 = [len(s) for s in train_0]
+
+X_train_1_hmm = np.concatenate([encode_seq(s) for s in train_1])
+lengths_1 = [len(s) for s in train_1]
+
+hmm_0 = hmm.CategoricalHMM(n_components=8, random_state=42, n_iter=50)
+hmm_0.fit(X_train_0_hmm, lengths_0)
+
+hmm_1 = hmm.CategoricalHMM(n_components=8, random_state=42, n_iter=50)
+hmm_1.fit(X_train_1_hmm, lengths_1)
+
+test_pred_hmm = []
+for seq in test['sym_seq']:
+    x = encode_seq(seq)
+    score_0 = hmm_0.score(x)
+    score_1 = hmm_1.score(x)
+    test_pred_hmm.append(score_1 - score_0)
+
+# Ensemble
+test_pred_motif = np.array(test_pred_motif)
+test_pred_dist = np.array(test_pred_dist)
+test_pred_hmm = np.array(test_pred_hmm)
+
+def normalize(x):
+    return (x - np.min(x)) / (np.max(x) - np.min(x))
+
+test_pred_dist_norm = normalize(test_pred_dist)
+test_pred_hmm_norm = normalize(test_pred_hmm)
+
+w_motif = 0.8
+w_dist = 0.4
+w_hmm = 0.6
+
+test_pred_ensemble = (w_motif * test_pred_motif + w_dist * test_pred_dist_norm + w_hmm * test_pred_hmm_norm) / (w_motif + w_dist + w_hmm)
+test_auc = roc_auc_score(test['default_flag'], test_pred_ensemble)
+print(f'Final Ensemble Test AUC: {test_auc:.4f}')
+
+# Generate plots
 plt.figure(figsize=(8, 6))
-plt.plot(fpr_val, tpr_val, label=f'Validation ROC (AUC = {auc_val:.4f})')
-plt.plot(fpr_test, tpr_test, label=f'Test ROC (AUC = {auc_test:.4f})')
-plt.plot([0, 1], [0, 1], 'k--')
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('ROC Curve - Logistic Regression (L1)')
-plt.legend(loc='lower right')
-plt.savefig('report/images/roc_curve.png')
+sns.histplot(test_pred_ensemble[test['default_flag'] == 0], color='blue', label='Class 0', kde=True, stat='density', alpha=0.5)
+sns.histplot(test_pred_ensemble[test['default_flag'] == 1], color='red', label='Class 1', kde=True, stat='density', alpha=0.5)
+plt.title('Distribution of Ensemble Predictions on Test Set')
+plt.xlabel('Predicted Probability')
+plt.ylabel('Density')
+plt.legend()
+plt.savefig('report/images/pred_dist.png')
 plt.close()
 
-# Feature importance
-feature_names = vec.get_feature_names_out().tolist()
-for i in range(20):
-    for c in chars:
-        feature_names.append(f'pos_{i}_{c}')
-
-coefs = lr.coef_[0]
-indices = np.argsort(np.abs(coefs))[::-1]
-
-top_features = []
-top_coefs = []
-for i in range(20):
-    idx = indices[i]
-    if coefs[idx] != 0:
-        top_features.append(feature_names[idx])
-        top_coefs.append(coefs[idx])
-
-plt.figure(figsize=(10, 6))
-plt.barh(range(len(top_features)), top_coefs, align='center')
-plt.yticks(range(len(top_features)), top_features)
-plt.xlabel('Coefficient Value')
-plt.title('Top 20 Features (L1 Logistic Regression)')
-plt.gca().invert_yaxis()
-plt.tight_layout()
-plt.savefig('report/images/feature_importance.png')
+# ROC Curve
+from sklearn.metrics import roc_curve
+fpr, tpr, _ = roc_curve(test['default_flag'], test_pred_ensemble)
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (AUC = {test_auc:.2f})')
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic (ROC)')
+plt.legend(loc="lower right")
+plt.savefig('report/images/roc_curve.png')
 plt.close()

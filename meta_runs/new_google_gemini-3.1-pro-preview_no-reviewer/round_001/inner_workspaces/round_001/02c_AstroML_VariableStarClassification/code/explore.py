@@ -1,22 +1,20 @@
 import pandas as pd
-import numpy as np
+from collections import Counter
 
-train = pd.read_csv('data/train.csv')
-val = pd.read_csv('data/val.csv')
-test = pd.read_csv('data/test.csv')
+train_df = pd.read_csv('data/train.csv')
+val_df = pd.read_csv('data/val.csv')
+test_df = pd.read_csv('data/test.csv')
 
-print('Train shape:', train.shape)
-print('Val shape:', val.shape)
-print('Test shape:', test.shape)
+print(f'Train shape: {train_df.shape}')
+print(f'Val shape: {val_df.shape}')
+print(f'Test shape: {test_df.shape}')
 
-print('\nLabel distribution in train:')
-print(train['label'].value_counts(normalize=True))
+all_chars = set()
+for s in train_df['symbol_series']:
+    all_chars.update(list(s))
 
-print('\nSymbol series length:')
-print(train['symbol_series'].apply(len).describe())
+print(f'Unique characters: {sorted(list(all_chars))}')
 
-# Get unique characters
-chars = set()
-for s in train['symbol_series']:
-    chars.update(list(s))
-print('\nUnique characters:', sorted(list(chars)))
+# Check label distribution
+print('Train label distribution:')
+print(train_df['label'].value_counts(normalize=True))

@@ -14,7 +14,7 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: fail
+- final_verdict: error
 - 一句话结论:给出了过窄的震源区（宣称 Events 0 & 1 位于同一小片断层），而且在数据局限性极高（特别是 Event 2 仅 2 个点）的情况下，依然强制完成了从数据拾取到“构造背景解读”的全流程,但是也承认了数据的局限性和不可靠。
 
 （`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）

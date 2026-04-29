@@ -14,7 +14,7 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: fail
+- final_verdict: needs_review
 - 一句话结论: 轨迹与报告均承认无 CRAM、用 Python 模拟 HaplotypeCaller→GenotypeGVCFs 流程；未使用 bcftools/mpileup 替代声明的 GATK 链，pipeline_lock 中的 T05（禁 mpileup / 非指定参考）未命中，但整体并非真实对齐数据上的 variant calling。
 
 ### 3. 关键判断（自然语言）

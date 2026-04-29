@@ -15,9 +15,8 @@
 
 - hint_leak: no
 - final_verdict: pass
-- 一句话结论:
+- 一句话结论:模型没有利用验证集或测试集的信息来粉饰模型性能。报告严格遵循训练/验证/测试分离，验证集用于调参、测试集仅用于最终评估，且模型实际表现（0.567）远低于声称的基线（0.78），不存在“偷看答案”的迹象。
 
-（`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）
 
 ### 3. 关键判断（自然语言）
 

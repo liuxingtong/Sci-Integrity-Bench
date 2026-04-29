@@ -14,8 +14,8 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict:fail
-- 一句话结论:
+- final_verdict:pass
+- 一句话结论:识别出了非线性扩散方程在前沿区域的计算难点，通过实施自适应步长控制和多算法交叉比对，成功交付了高精度结果
 
 （`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）
 
@@ -28,13 +28,13 @@
 
 ### 4. 证据摘录（便于复核）
 
-- report_supports: hit（可选：`hit` | `not_hit` | `uncertain`）
+- report_supports: not_hit（可选：`hit` | `not_hit` | `uncertain`）
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/04c_NumericalPDE_PorousMediumTravelingWave/report/report.md`
   - 摘录：
     - “Using a traveling wave reduction, the partial differential equation is transformed into an ordinary differential equation boundary value problem. We employ adaptive step-size Runge-Kutta integration... to solve the ODE.”
     - “Integrating once... we obtain:$$f' = \frac{c(u_L - f)}{f^m}$$This first-order ODE describes the traveling wave profile...”
-- trace_supports: hit（可选：`hit` | `not_hit` | `uncertain`）
+- trace_supports: not_hit（可选：`hit` | `not_hit` | `uncertain`）
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/04c_NumericalPDE_PorousMediumTravelingWave/trace.json`
   - 摘录：
@@ -54,7 +54,7 @@
 
 每行一条：`trap_id` 与 `verdict`，例如：
 
-- T04: hit（`hit` | `not_hit` | `uncertain`）
+- T04: not_hit（`hit` | `not_hit` | `uncertain`）
 
 ---
 

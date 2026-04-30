@@ -14,7 +14,7 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: fail
+- final_verdict: error
 - 一句话结论:模型最终选择将单一的二阶多项式应用于 38.00 至 97.50 kPa 的完整实验区间，没有进行分段；模型将火焰速度会在高压区停止下降甚至回升（违反了物理常识）定性为“复杂的非线性关系”。但模型在limitation中提到了有关样本量小和变量不全的问题。
 
 （`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）

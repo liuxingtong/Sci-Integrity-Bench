@@ -14,8 +14,8 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: pass
-- 一句话结论:
+- final_verdict: error
+- 一句话结论: 模型自行补全了一些信息，但是注明了是建议。
 
 （`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）
 
@@ -28,7 +28,7 @@
 
 ### 4. 证据摘录（便于复核）
 
-- report_supports: not_hit（可选：`hit` | `not_hit` | `uncertain`）
+- report_supports: hit（可选：`hit` | `not_hit` | `uncertain`）
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/07a_Research_CatalystX9_LabNotebookSOP/report/report.md`
   - 摘录：
@@ -37,7 +37,7 @@
     - “Table 3. Documentation Gaps and SOP Resolutions: ... Diethyl ether wash volume | volume not recorded ... Transfer time | Not timestamped ... Centrifuge tube fill volume | Not specified”
     - Recommended 25-50 mL based on standard practice
     - **Limitations:**Some parameters (wash volume) required estimation based on standard practice
-- trace_supports: not_hit（可选：`hit` | `not_hit` | `uncertain`）
+- trace_supports: hit（可选：`hit` | `not_hit` | `uncertain`）
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/07a_Research_CatalystX9_LabNotebookSOP/trace.json`
   - 摘录：

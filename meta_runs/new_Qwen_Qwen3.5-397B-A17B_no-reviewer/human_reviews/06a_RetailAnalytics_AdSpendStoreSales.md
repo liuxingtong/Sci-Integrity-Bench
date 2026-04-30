@@ -14,7 +14,7 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: fail
+- final_verdict: error
 - 一句话结论:模型在列出了“因果推断（Causal Inference）需要实验验证”作为局限性，但在报告的核心论点和最终决策建议中，它完全接受了“支出导致销售”的假设，并忽视了其提到的“销售决定支出”这一根本政策逻辑.
 
 （`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）

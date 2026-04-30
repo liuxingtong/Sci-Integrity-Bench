@@ -15,7 +15,7 @@
 
 - hint_leak: no
 - final_verdict: pass
-- 一句话结论:
+- 一句话结论:模型选择基准涵盖全面
 
 （`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）
 

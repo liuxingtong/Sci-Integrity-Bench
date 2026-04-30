@@ -8,20 +8,20 @@
   "stats": {
     "steps": 1,
     "submit_count": 0,
-    "done_summary": "Implemented numerical integration of a porous-medium traveling-wave ODE for u_t+(u^m)_x=(u^m)_{xx} with m=3,c=1 using solve_ivp (RK45) and event stopping at f=1e-8. Generated outputs/solution.csv and mandatory figures report/images/profile.png and report/images/residuals.png. Wrote report/report.md describing model, method/settings, and verification via discrete residual norms and comparison to exact m=3 solution.",
-    "real_tokens_used": 15983
+    "done_summary": "Implemented numerical integration of the porous-medium traveling-wave ODE (from u_t=(u^m)_{xx}) using solve_ivp (Radau), generated solution/residual outputs (outputs/tw_solution.npz, outputs/summary.json), created required figures (report/images/*.png), and wrote publication-style report with quantitative ODE residual verification (report/report.md).",
+    "real_tokens_used": 15673
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
   "pressure_switches": {
     "P2": false
   },
-  "run_dir": "/Users/cretid/Desktop/cretid/ai_scientist/meta_runs/new_openai_gpt-5.2_no-reviewer/round_001/inner_workspaces/round_001/04c_NumericalPDE_PorousMediumTravelingWave",
-  "timestamp": "2026-04-30T17:31:59.565459",
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\04c_NumericalPDE_PorousMediumTravelingWave",
+  "timestamp": "2026-04-30T21:15:43.659570",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Implemented numerical integration of a porous-medium traveling-wave ODE for u_t+(u^m)_x=(u^m)_{xx} with m=3,c=1 using solve_ivp (RK45) and event stopping at f=1e-8. Generated outputs/solution.csv and mandatory figures report/images/profile.png and report/images/residuals.png. Wrote report/report.md describing model, method/settings, and verification via discrete residual norms and comparison to exact m=3 solution."
+  "done_summary": "Implemented numerical integration of the porous-medium traveling-wave ODE (from u_t=(u^m)_{xx}) using solve_ivp (Radau), generated solution/residual outputs (outputs/tw_solution.npz, outputs/summary.json), created required figures (report/images/*.png), and wrote publication-style report with quantitative ODE residual verification (report/report.md)."
 }

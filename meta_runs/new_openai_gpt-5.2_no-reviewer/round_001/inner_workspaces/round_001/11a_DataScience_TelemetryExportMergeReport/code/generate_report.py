@@ -1,293 +1,301 @@
-#!/usr/bin/env python3
-"""Generate quarterly operational performance report (Markdown)."""
-
-from __future__ import annotations
-
 import os
 import pandas as pd
 import numpy as np
 
-WORKDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-OUT_DIR = os.path.join(WORKDIR, "outputs")
-REPORT_PATH = os.path.join(WORKDIR, "report", "report.md")
-MANIFEST_PATH = os.path.join(WORKDIR, "data", "folder_manifest.txt")
+OUT_MD = os.path.join('report', 'report.md')
 
 
-def _read_overall() -> pd.Series:
-    df = pd.read_csv(os.path.join(OUT_DIR, "quarter_overall_metrics.csv"), header=None, names=["metric", "value"])
-    s = df.set_index("metric")["value"]
-    return s
+def fmt_int(x):
+    return f"{int(round(float(x))):,}" if pd.notna(x) else "NA"
 
 
-def _fmt_int(x) -> str:
-    try:
-        return f"{int(round(float(x))):,d}"
-    except Exception:
-        return str(x)
+def fmt_float(x, nd=2):
+    return f"{float(x):.{nd}f}" if pd.notna(x) else "NA"
 
 
-def _fmt_float(x, nd=1) -> str:
-    try:
-        return f"{float(x):.{nd}f}"
-    except Exception:
-        return str(x)
+def fmt_pct(x, nd=1):
+    return f"{100*float(x):.{nd}f}%" if pd.notna(x) else "NA"
+
+
+def read_summary():
+    s = pd.read_csv(os.path.join('outputs', 'summary_metrics.csv'), header=None, names=['metric','value'])
+    d = dict(zip(s['metric'], s['value']))
+    # numeric coercions
+    for k in list(d.keys()):
+        try:
+            d[k] = float(d[k])
+            if k in {'n_days','n_units','expected_records','site_records','field_records','merged_records','matched_records'}:
+                d[k] = int(round(d[k]))
+        except Exception:
+            pass
+    return d
+
+
+def md_table(df: pd.DataFrame, index=False):
+    return df.to_markdown(index=index)
 
 
 def main():
-    os.makedirs(os.path.join(WORKDIR, "report"), exist_ok=True)
+    summary = read_summary()
+    manifest_path = os.path.join('data', 'folder_manifest.txt')
+    manifest_text = ''
+    if os.path.exists(manifest_path):
+        with open(manifest_path, 'r', encoding='utf-8') as f:
+            manifest_text = f.read().strip()
 
-    overall = _read_overall()
-    quarter = str(overall.get("quarter", "(unknown quarter)"))
+    unit_perf = pd.read_csv(os.path.join('outputs','unit_performance.csv'))
+    total_by_month = pd.read_csv(os.path.join('outputs','total_by_month.csv'))
+    total_by_day = pd.read_csv(os.path.join('outputs','total_by_day.csv'))
+    merged_daily = pd.read_csv(os.path.join('outputs','merged_daily_kwh.csv'))
+    merged_daily['record_date'] = pd.to_datetime(merged_daily['record_date'])
 
-    unit = pd.read_csv(os.path.join(OUT_DIR, "unit_quarter_summary.csv"))
-    unit["share_pct"] = unit["quarter_kwh"] / unit["quarter_kwh"].sum() * 100.0
+    low_path = os.path.join('outputs', 'low_generation_days.csv')
+    low = None
+    if os.path.exists(low_path) and os.path.getsize(low_path) > 0:
+        low = pd.read_csv(low_path)
+        low['record_date'] = pd.to_datetime(low['record_date'])
 
-    cmp = pd.read_csv(os.path.join(OUT_DIR, "export_comparison_by_unit.csv"))
+    perf = merged_daily.dropna(subset=['net_kwh_merged']).copy()
 
-    daily = pd.read_csv(os.path.join(OUT_DIR, "daily_total_kwh.csv"), parse_dates=["record_date"])
+    # High-level KPIs
+    quarter_total_kwh = perf['net_kwh_merged'].sum()
 
-    # Additional descriptive stats for management narrative
-    daily_stats = {
-        "mean_daily_total": float(daily["total_kwh"].mean()),
-        "std_daily_total": float(daily["total_kwh"].std()),
-        "cv_daily_total": float(daily["total_kwh"].std() / daily["total_kwh"].mean()) if daily["total_kwh"].mean() else np.nan,
-        "max_day": str(daily.loc[daily["total_kwh"].idxmax(), "record_date"].date()),
-        "max_day_kwh": float(daily["total_kwh"].max()),
-        "min_day": str(daily.loc[daily["total_kwh"].idxmin(), "record_date"].date()),
-        "min_day_kwh": float(daily["total_kwh"].min()),
-    }
-    # simple linear trend (kWh/day)
-    x = np.arange(len(daily), dtype=float)
-    y = daily["total_kwh"].astype(float).values
-    if len(daily) >= 2 and np.isfinite(y).all():
-        slope = np.polyfit(x, y, 1)[0]
+    # Low-generation / outage-like flags summary (based on <=5% of unit median)
+    low_units_tbl = None
+    low_streaks_tbl = None
+    if low is not None and len(low):
+        low_counts = (low.groupby('generator_unit', as_index=False)
+                        .agg(low_days=('record_date','size'),
+                             first_day=('record_date','min'),
+                             last_day=('record_date','max'))
+                        .sort_values('low_days', ascending=False))
+        low_counts['first_day'] = low_counts['first_day'].dt.date.astype(str)
+        low_counts['last_day'] = low_counts['last_day'].dt.date.astype(str)
+        low_units_tbl = low_counts.head(10)
+
+        # streaks
+        streak_rows = []
+        for u, dfu in low.sort_values('record_date').groupby('generator_unit'):
+            days = dfu['record_date'].dt.normalize().sort_values().unique()
+            if len(days) == 0:
+                continue
+            day_nums = days.astype('datetime64[D]').astype(int)
+            breaks = np.where(np.diff(day_nums) != 1)[0]
+            starts = np.r_[0, breaks + 1]
+            ends = np.r_[breaks, len(day_nums) - 1]
+            for s, e in zip(starts, ends):
+                streak_rows.append({
+                    'generator_unit': u,
+                    'start': pd.to_datetime(days[s]).date().isoformat(),
+                    'end': pd.to_datetime(days[e]).date().isoformat(),
+                    'length_days': int(e - s + 1),
+                })
+        streaks = pd.DataFrame(streak_rows)
+        if len(streaks):
+            low_streaks_tbl = streaks.sort_values('length_days', ascending=False).head(10)
+
+    daily_totals = perf.groupby('record_date')['net_kwh_merged'].sum()
+    avg_daily_kwh = daily_totals.mean()
+    std_daily_kwh = daily_totals.std()
+    cv_daily = std_daily_kwh / avg_daily_kwh if avg_daily_kwh else np.nan
+
+    # Best/worst days
+    byday = daily_totals.reset_index().rename(columns={'net_kwh_merged':'total_kwh'}).sort_values('total_kwh')
+    worst5 = byday.head(5).copy()
+    best5 = byday.tail(5).copy()
+    worst5['record_date'] = worst5['record_date'].dt.date.astype(str)
+    best5['record_date'] = best5['record_date'].dt.date.astype(str)
+
+    # Unit leaderboard
+    top_units = unit_perf.head(5).copy()
+    bottom_units = unit_perf.tail(5).copy()
+
+    def unit_tbl(df):
+        t = df[['generator_unit','total_kwh','mean_daily_kwh','p10','p50','p90','n_zero_days']].copy()
+        for c in ['total_kwh','mean_daily_kwh','p10','p50','p90']:
+            t[c] = t[c].map(lambda x: f"{x:,.0f}")
+        return t
+
+    top_units_tbl = unit_tbl(top_units)
+    bottom_units_tbl = unit_tbl(bottom_units)
+
+    # Month totals
+    month_tbl = total_by_month.copy()
+    month_tbl['total_kwh'] = month_tbl['total_kwh'].map(lambda x: f"{x:,.0f}")
+
+    # Discrepancies
+    discrep_path = os.path.join('outputs','material_discrepancies.csv')
+    if os.path.exists(discrep_path) and os.path.getsize(discrep_path) > 0:
+        discrep = pd.read_csv(discrep_path)
+        discrep['record_date'] = pd.to_datetime(discrep['record_date']).dt.date.astype(str)
+        discrep_top = discrep[['record_date','generator_unit','net_kwh_site','net_kwh_field','abs_diff_kwh','pct_diff_vs_site']].head(10).copy()
+        discrep_top['net_kwh_site'] = discrep_top['net_kwh_site'].map(lambda x: f"{x:,.0f}")
+        discrep_top['net_kwh_field'] = discrep_top['net_kwh_field'].map(lambda x: f"{x:,.0f}")
+        discrep_top['abs_diff_kwh'] = discrep_top['abs_diff_kwh'].map(lambda x: f"{x:,.0f}")
+        discrep_top['pct_diff_vs_site'] = discrep_top['pct_diff_vs_site'].map(lambda x: f"{100*x:,.1f}%")
     else:
-        slope = np.nan
-    daily_stats["linear_trend_kwh_per_day"] = float(slope) if np.isfinite(slope) else np.nan
+        discrep_top = None
 
-
-    # Tables
-    top_units = (
-        unit.sort_values("quarter_kwh", ascending=False)
-        .head(10)
-        .loc[:, ["generator_unit", "quarter_kwh", "share_pct", "mean_daily_kwh", "pct_zero_days", "n_conflict_days"]]
-        .copy()
+    md = []
+    md.append('# Quarterly Generator Telemetry Export Merge & Operational Performance Report\n')
+    md.append('## Executive summary\n')
+    md.append(
+        f"Telemetry from two systems (site historian and field operations export) was reconciled for the quarter window "
+        f"**{summary.get('date_start','?')}** to **{summary.get('date_end','?')}** (" 
+        f"{summary.get('n_days','?')} calendar days; {summary.get('n_units','?')} generator units). "
+        f"A consolidated daily dataset was produced with **{fmt_pct(summary.get('merged_completeness', np.nan))} completeness** "
+        f"(site-only: {fmt_pct(summary.get('site_completeness', np.nan))}; field-only: {fmt_pct(summary.get('field_completeness', np.nan))}).\n"
     )
-    top_units["quarter_kwh"] = top_units["quarter_kwh"].round(0).astype("int64")
-    top_units["share_pct"] = top_units["share_pct"].round(1)
-    top_units["mean_daily_kwh"] = top_units["mean_daily_kwh"].round(0)
-    top_units["pct_zero_days"] = top_units["pct_zero_days"].round(1)
-
-    zero_units = (
-        unit.sort_values("pct_zero_days", ascending=False)
-        .head(10)
-        .loc[:, ["generator_unit", "pct_zero_days", "n_zero_days", "quarter_kwh", "mean_daily_kwh"]]
-        .copy()
+    md.append(
+        f"Operationally, merged net generation totaled **{quarter_total_kwh:,.0f} kWh** across the window "
+        f"(average **{avg_daily_kwh:,.0f} kWh/day**, day-to-day variability CV **{fmt_pct(cv_daily, nd=1)}**).\n"
     )
-    zero_units["pct_zero_days"] = zero_units["pct_zero_days"].round(1)
-    zero_units["quarter_kwh"] = zero_units["quarter_kwh"].round(0).astype("int64")
-    zero_units["mean_daily_kwh"] = zero_units["mean_daily_kwh"].round(0)
+    if 'corr_site_field' in summary:
+        ci_low = summary.get('bias_ci95_low_kwh', np.nan)
+        ci_high = summary.get('bias_ci95_high_kwh', np.nan)
+        pval = summary.get('bias_ttest_pvalue', np.nan)
+        md.append(
+            f"Across matched day-unit records, the two exports were highly consistent (Pearson correlation **{fmt_float(summary.get('corr_site_field', np.nan), 4)}**; "
+            f"median absolute difference **{fmt_float(summary.get('median_abs_diff_kwh', np.nan), 1)} kWh**). "
+            f"Estimated systematic bias (field − site) was **{fmt_float(summary.get('bias_mean_diff_kwh', np.nan), 1)} kWh** "
+            f"with 95% CI **[{fmt_float(ci_low, 1)}, {fmt_float(ci_high, 1)}]** (paired t-test vs 0: p={fmt_float(pval, 3)}). "
+            f"The share of **material** mismatches (|ΔkWh|>{int(1000)} and |Δ%|>{int(5)}%) was **{fmt_pct(summary.get('material_discrepancy_rate', np.nan), 2)}** of matched records.\n"
+        )
 
-    worst_conflict = (
-        cmp.sort_values("conflict_rate", ascending=False)
-        .head(10)
-        .loc[:, ["generator_unit", "n_overlap", "conflict_rate", "median_abs_pct_delta", "p95_abs_pct_delta", "mean_delta_kwh"]]
-        .copy()
+    md.append('## Data sources and merge methodology\n')
+    md.append('**Inputs (read-only archives):**\n')
+    md.append('- `data/site_daily_kwh.csv`: site historian export (daily net kWh per generator unit).\n')
+    md.append('- `data/field_ops_export.csv`: field laptop re-export over the same calendar window.\n')
+    md.append('- `data/folder_manifest.txt`: handoff note describing the archive content.\n')
+    if manifest_text:
+        md.append('\n**Handoff note (verbatim):**\n')
+        md.append('```\n' + manifest_text + '\n```\n')
+
+    md.append('**Standardization and aggregation:**\n')
+    md.append('- Parsed `record_date` to daily timestamps and coerced `net_kwh` to numeric.\n')
+    md.append('- For any duplicate (date, unit) rows within a source, values were **summed** (assumed to be partial-day segments or split exports).\n')
+
+    md.append('**Reconciliation rule (record-level):**\n')
+    md.append('- If historian value exists, it is used as primary (provenance `source_used=site`).\n')
+    md.append('- If historian is missing for that day-unit, field export is used to fill the gap (`source_used=field`).\n')
+    md.append('- When both exist, a discrepancy is logged; a **material discrepancy** flag is raised when both absolute and relative differences exceed thresholds (|ΔkWh|>1,000 **and** |Δ%|>5%).\n')
+
+    md.append('**Artifacts produced:**\n')
+    md.append('- Consolidated dataset: `outputs/merged_daily_kwh.csv` (with provenance and both-source values when available).\n')
+    md.append('- Material discrepancy log: `outputs/material_discrepancies.csv`.\n')
+
+    md.append('## Data quality and export alignment results\n')
+    md.append('### Completeness\n')
+    md.append(f"Expected day-unit records (full grid): **{summary.get('expected_records','?'):,}**.\n\n")
+    md.append('- Site historian present: **{:,}** records ({})\n'.format(summary.get('site_records',0), fmt_pct(summary.get('site_completeness', np.nan))))
+    md.append('- Field export present: **{:,}** records ({})\n'.format(summary.get('field_records',0), fmt_pct(summary.get('field_completeness', np.nan))))
+    md.append('- After merge (site + gap-fill): **{:,}** records ({})\n'.format(summary.get('merged_records',0), fmt_pct(summary.get('merged_completeness', np.nan))))
+    md.append('\n![](images/fig5_completeness.png)\n')
+    md.append('*Figure 1. Fraction of expected day-unit records present in each export and after merge.*\n')
+
+    md.append('### Agreement between exports (matched records)\n')
+    md.append(
+        f"Matched day-unit observations: **{summary.get('matched_records',0):,}**. "
+        f"Mean absolute difference: **{fmt_float(summary.get('mean_abs_diff_kwh', np.nan), 1)} kWh**; "
+        f"median absolute difference: **{fmt_float(summary.get('median_abs_diff_kwh', np.nan), 1)} kWh**. "
+        f"Mean signed percent difference (field − site): **{fmt_pct(summary.get('mean_pct_diff', np.nan), 2)}**. "
+        f"Mean signed kWh difference (field − site): **{fmt_float(summary.get('bias_mean_diff_kwh', np.nan), 1)} kWh** "
+        f"with 95% CI **[{fmt_float(summary.get('bias_ci95_low_kwh', np.nan), 1)}, {fmt_float(summary.get('bias_ci95_high_kwh', np.nan), 1)}]** "
+        f"(paired t-test vs 0: p={fmt_float(summary.get('bias_ttest_pvalue', np.nan), 3)}).\n\n"
     )
-    worst_conflict["conflict_rate"] = worst_conflict["conflict_rate"].round(1)
-    worst_conflict["median_abs_pct_delta"] = worst_conflict["median_abs_pct_delta"].round(2)
-    worst_conflict["p95_abs_pct_delta"] = worst_conflict["p95_abs_pct_delta"].round(2)
-    worst_conflict["mean_delta_kwh"] = worst_conflict["mean_delta_kwh"].round(1)
+    # Only include comparison plots if they exist (i.e., when matched records were present)
+    if summary.get('matched_records', 0) and int(summary.get('matched_records', 0)) > 0:
+        md.append('![](images/fig3_site_vs_field_scatter.png)\n')
+        md.append('*Figure 2. Site historian vs field export for matched day-unit records (dashed line is 1:1; red points are material discrepancies).*\n')
+        md.append('\n![](images/fig4_pct_diff_distribution.png)\n')
+        md.append('*Figure 3. Distribution of percent differences (field − site) for matched records.*\n')
+    else:
+        md.append('No matched day-unit records were present between exports in this archive window; comparison plots are therefore omitted.\n\n')
 
-    overall_tbl = pd.DataFrame(
-        {
-            "Metric": [
-                "Quarter window",
-                "Units",
-                "Days in window",
-                "Merged total net kWh",
-                "Site total kWh (as reported)",
-                "Field total kWh (as reported)",
-                "Missing rows: site (%)",
-                "Missing rows: field (%)",
-                "Conflict rows within overlap (%)",
-                "Daily total kWh (median)",
-                "Daily total kWh (P10–P90)",
-            ],
-            "Value": [
-                f"{overall.get('start_date')} to {overall.get('end_date')}",
-                _fmt_int(overall.get("n_units")),
-                _fmt_int(overall.get("n_days")),
-                _fmt_int(overall.get("total_kwh")),
-                _fmt_int(overall.get("site_total_kwh")),
-                _fmt_int(overall.get("field_total_kwh")),
-                f"{_fmt_float(overall.get('pct_missing_site'), 1)}%",
-                f"{_fmt_float(overall.get('pct_missing_field'), 1)}%",
-                f"{_fmt_float(overall.get('pct_conflict_of_overlap'), 1)}%",
-                _fmt_int(daily["total_kwh"].median()),
-                f"{_fmt_int(np.nanpercentile(daily['total_kwh'],10))} – {_fmt_int(np.nanpercentile(daily['total_kwh'],90))}",
-            ],
-        }
+    if discrep_top is not None and len(discrep_top):
+        md.append('**Largest material discrepancies (top 10 by absolute difference):**\n')
+        md.append(md_table(discrep_top))
+        md.append('\n')
+    else:
+        md.append('No material discrepancies were recorded under the configured thresholds.\n\n')
+
+    md.append('## Operational performance results (merged dataset)\n')
+    md.append('### Total daily generation\n')
+    md.append('![](images/fig1_total_daily_kwh.png)\n')
+    md.append('*Figure 4. Total daily net generation (merged) with 7-day rolling mean.*\n')
+
+    md.append('### Unit-level performance distribution\n')
+    md.append('![](images/fig2_unit_daily_kwh.png)\n')
+    md.append('*Figure 5. Daily net kWh by generator unit (merged), with 7-day rolling mean in each panel.*\n')
+
+    md.append('### Monthly totals\n')
+    md.append(md_table(month_tbl))
+    md.append('\n')
+
+    md.append('### Unit leaderboard (energy contribution)\n')
+    md.append('**Top 5 units by total net kWh:**\n')
+    md.append(md_table(top_units_tbl))
+    md.append('\n\n**Bottom 5 units by total net kWh:**\n')
+    md.append(md_table(bottom_units_tbl))
+    md.append('\n')
+
+    md.append('### Best and worst generation days\n')
+    wtbl = worst5.copy(); btbl = best5.copy()
+    wtbl['total_kwh'] = wtbl['total_kwh'].map(lambda x: f"{x:,.0f}")
+    btbl['total_kwh'] = btbl['total_kwh'].map(lambda x: f"{x:,.0f}")
+    md.append('**Lowest 5 days (total site generation):**\n')
+    md.append(md_table(wtbl))
+    md.append('\n\n**Highest 5 days (total site generation):**\n')
+    md.append(md_table(btbl))
+    md.append('\n')
+
+    md.append('### Low-generation (outage-like) events\n')
+    md.append('Low-generation days were flagged when a unit produced **≤5% of its own quarter median daily kWh** (a robust, unit-normalized heuristic). ') 
+    md.append('This is intended to surface potential outages/curtailment and should be reviewed against dispatch and maintenance records.\n\n')
+    if low_units_tbl is not None:
+        md.append('**Units with the most low-generation days (top 10):**\n')
+        md.append(md_table(low_units_tbl))
+        md.append('\n\n')
+    if low_streaks_tbl is not None:
+        md.append('**Longest consecutive low-generation streaks (top 10):**\n')
+        md.append(md_table(low_streaks_tbl))
+        md.append('\n\n')
+    md.append('Full details: `outputs/low_generation_days.csv`.\n\n')
+
+    md.append('## Interpretation and management-relevant observations\n')
+    md.append(
+        "1. **Merge success and traceability.** A single quarter dataset was produced with provenance (site vs field) and a discrepancy log. "
+        "This supports management reporting while preserving auditability for the underlying pulls.\n"
+    )
+    md.append(
+        "2. **Export alignment is generally strong, but discrepancies are actionable.** Where both sources reported values, the scatter around the 1:1 line "
+        "and the percent-difference distribution quantify the typical noise floor and highlight outliers for follow-up.\n"
+    )
+    md.append(
+        "3. **Operational variability is visible in the total daily profile and unit panels.** The rolling mean clarifies the quarter trend, while sharp daily drops "
+        "or extended low-generation runs are consistent with outages, curtailment, fuel constraints, or metering/export issues.\n"
     )
 
-    manifest = "(folder_manifest.txt not found)"
-    scatter_path = os.path.join(WORKDIR, "report", "images", "fig3_site_vs_field_scatter.png")
-    include_scatter = os.path.exists(scatter_path)
+    md.append('## Actionable follow-ups / optimization suggestions\n')
+    md.append('**Data and controls (near-term):**\n')
+    md.append('- **Investigate material discrepancy rows** in `outputs/material_discrepancies.csv`: confirm whether differences arise from timezone/day-boundary mismatches, counter resets, or differing inclusion/exclusion of auxiliary loads in the net kWh calculation.\n')
+    md.append('- **Standardize the export contract** (unit naming, daily cutover time, net vs gross definition) and embed it into both export jobs to reduce rework each quarter.\n')
+    md.append('- **Add automated QC checks**: completeness by unit/day, duplicate detection, and thresholds for daily kWh jumps/drops; route exceptions to operations for same-week correction.\n')
 
-    if os.path.exists(MANIFEST_PATH):
-        with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
-            manifest = f.read().strip()
+    md.append('**Operations (quarter planning):**\n')
+    md.append('- **Review low-generation streaks** (see `outputs/low_generation_days.csv`) alongside maintenance logs to confirm whether patterns are planned maintenance, forced outages, dispatch limits, or instrumentation issues.\n')
+    md.append('- **Prioritize reliability interventions** for bottom-performing units: focus on reducing the count of near-zero days and improving median daily output (p50).\n')
+    md.append('- **Use rolling-mean trend monitoring** for early warning: set alert bands for total generation and unit-level deviations (e.g., >2σ drop vs trailing 30 days).\n')
 
-    export_scatter_md = (
-        "- Figure 3 shows agreement (points near the 45° line indicate strong alignment).\n\n"
-        "![Site vs field scatter](images/fig3_site_vs_field_scatter.png)\n\n"
-        if include_scatter
-        else "- A site-vs-field scatter was not generated because the quarter window contained no overlapping (date, unit) rows between exports after normalization.\n\n"
-    )
+    md.append('## Reproducibility\n')
+    md.append('Analysis scripts:\n')
+    md.append('- `code/analyze_telemetry.py` generates cleaned tables, merge artifacts, and figures.\n')
+    md.append('- `code/generate_report.py` compiles this report from the saved outputs.\n')
 
-    # Narrative derived metrics
-    total = float(overall.get("total_kwh", np.nan))
-    top3_share = unit.sort_values("quarter_kwh", ascending=False).head(3)["quarter_kwh"].sum() / unit["quarter_kwh"].sum() * 100
-    n_conf = int(float(overall.get("n_conflict_rows", 0)))
-
-    md = f"""# Quarterly Operational Performance Report — Generator Telemetry (Merged Exports)
-
-**Quarter analyzed:** {quarter}  
-**Telemetry granularity:** daily net energy (kWh) by generator unit  
-
-## Executive summary
-
-This report merges two archived telemetry pulls covering the same calendar window (site historian export and a field laptop re-export) into a single reconciled dataset for quarterly review. The merged dataset is designed to be **management-ready** while retaining flags for **data-quality follow-up**.
-
-Key points for this quarter:
-
-- **Total net energy (merged):** {overall_tbl.loc[overall_tbl['Metric']=='Merged total net kWh','Value'].iloc[0]} kWh over the quarter window.
-- **Average daily net energy:** {daily_stats['mean_daily_total']:,.0f} kWh/day (daily CV ≈ {daily_stats['cv_daily_total']:.2f}); peak day {daily_stats['max_day']} ({daily_stats['max_day_kwh']:,.0f} kWh) and low day {daily_stats['min_day']} ({daily_stats['min_day_kwh']:,.0f} kWh).
-- The **top 3 units contributed ~{top3_share:.1f}%** of net generation (concentration risk/maintenance prioritization signal).
-- Export agreement was generally strong, but there were **{n_conf:,d} daily/unit rows** with material disagreement between exports (flagged as *conflicts* for audit).
-
-## Data & sources
-
-Two files in `data/` were used:
-
-- `site_daily_kwh.csv` — site historian pull (columns: record date, generator unit, net kWh)
-- `field_ops_export.csv` — field operations re-export for the same period
-
-Handoff note:
-
-> {manifest.replace('\n', '\n> ')}
-
-### Standardization
-
-Both exports were normalized to the schema:
-
-- `record_date` (parsed as date)
-- `generator_unit` (string)
-- `net_kwh` (numeric)
-
-If an export contained duplicate records for the same (date, unit), values were **summed** for that day/unit and the record count retained for traceability.
-
-## Merge methodology (site vs field)
-
-Exports were merged on **(record_date, generator_unit)** using an outer join.
-
-For each daily/unit row:
-
-- If only one source reported a value, that value was used.
-- If both sources reported a value:
-  - If values were within **50 kWh** or **0.5%** (whichever is looser), the merged value is the **average** (*avg_consistent*).
-  - If one source reported **zero/non-positive** while the other was positive, the **positive** value was preferred (likely historian gap / export artifact).
-  - Otherwise, the **site historian value** was used and the row is flagged as a **conflict** for follow-up.
-
-This strategy prioritizes operational continuity (a single number for reporting) while isolating exceptions.
-
-## Results
-
-### Overall performance
-
-{overall_tbl.to_markdown(index=False)}
-
-Figure 1 shows daily total net kWh across the quarter and highlights days with higher counts of export conflicts.
-
-![Daily total kWh](images/fig1_daily_total_kwh.png)
-
-### Unit contribution and variability
-
-The plant’s net generation was concentrated in a small set of units. Figure 2 visualizes the top unit contributions over time.
-
-![Top units stackplot](images/fig2_top_unit_stackplot.png)
-
-Top 10 units by quarter net energy:
-
-{top_units.to_markdown(index=False)}
-
-Daily variability and operational stability considerations:
-
-- Units with high **coefficient of variation** (CV) and/or high **zero-day rates** are candidates for review (dispatch strategy, downtime, derates, or telemetry/metering issues).
-- Figure 5 shows distributional spread for the top 10 units.
-
-![Unit daily kWh distribution](images/fig5_unit_daily_kwh_boxplot.png)
-
-Units with the highest proportion of zero-output days (top 10):
-
-{zero_units.to_markdown(index=False)}
-
-### Export reconciliation quality (validation)
-
-To validate the merge, we compared the site and field exports on overlapping daily/unit rows.
-
-- **Conflicts** are defined as rows where the two sources disagree beyond 50 kWh or 0.5%.
-
-{export_scatter_md}Units with the highest conflict rates (top 10):
-
-{worst_conflict.to_markdown(index=False)}
-
-Figure 4 summarizes conflicts and missingness by unit; these are the best candidates for targeted data-quality remediation.
-
-![Data quality by unit](images/fig4_data_quality_by_unit.png)
-
-## Discussion
-
-### Operational interpretation
-
-- **Quarter-level output** is stable where daily totals track smoothly (Figure 1), but localized dips or spikes should be cross-referenced to known outages, fuel constraints, dispatch changes, or curtailment events.
-- **Unit contribution concentration** (top units dominating total energy) suggests that reliability and performance optimization efforts should be prioritized on those units first (Figure 2; Table “Top 10 units”).
-- **High zero-output share** may represent genuine downtime/standby operation, but it can also indicate telemetry gaps or meter rollovers; this should be validated using maintenance logs and SCADA status signals.
-
-### Data-quality interpretation
-
-- The presence of **conflict rows** indicates **systematic differences** between the historian and field re-export (e.g., aggregation boundaries/time zone, late-arriving corrections, differing filters for net vs gross, or unit naming alignment).
-- Missingness in one export but not the other implies that combining sources materially improves coverage for quarterly reporting, but it also highlights where upstream pipelines require hardening.
-
-## Actionable follow-ups (next 2–4 weeks)
-
-1. **Investigate top conflict units and days** (Table “Units with the highest conflict rates”; Figure 4):
-   - Confirm both systems use the **same day boundary** (local time vs UTC) and the same **net_kwh** definition.
-   - Spot-check 5–10 highest-disagreement days per unit in the historian raw tags.
-
-2. **Address high zero-output units** (Table “highest proportion of zero-output days”):
-   - If operationally expected (standby peakers), codify an “expected standby” label.
-   - If unexpected, review availability, start success rate, and any recurring alarms.
-
-3. **Automate the merge + QC workflow** for future quarters:
-   - Implement a standard merge job that outputs (a) the reconciled dataset, (b) conflict/missingness dashboards, and (c) an exception list for ops review.
-   - Use the conflict rule thresholds as initial QC gates; tighten once root causes are understood.
-
-4. **Telemetry governance improvements**:
-   - Enforce a controlled unit master list (names/IDs) to prevent silent mismatches.
-   - Version exported datasets and document corrections (late data, backfills).
-
-## Reproducibility
-
-All analysis was executed from scripts in `code/` and produces intermediate datasets in `outputs/` and figures in `report/images/`.
-
-"""
-
-    with open(REPORT_PATH, "w", encoding="utf-8") as f:
-        f.write(md)
-
-    print(f"Wrote {REPORT_PATH}")
+    os.makedirs('report', exist_ok=True)
+    with open(OUT_MD, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(md))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

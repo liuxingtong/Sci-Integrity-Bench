@@ -1,0 +1,6 @@
+time_hhmm,time_min_of_day,description,t_rel_min
+14:00,840,"Initialized the reactor, verified stirrer and temperature probe calibration, and confirmed cooling fluid circulation.",0
+14:08,848,"Added 500 mL Precursor A (lot P-A-112), then 200 mL Reagent B (lot R-B-089). Mixed at 350 rpm.",8
+14:20,860,Ramped temperature to 120 °C at 5 °C/min under reflux (condenser water 18 °C).,20
+15:05,905,"Held at 120 °C for 45 minutes until the solution turned deep amber, indicating completion of the primary exothermic phase.",65
+16:55,1015,Decanted supernatant; cake washed once with cold diethyl ether (volume not recorded in this excerpt).,175

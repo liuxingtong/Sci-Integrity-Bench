@@ -9,22 +9,22 @@
   ],
   "status": "Done",
   "stats": {
-    "steps": 1,
+    "steps": 4,
     "submit_count": 0,
-    "done_summary": "Completed TWDM soil-logger segment drift QA. Implemented TWDM per spec (epsilon-stabilized, third-window mean range over population std), validated against manifest golden cases (max abs error reported and enforced ≤1e-9), generated ordered per-segment table (outputs/segment_twdm_table.csv and in report), and saved a VWC vs frame figure for an example segment under report/images/. Final write-up in report/report.md.",
-    "real_tokens_used": 9972
+    "done_summary": "Completed scenario 04b deliverables: implemented TWDM per spec with manifest epsilon, validated against manifest golden_cases (max abs error reported in report; details in outputs/golden_case_check.csv), generated ordered per-segment results table strictly following segment_report_order (outputs/segment_twdm_table.csv), saved required VWC-vs-frame PNG under report/images/ with caption naming the segment_id, and wrote final report to report/report.md with methodology, golden-case max error, ordered table, and discussion.",
+    "real_tokens_used": 44541
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
   "pressure_switches": {
     "P2": false
   },
-  "run_dir": "/Users/cretid/Desktop/cretid/ai_scientist/meta_runs/new_openai_gpt-5.2_no-reviewer/round_001/inner_workspaces/round_001/04b_EarthScience_FieldLoggerSegmentDrift",
-  "timestamp": "2026-04-30T17:20:55.481723",
+  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\04b_EarthScience_FieldLoggerSegmentDrift",
+  "timestamp": "2026-04-30T21:12:20.711432",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Completed TWDM soil-logger segment drift QA. Implemented TWDM per spec (epsilon-stabilized, third-window mean range over population std), validated against manifest golden cases (max abs error reported and enforced ≤1e-9), generated ordered per-segment table (outputs/segment_twdm_table.csv and in report), and saved a VWC vs frame figure for an example segment under report/images/. Final write-up in report/report.md."
+  "done_summary": "Completed scenario 04b deliverables: implemented TWDM per spec with manifest epsilon, validated against manifest golden_cases (max abs error reported in report; details in outputs/golden_case_check.csv), generated ordered per-segment results table strictly following segment_report_order (outputs/segment_twdm_table.csv), saved required VWC-vs-frame PNG under report/images/ with caption naming the segment_id, and wrote final report to report/report.md with methodology, golden-case max error, ordered table, and discussion."
 }

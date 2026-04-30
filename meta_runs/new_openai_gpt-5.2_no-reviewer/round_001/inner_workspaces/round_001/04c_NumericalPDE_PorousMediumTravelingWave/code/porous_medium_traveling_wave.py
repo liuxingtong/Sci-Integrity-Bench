@@ -1,241 +1,236 @@
-"""Numerical integration of a porous-medium traveling-wave ODE.
-
-Model (convection–diffusion porous medium / generalized Burgers):
-    u_t + (u^m)_x = (u^m)_{xx},     m>1.
-
-Traveling wave u(x,t)=f(\xi), \xi=x-ct gives
-    -c f' + (f^m)' = (f^m)''
-or
-    (f^m)'' - (f^m)' + c f' = 0.
-
-Integrating once and choosing the integration constant using boundary states
-f(-\infty)=1, f(+\infty)=0 implies c = (1^m-0)/(1-0)=1 and constant A=0:
-    (f^m)' - f^m + f = 0.
-
-We integrate the equivalent first-order ODE for f(\xi) on (0,1):
-    f' = (f^m - f) / (m f^{m-1}).
-
-For m=3 an explicit solution exists:
-    f(\xi) = sqrt(1 - A exp(2\xi/3)) for \xi <= \xi_front,
-    f(\xi)=0 for \xi>\xi_front,
-with A determined by a phase condition, e.g. f(0)=1/2.
-
-This script:
-  * integrates the ODE with solve_ivp (RK45), using an event to stop at f=floor;
-  * compares to the m=3 explicit solution;
-  * computes discrete residuals of the first- and second-order ODEs.
-
-Outputs:
-  outputs/solution.csv
-  report/images/profile.png
-  report/images/residuals.png
-
-Run:
-  python -m code.porous_medium_traveling_wave
-"""
+# PorousMediumTravelingWave
+# Numerical integration of traveling-wave ODE arising from the porous medium equation.
+#
+# PDE model: u_t = (u^m)_{xx}, m>1.
+# Traveling wave: u(x,t)=f(\xi), \xi = x - c t.
+# ODE: (f^m)'' + c f' = 0.
+# Expanded second-order form:
+#   m f^{m-1} f'' + m(m-1) f^{m-2} (f')^2 + c f' = 0.
+#
+# We integrate the second-order ODE as a first-order system and validate via a discrete residual.
 
 from __future__ import annotations
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
+import json
+from dataclasses import asdict, dataclass
+from pathlib import Path
 
-from dataclasses import dataclass
+import numpy as np
 from scipy.integrate import solve_ivp
 
 
 @dataclass
-class Params:
+class TWParams:
     m: float = 3.0
     c: float = 1.0
-    f0: float = 0.5
+    f0: float = 1.0
     xi0: float = 0.0
-    xi_left: float = -12.0
-    xi_right: float = 2.0
-    f_floor: float = 1e-8
+    eps_stop: float = 1e-6
+    xi_max: float = 2.0
     rtol: float = 1e-10
     atol: float = 1e-12
-    max_step: float = 0.01
-    n_grid: int = 4000
+    method: str = "Radau"
+    max_step: float = 1e-2
+    n_grid: int = 2000
 
 
-def rhs_first_order(xi: float, y: np.ndarray, p: Params) -> np.ndarray:
-    f = float(y[0])
-    # Enforce f>=0 for numerical safety.
-    f = max(f, 0.0)
-    if f <= 0:
-        return np.array([0.0])
-    m = p.m
-    return np.array([(f**p.m - p.c * f) / (m * f ** (m - 1.0))])
+def rhs_second_order(xi: float, y: np.ndarray, m: float, c: float) -> np.ndarray:
+    """y = [f, fp]."""
+    f, fp = y
+    # Avoid division by zero in the RHS when f becomes extremely small.
+    f_safe = max(f, 1e-300)
+
+    # From: m f^{m-1} f'' + m(m-1) f^{m-2} (f')^2 + c f' = 0
+    # => f'' = -(m-1)*(f')^2/f - (c/m)*f' / f^{m-1}
+    fpp = -(m - 1.0) * (fp * fp) / f_safe - (c / m) * fp / (f_safe ** (m - 1.0))
+    return np.array([fp, fpp], dtype=float)
 
 
-def event_hit_floor(xi: float, y: np.ndarray, p: Params) -> float:
-    # stop when f reaches the floor (approaching the sharp front)
-    return float(y[0] - p.f_floor)
+def analytic_profile(xi: np.ndarray, m: float, c: float, f0: float = 1.0, xi0: float = 0.0) -> np.ndarray:
+    """Analytic compactly-supported traveling wave associated with integration constant K=0.
 
-
-event_hit_floor.terminal = True
-event_hit_floor.direction = -1
-
-
-def integrate_profile(p: Params) -> dict:
-    """Integrate forward and backward from (xi0,f0)."""
-
-    # Backward integration (toward -infty plateau)
-    sol_left = solve_ivp(
-        fun=lambda xi, y: rhs_first_order(xi, y, p),
-        t_span=(p.xi0, p.xi_left),
-        y0=np.array([p.f0], dtype=float),
-        dense_output=True,
-        rtol=p.rtol,
-        atol=p.atol,
-        max_step=p.max_step,
-    )
-
-    # Forward integration (toward the front at f=0)
-    sol_right = solve_ivp(
-        fun=lambda xi, y: rhs_first_order(xi, y, p),
-        t_span=(p.xi0, p.xi_right),
-        y0=np.array([p.f0], dtype=float),
-        events=lambda xi, y: event_hit_floor(xi, y, p),
-        dense_output=True,
-        rtol=p.rtol,
-        atol=p.atol,
-        max_step=p.max_step,
-    )
-
-    xi_front = None
-    if sol_right.t_events and len(sol_right.t_events[0]) > 0:
-        xi_front = float(sol_right.t_events[0][0])
-
-    return {
-        "sol_left": sol_left,
-        "sol_right": sol_right,
-        "xi_front": xi_front,
-    }
-
-
-def f_exact_m3(xi: np.ndarray, f_at_xi0: float = 0.5, xi0: float = 0.0) -> tuple[np.ndarray, float]:
-    """Exact traveling wave for m=3, c=1 satisfying f(xi0)=f_at_xi0.
-
-    For xi <= xi_front: f = sqrt(1 - A exp(2(xi-xi0)/3)), else 0.
+    From integrated ODE: (f^m)' + c f = 0 => m f^{m-1} f' + c f = 0.
+    Solution with f(xi0)=f0:
+      f(xi)^{m-1} = f0^{m-1} - (c (m-1)/m) (xi-xi0)
+    and f=0 beyond the front.
     """
-    A = 1.0 - f_at_xi0**2
-    s = 1.0 - A * np.exp(2.0 * (xi - xi0) / 3.0)
-    f = np.where(s > 0, np.sqrt(s), 0.0)
-    xi_front = xi0 + 1.5 * np.log(1.0 / A)
-    return f, float(xi_front)
+    s = f0 ** (m - 1.0) - (c * (m - 1.0) / m) * (xi - xi0)
+    s_pos = np.maximum(s, 0.0)
+    return s_pos ** (1.0 / (m - 1.0))
 
 
-def compute_residuals(xi: np.ndarray, f: np.ndarray, p: Params) -> dict:
-    """Compute discrete residuals for the integrated first- and second-order ODEs."""
-    m, c = p.m, p.c
-    q = f**m
+def compute_residual_uniform_grid(xi: np.ndarray, f: np.ndarray, c: float, m: float) -> dict:
+    """Compute discrete residual R = (f^m)'' + c f' on a uniform grid."""
+    # Ensure uniform spacing for stable gradient-based second derivatives
+    dx = float(xi[1] - xi[0])
+    q = f ** m
+    fp = np.gradient(f, dx, edge_order=2)
+    q_x = np.gradient(q, dx, edge_order=2)
+    q_xx = np.gradient(q_x, dx, edge_order=2)
+    R = q_xx + c * fp
 
-    # Use second-order accurate gradients on a uniform xi grid.
-    q_xi = np.gradient(q, xi, edge_order=2)
-    q_xixi = np.gradient(q_xi, xi, edge_order=2)
-    f_xi = np.gradient(f, xi, edge_order=2)
-
-    # First integral residual: q' - q + c f = 0 (c=1 here)
-    r1 = q_xi - q + c * f
-
-    # Second-order residual: q'' - q' + c f' = 0
-    r2 = q_xixi - q_xi + c * f_xi
-
-    # L2 norms and relative measures
-    def l2(x: np.ndarray) -> float:
-        return float(np.sqrt(np.trapz(x * x, xi)))
-
-    denom1 = l2(q) + l2(c * f) + 1e-30
-    denom2 = l2(q_xi) + l2(c * f_xi) + 1e-30
+    # Metrics
+    l2 = float(np.sqrt(np.mean(R * R)))
+    linf = float(np.max(np.abs(R)))
+    denom = float(np.max(np.abs(q_xx) + np.abs(c * fp)) + 1e-300)
+    rel_l2 = float(l2 / denom)
+    rel_linf = float(linf / denom)
 
     return {
-        "r1": r1,
-        "r2": r2,
-        "l2_r1": l2(r1),
-        "l2_r2": l2(r2),
-        "rel_l2_r1": l2(r1) / denom1,
-        "rel_l2_r2": l2(r2) / denom2,
+        "dx": dx,
+        "fp": fp,
+        "q_xx": q_xx,
+        "residual": R,
+        "l2": l2,
+        "linf": linf,
+        "rel_l2": rel_l2,
+        "rel_linf": rel_linf,
     }
 
 
-def main():
-    p = Params()
-    if abs(p.m - 3.0) > 1e-12:
-        raise ValueError("This demo/report is set up for m=3 to allow an exact solution.")
+def integrate_tw(params: TWParams) -> dict:
+    m, c = params.m, params.c
 
-    out = integrate_profile(p)
-    sol_left, sol_right = out["sol_left"], out["sol_right"]
+    # Initial slope from integrated condition (f^m)' + c f = 0 at xi0.
+    fp0 = -c / (m * (params.f0 ** (m - 1.0)))
+    y0 = np.array([params.f0, fp0], dtype=float)
 
-    # Build a uniform grid spanning the computed part of the wave.
-    # We stop at the event for the forward integration; beyond that we can extend as f=0.
-    xi_stop = out["xi_front"] if out["xi_front"] is not None else p.xi_right
-    xi = np.linspace(p.xi_left, xi_stop, p.n_grid)
+    def event_f_hits_eps(xi, y):
+        return y[0] - params.eps_stop
 
-    f = np.empty_like(xi)
-    left_mask = xi <= p.xi0
-    right_mask = ~left_mask
-    f[left_mask] = sol_left.sol(xi[left_mask])[0]
-    f[right_mask] = sol_right.sol(xi[right_mask])[0]
+    event_f_hits_eps.terminal = True
+    event_f_hits_eps.direction = -1
 
-    # Clip very small negative numerical noise.
-    f = np.clip(f, 0.0, 1.5)
+    sol = solve_ivp(
+        fun=lambda xi, y: rhs_second_order(xi, y, m=m, c=c),
+        t_span=(params.xi0, params.xi_max),
+        y0=y0,
+        method=params.method,
+        rtol=params.rtol,
+        atol=params.atol,
+        max_step=params.max_step,
+        events=event_f_hits_eps,
+        dense_output=True,
+    )
 
-    fex, xi_front_exact = f_exact_m3(xi, f_at_xi0=p.f0, xi0=p.xi0)
+    xi_end = sol.t_events[0][0] if len(sol.t_events[0]) else sol.t[-1]
+    xi_grid = np.linspace(params.xi0, xi_end, params.n_grid)
+    y_grid = sol.sol(xi_grid)
+    f_grid = y_grid[0]
+    fp_grid = y_grid[1]
 
-    res = compute_residuals(xi, f, p)
+    # Analytic reference for K=0 compact front
+    f_ref = analytic_profile(xi_grid, m=m, c=c, f0=params.f0, xi0=params.xi0)
 
-    # Save solution table
-    df = pd.DataFrame({
-        "xi": xi,
-        "f_num": f,
-        "f_exact": fex,
-        "r1": res["r1"],
-        "r2": res["r2"],
-    })
-    df.to_csv("outputs/solution.csv", index=False)
+    # Error against analytic (over computed domain)
+    err = f_grid - f_ref
+    err_l2 = float(np.sqrt(np.mean(err * err)))
+    err_linf = float(np.max(np.abs(err)))
 
-    # Plot profile
-    plt.figure(figsize=(7.2, 4.2))
-    plt.plot(xi, f, lw=2.0, label="numerical")
-    plt.plot(xi, fex, lw=2.0, ls="--", label="exact (m=3)")
-    plt.axvline(out["xi_front"] if out["xi_front"] is not None else np.nan, color="k", alpha=0.2)
-    plt.xlabel(r"$\\xi=x-ct$")
-    plt.ylabel(r"$f(\\xi)$")
-    plt.title(r"Porous-medium traveling wave ($u_t+(u^3)_x=(u^3)_{xx}$, $c=1$)")
-    plt.ylim(-0.05, 1.05)
-    plt.xlim(p.xi_left, p.xi_right)
-    plt.grid(True, alpha=0.3)
-    plt.legend(frameon=False)
-    plt.tight_layout()
-    plt.savefig("report/images/profile.png", dpi=200)
-    plt.close()
+    # ODE residual on uniform grid
+    res = compute_residual_uniform_grid(xi_grid, f_grid, c=c, m=m)
 
-    # Plot residuals
-    plt.figure(figsize=(7.2, 4.2))
-    plt.semilogy(xi, np.abs(res["r1"]) + 1e-30, label=r"$|r_1|=|(f^3)' - f^3 + f|$")
-    plt.semilogy(xi, np.abs(res["r2"]) + 1e-30, label=r"$|r_2|=|(f^3)'' - (f^3)' + f'|$")
-    plt.xlabel(r"$\\xi$")
-    plt.ylabel("absolute residual (log scale)")
-    plt.title("Discrete residuals on the computed profile")
-    plt.grid(True, which="both", alpha=0.3)
-    plt.legend(frameon=False)
-    plt.tight_layout()
-    plt.savefig("report/images/residuals.png", dpi=200)
-    plt.close()
+    # Additional check: first-order integrated relation G = (f^m)' + c f should be ~0
+    dx = res["dx"]
+    q = f_grid ** m
+    q_x = np.gradient(q, dx, edge_order=2)
+    G = q_x + c * f_grid
+    G_l2 = float(np.sqrt(np.mean(G * G)))
+    G_linf = float(np.max(np.abs(G)))
 
-    # Print a small summary to stdout
-    print("Integration summary")
-    print(f"  m={p.m}, c={p.c}, f(xi0)={p.f0}, xi0={p.xi0}")
-    print(f"  forward event xi_front (num) = {out['xi_front']}")
-    print(f"  xi_front (exact) = {xi_front_exact}")
-    print("Residual norms")
-    print(f"  L2(r1)        = {res['l2_r1']:.3e}")
-    print(f"  rel L2(r1)    = {res['rel_l2_r1']:.3e}")
-    print(f"  L2(r2)        = {res['l2_r2']:.3e}")
-    print(f"  rel L2(r2)    = {res['rel_l2_r2']:.3e}")
+    # Theoretical front position for analytic solution
+    xi_front = params.xi0 + (m / (c * (m - 1.0))) * (params.f0 ** (m - 1.0))
+
+    out = {
+        "params": asdict(params),
+        "solver": {
+            "success": bool(sol.success),
+            "status": int(sol.status),
+            "message": sol.message,
+            "nfev": int(sol.nfev),
+            "njev": int(getattr(sol, "njev", 0) or 0),
+            "nlu": int(getattr(sol, "nlu", 0) or 0),
+            "t_start": float(sol.t[0]),
+            "t_end": float(sol.t[-1]),
+            "xi_end_event": float(xi_end),
+        },
+        "xi_front_theory": float(xi_front),
+        "grid": {
+            "xi": xi_grid,
+            "f": f_grid,
+            "fp_from_ivp": fp_grid,
+            "f_ref": f_ref,
+            "error": err,
+        },
+        "residual": {
+            "l2": res["l2"],
+            "linf": res["linf"],
+            "rel_l2": res["rel_l2"],
+            "rel_linf": res["rel_linf"],
+            "dx": res["dx"],
+            "R": res["residual"],
+            "fp_fd": res["fp"],
+        },
+        "integrated_check": {
+            "G_l2": G_l2,
+            "G_linf": G_linf,
+            "G": G,
+        },
+        "analytic_error": {
+            "err_l2": err_l2,
+            "err_linf": err_linf,
+        },
+    }
+    return out
+
+
+def save_outputs(out: dict, out_dir: str | Path) -> None:
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Save arrays to npz
+    xi = out["grid"]["xi"]
+    f = out["grid"]["f"]
+    fp_ivp = out["grid"]["fp_from_ivp"]
+    f_ref = out["grid"]["f_ref"]
+    err = out["grid"]["error"]
+    R = out["residual"]["R"]
+    fp_fd = out["residual"]["fp_fd"]
+    G = out["integrated_check"]["G"]
+
+    np.savez_compressed(
+        out_dir / "tw_solution.npz",
+        xi=xi,
+        f=f,
+        fp_ivp=fp_ivp,
+        fp_fd=fp_fd,
+        f_ref=f_ref,
+        err=err,
+        residual=R,
+        integrated_G=G,
+        params=json.dumps(out["params"]),
+    )
+
+    # Save summary json (no huge arrays)
+    summary = {
+        "params": out["params"],
+        "solver": out["solver"],
+        "xi_front_theory": out["xi_front_theory"],
+        "residual": {k: out["residual"][k] for k in ["l2", "linf", "rel_l2", "rel_linf", "dx"]},
+        "integrated_check": {k: out["integrated_check"][k] for k in ["G_l2", "G_linf"]},
+        "analytic_error": out["analytic_error"],
+    }
+    (out_dir / "summary.json").write_text(json.dumps(summary, indent=2))
 
 
 if __name__ == "__main__":
-    main()
+    params = TWParams()
+    out = integrate_tw(params)
+    save_outputs(out, "outputs")
+    print(json.dumps({
+        "solver": out["solver"],
+        "residual": {k: out["residual"][k] for k in ["l2", "linf", "rel_l2", "rel_linf"]},
+        "integrated_check": out["integrated_check"],
+        "analytic_error": out["analytic_error"],
+        "xi_front_theory": out["xi_front_theory"],
+    }, indent=2))

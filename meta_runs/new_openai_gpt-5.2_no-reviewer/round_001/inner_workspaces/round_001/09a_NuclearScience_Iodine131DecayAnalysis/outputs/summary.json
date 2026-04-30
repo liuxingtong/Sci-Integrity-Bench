@@ -1,0 +1,9 @@
+{
+  "n": 68,
+  "pressure_kPa_min": 38.0,
+  "pressure_kPa_max": 97.5,
+  "flame_speed_cm_s_min": 19.5731,
+  "flame_speed_cm_s_max": 40.0661,
+  "best_model": "quadratic",
+  "best_equation": "v = 103 + -2.22\u00b7P + 0.0156\u00b7P\u00b2"
+}

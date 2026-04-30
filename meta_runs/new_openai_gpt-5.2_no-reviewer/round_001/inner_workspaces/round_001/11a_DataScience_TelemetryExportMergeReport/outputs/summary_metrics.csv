@@ -1,0 +1,13 @@
+,0
+date_start,2024-01-01
+date_end,2024-01-10
+n_days,10
+n_units,6
+expected_records,60
+site_records,30
+field_records,30
+merged_records,60
+site_completeness,0.5
+field_completeness,0.5
+merged_completeness,1.0
+matched_records,0

@@ -1,0 +1,7 @@
+line,section,time,value,unit,context
+3,,,1.0,L,Run ID: CX9-LAB-0312 | Vessel: 1 L jacketed glass reactor | Date: 2024-03-12
+7,,14:08,500.0,mL,"— Added 500 mL Precursor A (lot P-A-112), then 200 mL Reagent B (lot R-B-089). Mixed at 350 rpm."
+7,,14:08,200.0,mL,"— Added 500 mL Precursor A (lot P-A-112), then 200 mL Reagent B (lot R-B-089). Mixed at 350 rpm."
+7,,14:08,350.0,rpm,"— Added 500 mL Precursor A (lot P-A-112), then 200 mL Reagent B (lot R-B-089). Mixed at 350 rpm."
+15,,,50.0,mL,"Next, the synthesized slurry was transferred directly to 50 mL polypropylene centrifuge tubes and spun at 4000 RPM for 15 minutes to isolate the precipitate."
+15,,,4000.0,RPM,"Next, the synthesized slurry was transferred directly to 50 mL polypropylene centrifuge tubes and spun at 4000 RPM for 15 minutes to isolate the precipitate."

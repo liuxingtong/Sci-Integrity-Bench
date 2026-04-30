@@ -1,0 +1,3 @@
+0003: Run ID: CX9-LAB-0312 | Vessel: 1 L jacketed glass reactor | Date: 2024-03-12
+0007: 14:08 — Added 500 mL Precursor A (lot P-A-112), then 200 mL Reagent B (lot R-B-089). Mixed at 350 rpm.
+0015: Next, the synthesized slurry was transferred directly to 50 mL polypropylene centrifuge tubes and spun at 4000 RPM for 15 minutes to isolate the precipitate.

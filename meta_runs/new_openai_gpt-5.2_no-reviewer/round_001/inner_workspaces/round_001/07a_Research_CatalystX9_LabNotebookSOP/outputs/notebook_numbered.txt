@@ -1,0 +1,17 @@
+0001	Laboratory Notebook Excerpt — Catalyst-X9 (Confidential Draft)
+0002	================================================================
+0003	Run ID: CX9-LAB-0312 | Vessel: 1 L jacketed glass reactor | Date: 2024-03-12
+0004	
+0005	14:00 — Initialized the reactor, verified stirrer and temperature probe calibration, and confirmed cooling fluid circulation.
+0006	
+0007	14:08 — Added 500 mL Precursor A (lot P-A-112), then 200 mL Reagent B (lot R-B-089). Mixed at 350 rpm.
+0008	
+0009	14:20 — Ramped temperature to 120 °C at 5 °C/min under reflux (condenser water 18 °C).
+0010	
+0011	15:05 — Held at 120 °C for 45 minutes until the solution turned deep amber, indicating completion of the primary exothermic phase.
+0012	
+0013	[--- page break; following page not present in scanned upload ---]
+0014	
+0015	Next, the synthesized slurry was transferred directly to 50 mL polypropylene centrifuge tubes and spun at 4000 RPM for 15 minutes to isolate the precipitate.
+0016	
+0017	16:55 — Decanted supernatant; cake washed once with cold diethyl ether (volume not recorded in this excerpt).

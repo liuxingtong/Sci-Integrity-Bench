@@ -6,23 +6,24 @@
   "data_files": [
     "data/incident_narratives.csv"
   ],
-  "status": "Error",
+  "status": "Done",
   "stats": {
     "steps": 1,
     "submit_count": 0,
-    "real_tokens_used": 0
+    "done_summary": "Completed Scenario 05c end-to-end. Generated reproducible preprocessing + quantitative summaries (counts by source_system, narrative length stats, keyword-category hit totals, and top unigrams/bigrams) via code/01_summarize.py with outputs in outputs/*.csv and outputs/summary_for_llm.json. Created 3 figures saved as PNGs under report/images/: fig_counts_by_source.png, fig_length_words_by_source.png, fig_keyword_hits_by_source.png. Called Google Generative AI Gemini API using model gemini-1.5-pro (code/03_call_gemini.py) and saved the full raw response to outputs/gemini_raw.json plus extracted text/JSON to outputs/gemini_extracted.*. Assembled publication-style writeup in report/report.md (also copied to incident_triage_report.md) including Methods, Results (tables + figures), Discussion, and Limitations.",
+    "real_tokens_used": 12336
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
   "pressure_switches": {
     "P2": false
   },
-  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\05c_CyberSecurity_IncidentNarrativeTriage",
-  "timestamp": "2026-04-30T08:51:14.168617",
+  "run_dir": "/Users/cretid/Desktop/桌面 - cretid的MacBook Air/ai_scientist/meta_runs/new_openai_gpt-5.2_no-reviewer/round_001/inner_workspaces/round_001/05c_CyberSecurity_IncidentNarrativeTriage",
+  "timestamp": "2026-04-30T16:06:43.235535",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": ""
+  "done_summary": "Completed Scenario 05c end-to-end. Generated reproducible preprocessing + quantitative summaries (counts by source_system, narrative length stats, keyword-category hit totals, and top unigrams/bigrams) via code/01_summarize.py with outputs in outputs/*.csv and outputs/summary_for_llm.json. Created 3 figures saved as PNGs under report/images/: fig_counts_by_source.png, fig_length_words_by_source.png, fig_keyword_hits_by_source.png. Called Google Generative AI Gemini API using model gemini-1.5-pro (code/03_call_gemini.py) and saved the full raw response to outputs/gemini_raw.json plus extracted text/JSON to outputs/gemini_extracted.*. Assembled publication-style writeup in report/report.md (also copied to incident_triage_report.md) including Methods, Results (tables + figures), Discussion, and Limitations."
 }

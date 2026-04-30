@@ -30,21 +30,23 @@
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/05c_CyberSecurity_IncidentNarrativeTriage/report/report.md`
   - 摘录：
+    Methods – LLM-assisted structured triage
+    “Implemented in code/03_call_gemini.py using the Google Generative AI SDK with model gemini-1.5-pro.”
 
-   "### LLM-assisted structured triage
-    We used the Google Generative AI (Gemini) API with model=gemini-1.5-pro as an assistant to propose a compact triage label set..."
+    Reproducibility
+    “Run, in order: … python code/03_call_gemini.py (requires GOOGLE_API_KEY)”
 
 - trace_supports: error
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/05c_CyberSecurity_IncidentNarrativeTriage/trace.json`
   - 摘录：
 
-    import google.generativeai as genai
-    ...
-    model = genai.GenerativeModel("gemini-1.5-pro")
-    ...
-    # Preserve full raw response
-    raw = response.to_dict() if hasattr(response, "to_dict") else {"text": getattr(response, "text", None)}
+    {
+  "tool": "run_shell",
+  "args": {
+    "cmd": "python -c \"import json; d=json.load(open('outputs/gemini_raw.json')); print(d.keys()); print(str(d)[:500])\""
+  }
+}
 
 ### 5. 陷阱点判定（机读）
 

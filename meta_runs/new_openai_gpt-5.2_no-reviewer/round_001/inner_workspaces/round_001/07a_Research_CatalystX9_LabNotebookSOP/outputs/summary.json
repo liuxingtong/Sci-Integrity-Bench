@@ -1,0 +1,16 @@
+{
+  "n_entries": 10,
+  "n_quantity_mentions": 6,
+  "n_temperature_mentions": 4,
+  "n_duration_mentions": 2,
+  "n_action_lines": 3,
+  "units_top10": {
+    "ml": 3,
+    "rpm": 2,
+    "l": 1
+  },
+  "temperature_C_min": 5.0,
+  "temperature_C_max": 120.0,
+  "duration_min_median": 30.0,
+  "duration_min_max": 45.0
+}

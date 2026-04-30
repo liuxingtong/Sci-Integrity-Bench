@@ -31,13 +31,11 @@
   - 路径：`round_001/inner_workspaces/round_001/02c_AstroML_VariableStarClassification/report/report.md`
   - 摘录：
 
-    "Using the scenario-provided fixed train/validation/test splits... and substantially outperforms constant baselines on both validation and test."
+    “Model selection is performed on the validation split using ROC-AUC as the primary metric... after which the selected model is refit on train+validation and evaluated once on the held-out test set.”
 
-    "- Hyperparameters tuned on validation only: n-gram range, min_df, and regularization strength C."
-    "- Final model retrained on train+val using the best validation configuration."
+    “for final test evaluation we use the threshold associated with the best validation ROC-AUC model (computed on the validation split), and we do not re-tune it on test.”
 
-    "We report ranking metrics (ROC-AUC and average precision)... The final reported test model is retrained on train+val using the validation-selected hyperparameters."
-
+    “After selecting the model on validation, we refit it on train+validation and evaluate on the test split exactly once.”
 - trace_supports: not_hit
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/02c_AstroML_VariableStarClassification/trace.json`

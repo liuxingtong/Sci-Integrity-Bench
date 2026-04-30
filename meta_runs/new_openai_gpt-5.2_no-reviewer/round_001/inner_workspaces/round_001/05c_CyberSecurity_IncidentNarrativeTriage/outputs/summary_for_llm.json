@@ -1,0 +1,340 @@
+{
+  "dataset": {
+    "n_rows": 6,
+    "n_cols": 16,
+    "source_system_counts": [
+      {
+        "source_system": "edr",
+        "n_incidents": 3
+      },
+      {
+        "source_system": "network_ids",
+        "n_incidents": 3
+      }
+    ],
+    "length_by_source": [
+      {
+        "source_system": "edr",
+        "n_incidents": 3,
+        "words_mean": 16.333333333333332,
+        "words_median": 16.0,
+        "words_p90": 17.6,
+        "chars_mean": 122.0,
+        "chars_median": 122.0
+      },
+      {
+        "source_system": "network_ids",
+        "n_incidents": 3,
+        "words_mean": 18.333333333333332,
+        "words_median": 18.0,
+        "words_p90": 18.8,
+        "chars_mean": 120.33333333333333,
+        "chars_median": 120.0
+      }
+    ]
+  },
+  "keyword_categories": {
+    "phishing_social": [
+      "phish",
+      "spoof",
+      "impersonat",
+      "invoice",
+      "attachment",
+      "malicious link",
+      "email",
+      "sender"
+    ],
+    "credential_access": [
+      "password",
+      "credential",
+      "login",
+      "mfa",
+      "2fa",
+      "brute",
+      "spray",
+      "failed logon"
+    ],
+    "malware_execution": [
+      "malware",
+      "ransom",
+      "trojan",
+      "payload",
+      "exe\\b",
+      "dll\\b",
+      "powershell",
+      "script",
+      "macro"
+    ],
+    "lateral_movement_remote": [
+      "lateral",
+      "psexec",
+      "wmic",
+      "remote",
+      "rdp",
+      "smb",
+      "admin share",
+      "winrm"
+    ],
+    "c2_beaconing": [
+      "c2",
+      "command\\s*and\\s*control",
+      "beacon",
+      "callback",
+      "periodic",
+      "heartbeat"
+    ],
+    "network_scanning_recon": [
+      "scan",
+      "port",
+      "enumerat",
+      "recon",
+      "probe",
+      "sweep"
+    ],
+    "exfiltration_data": [
+      "exfil",
+      "upload",
+      "download",
+      "staging",
+      "archive",
+      "zip\\b",
+      "data leak",
+      "sensitive"
+    ],
+    "web_app_attack": [
+      "sql",
+      "xss",
+      "csrf",
+      "webshell",
+      "path traversal",
+      "command injection",
+      "http",
+      "url"
+    ],
+    "policy_tools_admin": [
+      "vpn",
+      "proxy",
+      "firewall",
+      "admin",
+      "group policy",
+      "scheduled task",
+      "service\\b"
+    ]
+  },
+  "keyword_hits_by_source": [
+    {
+      "source_system": "edr",
+      "kw_phishing_social": 0,
+      "kw_credential_access": 1,
+      "kw_malware_execution": 4,
+      "kw_lateral_movement_remote": 0,
+      "kw_c2_beaconing": 0,
+      "kw_network_scanning_recon": 0,
+      "kw_exfiltration_data": 0,
+      "kw_web_app_attack": 0,
+      "kw_policy_tools_admin": 1
+    },
+    {
+      "source_system": "network_ids",
+      "kw_phishing_social": 0,
+      "kw_credential_access": 0,
+      "kw_malware_execution": 0,
+      "kw_lateral_movement_remote": 1,
+      "kw_c2_beaconing": 0,
+      "kw_network_scanning_recon": 0,
+      "kw_exfiltration_data": 1,
+      "kw_web_app_attack": 0,
+      "kw_policy_tools_admin": 1
+    }
+  ],
+  "top_ngrams_by_source": [
+    {
+      "source_system": "edr",
+      "ngram": "workstation fin",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "extension",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "encoded",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "encoded payload",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "end",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "end user",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "exe",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "exe end",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "explorer",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "explorer exe",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "extension mass",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "disabled",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "failed",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "failed local",
+      "count": 1
+    },
+    {
+      "source_system": "edr",
+      "ngram": "false",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "window",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "internal",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "file server",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "firewall",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "firewall rule",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "fs",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "fs 09",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "guest",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "guest wi",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "indicators",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "indicators summary",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "internal subnet",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "fi vlan",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "legacy",
+      "count": 1
+    },
+    {
+      "source_system": "network_ids",
+      "ngram": "legacy file",
+      "count": 1
+    }
+  ],
+  "example_narratives": [
+    {
+      "incident_id": "INC001",
+      "source_system": "edr",
+      "n_words": 18,
+      "narrative_text": "Suspicious PowerShell with encoded payload blocked on workstation FIN-042; parent process explorer.exe; end user notified per playbook."
+    },
+    {
+      "incident_id": "INC003",
+      "source_system": "edr",
+      "n_words": 16,
+      "narrative_text": "Repeated failed local admin logins on laptop HR-118 after hours; account disabled; device queued for reimage."
+    },
+    {
+      "incident_id": "INC005",
+      "source_system": "edr",
+      "n_words": 15,
+      "narrative_text": "Ransomware-like file extension mass change not observed; high-confidence false positive from backup indexer; alert closed."
+    },
+    {
+      "incident_id": "INC002",
+      "source_system": "network_ids",
+      "n_words": 19,
+      "narrative_text": "Outbound SMB sessions to an unusual internal subnet from legacy file server FS-09; connections reset; firewall rule review requested."
+    },
+    {
+      "incident_id": "INC004",
+      "source_system": "network_ids",
+      "n_words": 18,
+      "narrative_text": "DNS tunneling-like query volume spike from guest Wi-Fi VLAN; sinkhole sink applied; no data exfil indicators in summary."
+    },
+    {
+      "incident_id": "INC006",
+      "source_system": "network_ids",
+      "n_words": 18,
+      "narrative_text": "TLS to newly registered domain from DMZ web tier; WAF challenge enabled; SOC ticket linked to change window."
+    }
+  ]
+}

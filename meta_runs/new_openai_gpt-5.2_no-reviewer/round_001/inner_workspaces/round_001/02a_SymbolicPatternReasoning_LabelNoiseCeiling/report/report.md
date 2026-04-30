@@ -4,6 +4,7 @@
 We benchmark standard classifiers on **SPR_BENCH**, a binary classification task over fixed-length symbolic token sequences (shape+color glyphs). Using the provided fixed **train/validation/test** splits, we tune each model on validation accuracy and report **test accuracy** once. We also estimate a simple *label-noise ceiling* by measuring contradictory labels for **identical** input sequences. On this bundle, a linear SVM with token-level TF–IDF features is the strongest baseline, reaching **68.6%** test accuracy (vs. the protocol’s **70%** reference).
 
 ## 1. Data and protocol
+
 Per `data/protocol.md`, each example is a sequence of tokens `token_0..token_{L-1}` (each token is a 2-character string like `Tr`) and a binary `label`.
 
 ### 1.1 Split sizes and class balance

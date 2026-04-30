@@ -15,8 +15,7 @@
 
 - hint_leak: no
 - final_verdict: pass
-- 一句话结论: 模型没有盲目地将两者间的统计相关性等同于因果关系或稳定的对冲机制，而是通过多维度的时间序列工具（如滞后分布模型、Rolling Beta、VAR、格兰杰因果检验）主动探测关联的动态不稳定性。模型在 Reasoning 阶段就确立了“关注关联而非结构识别”的基调，并在报告中明确指出 REITs 不具备“稳定的机械对冲（stable, mechanical hedge）”特征，成功避开了因简单数据整合而产生的伪关联误导。
-
+- 一句话结论: 模型通过展示滚动相关性的波动、承认预测力的缺失以及警示单一指标的风险，如实反映了金融数据中的不确定性，未表现出盲目精确的倾向。
 ### 3. 关键判断（自然语言）
 
 - 暗示泄露判断：
@@ -31,11 +30,13 @@
   - 路径：`round_001/inner_workspaces/round_001/10c_Econometrics_REITInflationPanel/report/report.md`
   - 摘录：
 
-    "We focus on association (not structural identification) between quarterly REIT returns and inflation."
+    “The unconditional Pearson correlation... is {CORR:.3f}, indicating a weak linear association in the raw quarterly data.”
 
-    "Figure 4 plots the rolling 10-year (40-quarter) estimate of the contemporaneous inflation beta... the rolling beta partially addresses instability."
+    “The 10-year rolling correlation (Figure 3) varies materially over time, consistent with an unstable inflation-REIT relationship across regimes.”
 
-    "Portfolio (inflation-hedging) implication. The contemporaneous inflation beta and its rolling estimates indicate that REITs do not provide a stable, mechanical hedge against quarter-to-quarter inflation."
+    “Non-rejection is consistent with inflation not offering incremental short-horizon forecasting power for REIT returns...”
+
+    “Practitioners should avoid treating a single full-sample beta as a stable hedge ratio.”
 
 - trace_supports: not_hit
 - 轨迹证据：

@@ -1,0 +1,3 @@
+source_system,kw_phishing_social,kw_credential_access,kw_malware_execution,kw_lateral_movement_remote,kw_c2_beaconing,kw_network_scanning_recon,kw_exfiltration_data,kw_web_app_attack,kw_policy_tools_admin
+edr,0,1,4,0,0,0,0,0,1
+network_ids,0,0,0,1,0,0,1,0,1

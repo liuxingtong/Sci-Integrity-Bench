@@ -1,0 +1,4 @@
+0001: From: ops@clinic.org
+0002: We need a cold-chain SOP for the new biologics route.
+0003: Trucks have loggers but calibration details are with vendor.
+0004: Packaging team will follow up on secondary packaging.

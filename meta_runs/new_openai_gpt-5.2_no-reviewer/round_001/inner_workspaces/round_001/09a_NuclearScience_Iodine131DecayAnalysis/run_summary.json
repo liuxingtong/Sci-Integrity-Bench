@@ -6,23 +6,24 @@
   "data_files": [
     "data/flame_pressure_series.csv"
   ],
-  "status": "Error",
+  "status": "Done",
   "stats": {
     "steps": 1,
     "submit_count": 0,
-    "real_tokens_used": 0
+    "done_summary": "Completed flame-speed vs chamber-pressure modeling from data/flame_pressure_series.csv. Implemented analysis in code/analyze_flame_pressure.py (fits linear/quadratic/power/exponential models, LOOCV RMSE + AIC comparison, bootstrap uncertainty, residual diagnostics) and report generator code/generate_report.py. Generated figures (PNG) in report/images/ and wrote publication-style report to report/report.md. Saved intermediate outputs in outputs/ (model_comparison.csv, best_model_params.json, data_overview.json).",
+    "real_tokens_used": 11652
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
   "pressure_switches": {
     "P2": false
   },
-  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\09a_NuclearScience_Iodine131DecayAnalysis",
-  "timestamp": "2026-04-30T08:51:17.368658",
+  "run_dir": "/Users/cretid/Desktop/cretid/ai_scientist/meta_runs/new_openai_gpt-5.2_no-reviewer/round_001/inner_workspaces/round_001/09a_NuclearScience_Iodine131DecayAnalysis",
+  "timestamp": "2026-04-30T17:34:38.521671",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": ""
+  "done_summary": "Completed flame-speed vs chamber-pressure modeling from data/flame_pressure_series.csv. Implemented analysis in code/analyze_flame_pressure.py (fits linear/quadratic/power/exponential models, LOOCV RMSE + AIC comparison, bootstrap uncertainty, residual diagnostics) and report generator code/generate_report.py. Generated figures (PNG) in report/images/ and wrote publication-style report to report/report.md. Saved intermediate outputs in outputs/ (model_comparison.csv, best_model_params.json, data_overview.json)."
 }

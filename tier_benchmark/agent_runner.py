@@ -273,19 +273,82 @@ def _reorder_tool_calls_done_last(tool_calls: List[Dict]) -> List[Dict]:
     return non_done + dones
 
 
-def _workspace_has_required_report_md(workspace: Path) -> bool:
-    """Gate for accepting done() in tool mode: canonical deliverable path."""
+def _clean_markdown_image_ref(raw: str) -> Optional[str]:
+    """Return filesystem-relative fragment or None if remote URL / empty."""
+    s = (raw or "").strip()
+    if not s:
+        return None
+    # Markdown allows: ![](url "title") — take URL token only
+    s = s.split()[0]
+    s = s.strip('"').strip("'")
+    s = s.split("#")[0].strip()
+    if s.startswith(("http://", "https://")):
+        return None
+    return s or None
+
+
+_MD_IMAGE_RE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
+_HTML_IMG_SRC_RE = re.compile(r"<img[^>]+src\s*=\s*[\"']([^\"'>]+)[\"']", re.I)
+
+
+def _collect_report_md_image_refs(report_md_text: str) -> List[str]:
+    """Paths as written in markdown / HTML img src (may be relative to report/)."""
+    refs: List[str] = []
+    for m in _MD_IMAGE_RE.finditer(report_md_text or ""):
+        refs.append(m.group(1))
+    for m in _HTML_IMG_SRC_RE.finditer(report_md_text or ""):
+        refs.append(m.group(1))
+    return refs
+
+
+def _validate_done_workspace(workspace: Path) -> Tuple[bool, str]:
+    """
+    Gate for accepting done() in tool mode:
+    - report/report.md must exist
+    - every local image referenced from report/report.md must exist under the workspace
+    """
     try:
-        p = Path(workspace).resolve() / "report" / "report.md"
+        ws = Path(workspace).resolve()
     except OSError:
-        return False
-    return p.is_file()
+        return False, "Error: done(summary) was rejected: invalid workspace path."
 
+    report_md = ws / "report" / "report.md"
+    if not report_md.is_file():
+        return False, (
+            "Error: done(summary) was rejected because `report/report.md` is not present in the workspace yet. "
+            "Create it with write_file (or edit_file) under `report/report.md`, then call done again after it exists."
+        )
 
-_DONE_NEEDS_REPORT_MD = (
-    "Error: done(summary) was rejected because `report/report.md` is not present in the workspace yet. "
-    "Create it with write_file (or edit_file) under `report/report.md`, then call done again after it exists."
-)
+    try:
+        text = report_md.read_text(encoding="utf-8")
+    except OSError as e:
+        return False, f"Error: done(summary) was rejected: cannot read report/report.md ({e})."
+
+    report_dir = report_md.parent
+    for raw in _collect_report_md_image_refs(text):
+        rel = _clean_markdown_image_ref(raw)
+        if rel is None:
+            continue
+        target = (report_dir / rel).resolve()
+        try:
+            target.relative_to(ws)
+        except ValueError:
+            return False, (
+                "Error: done(summary) was rejected: report/report.md references an image path that "
+                f"resolves outside the workspace ({rel!r}). Fix the link or move the file."
+            )
+        if not target.is_file():
+            try:
+                shown = target.relative_to(ws)
+            except ValueError:
+                shown = target
+            return False, (
+                "Error: done(summary) was rejected because report/report.md references a missing image "
+                f"({rel!r}; expected `{shown}`). Add the PNG (or other asset) under report/, or fix the path, "
+                "then call done again."
+            )
+
+    return True, ""
 
 
 def _truncate_for_reviewer(text: str, max_chars: int) -> str:
@@ -1144,6 +1207,8 @@ def run_agent_loop(
             elif reasoning:
                 tool_parse_text = f"{tool_parse_text}\n{reasoning}"
             tool_calls = _reorder_tool_calls_done_last(_extract_tool_calls(tool_parse_text))
+            if tool_calls:
+                print(f"    {len(tool_calls)} action(s) this step")
 
             if not tool_calls:
                 preview = (tool_parse_text or "").replace("\n", " ")[:120]
@@ -1174,8 +1239,8 @@ def run_agent_loop(
             for i, tool_call in enumerate(tool_calls):
                 tool_name = tool_call.get("tool")
                 tool_args = tool_call.get("args", {})
-                print(f"Action {i+1}: {tool_name}")
-                
+                print(f"      {i+1}/{len(tool_calls)}: {tool_name}")
+
                 # C. Execute Tool
                 result = ""
                 
@@ -1195,19 +1260,20 @@ def run_agent_loop(
                         done_summary = str(done_summary)
                     done_msg = done_summary.strip() or "Task completed by agent."
                     ws = Path(output_dir)
-                    if not _workspace_has_required_report_md(ws):
+                    ok_done, done_reject_reason = _validate_done_workspace(ws)
+                    if not ok_done:
                         trace.append({
                             "step": step,
                             "timestamp": datetime.datetime.now().isoformat(),
                             "role": "tool",
                             "tool": "done",
-                            "status": "rejected_missing_report_md",
-                            "output": _DONE_NEEDS_REPORT_MD,
+                            "status": "rejected_deliverable",
+                            "output": done_reject_reason,
                         })
                         combined_feedback.append(
-                            f"Tool Call {i+1} ({tool_name}) Output:\n{_DONE_NEEDS_REPORT_MD}"
+                            f"Tool Call {i+1} ({tool_name}) Output:\n{done_reject_reason}"
                         )
-                        print("    -> done rejected (report/report.md missing).")
+                        print("    -> done rejected (deliverable check failed).")
                         continue
                     trace.append({
                         "step": step,

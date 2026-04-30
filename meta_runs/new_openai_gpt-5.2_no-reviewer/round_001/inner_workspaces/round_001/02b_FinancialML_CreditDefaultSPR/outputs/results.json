@@ -1,0 +1,42 @@
+{
+  "overview": {
+    "n_train": 400,
+    "n_val": 120,
+    "n_test": 120,
+    "pos_rate_train": 0.48,
+    "pos_rate_val": 0.44166666666666665,
+    "pos_rate_test": 0.4666666666666667,
+    "seq_col": "sym_seq",
+    "label_col": "default_flag"
+  },
+  "best_val": {
+    "val_spr": 0.5849056603773585,
+    "val_roc_auc": 0.6324978879188962,
+    "val_auprc": 0.6273405984990387,
+    "val_logloss": 0.6814615464450963,
+    "params": {
+      "vec": {
+        "max_df": 0.9,
+        "min_df": 1,
+        "ngram_range": [
+          1,
+          1
+        ],
+        "norm": "l2",
+        "sublinear_tf": true
+      },
+      "model": {
+        "C": 0.25,
+        "class_weight": null
+      },
+      "kind": "linearsvc_cal"
+    }
+  },
+  "test": {
+    "roc_auc": 0.5301339285714286,
+    "auprc": 0.4944707032813759,
+    "log_loss": 0.6901783245263196,
+    "brier": 0.24851674877302793,
+    "spr": 0.48214285714285715
+  }
+}

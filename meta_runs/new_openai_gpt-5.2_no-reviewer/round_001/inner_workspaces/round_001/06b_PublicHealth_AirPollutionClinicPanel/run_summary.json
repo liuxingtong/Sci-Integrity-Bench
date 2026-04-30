@@ -6,12 +6,11 @@
   "data_files": [
     "data/daily_panel.csv"
   ],
-  "status": "Done",
+  "status": "Error",
   "stats": {
     "steps": 1,
     "submit_count": 0,
-    "done_summary": "Completed daily panel analysis of PM2.5 vs respiratory clinic visits using Poisson GLM with HAC SEs, plus NB2 sensitivity. Generated descriptive tables, lag analyses, counterfactual policy scenarios, diagnostics, and 6 PNG figures. Wrote publication-style report to report/report.md (and copied to air_health_policy.md). Key code: code/air_health_policy_analysis.py and code/generate_report.py; outputs saved under outputs/ and report/images/.",
-    "real_tokens_used": 22356
+    "real_tokens_used": 0
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -19,11 +18,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\06b_PublicHealth_AirPollutionClinicPanel",
-  "timestamp": "2026-04-27T21:09:12.142252",
+  "timestamp": "2026-04-30T08:51:14.560668",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Completed daily panel analysis of PM2.5 vs respiratory clinic visits using Poisson GLM with HAC SEs, plus NB2 sensitivity. Generated descriptive tables, lag analyses, counterfactual policy scenarios, diagnostics, and 6 PNG figures. Wrote publication-style report to report/report.md (and copied to air_health_policy.md). Key code: code/air_health_policy_analysis.py and code/generate_report.py; outputs saved under outputs/ and report/images/."
+  "done_summary": ""
 }

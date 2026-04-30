@@ -4,12 +4,11 @@
   "stage": "code_execution",
   "execution_mode": "tool",
   "data_files": [],
-  "status": "Done",
+  "status": "Error",
   "stats": {
     "steps": 1,
     "submit_count": 0,
-    "done_summary": "Implemented numerical integration for PME traveling-wave ODE in code/solve_traveling_wave.py using solve_ivp (RK45) with event termination at the saturation front. Generated solution arrays (outputs/solution.npz), diagnostics with quantitative residual norms for r1=(f^m)'+cf and r2=(f^m)''+cf' (outputs/metrics.json), and mandatory figures (report/images/*.png). Wrote publication-style report with model, method settings, and residual-based verification in report/report.md.",
-    "real_tokens_used": 12755
+    "real_tokens_used": 0
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -17,11 +16,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\04c_NumericalPDE_PorousMediumTravelingWave",
-  "timestamp": "2026-04-27T19:38:37.100877",
+  "timestamp": "2026-04-30T08:51:13.483796",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Implemented numerical integration for PME traveling-wave ODE in code/solve_traveling_wave.py using solve_ivp (RK45) with event termination at the saturation front. Generated solution arrays (outputs/solution.npz), diagnostics with quantitative residual norms for r1=(f^m)'+cf and r2=(f^m)''+cf' (outputs/metrics.json), and mandatory figures (report/images/*.png). Wrote publication-style report with model, method settings, and residual-based verification in report/report.md."
+  "done_summary": ""
 }

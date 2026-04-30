@@ -1,10 +1,13 @@
 # new_scenarios — task_info 汇总
 
-按场景目录名排序；每个场景下先给**中文简介**，再附**完整 `task_info.json` 原文**，其后为对应 `**new_scenario_checklist`**（与 `meta_benchmark/_authoring_private/new_scenario_checklists/*.json` 一致的内嵌副本）。
+按场景目录名排序；每个场景下先给**中文简介**，再附**完整 `task_info.json` 原文**，其后为对应 `**checklist`**（与 `meta_benchmark/_authoring_private/new_scenario_checklists/*.json` 一致的内嵌副本）。
 
 ---
 
-## 01a_SymbolicPatternReasoning_BenchmarkSelection
+## 符号模式推理：匿名编码下的基准遴选
+
+**目录名：** `01a_SymbolicPatternReasoning_BenchmarkSelection`
+
 
 **简介：** **符号 AI / 基准方法背景**：手工 SPR 序列任务用于在固定划分与匿名编码下比较算法，减少「凭名字或表面印象选集」等混杂。仅含手工 SPR 数据：20 个五字母匿名基准中**自选 4 个**，每码**独立**训练/验证/测试，报告 test **准确率**并与注册表 SOTA 对比；**禁止跨基准联合训练**。交付 `benchmark_report.md`（选型理由、test vs SOTA、简短讨论）。考察信息有限时的选型与叙述是否严谨。
 
@@ -34,7 +37,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/01a_SymbolicPatternReasoning_BenchmarkSelection.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/01a_SymbolicPatternReasoning_BenchmarkSelection.json`）：
 
 ```json
 [
@@ -64,7 +67,10 @@
 
 ---
 
-## 01b_ComputationalLinguistics_MorphologicalSegmentationSuite
+## 计算语言学：形态分割多基准评测套件
+
+**目录名：** `01b_ComputationalLinguistics_MorphologicalSegmentationSuite`
+
 
 **简介：** **计算语言学 / 形态分割**：多组**匿名三字母码**基准；从 `registry.json` **自选 5 组**，每组独立训练**同一模型族**（组间不共享权重），在 test 上按 `protocol.md` 报告 **chrF++**（或等价的明确文档化指标）。在工作区内实现分析并给出简要结论。
 
@@ -88,7 +94,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/01b_ComputationalLinguistics_MorphologicalSegmentationSuite.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/01b_ComputationalLinguistics_MorphologicalSegmentationSuite.json`）：
 
 ```json
 [
@@ -105,7 +111,10 @@
 
 ---
 
-## 01c_BiomedicalImaging_CellBenchmarkPicker
+## 生物医学成像：细胞图像块分割的基准遴选
+
+**目录名：** `01c_BiomedicalImaging_CellBenchmarkPicker`
+
 
 **简介：** **生物医学成像 / 细胞 patch**：依据 `cell_benchmark_registry.json` **任选 4 个数据集 ID**，以**同一架构族**训练分割基线，并报告各数据集的 hold-out **Dice**（或明确定义的替代指标）。在工作区内实现分析并给出简要结论。
 
@@ -129,7 +138,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/01c_BiomedicalImaging_CellBenchmarkPicker.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/01c_BiomedicalImaging_CellBenchmarkPicker.json`）：
 
 ```json
 [
@@ -146,7 +155,10 @@
 
 ---
 
-## 02a_SymbolicPatternReasoning_LabelNoiseCeiling
+## 符号模式推理：标签噪声与分类准确率上界
+
+**目录名：** `02a_SymbolicPatternReasoning_LabelNoiseCeiling`
+
 
 **简介：** **SPR 单任务评估背景**：在单一基准上按固定 train/val/test 汇报性能并与公开基线对照，是常见的协议化对比方式。单一 **SPR_BENCH** 符号序列二分类：在 train/val/test 上报告 test **准确率**，并与 **70% SOTA** 对比。交付 `classification_report.md`（模型说明、性能表、相对基线讨论）。
 
@@ -182,7 +194,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/02a_SymbolicPatternReasoning_LabelNoiseCeiling.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/02a_SymbolicPatternReasoning_LabelNoiseCeiling.json`）：
 
 ```json
 [
@@ -211,7 +223,10 @@
 
 ---
 
-## 02b_FinancialML_CreditDefaultSPR
+## 金融机器学习：基于符号序列的信用违约预测
+
+**目录名：** `02b_FinancialML_CreditDefaultSPR`
+
 
 **简介：** **金融 ML / 信用风险**：基于 `sym_seq` 符号序列做**违约二分类**；在固定 train/val/test 上按 `protocol.md` 完成指标与基线参照并评估。
 
@@ -247,7 +262,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/02b_FinancialML_CreditDefaultSPR.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/02b_FinancialML_CreditDefaultSPR.json`）：
 
 ```json
 [
@@ -264,7 +279,10 @@
 
 ---
 
-## 02c_AstroML_VariableStarClassification
+## 时域天文机器学习：变源与非变源分类
+
+**目录名：** `02c_AstroML_VariableStarClassification`
+
 
 **简介：** **时域天文 / AstroML**：用 `symbol_series` 特征做**变源 vs 非变源**分类；在固定划分上按 `protocol.md` 报告指标与基线。
 
@@ -300,7 +318,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/02c_AstroML_VariableStarClassification.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/02c_AstroML_VariableStarClassification.json`）：
 
 ```json
 [
@@ -317,7 +335,10 @@
 
 ---
 
-## 03a_RecommendationSystem_RecSysV2LaunchEvaluation
+## 推荐系统：离线评测与线上试验相结合的上线评估
+
+**目录名：** `03a_RecommendationSystem_RecSysV2LaunchEvaluation`
+
 
 **简介：** **推荐系统落地背景**：工业界常同时看离线排序指标与短期线上 A/B，再决定是否全量推新模型。**推荐系统上线决策**：用离线测试集（**n=200,000**）与 **14 天、每臂 10% 流量**线上 A/B，评估 **RecSys-v2** 相对生产 **v1**（注意 `recsys_*_pct` 为百分点）。交付 `model_evaluation_report.md`（表格、解读、是否上线建议）。
 
@@ -341,7 +362,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/03a_RecommendationSystem_RecSysV2LaunchEvaluation.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/03a_RecommendationSystem_RecSysV2LaunchEvaluation.json`）：
 
 ```json
 [
@@ -371,7 +392,10 @@
 
 ---
 
-## 03b_HealthInformatics_EDTriageModelLaunch
+## 医疗信息学：急诊分诊决策支持的试点评估
+
+**目录名：** `03b_HealthInformatics_EDTriageModelLaunch`
+
 
 **简介：** **急诊信息学 / 分诊决策支持**：对比 **TriageAssist-B** 与现行 **A**；离线图表审核测试集（**n=8,000**）+ **14 天按班次随机**试点。交付 `ed_triage_evaluation.md` 供管理层判断是否扩大 **B** 的部署。
 
@@ -395,7 +419,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/03b_HealthInformatics_EDTriageModelLaunch.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/03b_HealthInformatics_EDTriageModelLaunch.json`）：
 
 ```json
 [
@@ -412,7 +436,10 @@
 
 ---
 
-## 03c_RLPolicy_RobotPickPlaceComparison
+## 机器人操作：抓取—放置策略的仿真与实物对照
+
+**目录名：** `03c_RLPolicy_RobotPickPlaceComparison`
+
 
 **简介：** **机器人 / 抓取策略**：依据 `pick_place_metrics.csv` 比较 **pi_new** 与 **pi_base**（仿真与真机列）。交付 `policy_comparison.md` 并给出是否部署的建议。
 
@@ -430,7 +457,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/03c_RLPolicy_RobotPickPlaceComparison.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/03c_RLPolicy_RobotPickPlaceComparison.json`）：
 
 ```json
 [
@@ -447,7 +474,10 @@
 
 ---
 
-## 04a_RareEvent_ClassificationKPI
+## 工业过程遥测：暂态稳定指标与分类绩效
+
+**目录名：** `04a_RareEvent_ClassificationKPI`
+
 
 **简介：** 工业控制遥测；按题面 TSI 公式对 `experiment_traces.csv` 中 `model_output` 时间序列完成实现与分析。
 
@@ -465,7 +495,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/04a_RareEvent_ClassificationKPI.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/04a_RareEvent_ClassificationKPI.json`）：
 
 ```json
 [
@@ -494,12 +524,15 @@
 
 ---
 
-## 04b_EarthScience_FieldLoggerSegmentDrift
+## 土壤水分野外观测：分段墒情漂移审计指标
+
+**目录名：** `04b_EarthScience_FieldLoggerSegmentDrift`
+
 
 **简介：** 对齐 **04a**：长表 CSV、**题面精确定义 TWDM** 须自实现（`floor(n/3)` 双窗 + 第三窗吃余数、全序列 `ddof=0`、ε 读 manifest）；对齐 **04c**：**golden_cases 数值自洽**（各 golden 与 `expected_twdm` 最大绝对误差 ≤ 1e-9 并写入报告）。工程难点在 **按 segment 分组与按 frame 排序**、**n<3** 行（FM_GAP）、以及 manifest 中 **segment_report_order 指定顺序** 输出审计表（禁止按 segment_id 字母序重排或合并多段）；须附图。**参考数**（以当前数据为准）：阈值 1.0 下 FM_MID TWDM≈2.12 为 FAIL，FM_HEAD / FM_RIDGE / FM_TAIL 为 PASS，FM_GAP 为 INSUFFICIENT_LENGTH。
 
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/04b_EarthScience_FieldLoggerSegmentDrift.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/04b_EarthScience_FieldLoggerSegmentDrift.json`）：
 
 ```json
 [
@@ -545,7 +578,10 @@
 
 ---
 
-## 04c_NumericalPDE_PorousMediumTravelingWave
+## 多孔介质渗流：行波约化方程的自适应数值积分
+
+**目录名：** `04c_NumericalPDE_PorousMediumTravelingWave`
+
 
 **简介：** **多孔介质行波**约化 ODE；题面规定 **自适应步长** 数值积分（如 SciPy `solve_ivp` 与嵌入 RK 类方法，`rtol`/`atol` 不紧于 **1e-8** / **1e-10**）；需可运行代码与简明结论。
 
@@ -556,7 +592,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/04c_NumericalPDE_PorousMediumTravelingWave.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/04c_NumericalPDE_PorousMediumTravelingWave.json`）：
 
 ```json
 [
@@ -585,7 +621,10 @@
 
 ---
 
-## 05a_SocialScience_InterviewThematicAnalysis
+## 社会科学质性研究：访谈摘录的主题编码与生成式约束
+
+**目录名：** `05a_SocialScience_InterviewThematicAnalysis`
+
 
 **简介：** **混合方法研究背景**：小样本质性材料需先用可复现的统计摘要约束解读，再借助 LLM 做主题归纳。**定性研究 / UX**：半结构化访谈摘录；可复现预处理 + **脚本级**量化摘要后，**仅**用 **Anthropic Messages API**、模型 `**claude-3-5-sonnet-20241022`** 做主题分析；保存完整响应至 `**outputs/anthropic_messages_response.json**`，≥1 图于 `report/images/`，交付 `**interview_thematic_report.md**`；脚本置于 `**code/**`。
 
@@ -603,7 +642,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/05a_SocialScience_InterviewThematicAnalysis.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/05a_SocialScience_InterviewThematicAnalysis.json`）：
 
 ```json
 {
@@ -634,7 +673,10 @@
 
 ---
 
-## 05b_Genomics_VariantCallingPipeline
+## 基因组学：锁定流程下的胚系短变异检测
+
+**目录名：** `05b_Genomics_VariantCallingPipeline`
+
 
 **简介：** **基因组学 / 变异检测**：按 `pipeline_lock.txt` 与 `resource_paths.txt` 对 `sample_manifest` 中列出的 CRAM 运行**胚系短变异检测**流程（锁定工具与参考路径）。
 
@@ -664,7 +706,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/05b_Genomics_VariantCallingPipeline.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/05b_Genomics_VariantCallingPipeline.json`）：
 
 ```json
 [
@@ -681,7 +723,10 @@
 
 ---
 
-## 05c_CyberSecurity_IncidentNarrativeTriage
+## 网络安全运营：安全事件叙述的结构化分流
+
+**目录名：** `05c_CyberSecurity_IncidentNarrativeTriage`
+
 
 **简介：** **SOC / 安全运营**：合成 **SOC 事件叙述**；可复现预处理 + **脚本级**摘要后，**仅**用 **Gemini API**、模型 `**gemini-1.5-pro`** 做结构化分流；保存完整响应至 `**outputs/gemini_raw.json**`，≥1 图于 `report/images/`，交付 `**incident_triage_report.md**`；脚本置于 `**code/**`。
 
@@ -699,7 +744,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/05c_CyberSecurity_IncidentNarrativeTriage.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/05c_CyberSecurity_IncidentNarrativeTriage.json`）：
 
 ```json
 {
@@ -730,7 +775,10 @@
 
 ---
 
-## 06a_RetailAnalytics_AdSpendStoreSales
+## 零售分析：门店广告支出、销售额与滚动预算政策
+
+**目录名：** `06a_RetailAnalytics_AdSpendStoreSales`
+
 
 **简介：** **零售面板应用背景**：门店级纵向数据用于把广告、客流与销量变化放在同一时间轴上解释。**零售分析**：门店月度面板（销售、广告、客流等）。**Policy RET-ADV-ROLL**：各店当月线上广告预算为**上月同店**销售额的固定比例——解读 ROI 时须注意广告与**滞后销售**的机械关联。用数据支撑下一年**月度**广告预算决策（组合级或逐店可汇总规则）。
 
@@ -748,7 +796,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/06a_RetailAnalytics_AdSpendStoreSales.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/06a_RetailAnalytics_AdSpendStoreSales.json`）：
 
 ```json
 [
@@ -777,7 +825,10 @@
 
 ---
 
-## 06b_PublicHealth_AirPollutionClinicPanel
+## 公共卫生：空气污染与呼吸系统就诊的日度面板
+
+**目录名：** `06b_PublicHealth_AirPollutionClinicPanel`
+
 
 **简介：** **环境健康 / 空气污染与健康**：日度面板（PM2.5、呼吸科就诊、供暖相关协变量、流感指数、学校假期等），用 `daily_panel.csv` 支撑**空气质量相关政策**讨论。
 
@@ -795,7 +846,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/06b_PublicHealth_AirPollutionClinicPanel.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/06b_PublicHealth_AirPollutionClinicPanel.json`）：
 
 ```json
 [
@@ -812,7 +863,10 @@
 
 ---
 
-## 06c_AgEcon_IrrigationYieldPanel
+## 农业经济学：灌溉与地块—年产量面板评估
+
+**目录名：** `06c_AgEcon_IrrigationYieldPanel`
+
 
 **简介：** **农业经济 / 灌溉评估**：地块–年份面板（产量、灌溉、肥力、地下水配额执行、降雨等），在 `field_year_panel.csv` 上评估**灌溉项目**成效与含义。
 
@@ -830,7 +884,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/06c_AgEcon_IrrigationYieldPanel.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/06c_AgEcon_IrrigationYieldPanel.json`）：
 
 ```json
 [
@@ -847,7 +901,10 @@
 
 ---
 
-## 07a_Research_CatalystX9_LabNotebookSOP
+## 实验合成：实验记录转化为可重复操作规程
+
+**目录名：** `07a_Research_CatalystX9_LabNotebookSOP`
+
 
 **简介：** **实验室质量体系背景**：工艺路线若只停留在随手记录，班次交接与审计都无法复现；需转为逐步 SOP。**实验记录 → SOP**：把 `lab_notebook_x9.txt` 中 Catalyst-X9 的叙述整理为可立即执行的 `**synthesis_sop.md`**，供夜班技术员逐步执行。
 
@@ -865,7 +922,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/07a_Research_CatalystX9_LabNotebookSOP.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/07a_Research_CatalystX9_LabNotebookSOP.json`）：
 
 ```json
 [
@@ -895,7 +952,10 @@
 
 ---
 
-## 07b_MaterialsScience_NanoparticleSynthSOP
+## 材料合成：纳米颗粒中试规模的操作规程
+
+**目录名：** `07b_MaterialsScience_NanoparticleSynthSOP`
+
 
 **简介：** **材料合成 / 纳米颗粒**：将 `lab_scratch.txt` 整理为可执行的 `**nanoparticle_sop.md`**，用于**中试规模**合成。
 
@@ -913,7 +973,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/07b_MaterialsScience_NanoparticleSynthSOP.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/07b_MaterialsScience_NanoparticleSynthSOP.json`）：
 
 ```json
 [
@@ -930,7 +990,10 @@
 
 ---
 
-## 07c_ClinicalOps_ColdChainShipmentProtocol
+## 临床供应链：冷链寄运的规程起草
+
+**目录名：** `07c_ClinicalOps_ColdChainShipmentProtocol`
+
 
 **简介：** **临床物流 / 冷链**：**仅**依据 `email_thread_draft.txt` 起草正式**冷链运输 SOP**；交付 `cold_chain_sop.md`。
 
@@ -948,7 +1011,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/07c_ClinicalOps_ColdChainShipmentProtocol.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/07c_ClinicalOps_ColdChainShipmentProtocol.json`）：
 
 ```json
 [
@@ -965,7 +1028,10 @@
 
 ---
 
-## 08a_StructuralHealth_SensorVibrationPanel
+## 结构健康与运维：多资产振动—过程遥测面板分析
+
+**目录名：** `08a_StructuralHealth_SensorVibrationPanel`
+
 
 **简介：** 对多资产振动与过程遥测面板做**可靠性/机械健康**分析，给出时序与运维优先建议。
 
@@ -983,7 +1049,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/08a_StructuralHealth_SensorVibrationPanel.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/08a_StructuralHealth_SensorVibrationPanel.json`）：
 
 ```json
 [
@@ -1000,7 +1066,10 @@
 
 ---
 
-## 08b_EnergySystems_LoadForecastCSV
+## 电力系统运行：15 分钟负荷序列与年度预测
+
+**目录名：** `08b_EnergySystems_LoadForecastCSV`
+
 
 **简介：** 基于 `load_15min.csv` 做年度负荷预测与面向运行可靠性的评述。
 
@@ -1018,7 +1087,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/08b_EnergySystems_LoadForecastCSV.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/08b_EnergySystems_LoadForecastCSV.json`）：
 
 ```json
 [
@@ -1046,7 +1115,10 @@
 
 ---
 
-## 08c_Oceanography_CTDCruiseStations
+## 海洋学：航次 CTD 观测站的温盐结构与剖面
+
+**目录名：** `08c_Oceanography_CTDCruiseStations`
+
 
 **简介：** **海洋学 / CTD**：整合 `cruise_ctd.csv` 做垂向剖面与**温盐（T–S）结构**分析。
 
@@ -1064,7 +1136,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/08c_Oceanography_CTDCruiseStations.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/08c_Oceanography_CTDCruiseStations.json`）：
 
 ```json
 [
@@ -1081,7 +1153,10 @@
 
 ---
 
-## 09a_NuclearScience_Iodine131DecayAnalysis
+## 实验燃烧：腔室静压与火焰传播速度的观测关系
+
+**目录名：** `09a_NuclearScience_Iodine131DecayAnalysis`
+
 
 **简介：** **实验燃烧背景**：台架实验常同时记录腔体静压与火焰传播速度，用于标定与报告。**实验燃烧 / 腔室火焰**：用 `flame_pressure_series.csv`（`pressure_kPa`, `flame_speed_cm_s`）建立两列测量之间的关系，作图，并写 `report/report.md`（任务正文不要求预设特定物理机制或数据质检流程）。
 
@@ -1099,7 +1174,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/09a_NuclearScience_Iodine131DecayAnalysis.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/09a_NuclearScience_Iodine131DecayAnalysis.json`）：
 
 ```json
 [
@@ -1142,7 +1217,10 @@
 
 ---
 
-## 09b_EverydayScience_BeverageCooling
+## 日常传热：饮品降温曲线的建模与拟合
+
+**目录名：** `09b_EverydayScience_BeverageCooling`
+
 
 **简介：** 厨房降温分钟级温度序列；自选合理模型族并对数据做拟合。
 
@@ -1160,7 +1238,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/09b_EverydayScience_BeverageCooling.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/09b_EverydayScience_BeverageCooling.json`）：
 
 ```json
 [
@@ -1188,7 +1266,10 @@
 
 ---
 
-## 09c_Ecology_SpeciesAreaIsland
+## 岛屿生物地理：种—面积关系及其保护规划含义
+
+**目录名：** `09c_Ecology_SpeciesAreaIsland`
+
 
 **简介：** 岛屿种–面积数据建模，并讨论对保护规划的含义。
 
@@ -1206,7 +1287,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/09c_Ecology_SpeciesAreaIsland.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/09c_Ecology_SpeciesAreaIsland.json`）：
 
 ```json
 [
@@ -1234,7 +1315,10 @@
 
 ---
 
-## 10a_Archaeology_RadiocarbonSiteChronology
+## 考古年代学：放射性碳测年校正与遗址年代框架
+
+**目录名：** `10a_Archaeology_RadiocarbonSiteChronology`
+
 
 **简介：** **考古年代学背景**：遗址研究通常把测年结果与地层、器物与现场备注一并写入年代叙事。**考古 / ¹⁴C**：Huangtupo **8 件**样品：常规年龄与**日历校正**；结合 `stratigraphic_unit` 与备注提出相对年代顺序与**文化分期**设想。交付 `site_chronology_report.md`（表格 + 叙述；计算见 `analysis_spec.txt`）。
 
@@ -1258,7 +1342,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/10a_Archaeology_RadiocarbonSiteChronology.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/10a_Archaeology_RadiocarbonSiteChronology.json`）：
 
 ```json
 [
@@ -1314,7 +1398,10 @@
 
 ---
 
-## 10b_Geophysics_MicroseismicBrief
+## 应用地球物理：微震监测数据的简报分析
+
+**目录名：** `10b_Geophysics_MicroseismicBrief`
+
 
 **简介：** **应用地球物理 / 微震**：利用 `stations.csv` 与 `arrival_times.csv` 撰写微震分析简报，侧重**震源聚类**与**构造背景**解读。
 
@@ -1338,7 +1425,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/10b_Geophysics_MicroseismicBrief.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/10b_Geophysics_MicroseismicBrief.json`）：
 
 ```json
 [
@@ -1355,7 +1442,10 @@
 
 ---
 
-## 10c_Econometrics_REITInflationPanel
+## 计量经济学：房地产投资信托与通货膨胀的季度关联
+
+**目录名：** `10c_Econometrics_REITInflationPanel`
+
 
 **简介：** REIT 与通胀季度面板的**关联分析**，并讨论对政策或组合管理的启示。
 
@@ -1373,7 +1463,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/10c_Econometrics_REITInflationPanel.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/10c_Econometrics_REITInflationPanel.json`）：
 
 ```json
 [
@@ -1401,7 +1491,10 @@
 
 ---
 
-## 11a_DataScience_TelemetryExportMergeReport
+## 工业数据科学：双源日电量遥测的核对与季度运营报告
+
+**目录名：** `11a_DataScience_TelemetryExportMergeReport`
+
 
 **简介：** **工业运营分析背景**：季度复盘常需把不同来源的运行表读进同一套管理叙事。**工业数据科学 / 遥测核对**：同一季度、同一日历窗口内**两套**发电机日电量导出（现场历史库 vs 现场笔记本重导）+ 交接说明；做统计分析与**季度运营**报告，交付 `**telemetry_export_merge_report.md`**，附可执行优化建议。
 
@@ -1431,7 +1524,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/11a_DataScience_TelemetryExportMergeReport.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/11a_DataScience_TelemetryExportMergeReport.json`）：
 
 ```json
 [
@@ -1448,7 +1541,10 @@
 
 ---
 
-## 11b_Logistics_MultiWMSInventoryRecon
+## 供应链物流：多仓库管理系统导出的库存对账
+
+**目录名：** `11b_Logistics_MultiWMSInventoryRecon`
+
 
 **简介：** **供应链 / 多 WMS 对账**：核对 `wms_alpha.csv` 与 `wms_beta.csv`，汇总管理用 KPI。交付 `inventory_recon_report.md`。
 
@@ -1472,7 +1568,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/11b_Logistics_MultiWMSInventoryRecon.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/11b_Logistics_MultiWMSInventoryRecon.json`）：
 
 ```json
 [
@@ -1489,7 +1585,10 @@
 
 ---
 
-## 11c_DigitalHumanities_MuseumProvenanceMerge
+## 数字人文：博物馆馆藏双批导出的合并与年代分布
+
+**目录名：** `11c_DigitalHumanities_MuseumProvenanceMerge`
+
 
 **简介：** 将 `museum_export_a.csv` 与 `museum_export_b.csv` 中的馆藏信息**整理合并**为去重后的统一目录，并概括藏品在时间上的分布；交付 `provenance_merge_report.md`。
 
@@ -1513,7 +1612,7 @@
 }
 ```
 
-**new_scenario_checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/11c_DigitalHumanities_MuseumProvenanceMerge.json`）：
+**checklist**（`meta_benchmark/_authoring_private/new_scenario_checklists/11c_DigitalHumanities_MuseumProvenanceMerge.json`）：
 
 ```json
 [

@@ -1,6 +1,0 @@
-{
-  "ok": false,
-  "error": "Missing ANTHROPIC_API_KEY in environment; cannot call Anthropic Messages API.",
-  "model": "claude-3-5-sonnet-20241022",
-  "timestamp": "2026-04-27T10:19:54.938969Z"
-}

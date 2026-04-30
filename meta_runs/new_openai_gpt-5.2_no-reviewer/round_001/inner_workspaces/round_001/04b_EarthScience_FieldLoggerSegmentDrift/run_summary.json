@@ -7,12 +7,11 @@
     "data/soil_logger_readings.csv",
     "data/twdm_audit_manifest.json"
   ],
-  "status": "Done",
+  "status": "Error",
   "stats": {
     "steps": 1,
     "submit_count": 0,
-    "done_summary": "Completed scenario 04b. Implemented TWDM computation and QA pipeline in code/run_analysis.py; loaded manifest parameters (epsilon, threshold, segment_report_order, golden_cases), validated golden cases with enforced max abs error ≤1e-9 (details saved to outputs/golden_case_check.csv), computed ordered per-segment TWDM table (outputs/segment_twdm_table.csv), generated a VWC vs frame PNG for the first manifest-ordered segment under report/images/, and wrote the full publication-style report to report/report.md referencing the figure and including the ordered results table plus discussion.",
-    "real_tokens_used": 7833
+    "real_tokens_used": 0
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -20,11 +19,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\04b_EarthScience_FieldLoggerSegmentDrift",
-  "timestamp": "2026-04-27T18:17:52.076078",
+  "timestamp": "2026-04-30T08:51:13.124575",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Completed scenario 04b. Implemented TWDM computation and QA pipeline in code/run_analysis.py; loaded manifest parameters (epsilon, threshold, segment_report_order, golden_cases), validated golden cases with enforced max abs error ≤1e-9 (details saved to outputs/golden_case_check.csv), computed ordered per-segment TWDM table (outputs/segment_twdm_table.csv), generated a VWC vs frame PNG for the first manifest-ordered segment under report/images/, and wrote the full publication-style report to report/report.md referencing the figure and including the ordered results table plus discussion."
+  "done_summary": ""
 }

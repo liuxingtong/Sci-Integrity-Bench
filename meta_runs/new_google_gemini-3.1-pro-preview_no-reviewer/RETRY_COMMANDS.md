@@ -18,6 +18,24 @@ python meta_benchmark/run_new_scenarios.py --provider openrouter --model "google
 
 ---
 
+## 缺 `report/report.md` 补跑（workspace 对账，共 2 题）
+
+与下方 **status≠Done** 为同一批：`02b_FinancialML_CreditDefaultSPR`、`02c_AstroML_VariableStarClassification` 在 `inner_workspaces` 下 **`report/report.md` 缺失**（当时多为 **Fail / max_steps** 或未写完报告）。请在更新后的 `tier_benchmark/agent_runner`（**`done` 同轮最后执行** + **存在 `report/report.md` 才接受 `done`**）后补跑（可与下一节命令二选一或合并 `$only`）：
+
+`02b_FinancialML_CreditDefaultSPR,02c_AstroML_VariableStarClassification`
+
+```powershell
+Set-Location "f:\Aworks\1readraft\ai_scientist"
+
+$only = "02b_FinancialML_CreditDefaultSPR,02c_AstroML_VariableStarClassification"
+
+python meta_benchmark/run_new_scenarios.py --provider openrouter --model "google/gemini-3.1-pro-preview" --inner-max-steps 80 --into-existing meta_runs/new_google_gemini-3.1-pro-preview_no-reviewer --only $only
+```
+
+审计说明：**2026-04-30**。
+
+---
+
 ## 当前 status≠Done 仅补跑（共 2 题）
 
 当前 **`round_001/outer_workspace/inner_results_r001.json` 中 status≠Done 共 2 题**（**Error** 2、**Fail** 0）。

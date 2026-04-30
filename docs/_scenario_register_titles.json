@@ -1,0 +1,134 @@
+{
+  "01a_SymbolicPatternReasoning_BenchmarkSelection": {
+    "zh": "符号模式推理：匿名编码下的基准遴选",
+    "en": "Symbolic Pattern Reasoning: Benchmark Selection under Anonymized Codes"
+  },
+  "01b_ComputationalLinguistics_MorphologicalSegmentationSuite": {
+    "zh": "计算语言学：形态分割多基准评测套件",
+    "en": "Computational Linguistics: A Morphological Segmentation Benchmark Suite"
+  },
+  "01c_BiomedicalImaging_CellBenchmarkPicker": {
+    "zh": "生物医学成像：细胞图像块分割的基准遴选",
+    "en": "Biomedical Imaging: Selecting Cell-Patch Segmentation Benchmarks"
+  },
+  "02a_SymbolicPatternReasoning_LabelNoiseCeiling": {
+    "zh": "符号模式推理：标签噪声与分类准确率上界",
+    "en": "Symbolic Pattern Classification: Label Noise and an Accuracy Ceiling"
+  },
+  "02b_FinancialML_CreditDefaultSPR": {
+    "zh": "金融机器学习：基于符号序列的信用违约预测",
+    "en": "Financial Machine Learning: Credit Default Prediction from Symbolic Sequences"
+  },
+  "02c_AstroML_VariableStarClassification": {
+    "zh": "时域天文机器学习：变源与非变源分类",
+    "en": "Time-Domain AstroML: Variable versus Non-variable Source Classification"
+  },
+  "03a_RecommendationSystem_RecSysV2LaunchEvaluation": {
+    "zh": "推荐系统：离线评测与线上试验相结合的上线评估",
+    "en": "Recommender Systems: Offline Metrics and Online Experiments for Launch Decisions"
+  },
+  "03b_HealthInformatics_EDTriageModelLaunch": {
+    "zh": "医疗信息学：急诊分诊决策支持的试点评估",
+    "en": "Health Informatics: Pilot Evaluation of Emergency-Department Triage Decision Support"
+  },
+  "03c_RLPolicy_RobotPickPlaceComparison": {
+    "zh": "机器人操作：抓取—放置策略的仿真与实物对照",
+    "en": "Robotic Manipulation: Comparing Pick-and-Place Policies in Simulation and Hardware"
+  },
+  "04a_RareEvent_ClassificationKPI": {
+    "zh": "工业过程遥测：暂态稳定指标与分类绩效",
+    "en": "Industrial Telemetry: Temporal Stability Indices and Classification KPIs"
+  },
+  "04b_EarthScience_FieldLoggerSegmentDrift": {
+    "zh": "土壤水分野外观测：分段墒情漂移审计指标",
+    "en": "Soil-Moisture Field Campaigns: Segment-Level Drift Metrics for Quality Assurance"
+  },
+  "04c_NumericalPDE_PorousMediumTravelingWave": {
+    "zh": "多孔介质渗流：行波约化方程的自适应数值积分",
+    "en": "Porous-Medium Flow: Adaptive Numerical Integration of a Traveling-Wave Reduction"
+  },
+  "05a_SocialScience_InterviewThematicAnalysis": {
+    "zh": "社会科学质性研究：访谈摘录的主题编码与生成式约束",
+    "en": "Qualitative Social Science: Thematic Coding of Interview Excerpts under API Constraints"
+  },
+  "05b_Genomics_VariantCallingPipeline": {
+    "zh": "基因组学：锁定流程下的胚系短变异检测",
+    "en": "Genomics: Germline Short-Variant Calling under a Locked Pipeline"
+  },
+  "05c_CyberSecurity_IncidentNarrativeTriage": {
+    "zh": "网络安全运营：安全事件叙述的结构化分流",
+    "en": "Cybersecurity Operations: Structured Triage of Incident Narratives"
+  },
+  "06a_RetailAnalytics_AdSpendStoreSales": {
+    "zh": "零售分析：门店广告支出、销售额与滚动预算政策",
+    "en": "Retail Analytics: Advertising, Sales, and Roll-forward Budget Policy Effects"
+  },
+  "06b_PublicHealth_AirPollutionClinicPanel": {
+    "zh": "公共卫生：空气污染与呼吸系统就诊的日度面板",
+    "en": "Environmental Health: Daily Air Pollution and Respiratory Clinic Visits"
+  },
+  "06c_AgEcon_IrrigationYieldPanel": {
+    "zh": "农业经济学：灌溉与地块—年产量面板评估",
+    "en": "Agricultural Economics: Irrigation and Plot–Year Yield Effects"
+  },
+  "07a_Research_CatalystX9_LabNotebookSOP": {
+    "zh": "实验合成：实验记录转化为可重复操作规程",
+    "en": "Bench Synthesis: From Lab Notebook to an Executable Standard Operating Procedure"
+  },
+  "07b_MaterialsScience_NanoparticleSynthSOP": {
+    "zh": "材料合成：纳米颗粒中试规模的操作规程",
+    "en": "Materials Synthesis: Pilot-Scale Nanoparticle Preparation Protocol"
+  },
+  "07c_ClinicalOps_ColdChainShipmentProtocol": {
+    "zh": "临床供应链：冷链寄运的规程起草",
+    "en": "Clinical Logistics: Drafting a Cold-Chain Shipment Protocol"
+  },
+  "08a_StructuralHealth_SensorVibrationPanel": {
+    "zh": "结构健康与运维：多资产振动—过程遥测面板分析",
+    "en": "Structural Health Monitoring: Multi-Asset Vibration and Process Telemetry"
+  },
+  "08b_EnergySystems_LoadForecastCSV": {
+    "zh": "电力系统运行：15 分钟负荷序列与年度预测",
+    "en": "Power Systems: Sub-hourly Load Series and Annual Load Outlook"
+  },
+  "08c_Oceanography_CTDCruiseStations": {
+    "zh": "海洋学：航次 CTD 观测站的温盐结构与剖面",
+    "en": "Oceanography: Cruise CTD Profiles and Thermohaline Structure"
+  },
+  "09a_NuclearScience_Iodine131DecayAnalysis": {
+    "zh": "实验燃烧：腔室静压与火焰传播速度的观测关系",
+    "en": "Bench-Scale Combustion: Relating Chamber Pressure to Flame Speed"
+  },
+  "09b_EverydayScience_BeverageCooling": {
+    "zh": "日常传热：饮品降温曲线的建模与拟合",
+    "en": "Everyday Heat Transfer: Modeling Cooldown Curves for a Beverage"
+  },
+  "09c_Ecology_SpeciesAreaIsland": {
+    "zh": "岛屿生物地理：种—面积关系及其保护规划含义",
+    "en": "Island Biogeography: Species–Area Relationships and Conservation Implications"
+  },
+  "10a_Archaeology_RadiocarbonSiteChronology": {
+    "zh": "考古年代学：放射性碳测年校正与遗址年代框架",
+    "en": "Archaeological Chronology: Radiocarbon Calibration and Site Phasing"
+  },
+  "10b_Geophysics_MicroseismicBrief": {
+    "zh": "应用地球物理：微震监测数据的简报分析",
+    "en": "Applied Geophysics: A Brief Analysis of Microseismic Monitoring Data"
+  },
+  "10c_Econometrics_REITInflationPanel": {
+    "zh": "计量经济学：房地产投资信托与通货膨胀的季度关联",
+    "en": "Econometrics: Quarterly REIT Returns and Inflation in a Macro Panel"
+  },
+  "11a_DataScience_TelemetryExportMergeReport": {
+    "zh": "工业数据科学：双源日电量遥测的核对与季度运营报告",
+    "en": "Industrial Data Science: Reconciling Telemetry Exports for Quarterly Operations"
+  },
+  "11b_Logistics_MultiWMSInventoryRecon": {
+    "zh": "供应链物流：多仓库管理系统导出的库存对账",
+    "en": "Supply-Chain Logistics: Inventory Reconciliation across WMS Exports"
+  },
+  "11c_DigitalHumanities_MuseumProvenanceMerge": {
+    "zh": "数字人文：博物馆馆藏双批导出的合并与年代分布",
+    "en": "Digital Humanities: Merging Museum Catalog Exports for Provenance and Chronology"
+  }
+}

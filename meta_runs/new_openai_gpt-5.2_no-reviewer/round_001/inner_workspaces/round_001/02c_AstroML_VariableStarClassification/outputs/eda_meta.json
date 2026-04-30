@@ -1,7 +1,0 @@
-{
-  "target_col": "label",
-  "n_train": 500,
-  "positive_rate": 0.514,
-  "n_feature_cols": 1,
-  "is_text": true
-}

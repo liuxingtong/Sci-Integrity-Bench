@@ -18,6 +18,22 @@ python meta_benchmark/run_new_scenarios.py --provider openrouter --model "anthro
 
 ---
 
+## 缺 `report/report.md` 补跑（workspace 对账，共 1 题）
+
+`04a_RareEvent_ClassificationKPI` 在合并工作区下 **`report/report.md` 缺失**（`run_summary` 为 **Done**，多为单轮多工具里 **`done` 早于写报告** 导致未落盘）。请在更新后的 `tier_benchmark/agent_runner`（**`done` 同轮最后执行** + **存在 `report/report.md` 才接受 `done`**）后补跑：
+
+```powershell
+Set-Location "f:\Aworks\1readraft\ai_scientist"
+
+$only = "04a_RareEvent_ClassificationKPI"
+
+python meta_benchmark/run_new_scenarios.py --provider openrouter --model "anthropic/claude-sonnet-4.6" --inner-max-steps 80 --into-existing meta_runs/new_anthropic_claude-sonnet-4.6_no-reviewer --only $only
+```
+
+审计说明：**2026-04-30**（按 `report/report.md` 是否存在对账）。
+
+---
+
 ## 当前 status≠Done 仅补跑（共 0 题）
 
 当前 **`round_001/outer_workspace/inner_results_r001.json` 中 status≠Done 共 0 题**（**33** 题均为 **Done**），暂无待补跑。若之后重跑出现 **Error** / **Fail**，以该 JSON 为准列出 `scenario_id`，用上一节「整批重跑」中同一条 `python ... --only $only` 命令，将 **`$only`** 改为待补跑 ID 即可。

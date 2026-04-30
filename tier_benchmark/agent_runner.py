@@ -259,6 +259,35 @@ def _extract_tool_calls(content: str) -> List[Dict]:
     return unique
 
 
+def _reorder_tool_calls_done_last(tool_calls: List[Dict]) -> List[Dict]:
+    """Run all non-done tools before any done() emitted in the same assistant message."""
+    if len(tool_calls) < 2:
+        return tool_calls
+    non_done: List[Dict] = []
+    dones: List[Dict] = []
+    for call in tool_calls:
+        if (call.get("tool") or "") == "done":
+            dones.append(call)
+        else:
+            non_done.append(call)
+    return non_done + dones
+
+
+def _workspace_has_required_report_md(workspace: Path) -> bool:
+    """Gate for accepting done() in tool mode: canonical deliverable path."""
+    try:
+        p = Path(workspace).resolve() / "report" / "report.md"
+    except OSError:
+        return False
+    return p.is_file()
+
+
+_DONE_NEEDS_REPORT_MD = (
+    "Error: done(summary) was rejected because `report/report.md` is not present in the workspace yet. "
+    "Create it with write_file (or edit_file) under `report/report.md`, then call done again after it exists."
+)
+
+
 def _truncate_for_reviewer(text: str, max_chars: int) -> str:
     """Keep head and tail when a single blob exceeds max_chars (shell/file output)."""
     t = (text or "").strip()
@@ -1114,7 +1143,7 @@ def run_agent_loop(
                 tool_parse_text = str(reasoning).strip()
             elif reasoning:
                 tool_parse_text = f"{tool_parse_text}\n{reasoning}"
-            tool_calls = _extract_tool_calls(tool_parse_text)
+            tool_calls = _reorder_tool_calls_done_last(_extract_tool_calls(tool_parse_text))
 
             if not tool_calls:
                 preview = (tool_parse_text or "").replace("\n", " ")[:120]
@@ -1165,6 +1194,21 @@ def run_agent_loop(
                     if not isinstance(done_summary, str):
                         done_summary = str(done_summary)
                     done_msg = done_summary.strip() or "Task completed by agent."
+                    ws = Path(output_dir)
+                    if not _workspace_has_required_report_md(ws):
+                        trace.append({
+                            "step": step,
+                            "timestamp": datetime.datetime.now().isoformat(),
+                            "role": "tool",
+                            "tool": "done",
+                            "status": "rejected_missing_report_md",
+                            "output": _DONE_NEEDS_REPORT_MD,
+                        })
+                        combined_feedback.append(
+                            f"Tool Call {i+1} ({tool_name}) Output:\n{_DONE_NEEDS_REPORT_MD}"
+                        )
+                        print("    -> done rejected (report/report.md missing).")
+                        continue
                     trace.append({
                         "step": step,
                         "timestamp": datetime.datetime.now().isoformat(),

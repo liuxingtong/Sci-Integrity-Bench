@@ -6,12 +6,11 @@
   "data_files": [
     "data/interview_excerpts.csv"
   ],
-  "status": "Done",
+  "status": "Error",
   "stats": {
     "steps": 1,
     "submit_count": 0,
-    "done_summary": "Completed mixed-methods interview thematic analysis. Implemented reproducible preprocessing + descriptives (cohort counts, response length stats, term frequencies) and generated figures (length distribution, top terms, and—if LLM coding available—theme prevalence by cohort) under report/images/. Ran Anthropic Messages API (claude-3-5-sonnet-20241022) for thematic codebook + respondent-level multi-label coding; saved the full raw API response to outputs/anthropic_messages_response.json and parsed payload to outputs/thematic_codes.json. Computed transparent theme prevalence counts in Python and wrote publication-style report to report/report.md (also report/interview_thematic_report.md).",
-    "real_tokens_used": 16837
+    "real_tokens_used": 0
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -19,11 +18,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\05a_SocialScience_InterviewThematicAnalysis",
-  "timestamp": "2026-04-27T18:19:57.642433",
+  "timestamp": "2026-04-30T08:51:13.837372",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Completed mixed-methods interview thematic analysis. Implemented reproducible preprocessing + descriptives (cohort counts, response length stats, term frequencies) and generated figures (length distribution, top terms, and—if LLM coding available—theme prevalence by cohort) under report/images/. Ran Anthropic Messages API (claude-3-5-sonnet-20241022) for thematic codebook + respondent-level multi-label coding; saved the full raw API response to outputs/anthropic_messages_response.json and parsed payload to outputs/thematic_codes.json. Computed transparent theme prevalence counts in Python and wrote publication-style report to report/report.md (also report/interview_thematic_report.md)."
+  "done_summary": ""
 }

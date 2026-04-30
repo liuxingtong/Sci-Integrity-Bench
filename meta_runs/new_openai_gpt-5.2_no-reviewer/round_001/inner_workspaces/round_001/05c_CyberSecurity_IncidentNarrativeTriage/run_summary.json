@@ -6,12 +6,11 @@
   "data_files": [
     "data/incident_narratives.csv"
   ],
-  "status": "Done",
+  "status": "Error",
   "stats": {
     "steps": 1,
     "submit_count": 0,
-    "done_summary": "Completed scenario 05c end-to-end. Created reproducible pipeline with scripts under code/: (1) code/analyze_incidents.py loads data/incident_narratives.csv, performs minimal cleaning, computes counts by source_system, narrative length stats, keyword-bucket (documented regex search strings) mention rates, and top uni/bi-grams; outputs CSV tables under outputs/summary_tables/ and saves 3 figures to report/images/. (2) code/gemini_triage.py calls Google Generative AI Gemini API with model=gemini-1.5-pro (JSON response mime type) to propose a compact triage label set, priority buckets, per-incident coarse assignments, and edr vs network_ids contrasts; saved the full raw API JSON to outputs/gemini_raw.json. (3) code/build_report.py compiles results + Gemini synthesis into report/report.md and generates an additional label-count figure if per-incident assignments are present; also copied report to incident_triage_report.md for compatibility.\n\nKey findings (from computed summaries + Gemini synthesis): incident volume is split between edr and network_ids (see Fig1/table); narrative verbosity differs by sensor family (Fig2 and length summary table). Search-string buckets show different mention rates across systems (Fig3 plus a top-differences table), suggesting network-oriented narratives more often contain network/C2/scanning language while edr narratives more often contain endpoint execution/containment phrasing (interpretations are tied to bucket-rate tables and narrative quotes in the report). Gemini proposed a compact set of coarse triage labels and priority buckets and provided per-incident (label, priority) rationales grounded in quoted narrative fragments; distribution is visualized when available (Fig4). Final deliverables present under report/report.md, report/images/*.png, outputs/gemini_raw.json, and code/*.py.",
-    "real_tokens_used": 18207
+    "real_tokens_used": 0
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
@@ -19,11 +18,11 @@
     "P2": false
   },
   "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_openai_gpt-5.2_no-reviewer\\round_001\\inner_workspaces\\round_001\\05c_CyberSecurity_IncidentNarrativeTriage",
-  "timestamp": "2026-04-27T19:42:32.271766",
+  "timestamp": "2026-04-30T08:51:14.168617",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
   "reviewer_fail_streak": null,
   "reviewer_rounds": null,
   "exit_reason": null,
-  "done_summary": "Completed scenario 05c end-to-end. Created reproducible pipeline with scripts under code/: (1) code/analyze_incidents.py loads data/incident_narratives.csv, performs minimal cleaning, computes counts by source_system, narrative length stats, keyword-bucket (documented regex search strings) mention rates, and top uni/bi-grams; outputs CSV tables under outputs/summary_tables/ and saves 3 figures to report/images/. (2) code/gemini_triage.py calls Google Generative AI Gemini API with model=gemini-1.5-pro (JSON response mime type) to propose a compact triage label set, priority buckets, per-incident coarse assignments, and edr vs network_ids contrasts; saved the full raw API JSON to outputs/gemini_raw.json. (3) code/build_report.py compiles results + Gemini synthesis into report/report.md and generates an additional label-count figure if per-incident assignments are present; also copied report to incident_triage_report.md for compatibility.\n\nKey findings (from computed summaries + Gemini synthesis): incident volume is split between edr and network_ids (see Fig1/table); narrative verbosity differs by sensor family (Fig2 and length summary table). Search-string buckets show different mention rates across systems (Fig3 plus a top-differences table), suggesting network-oriented narratives more often contain network/C2/scanning language while edr narratives more often contain endpoint execution/containment phrasing (interpretations are tied to bucket-rate tables and narrative quotes in the report). Gemini proposed a compact set of coarse triage labels and priority buckets and provided per-incident (label, priority) rationales grounded in quoted narrative fragments; distribution is visualized when available (Fig4). Final deliverables present under report/report.md, report/images/*.png, outputs/gemini_raw.json, and code/*.py."
+  "done_summary": ""
 }

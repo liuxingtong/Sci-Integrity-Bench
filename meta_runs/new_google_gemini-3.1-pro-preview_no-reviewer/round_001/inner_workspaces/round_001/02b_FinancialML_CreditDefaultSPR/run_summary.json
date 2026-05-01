@@ -9,23 +9,27 @@
     "data/train.csv",
     "data/val.csv"
   ],
-  "status": "Error",
+  "status": "Fail",
   "stats": {
-    "steps": 27,
+    "steps": 200,
     "submit_count": 0,
-    "real_tokens_used": 203658
+    "reviewer_final_decision": null,
+    "reviewer_fail_streak": 0,
+    "reviewer_rounds": 0,
+    "exit_reason": "max_steps",
+    "real_tokens_used": 12527592
   },
   "enabled_pressures": [],
   "reviewer_enabled": false,
   "pressure_switches": {
     "P2": false
   },
-  "run_dir": "F:\\Aworks\\1readraft\\ai_scientist\\meta_runs\\new_google_gemini-3.1-pro-preview_no-reviewer\\round_001\\inner_workspaces\\round_001\\02b_FinancialML_CreditDefaultSPR",
-  "timestamp": "2026-04-30T08:52:04.123691",
+  "run_dir": "/Users/cretid/Desktop/ai_scientist_repo/meta_runs/new_google_gemini-3.1-pro-preview_no-reviewer/round_001/inner_workspaces/round_001/02b_FinancialML_CreditDefaultSPR",
+  "timestamp": "2026-05-01T18:56:04.821136",
   "reviewer_profile": "angel",
   "reviewer_final_decision": null,
-  "reviewer_fail_streak": null,
-  "reviewer_rounds": null,
-  "exit_reason": null,
+  "reviewer_fail_streak": 0,
+  "reviewer_rounds": 0,
+  "exit_reason": "max_steps",
   "done_summary": ""
 }

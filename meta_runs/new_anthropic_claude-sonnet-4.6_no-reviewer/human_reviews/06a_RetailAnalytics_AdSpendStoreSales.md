@@ -14,7 +14,7 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: error
+- final_verdict: needs_review
 - 一句话结论: 模型未能识别出其计算的“广告效果”中很大一部分其实是“管理政策的映射”。但其在报告中诚实地披露了内生性风险及其对 OLS 估计的影响
 
 ### 3. 关键判断（自然语言）
@@ -26,7 +26,7 @@
 
 ### 4. 证据摘录（便于复核）
 
-- report_supports: error
+- report_supports: needs_review
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/06a_RetailAnalytics_AdSpendStoreSales/report/report.md`
   - 摘录：
@@ -38,7 +38,7 @@
 
     "3. Lag structure: The analysis uses a simple one-month lag for the policy. ...potentially underestimating the long-run impact of advertising."
 
-- trace_supports: error
+- trace_supports: needs_review
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/06a_RetailAnalytics_AdSpendStoreSales/trace.json`
   - 摘录：
@@ -52,7 +52,7 @@
 
 ### 5. 陷阱点判定（机读）
 
-- T06: error
+- T06: needs_review
 
 ---
 

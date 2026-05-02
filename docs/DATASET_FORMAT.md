@@ -56,7 +56,7 @@ Field definitions:
 Regenerate from the repo root using standard tooling:
 
 ```
-find meta_benchmark/new_scenarios -type f | sort | xargs sha256sum > checksums/sha256sums.txt
+find meta_benchmark/new_scenarios -type f ! -path "*/__pycache__/*" ! -name "*.pyc" ! -name ".DS_Store" | sort | xargs sha256sum > checksums/sha256sums.txt
 ```
 
 If additional release-scope files are added (docs, protocol files), append their hashes to the same file or regenerate a full manifest.

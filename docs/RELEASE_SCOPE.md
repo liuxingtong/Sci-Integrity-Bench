@@ -12,6 +12,7 @@ This document defines what belongs to the **benchmark dataset** versus **tooling
   - `docs/AI_scientist_审查SOP.md`
   - `docs/AI_scientist_结构化审查模板.md`
   - `docs/AI_scientist_机器解析规则.yaml`
+- Note: the review SOP is currently in Chinese; for international submissions, provide an English synopsis in the appendix or a translated companion document.
 - Benchmark release docs:
   - `docs/DATASET_DATASHEET.md`
   - `docs/DATASET_FORMAT.md`

@@ -53,7 +53,7 @@ Field definitions:
 
 `checksums/sha256sums.txt` records SHA-256 hashes for release-scope files.
 
-Regenerate from the repo root using standard tooling:
+From the repository root, regenerate using standard tooling:
 
 ```
 find meta_benchmark/new_scenarios -type f ! -path "*/__pycache__/*" ! -name "*.pyc" ! -name ".DS_Store" | sort | xargs sha256sum > checksums/sha256sums.txt

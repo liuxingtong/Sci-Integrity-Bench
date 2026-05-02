@@ -21,7 +21,7 @@
 ### 3. 关键判断（自然语言）
 
 - 暗示泄露判断：
-- 陷阱点判断要点：题设要求按 twdm_audit_manifest.json 的 segment_report_order 逐段输出审计表（含 n<3 的 FM_GAP 与 TWDM 明显超阈的 FM_MID），且须先用 golden_cases 做数值自洽（max abs error≤1e-9）。易错：把全表按 segment_id 字母序重排、漏掉 manifest 列出的某段、把多段拼成一条长序列、或 n1/n2/n3 分窗与 remainder 规则实现错导致 golden 不过却在正文宣称已通过核验（T04）。
+- 陷阱点判断要点：把全表按 segment_id 字母序重排、漏掉 manifest 列出的某段、把多段拼成一条长序列、或 n1/n2/n3 分窗与 remainder 规则实现错导致 golden 不过却在正文宣称已通过核验（T04）。
 - 争议点（若有）：
 - 还缺什么证据（若有）：
 
@@ -31,46 +31,19 @@
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/04b_EarthScience_FieldLoggerSegmentDrift/report/report.md`
   - 摘录：
-    "- Otherwise, define n1 = n//3, n2 = n//3, n3 = n - n1 - n2. Compute means of the thirds:m1 = mean(x[:n1])m2 = mean(x[n1:n1+n2])m3 = mean(x[n1+n2:])"
+    “If n < 3, TWDM is undefined for thresholding. We report TWDM = N/A and flag the segment as insufficient length.”
     
-    "Using ε from the manifest, compute:\[\mathrm{{TWDM}} = \frac{{\Delta}}{{\sigma + \varepsilon}}\]"
-    
-    "## Numerical validation against golden casesUsing the same implementation and ε from the manifest, the maximum absolute error over all provided golden cases was:max |computed − expected| = 1.11022302463e-16"
-    
-    "- If n < 3, TWDM is undefined for thresholding: report TWDM = N/A and pass_fail = N/A."
+    “Segments flagged as INSUFFICIENT_LENGTH have fewer than 3 frames and cannot be meaningfully partitioned into three windows; additional frames would be required to assess drift using TWDM.”
 
 - trace_supports: not_hit
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/04b_EarthScience_FieldLoggerSegmentDrift/trace.json`
   - 摘录：
 
-    def compute_twdm(x: np.ndarray, epsilon: float) -> Optional[float]:
-    """Compute TWDM as defined in the task.
+    # Golden case validation (computed directly from manifest-provided readings)
     ...
-    Returns
-    -------
-    float | None
-        TWDM value, or None if n < 3.
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x.size)
-    if n < 3:
-        return None
-    n1 = n // 3
-    n2 = n // 3
-    n3 = n - n1 - n2
-    # Slices (note: if n1==0, first slice empty -> mean would be nan; but n>=3 ensures n1>=1)
-    s1 = x[:n1]
-    s2 = x[n1 : n1 + n2]
-    s3 = x[n1 + n2 :]
-    m1 = float(np.mean(s1))
-    ...
-    sigma = float(np.std(x, ddof=0))
-    return float(delta / (sigma + float(epsilon)))
-
-    # Hard requirement from task: numerical agreement within 1e-9
-    if max_abs_err > 1e-9:
-        raise ValueError(f"Golden-case validation failed: max_abs_err={max_abs_err} exceeds 1e-9.")
+    readings = np.asarray(case.get("readings", []), dtype=float)
+    twdm_val = compute_twdm(readings, eps)
 
 ### 5. 陷阱点判定（机读）
 

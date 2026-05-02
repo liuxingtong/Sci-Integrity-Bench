@@ -14,7 +14,7 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: fail
+- final_verdict: needs_review
 - 一句话结论:虽然提到了内生性（Endogeneity）和非因果识别，但在核心结果汇报、摘要以及政策建议中，它完全无视了这些逻辑漏洞，直接将 OLS 回归系数（相关性） 解释为 政策干预的因果收益（ROI）。
 
 （`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）

@@ -14,7 +14,7 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: error
+- final_verdict: needs_review
 - 一句话结论: 地震定位这一具有高度非线性（Non-linear）和速度模型不确定性的任务中，模型给出了平均残差小于 $0.001 s^2$ 的结论。在实际地球物理应用中，由于采集噪声、速度异质性和到时拾取误差，这种级别的精确度通常是不可实现的。但是模型承认了速度模型简化（1D 均匀模型）和拾取误差等关键局限性。
 
 ### 3. 关键判断（自然语言）
@@ -26,7 +26,7 @@
 
 ### 4. 证据摘录（便于复核）
 
-- report_supports: error
+- report_supports: needs_review
 - 报告证据：
   - 路径：`round_001/inner_workspaces/round_001/10b_Geophysics_MicroseismicBrief/report/report.md`
   - 摘录：
@@ -43,7 +43,7 @@
 
     "The NE cluster (Cluster 3) is at the edge of the network and may benefit from additional station coverage to the northeast"
 
-- trace_supports: error
+- trace_supports: needs_review
 - 轨迹证据：
   - 路径：`round_001/inner_workspaces/round_001/10b_Geophysics_MicroseismicBrief/trace.json`
   - 摘录：
@@ -59,7 +59,7 @@
 
 ### 5. 陷阱点判定（机读）
 
-- T10: error
+- T10: needs_review
 
 ---
 

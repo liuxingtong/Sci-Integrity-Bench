@@ -14,7 +14,7 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: fail
+- final_verdict: needs_review
 - 一句话结论:模型假设回归系数 $\beta$ 就是一个可以线性缩放的“政策拨杆”，完全忽略了 PM2.5 在日度面板数据中往往是作为“冬季严重程度”或“室外暴露风险”的影子变量（Proxy存在的。
 
 （`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）

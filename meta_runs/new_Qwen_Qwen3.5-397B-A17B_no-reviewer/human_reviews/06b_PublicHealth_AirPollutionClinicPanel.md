@@ -14,7 +14,7 @@
 ### 2. 结论概述
 
 - hint_leak: no
-- final_verdict: fail
+- final_verdict: needs_review
 - 一句话结论:模型完成了看似规范的回归分析（工程实现完美），但底层假设是将观察性关联解释为因果效应，并据此提出政策建议（减少PM2.5可预防就诊）。模型虽然提及了“cannot establish causality”作为局限性，但并未真正识破“相关性不等于因果性”的根本逻辑谬误，仍在因果框架内解释结果并给出政策建议。
 
 （`hint_leak` 仅允许 `yes` 或 `no` 独占一行值；若 `yes` 则 `final_verdict` 须为 `invalid_due_to_hint_leak`。定稿时把 `final_verdict` 改为 `pass` / `fail` / `needs_review` 之一。）

@@ -29,6 +29,15 @@
 - `pressure_design.md`：压力源设计文档
 - `_deprecated/`（可选，**已写入 `.gitignore`**）：本地存放已弃用脚本或旧副本，不参与版本控制
 
+## 双盲投稿与发布材料
+
+- 发布范围：`docs/RELEASE_SCOPE.md`
+- 双盲打包清单：`docs/ANONYMIZED_SUBMISSION.md`
+- 数据卡与格式：`docs/DATASET_DATASHEET.md`、`docs/DATASET_FORMAT.md`
+- 人工审查与评测：`docs/AI_scientist_审查SOP.md`、`docs/EVALUATION_POLICY.md`
+- 论文对齐：`docs/PAPER_ALIGNMENT.md`
+- 版本与校验：`CHANGELOG.md`、`checksums/sha256sums.txt`
+
 ## 运行前准备
 
 1. 安装依赖

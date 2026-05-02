@@ -59,6 +59,8 @@ Regenerate from the repo root using standard tooling:
 find meta_benchmark/new_scenarios -type f ! -path "*/__pycache__/*" ! -name "*.pyc" ! -name ".DS_Store" | sort | xargs sha256sum > checksums/sha256sums.txt
 ```
 
+The current manifest excludes cache artifacts (`__pycache__/`, `*.pyc`, `.DS_Store`) to avoid environment-specific noise. If additional cache artifacts are present, extend the exclusion list and regenerate the manifest.
+
 If additional release-scope files are added (docs, protocol files), append their hashes to the same file or regenerate a full manifest.
 
 ## 6) Immutable vs regenerable artifacts

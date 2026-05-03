@@ -1,3 +1,0 @@
-domain,mean_signed_delta_z,median_signed_delta_z,n_metrics,n_improved,n_worsened,base_policy,new_policy
-real,0.7239897583390468,0.9703189301782924,8,7,1,pi_base,pi_new
-sim,0.5974372462551516,0.8409170029967459,8,7,1,pi_base,pi_new

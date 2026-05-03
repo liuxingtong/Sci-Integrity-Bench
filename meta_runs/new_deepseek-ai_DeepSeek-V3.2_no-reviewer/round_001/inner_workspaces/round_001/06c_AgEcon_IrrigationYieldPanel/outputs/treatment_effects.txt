@@ -1,3 +1,0 @@
-Average Treatment Effect (ATE): 0.613
-Regression-adjusted effect: 0.689
-p-value: 0.000

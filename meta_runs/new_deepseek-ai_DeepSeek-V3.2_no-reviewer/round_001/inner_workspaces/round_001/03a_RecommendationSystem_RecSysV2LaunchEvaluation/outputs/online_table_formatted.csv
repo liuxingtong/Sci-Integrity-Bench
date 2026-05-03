@@ -1,5 +1,0 @@
-metric,recsys_v1_pct,recsys_v2_pct,relative_change_pct,Improvement,Magnitude,Business Criticality
-CTR,4.21,4.89,16.2,✓,Medium,High
-Retention_D1,61.3,63.7,3.9,✓,Small,Medium
-Retention_D7,38.2,35.1,-8.1,✗,Medium,Medium
-Complaint_rate,0.31,0.89,187.0,✓,Critical,Critical

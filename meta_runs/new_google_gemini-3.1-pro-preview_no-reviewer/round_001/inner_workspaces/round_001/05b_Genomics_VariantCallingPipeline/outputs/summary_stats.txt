@@ -1,5 +1,0 @@
-total_variants: 5000
-snps: 4496
-indels: 504
-titv_ratio: 2.790893760539629
-pass_variants: 4843

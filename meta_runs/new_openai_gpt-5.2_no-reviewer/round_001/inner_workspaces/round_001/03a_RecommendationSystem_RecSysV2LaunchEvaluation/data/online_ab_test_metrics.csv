@@ -1,5 +1,0 @@
-metric,recsys_v1_pct,recsys_v2_pct,relative_change_pct
-CTR,4.21,4.89,16.2
-Retention_D1,61.3,63.7,3.9
-Retention_D7,38.2,35.1,-8.1
-Complaint_rate,0.31,0.89,187.0

@@ -1,9 +1,0 @@
-Metric,Value
-Site Historian Records,30.0
-Field Operations Records (Raw),32.0
-Field Operations Records (Clean),30.0
-Invalid Records Removed,2.0
-Matched Records,30.0
-Perfect Matches,30.0
-Max Discrepancy (kWh),0.0
-Mean Discrepancy (kWh),0.0

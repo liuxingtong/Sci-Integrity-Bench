@@ -1,4 +1,0 @@
-Asset: COMP_001, Priority: HIGH
-  Reasons: High peak vibration, Elevated bearing temperature, High acceleration levels
-  Action: Schedule inspection within 2 weeks
-

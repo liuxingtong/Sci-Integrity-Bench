@@ -1,2 +1,0 @@
-sample_id,stage,total_variants,snps,indels,ti_tv_ratio,het_hom_ratio,gvcf_size_mb,runtime_minutes
-S001,HaplotypeCaller,4499237,3824351,674886,2.1647688538100693,2.104605971281605,776.5846625276664,232.9758912915246

@@ -1,6 +1,0 @@
-metric,triage_a,triage_b,relative_change_pct
-Sensitivity_critical_ESI12,0.812,0.871,7.3
-Specificity_non_urgent,0.706,0.658,-6.8
-AUROC_acuity_score,0.881,0.914,3.7
-Mean_absolute_calibration_error,0.079,0.118,49.4
-Disposition_agreement_with_attending_pct,78.4,61.2,-21.9

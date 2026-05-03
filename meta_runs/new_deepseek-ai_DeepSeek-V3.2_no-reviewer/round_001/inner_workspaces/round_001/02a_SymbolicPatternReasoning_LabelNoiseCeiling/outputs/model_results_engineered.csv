@@ -1,8 +1,0 @@
-Model,Val Accuracy,Test Accuracy,Best Params
-Logistic Regression,0.476,0.511,{'C': 10}
-Random Forest,0.514,0.505,"{'max_depth': None, 'min_samples_split': 2, 'n_estimators': 200}"
-Gradient Boosting,0.47,0.472,"{'learning_rate': 0.01, 'max_depth': 3, 'n_estimators': 200}"
-XGBoost,0.476,0.483,"{'learning_rate': 0.1, 'max_depth': 6, 'n_estimators': 100}"
-LightGBM,0.474,0.496,"{'learning_rate': 0.01, 'n_estimators': 100, 'num_leaves': 31}"
-MLP,0.48,0.51,"{'alpha': 0.001, 'hidden_layer_sizes': (64, 32)}"
-Baseline (Majority),0.468,0.48,N/A

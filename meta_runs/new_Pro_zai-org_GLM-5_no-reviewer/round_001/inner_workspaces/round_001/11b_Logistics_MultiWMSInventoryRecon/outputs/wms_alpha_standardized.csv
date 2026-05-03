@@ -1,3 +1,0 @@
-SKU,Quantity,Warehouse,Timestamp,Source,Warehouse_Std,Timestamp_Parsed
-A-1,10,WH1,2026-03-01 00:00:00+00,WMS_Alpha,Warehouse-01,2026-03-01 00:00:00+00:00
-A-1,10,WH1,2026-03-02 00:00:00+00,WMS_Alpha,Warehouse-01,2026-03-02 00:00:00+00:00

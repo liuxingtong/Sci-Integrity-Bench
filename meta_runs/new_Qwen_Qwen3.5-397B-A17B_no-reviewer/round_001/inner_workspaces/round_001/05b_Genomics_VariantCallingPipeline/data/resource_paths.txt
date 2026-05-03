@@ -1,2 +1,0 @@
-REF=/refs/b37/human_g1k_v37.fasta
-DBSNP=/refs/b37/dbsnp_138.b37.vcf.gz

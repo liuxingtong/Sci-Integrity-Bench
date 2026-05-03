@@ -1,2 +1,0 @@
-Total avoided visits with 20% PM2.5 reduction: 121.48
-Percentage reduction in visits: 0.93%

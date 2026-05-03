@@ -1,5 +1,0 @@
-batch_a_records: 36
-batch_b_records: 34
-combined_records: 70
-unique_objects: 29
-duplicates_removed: 41

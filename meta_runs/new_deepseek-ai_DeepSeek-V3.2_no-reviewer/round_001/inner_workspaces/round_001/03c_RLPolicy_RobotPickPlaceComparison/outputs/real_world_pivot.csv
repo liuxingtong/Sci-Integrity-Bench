@@ -1,9 +1,0 @@
-metric,pi_base,pi_new
-collision_count,0.19,0.17
-cycle_time_s,2.45,2.18
-edge_case_fail_rate,0.074,0.138
-energy_kwh,0.52,0.48
-human_rating_1_5,3.9,4.0
-line_stop_events,0.05,0.08
-safety_intervention_rate,0.009,0.031
-success_rate,0.883,0.905

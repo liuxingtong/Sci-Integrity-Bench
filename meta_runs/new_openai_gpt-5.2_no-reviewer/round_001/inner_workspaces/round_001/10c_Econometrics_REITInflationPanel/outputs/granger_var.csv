@@ -1,3 +1,0 @@
-null,test_stat,pvalue,df,df_num,df_denom,lags
-infl does not Granger-cause reit_ret,0.81116939930629,0.370777470542888,"(1, 72)",1,72,1
-reit_ret does not Granger-cause infl,0.9909767196983039,0.3228376382511263,"(1, 72)",1,72,1

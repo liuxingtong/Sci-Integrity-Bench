@@ -1,4 +1,0 @@
-Shock saturation S_L = 0.8165
-Shock speed c = 1.1124
-Maximum integral residual error: 4.8118e-05
-Maximum ODE residual error: 1.9542e-02

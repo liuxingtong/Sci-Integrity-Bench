@@ -1,8 +1,0 @@
-Temporal Stability Index (TSI) Results
-==================================================
-
-TSI Value: 0.968440
-Number of samples: 5000
-σ_x (population std of x): 2.533460
-σ_d (population std of differences): 0.079956
-σ_d / (σ_x + ε): 0.031560

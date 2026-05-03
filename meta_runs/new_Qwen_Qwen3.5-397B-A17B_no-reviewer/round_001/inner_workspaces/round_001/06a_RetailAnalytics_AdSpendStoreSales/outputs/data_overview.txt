@@ -1,6 +1,0 @@
-Data Overview:
-- Shape: (7200, 9)
-- Stores: 200
-- Years: [1, 2, 3]
-- Months per year: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-- Holiday months indicator: {0: 5400, 1: 1800}

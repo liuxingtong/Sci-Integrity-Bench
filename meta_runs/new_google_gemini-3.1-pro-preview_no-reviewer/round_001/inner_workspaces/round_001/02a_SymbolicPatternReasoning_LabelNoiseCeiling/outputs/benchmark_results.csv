@@ -1,7 +1,0 @@
-Model,Train Accuracy,Validation Accuracy,Test Accuracy
-Logistic Regression (L1),0.539,0.47,0.485
-Logistic Regression (L2),0.6105,0.522,0.495
-SVM (RBF),0.918,0.518,0.498
-Random Forest,0.664,0.482,0.488
-Gradient Boosting,0.7635,0.524,0.504
-MLP (Neural Net),0.9885,0.536,0.471

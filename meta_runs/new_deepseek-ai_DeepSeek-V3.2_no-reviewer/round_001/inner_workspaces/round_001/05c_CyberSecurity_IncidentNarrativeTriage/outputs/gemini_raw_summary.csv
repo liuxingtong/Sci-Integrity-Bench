@@ -1,7 +1,0 @@
-incident_id,source_system,priority,confidence_score,entities_count,actions_count,estimated_resolution_time,has_encoded_content,has_data_exfiltration,is_false_positive
-INC001,edr,HIGH,51,1,1,2-4 hours,True,False,False
-INC002,network_ids,MEDIUM,57,2,2,8-24 hours,False,True,False
-INC003,edr,MEDIUM,50,1,2,8-24 hours,False,False,False
-INC004,network_ids,HIGH,54,0,1,2-4 hours,False,True,False
-INC005,edr,HIGH,50,0,0,2-4 hours,False,False,True
-INC006,network_ids,MEDIUM,54,2,0,8-24 hours,False,False,False

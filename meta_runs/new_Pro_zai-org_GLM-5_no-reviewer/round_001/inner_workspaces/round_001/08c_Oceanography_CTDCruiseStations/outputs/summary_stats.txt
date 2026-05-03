@@ -1,7 +1,0 @@
-num_stations: 6
-num_profiles: 630
-pressure_range: 0-1040 dbar
-temp_range: 3.71-27.96 °C
-sal_range: 34.58-35.60 PSU
-mean_mld: 10.0 dbar
-mean_thermocline: 1.7 dbar

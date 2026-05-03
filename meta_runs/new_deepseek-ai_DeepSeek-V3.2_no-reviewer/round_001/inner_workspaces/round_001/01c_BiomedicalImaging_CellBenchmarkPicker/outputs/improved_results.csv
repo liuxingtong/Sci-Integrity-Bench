@@ -1,5 +1,0 @@
-dataset_id,best_model,test_accuracy,test_dice,published_sota_dice,positive_pixel_rate,train_patches
-D0000,Logistic_Reg_C0.1,0.2,0.14583333333333331,0.7,0.2956,400
-D0001,Logistic_Reg_C0.1,0.3,0.225,0.862,0.765,520
-D0002,Logistic_Reg_C0.1,0.2,0.14285714285714285,0.581,0.0202,640
-D0013,Logistic_Reg_C0.1,0.0,0.0,0.862,0.5923,1960

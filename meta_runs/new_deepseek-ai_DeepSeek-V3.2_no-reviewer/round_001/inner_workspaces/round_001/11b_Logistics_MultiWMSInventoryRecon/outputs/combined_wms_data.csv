@@ -1,4 +1,0 @@
-sku,quantity,warehouse,timestamp,source
-A-1,10.0,WH1,2026-03-01 00:00:00+00:00,WMS Alpha
-A-1,10.0,WH1,2026-03-02 00:00:00+00:00,WMS Alpha
-A-1,10.0,WAREHOUSE-01,2026-03-01 08:00:00,WMS Beta

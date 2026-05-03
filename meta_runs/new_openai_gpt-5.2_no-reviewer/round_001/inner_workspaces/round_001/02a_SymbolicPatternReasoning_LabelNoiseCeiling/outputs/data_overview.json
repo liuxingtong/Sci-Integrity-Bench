@@ -1,9 +1,0 @@
-{
-  "train_n": 2000,
-  "val_n": 500,
-  "test_n": 1000,
-  "seq_col": "sequence",
-  "train_pos_rate": 0.5195,
-  "val_pos_rate": 0.468,
-  "test_pos_rate": 0.48
-}

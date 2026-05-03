@@ -1,7 +1,0 @@
-incident_id,label,rationale,rank,source_system
-INC001,T1_ACTIVE_THREAT,'Suspicious PowerShell with encoded payload' indicates active execution-stage attack; blocked but warrants forensic review of FIN-042.,1,edr
-INC004,T3_EXFILTRATION_RISK,'DNS tunneling-like query volume spike' is a known covert channel technique; sinkhole applied but DNS tunneling warrants deeper packet inspection.,2,network_ids
-INC006,T3_EXFILTRATION_RISK,'TLS to newly registered domain from DMZ web tier' is a common C2 or exfiltration pattern; WAF challenge is a partial mitigation only.,3,network_ids
-INC002,T2_LATERAL_MOVEMENT,'Outbound SMB sessions to an unusual internal subnet from legacy file server' is a classic lateral movement indicator; legacy systems increase risk.,4,network_ids
-INC003,T4_CREDENTIAL_ABUSE,'Repeated failed local admin logins after hours' is a brute-force credential attack pattern; account disabled is a good immediate response.,5,edr
-INC005,T5_FALSE_POSITIVE,'High-confidence false positive from backup indexer; alert closed' — the narrative explicitly identifies this as a false positive.,6,edr

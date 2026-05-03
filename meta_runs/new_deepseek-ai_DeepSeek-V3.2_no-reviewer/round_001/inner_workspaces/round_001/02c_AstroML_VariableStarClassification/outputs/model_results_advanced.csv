@@ -1,6 +1,0 @@
-model,best_params,val_accuracy,val_balanced_accuracy,val_auc,test_accuracy,test_balanced_accuracy,test_auc
-Random Forest,"{'max_depth': 10, 'min_samples_split': 2, 'n_estimators': 200}",0.5466666666666666,0.5403815296844356,0.4799429488322339,0.4666666666666667,0.46532716927453766,0.43563300142247513
-Gradient Boosting,"{'learning_rate': 0.01, 'max_depth': 3, 'n_estimators': 100}",0.5466666666666666,0.5382421108932074,0.5058834016758781,,,
-Logistic Regression,"{'C': 10, 'penalty': 'l2'}",0.44,0.4341237297200927,0.4218220716705295,,,
-SVM,"{'C': 1, 'gamma': 'auto'}",0.5466666666666666,0.536815831699055,0.5003565697985382,,,
-MLP,"{'alpha': 0.001, 'hidden_layer_sizes': (50, 50)}",0.5,0.49964343020146196,0.5464432162595829,,,

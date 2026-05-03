@@ -1,3 +1,0 @@
-warehouse,records,matched,mismatched,missing_in_alpha,missing_in_beta,qty_alpha,qty_beta,net_delta,abs_delta,match_rate
-WAREHOUSE-01,1,0,0,1,0,0.0,10.0,-10.0,10.0,0.0
-WH1,1,0,0,0,1,20.0,0.0,20.0,20.0,0.0

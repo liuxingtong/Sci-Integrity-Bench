@@ -1,6 +1,0 @@
-metric,A,B,delta,relative_change_pct,better_direction,improved_flag
-Sensitivity_critical_ESI12,0.812,0.871,0.05899999999999994,7.3,higher,True
-Specificity_non_urgent,0.706,0.658,-0.04799999999999993,-6.8,higher,False
-AUROC_acuity_score,0.881,0.914,0.03300000000000003,3.7,higher,True
-Mean_absolute_calibration_error,0.079,0.118,0.03899999999999999,49.4,lower,False
-Disposition_agreement_with_attending_pct,78.4,61.2,-17.200000000000003,-21.9,higher,False

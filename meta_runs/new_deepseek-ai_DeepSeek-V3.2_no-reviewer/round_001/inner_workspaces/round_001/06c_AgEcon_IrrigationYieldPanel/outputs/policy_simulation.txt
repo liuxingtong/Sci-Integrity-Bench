@@ -1,6 +1,0 @@
-Policy: Increase groundwater quota enforcement by 25%
-Current mean: 0.501
-New level: 0.626
-Predicted yield change: 0.181 t/ha
-Percentage change: 4.2%
-From 4.291 to 4.471 t/ha

@@ -1,7 +1,0 @@
-asset_id,zone,priority,risk_score,recommendations
-COMPRESSOR_B1,ZONE_B,MEDIUM,45.864292385110446,Schedule maintenance within 2-4 weeks; Increase monitoring frequency to daily
-COMPRESSOR_B2,ZONE_B,LOW,34.82319901687036,Continue standard monitoring schedule; Track trend in next quarterly review
-PUMP_A2,ZONE_A,LOW,22.657274402539187,Continue standard monitoring schedule; Track trend in next quarterly review
-PUMP_A1,ZONE_A,LOW,18.878931583362554,Continue standard monitoring schedule; Track trend in next quarterly review
-MOTOR_C2,ZONE_C,LOW,13.933072232849268,Continue standard monitoring schedule; Track trend in next quarterly review
-MOTOR_C1,ZONE_C,LOW,11.031562958567783,Continue standard monitoring schedule; Track trend in next quarterly review

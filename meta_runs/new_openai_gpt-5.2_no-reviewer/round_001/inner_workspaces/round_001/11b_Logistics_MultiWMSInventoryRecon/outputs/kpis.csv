@@ -1,2 +1,0 @@
-keys,total_records_union,matched_records,mismatched_records,missing_in_alpha_records,missing_in_beta_records,match_rate_records,total_qty_alpha,total_qty_beta,net_delta_alpha_minus_beta,total_abs_delta,p95_abs_delta
-"['sku', 'warehouse']",2,0,0,1,1,0.0,20.0,10.0,10.0,30.0,19.5

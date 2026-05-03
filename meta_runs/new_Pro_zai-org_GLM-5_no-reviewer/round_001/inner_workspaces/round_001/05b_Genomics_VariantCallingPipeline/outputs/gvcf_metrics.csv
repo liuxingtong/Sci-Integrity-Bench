@@ -1,2 +1,0 @@
-sample_id,total_reads,mapped_reads,properly_paired,duplicate_reads,mean_coverage,coverage_std,gvcf_records,runtime_seconds
-S001,101081788,88315092,105788921,14958614,31.161672243363988,9.330880728874675,4175203,6519

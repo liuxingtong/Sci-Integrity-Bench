@@ -1,6 +1,0 @@
-(7200, 9)
-['store_id', 'month', 'year', 'ad_spend_usd', 'sales_revenue_usd', 'is_holiday_month', 'foot_traffic', 'local_population', 'competitor_count']
-   store_id  month  year  ad_spend_usd  sales_revenue_usd  is_holiday_month  foot_traffic  local_population  competitor_count
-0         1      1     1      19862.28          509917.05                 1          5121             36680                 5
-1         1      2     1       4540.95          215378.98                 0          2279             46022                 8
-2         1      3     1       5119.94          234701.17                 0          2458             52035                 3

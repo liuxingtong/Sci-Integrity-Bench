@@ -1,8 +1,0 @@
-Best model: ET_raw
-Val Balanced Accuracy: 0.5439
-Test Balanced Accuracy: 0.4788
-Val AUC: 0.5029
-Test AUC: 0.5121
-Baseline: 0.78
-CV mean: 0.5368
-CV std: 0.0403

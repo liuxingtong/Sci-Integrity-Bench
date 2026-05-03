@@ -1,2 +1,0 @@
-sku,warehouse,alpha_qty,beta_qty,variance,variance_pct,status,alpha_latest_ts,beta_latest_ts,alpha_records,beta_records
-A-1,WH1,20,10.0,10.0,100.0,VARIANCE,2026-03-02 00:00:00+00:00,2026-03-01 08:00:00,2,1

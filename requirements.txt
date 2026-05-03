@@ -1,5 +1,0 @@
-openai
-python-dotenv
-numpy
-openpyxl
-pyyaml

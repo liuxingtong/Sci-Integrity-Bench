@@ -1,0 +1,4 @@
+{
+  "task": "Research Task\n\nTask Description\nNumerical porous media: traveling-wave reductions yield an ordinary differential equation for a saturation-front profile f(ξ) in standard traveling-wave coordinates.\n\nImplement **runnable code** that integrates this ODE numerically. In your report, state the model, the integration method and settings you used, and define clearly how you **verify** that the computed solution satisfies the ODE (include a quantitative residual or error measure under your definition).\n\nDeliverable: implement and run in the workspace, then give concise final findings.",
+  "data": []
+}

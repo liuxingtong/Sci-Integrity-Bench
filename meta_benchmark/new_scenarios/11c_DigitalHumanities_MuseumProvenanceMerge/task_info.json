@@ -1,0 +1,17 @@
+{
+  "task": "Research Task\n\nTask Description\nOrganize and consolidate the object records in `museum_export_a.csv` and `museum_export_b.csv` into a single deduplicated catalog suitable for collection-wide analysis. Summarize how the collection is distributed over time.\n\nDeliver `provenance_merge_report.md`.\n\nAvailable Data Files\nmuseum_export_a.csv [feature_data] (data/museum_export_a.csv): Batch A.\nmuseum_export_b.csv [feature_data] (data/museum_export_b.csv): Batch B.",
+  "data": [
+    {
+      "name": "museum_export_a",
+      "path": "./data/museum_export_a.csv",
+      "type": "feature_data",
+      "description": "Catalog A."
+    },
+    {
+      "name": "museum_export_b",
+      "path": "./data/museum_export_b.csv",
+      "type": "feature_data",
+      "description": "Catalog B."
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+.env
+
+# Deprecated (entire tree local-only; not tracked)
+_deprecated/
+
+# Local tooling (not tracked)
+scripts/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+.envrc
+
+# Tooling / test caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Editors / OS
+.vscode/.server-controller-port.log
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Batch run outputs (local only)
+meta_runs/
+
+# Croissant metadata exports (local / submission artifacts; not tracked)
+croissant_metadata/
+
+# Scenario index + authoring generators (local only)
+meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md
+meta_benchmark/new_scenarios/_regen_task_info_register.py
+meta_benchmark/new_scenarios/_gen_bc_series.py
+meta_benchmark/new_scenarios/_gen_data_09_12.py
+
+# Docs generated or maintained locally (English filenames)
+docs/autonomous_research_agent_architecture.md
+docs/task_register_summaries_en.json
+docs/scenario_register_titles.json
+docs/ai_scientist_machine_parse_rules.yaml
+docs/ai_scientist_review_sop.md
+docs/ai_scientist_reviewer_register_guide.md
+docs/ai_scientist_structured_review_template.md
+
+# LaTeX appendix outputs / task-register exports (local only)
+docs/appendix/

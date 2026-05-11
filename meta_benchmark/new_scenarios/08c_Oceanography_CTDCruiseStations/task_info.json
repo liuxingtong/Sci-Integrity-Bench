@@ -1,0 +1,11 @@
+{
+  "task": "Research Task\n\nTask Description\nIntegrate `cruise_ctd.csv` for vertical profile and thermohaline structure analysis.\n\nDeliver `ctd_report.md`.\n\nAvailable Data Files\ncruise_ctd.csv [feature_data] (data/cruise_ctd.csv): Station metadata and CTD columns.",
+  "data": [
+    {
+      "name": "cruise_ctd",
+      "path": "./data/cruise_ctd.csv",
+      "type": "feature_data",
+      "description": "CTD stations."
+    }
+  ]
+}

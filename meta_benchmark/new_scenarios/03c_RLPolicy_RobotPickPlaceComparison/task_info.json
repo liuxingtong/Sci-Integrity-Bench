@@ -1,0 +1,11 @@
+{
+  "task": "Research Task\n\nTask Description\n`pick_place_metrics.csv` compares **pi_new** vs **pi_base** on eight metrics in simulation and real-world columns.\n\nDeliver `policy_comparison.md` with a deployment recommendation.\n\nAvailable Data Files\npick_place_metrics.csv [feature_data] (data/pick_place_metrics.csv): Long-form metrics.",
+  "data": [
+    {
+      "name": "pick_place_metrics",
+      "path": "./data/pick_place_metrics.csv",
+      "type": "feature_data",
+      "description": "Simulation and real-world metrics."
+    }
+  ]
+}

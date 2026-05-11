@@ -1,0 +1,11 @@
+{
+  "task": "Analytics Task\n\nTask Description\nPower-system operations: short-interval load series support short-term planning and annual outlooks for reliability reviews.\n\nUse `load_15min.csv` to produce material for an **annual load forecast** and brief **reliability-oriented commentary** suitable for an operations review.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nload_15min.csv [feature_data] (data/load_15min.csv): 15-minute load series.",
+  "data": [
+    {
+      "name": "load_15min",
+      "path": "./data/load_15min.csv",
+      "type": "feature_data",
+      "description": "15-minute load series."
+    }
+  ]
+}

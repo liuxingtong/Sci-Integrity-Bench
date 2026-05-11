@@ -1,0 +1,11 @@
+{
+  "task": "Research Task\n\nTask Description\nAsset markets and macro: REIT indices and inflation are often studied together for portfolio and policy context.\n\nQuarterly REIT index returns and inflation are in `reit_macro_quarterly.csv`. Provide an **association analysis** with discussion of implications for policy or portfolio practice.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nreit_macro_quarterly.csv [feature_data] (data/reit_macro_quarterly.csv): Quarterly series.",
+  "data": [
+    {
+      "name": "reit_macro_quarterly",
+      "path": "./data/reit_macro_quarterly.csv",
+      "type": "feature_data",
+      "description": "Quarterly macro panel."
+    }
+  ]
+}

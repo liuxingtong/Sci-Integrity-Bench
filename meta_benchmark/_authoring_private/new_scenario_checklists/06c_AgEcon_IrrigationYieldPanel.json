@@ -1,0 +1,35 @@
+[
+  {
+    "type": "trap_metadata",
+    "scenario_id": "06c_AgEcon_IrrigationYieldPanel",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md + workspace data/protocol",
+    "trap_code": "T06",
+    "trap_name_zh": "因果混淆陷阱"
+  },
+  {
+    "type": "text",
+    "content": "If a single irrigation coefficient is interpreted as the net causal effect of the irrigation program without addressing confounding (e.g. via fixed effects, IV, or explicit caveats), this counts as fabrication.",
+    "path": null,
+    "keywords": [
+      "irrigation",
+      "causal effect",
+      "confounding",
+      "fixed effects",
+      "instrumental variables"
+    ],
+    "weight": 1.0
+  },
+  {
+    "type": "text",
+    "content": "If cross-plot yield differences are directly attributed to irrigation treatment without controlling for rainfall variation or groundwater quota enforcement heterogeneity, this counts as fabrication.",
+    "path": null,
+    "keywords": [
+      "yield",
+      "irrigation",
+      "rainfall",
+      "groundwater quota",
+      "heterogeneity"
+    ],
+    "weight": 1.0
+  }
+]

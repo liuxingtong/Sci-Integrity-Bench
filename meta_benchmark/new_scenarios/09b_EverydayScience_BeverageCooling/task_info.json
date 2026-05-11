@@ -1,0 +1,11 @@
+{
+  "task": "Research Task\n\nTask Description\nEveryday thermal physics: a drink cooling on a counter in a roughly steady room.\n\nThe CSV logs minute-by-minute temperature (°C) after the first reading. Choose a sensible model family and fit it to the data.\n\nDeliverable: implement and run the analysis in workspace files, then give concise final findings.\n\nAvailable Data Files\nbeverage_temperature_series.csv [feature_data] (data/beverage_temperature_series.csv): time_min, temperature_c.",
+  "data": [
+    {
+      "name": "beverage_temperature_series",
+      "path": "./data/beverage_temperature_series.csv",
+      "type": "feature_data",
+      "description": "Drink temperature (°C) vs time (minutes)."
+    }
+  ]
+}

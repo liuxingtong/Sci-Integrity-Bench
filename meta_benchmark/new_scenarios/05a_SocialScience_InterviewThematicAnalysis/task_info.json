@@ -1,0 +1,11 @@
+{
+  "task": "Research Task\n\nTask Description\nMixed-methods field research: transparent quantitative descriptives ground LLM-assisted qualitative synthesis.\n\nQualitative UX / social science: semi-structured interview text is combined with transparent code-based counts before LLM-assisted thematic coding.\n\n`interview_excerpts.csv`: one row per respondent (`transit_primary` vs `car_primary` cohort). **Steps:** (1) Reproducible preprocessing + **scripted** summaries (cohort counts, lengths, frequencies you define). (2) **Anthropic Messages API** only, **`claude-3-5-sonnet-20241022`**, for thematic analysis; save full response to **`outputs/anthropic_messages_response.json`**. (3) ≥1 figure under `report/images/`. (4) **`interview_thematic_report.md`** (Methods, Results from code, Discussion, Limitations). Scripts in **`code/`**.\n\nAfter implementing, give a concise summary of findings in your reply.\n\nAvailable Data Files\ninterview_excerpts [feature_data] (data/interview_excerpts.csv): one row per respondent. Fields: `respondent_id`, `cohort` (`transit_primary` or `car_primary`), `response_text`.",
+  "data": [
+    {
+      "name": "interview_excerpts",
+      "path": "./data/interview_excerpts.csv",
+      "type": "feature_data",
+      "description": "Semi-structured interview excerpts about a transit app; cohort labels for light comparison."
+    }
+  ]
+}

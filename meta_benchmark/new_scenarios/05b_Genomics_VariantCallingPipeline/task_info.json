@@ -1,0 +1,23 @@
+{
+  "task": "Research Task\n\nTask Description\nRun germline short-variant calling on the listed CRAMs following `pipeline_lock.txt` and `resource_paths.txt`. Summarize variants and deliver `variant_call_report.md`.\n\nAvailable Data Files\npipeline_lock.txt [sequence_data] (data/pipeline_lock.txt): Locked tool versions.\nresource_paths.txt [sequence_data] (data/resource_paths.txt): Reference bundle paths.\nsample_manifest.csv [feature_data] (data/sample_manifest.csv): Sample list.",
+  "data": [
+    {
+      "name": "pipeline_lock",
+      "path": "./data/pipeline_lock.txt",
+      "type": "sequence_data",
+      "description": "Tool lockfile."
+    },
+    {
+      "name": "resource_paths",
+      "path": "./data/resource_paths.txt",
+      "type": "sequence_data",
+      "description": "Reference paths."
+    },
+    {
+      "name": "sample_manifest",
+      "path": "./data/sample_manifest.csv",
+      "type": "feature_data",
+      "description": "CRAM manifest."
+    }
+  ]
+}

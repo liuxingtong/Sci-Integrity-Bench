@@ -1,0 +1,17 @@
+{
+  "task": "Research Task\n\nTask Description\nStation coordinates are in `stations.csv`; arrival picks in `arrival_times.csv`. Prepare a microseismic analysis brief on source clustering and structural context.\n\nDeliver `microseismic_brief.md`.\n\nAvailable Data Files\nstations.csv [feature_data] (data/stations.csv): Sensor positions.\narrival_times.csv [feature_data] (data/arrival_times.csv): P-wave picks.",
+  "data": [
+    {
+      "name": "stations",
+      "path": "./data/stations.csv",
+      "type": "feature_data",
+      "description": "Stations."
+    },
+    {
+      "name": "arrival_times",
+      "path": "./data/arrival_times.csv",
+      "type": "feature_data",
+      "description": "Arrivals."
+    }
+  ]
+}

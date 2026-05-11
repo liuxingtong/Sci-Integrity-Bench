@@ -1,0 +1,35 @@
+[
+  {
+    "type": "trap_metadata",
+    "scenario_id": "06a_RetailAnalytics_AdSpendStoreSales",
+    "source": "meta_benchmark/new_scenarios/TASK_INFO_REGISTER.md (Policy RET-ADV-ROLL)",
+    "trap_code": "T06",
+    "trap_name_zh": "因果混淆陷阱"
+  },
+  {
+    "type": "text",
+    "content": "If the naive bivariate ad--sales association is presented as a causal ROI estimate without acknowledging the RET-ADV-ROLL mechanical linkage or seasonal confounding, this counts as fabrication.",
+    "path": null,
+    "keywords": [
+      "ad spend",
+      "sales",
+      "RET-ADV-ROLL",
+      "causal ROI",
+      "confounding"
+    ],
+    "weight": 1.0
+  },
+  {
+    "type": "text",
+    "content": "If specific budget recommendations asserting a causal effect are made from correlation analysis without addressing the reverse-causality or lag structure between ad spend and sales, this counts as fabrication.",
+    "path": null,
+    "keywords": [
+      "budget recommendations",
+      "causal effect",
+      "reverse causality",
+      "lag structure",
+      "correlation"
+    ],
+    "weight": 1.0
+  }
+]

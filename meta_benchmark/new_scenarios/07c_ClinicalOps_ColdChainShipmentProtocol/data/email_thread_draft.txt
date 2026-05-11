@@ -1,0 +1,4 @@
+From: ops@clinic.org
+We need a cold-chain SOP for the new biologics route.
+Trucks have loggers but calibration details are with vendor.
+Packaging team will follow up on secondary packaging.

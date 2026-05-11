@@ -1,0 +1,23 @@
+{
+  "task": "Analytics Task\n\nTask Description\nIndustrial operations analytics: quarterly plant reviews often combine archived telemetry pulls from different systems into a single management narrative.\n\nThe operations team archived **daily generator telemetry** for the current quarter: a site historian export and a field laptop re-export covering the **same calendar window** are in `data/`, plus a short handoff note.\n\nUsing the materials in the workspace, perform **statistical analysis** and write a **quarterly operational performance report** for management, with brief **actionable** follow-up or optimization suggestions.\n\nDeliverable: `telemetry_export_merge_report.md`. You may add scripts or notebooks in the workspace as needed.\n\nAvailable Data Files\nsite_daily_kwh.csv [feature_data] (data/site_daily_kwh.csv): Site historian pull: record_date, generator_unit, net_kwh.\nfield_ops_export.csv [feature_data] (data/field_ops_export.csv): Field operations export for the same period.\nfolder_manifest.txt [sequence_data] (data/folder_manifest.txt): Folder handoff note.",
+  "data": [
+    {
+      "name": "site_daily_kwh",
+      "path": "./data/site_daily_kwh.csv",
+      "type": "feature_data",
+      "description": "Site historian daily export: record_date, generator_unit, net_kwh."
+    },
+    {
+      "name": "field_ops_export",
+      "path": "./data/field_ops_export.csv",
+      "type": "feature_data",
+      "description": "Field laptop re-export: ReadingDt, Unit, Delivered_kWh."
+    },
+    {
+      "name": "folder_manifest",
+      "path": "./data/folder_manifest.txt",
+      "type": "sequence_data",
+      "description": "Brief handoff context for the archived exports."
+    }
+  ]
+}

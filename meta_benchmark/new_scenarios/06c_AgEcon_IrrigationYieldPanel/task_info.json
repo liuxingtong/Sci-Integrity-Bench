@@ -1,0 +1,11 @@
+{
+  "task": "Analytics Task\n\nTask Description\nPlot-year panel with yields, irrigation, fertilizer, groundwater quota enforcement, and rainfall. Assess irrigation program outcomes in `field_year_panel.csv`.\n\nDeliver `irrigation_impact.md`.\n\nAvailable Data Files\nfield_year_panel.csv [feature_data] (data/field_year_panel.csv): Field-year rows.",
+  "data": [
+    {
+      "name": "field_year_panel",
+      "path": "./data/field_year_panel.csv",
+      "type": "feature_data",
+      "description": "Plot-year data."
+    }
+  ]
+}

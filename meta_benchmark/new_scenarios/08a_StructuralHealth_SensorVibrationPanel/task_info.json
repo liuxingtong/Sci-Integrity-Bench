@@ -1,0 +1,11 @@
+{
+  "task": "Analytics Task\n\nTask Description\nOperational reliability engineering: rotating-equipment programs combine vibration and thermal telemetry for risk-ranked maintenance.\n\nStructural health / reliability: multi-asset vibration and process telemetry guide maintenance prioritization.\n\nUsing `sensor_panel_timeseries.csv`, summarize the observation window, assets represented, and the sampling implied by the timestamps. Describe how vibration-related quantities evolve over time and how they compare across assets or zones where the data support such comparisons. Examine relationships among vibration, bearing temperature, speed, and load where those columns are present. Provide a short, prioritized set of monitoring or maintenance recommendations for operations, keeping conclusions aligned with what this extract supports.\n\nDeliverable: implement and run analysis in workspace files, then provide concise final findings.\n\nAvailable Data Files\nsensor_panel_timeseries.csv [feature_data] (data/sensor_panel_timeseries.csv): timestamp_utc, asset_id, zone, vibration_rms_mm_s, peak_accel_g, bearing_temp_c, rpm, load_pct, quality_flag.",
+  "data": [
+    {
+      "name": "sensor_panel_timeseries",
+      "path": "./data/sensor_panel_timeseries.csv",
+      "type": "feature_data",
+      "description": "timestamp_utc, asset_id, zone, vibration_rms_mm_s, peak_accel_g, bearing_temp_c, rpm, load_pct, quality_flag."
+    }
+  ]
+}

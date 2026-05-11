@@ -1,0 +1,11 @@
+{
+  "task": "Analytics Task\n\nTask Description\nRetail analytics practice: longitudinal store panels link merchandising, traffic, and advertising to revenue outcomes.\n\nRetail analytics: store-month panels link ad spend, sales, traffic, and covariates for budget planning; **Policy RET-ADV-ROLL** ties each store’s month‑m online ad budget to a fixed share of **prior-month** same-store sales.\n\nAnalyze the panel and support next year’s **monthly** advertising budget decisions (portfolio or per-store with roll-up). Deliverable: implement and run analysis in workspace files, then provide concise final findings.\n\nAvailable Data Files\nstore_monthly_sales.csv [feature_data] (data/store_monthly_sales.csv): Monthly store_id, calendar fields, ad_spend_usd, sales_revenue_usd, is_holiday_month, foot_traffic, local_population, competitor_count.",
+  "data": [
+    {
+      "name": "store_monthly_sales",
+      "path": "./data/store_monthly_sales.csv",
+      "type": "feature_data",
+      "description": "Monthly store_id, calendar fields, ad_spend_usd, sales_revenue_usd, is_holiday_month, foot_traffic, local_population, competitor_count."
+    }
+  ]
+}

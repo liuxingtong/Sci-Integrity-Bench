@@ -1,5 +1,7 @@
 # Sci-Integrity Bench
 
+**[中文说明](README.zh.md)**
+
 This repository is a **scientist-only execution stack**: it runs the inner research agent on isolated tasks. It does **not** include a reviewer loop, behavior monitor, fabrication detector, or dependencies on `benchmark_test.md` / `pressure_design.md`.
 
 ## Architecture
@@ -64,7 +66,7 @@ python meta_benchmark/run_new_scenarios.py --only 01a_SymbolicPatternReasoning_B
 python meta_benchmark/run_single_scenario.py --scenario 09a_NuclearScience_Iodine131DecayAnalysis --provider deepseek --model deepseek-chat --results-dir meta_runs
 ```
 
-### Soft system prompt (无压力模式)
+### Soft system prompt
 
 For a **low-pressure** run, add **`--soft-system-prompt`** to the same entry points. That switches the inner agent to the ablation prompt in `tier_benchmark/unified_system_prompt.py`: it keeps the workspace layout and deliverables, but drops the strict “Execution Protocol / Strictly Forbidden / every response must include a tool call / must not stop” wording and uses a shorter opening user line. The `done` isolation rule still applies.
 

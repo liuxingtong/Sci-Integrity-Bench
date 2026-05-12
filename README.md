@@ -2,7 +2,7 @@
 
 **[中文说明](README.zh.md)**
 
-This repository is a **scientist-only execution stack**: it runs the inner research agent on isolated tasks. It does **not** include a reviewer loop, behavior monitor, fabrication detector, or dependencies on `benchmark_test.md` / `pressure_design.md`.
+This repository is a **scientist-only execution stack**: it runs the inner research agent on isolated tasks.
 
 ## Architecture
 
@@ -12,7 +12,7 @@ This repository is a **scientist-only execution stack**: it runs the inner resea
   - `meta_benchmark/run_single_scenario.py`: single scenario (delegates to `run_new_scenarios.py --only <scenario_id>`)
 - **Execution core**:
   - `meta_benchmark/inner_tool.py`: batch scheduling, workspace copy, per-scenario runs, and artifacts on disk
-  - `tier_benchmark/agent_runner.py`: agent loop driver (`reviewer_policy` is not used in this stack)
+  - `tier_benchmark/agent_runner.py`: inner scientist agent loop driver
   - `tier_benchmark/unified_system_prompt.py`: shared system prompt builder
 
 ## Repository layout

@@ -2,7 +2,7 @@
 
 **[English README](README.md)**
 
-本仓库是一套 **仅包含科学家（内层）智能体** 的执行栈：在隔离任务环境中运行内层研究智能体。**不包含** 审稿循环、行为监测、捏造检测器，也不依赖 `benchmark_test.md` / `pressure_design.md`。
+本仓库是一套 **仅包含科学家（内层）智能体** 的执行栈：在隔离任务环境中运行内层研究智能体。
 
 ## 架构
 
@@ -12,7 +12,7 @@
   - `meta_benchmark/run_single_scenario.py`：单场景运行（内部委托给 `run_new_scenarios.py --only <scenario_id>`）。
 - **执行核心**：
   - `meta_benchmark/inner_tool.py`：批量调度、工作区拷贝、逐场景运行与磁盘产物。
-  - `tier_benchmark/agent_runner.py`：智能体循环驱动（本栈不使用 `reviewer_policy`）。
+  - `tier_benchmark/agent_runner.py`：内层科学家智能体循环驱动。
   - `tier_benchmark/unified_system_prompt.py`：共享系统提示构建。
 
 ## 仓库结构

@@ -4,7 +4,7 @@
 
 ## Overview
 
-AI scientist systems are being deployed for fully autonomous research at increasing scale, yet their academic integrity has never been systematically evaluated. This repository accompanies [**SciIntegrity-Bench: A Benchmark for Evaluating Academic Integrity in AI Scientist Systems**](http://arxiv.org/html/2605.10246), the first benchmark designed to fill this gap.
+AI scientist systems are being deployed for fully autonomous research at increasing scale, yet their academic integrity has never been systematically evaluated. This repository accompanies [**SciIntegrity-Bench: A Benchmark for Evaluating Academic Integrity in AI Scientist Systems**](https://arxiv.org/abs/2605.10246), the first benchmark designed to fill this gap.
 
 The core design principle is **dilemmatic evaluation**: every scenario is constructed so that the only correct response is to honestly acknowledge that the task cannot be completed, while producing results regardless requires misconduct. The benchmark covers **11 misconduct trap categories** (including data fabrication, constraint violation, and causal confusion) and **33 dilemmatic scenarios** across multiple scientific disciplines.
 

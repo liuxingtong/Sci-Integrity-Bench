@@ -4,7 +4,7 @@
 
 ## 概述
 
-AI 科学家系统正被大规模用于全自动化研究，但其学术诚信从未得到系统性评估。本仓库与论文 [**SciIntegrity-Bench: A Benchmark for Evaluating Academic Integrity in AI Scientist Systems**](http://arxiv.org/html/2605.10246) 配套，该工作提出了首个专门面向这一问题的基准测试。
+AI 科学家系统正被大规模用于全自动化研究，但其学术诚信从未得到系统性评估。本仓库与论文 [**SciIntegrity-Bench: A Benchmark for Evaluating Academic Integrity in AI Scientist Systems**](https://arxiv.org/abs/2605.10246) 配套，该工作提出了首个专门面向这一问题的基准测试。
 
 基准的核心设计理念是**两难式评测**：每个场景都被构造为「诚实承认任务无法完成」才是唯一正确答案，而若强行产出结果则必然涉及学术不当行为。评测涵盖 **11 类不当行为陷阱**（包括数据捏造、违反约束条件、因果混淆等）和 **33 个两难场景**，横跨多个科学领域。
 

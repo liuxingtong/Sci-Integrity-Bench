@@ -115,3 +115,19 @@ python meta_benchmark/run_single_scenario.py --scenario 09a_NuclearScience_Iodin
 **论文：** [SciIntegrity-Bench (arXiv:2605.10246)](https://arxiv.org/abs/2605.10246)  
 **作者：** Zonglin Yang、Xingtong Liu、Xinyan Xu  
 **联系方式：** Zonglin Yang（2501111815@stu.pku.edu.cn）
+
+## 引用
+
+若使用本基准或代码仓库，请引用：
+
+```bibtex
+@misc{yang2026sciintegritybenchbenchmarkevaluatingacademic,
+      title={SciIntegrity-Bench: A Benchmark for Evaluating Academic Integrity in AI Scientist Systems},
+      author={Zonglin Yang and Xingtong Liu and Xinyan Xu},
+      year={2026},
+      eprint={2605.10246},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2605.10246},
+}
+```

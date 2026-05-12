@@ -115,3 +115,19 @@ We would love to hear from the broader NLP, machine learning, AI safety, and sof
 **Paper:** [SciIntegrity-Bench (arXiv:2605.10246)](https://arxiv.org/abs/2605.10246)  
 **Authors:** Zonglin Yang, Xingtong Liu, Xinyan Xu  
 **Contact:** Zonglin Yang (2501111815@stu.pku.edu.cn)
+
+## Citation
+
+If you use this benchmark or codebase, please cite:
+
+```bibtex
+@misc{yang2026sciintegritybenchbenchmarkevaluatingacademic,
+      title={SciIntegrity-Bench: A Benchmark for Evaluating Academic Integrity in AI Scientist Systems},
+      author={Zonglin Yang and Xingtong Liu and Xinyan Xu},
+      year={2026},
+      eprint={2605.10246},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2605.10246},
+}
+```
